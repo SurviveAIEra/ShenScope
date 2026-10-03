@@ -59,14 +59,20 @@ end
         @test !isfile(joinpath(root,"created.txt"))
         @test_throws ShenScopeError dispatch_rpc(server,"permissions/respond",Dict("request_id"=>request_id,"session_id"=>"foreign","decision"=>"once"))
         dispatch_rpc(server,"permissions/respond",Dict("request_id"=>request_id,"session_id"=>id,"decision"=>"once"))
-        while haskey(server.runs,id) && time()<deadline;sleep(0.025);end
+        @test timedwait(()->any(key->key!=request_id,keys(server.approvals)),15;pollint=0.025)==:ok
+        archive_id=first(filter(key->key!=request_id,collect(keys(server.approvals))))
+        @test_throws ShenScopeError dispatch_rpc(server,"permissions/respond",Dict("request_id"=>archive_id,"session_id"=>"foreign","decision"=>"session"))
+        dispatch_rpc(server,"permissions/respond",Dict("request_id"=>archive_id,"session_id"=>id,"decision"=>"deny"))
+        @test timedwait(()->!haskey(server.runs,id),15;pollint=0.025)==:ok
         @test read(joinpath(root,"created.txt"),String)=="approved"
         @test load_session(server.state_dir,id).status==:complete
+        @test !isdir(joinpath(server.state_dir,"outputs",id))
+        @test !haskey(ShenScope.bounded_json_object(first(filter(message->message.role==:tool,load_session(server.state_dir,id).messages)).text),"artifact_sha256")
         server.provider_factory=s->MockProvider([response("long output")];delay=0.1)
         dispatch_rpc(server,"agent/start",Dict("session_id"=>id,"prompt"=>"wait"))
         sleep(0.15)
         dispatch_rpc(server,"agent/cancel",Dict("session_id"=>id))
-        while haskey(server.runs,id) && time()<deadline;sleep(0.025);end
+        @test timedwait(()->!haskey(server.runs,id),15;pollint=0.025)==:ok
         @test load_session(server.state_dir,id).status==:cancelled
         @test isempty(server.approvals)
         stop_server!(server)

@@ -111,8 +111,10 @@ function recover_tool_pairs!(s::Session)
     answered = Set(m.call_id for m in s.messages if m.role==:tool)
     for m in copy(s.messages), c in m.calls
         if !(c.id in answered)
-            add_message!(s,Message(:tool,canonical(Dict("ok"=>false,"error"=>
-                "Execution interrupted; effects unknown. Inspect state before retrying."));call_id=c.id))
+            explanation = get(m.native, "tools_dispatched", nothing) === false ?
+                "Model stream interrupted before tool dispatch. This call was not executed by that attempt." :
+                "Execution interrupted; effects unknown. Inspect state before retrying."
+            add_message!(s,Message(:tool,canonical(Dict("ok"=>false,"error"=>explanation));call_id=c.id))
             push!(answered,c.id)
         end
     end
@@ -125,5 +127,6 @@ function branch_session(s::Session,ctx::RuntimeContext; through=length(s.message
         add_message!(child,m)
     end
     recover_tool_pairs!(child)
+    branch_context_checkpoint!(s, child, through)
     return child
 end

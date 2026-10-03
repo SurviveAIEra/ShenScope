@@ -62,6 +62,10 @@ export class ShenScopePanel {
     private hooksStarting = false;
     private hooksResult?: { action: string; result: any };
     private completedHooksJobs = new Set<string>();
+    private contextJob?: string;
+    private contextStarting = false;
+    private contextResult?: { action: string; result: any };
+    private completedContextJobs = new Set<string>();
     constructor(private readonly root: HTMLElement, private readonly bridge: PanelBridge) {
         root.classList.add('shenscope-panel');
         const header = el('header', '', 'panel-header'); const brand = el('div', '', 'brand'); const mark = el('span', '', 'brand-mark'); mark.append(icon('scope')); brand.append(mark, el('strong', 'ShenScope'));
@@ -71,7 +75,7 @@ export class ShenScopePanel {
             const button = this.button(label, () => this.selectTab(name), 'nav-button', glyph); this.navigation.set(name, button); nav.append(button);
         }
         const more = el('select', '', 'more-views'); more.setAttribute('aria-label', 'More views');
-        for (const name of ['More', 'Settings', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks']) { const option = el('option', name); option.value = name; more.append(option); }
+        for (const name of ['More', 'Settings', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context']) { const option = el('option', name); option.value = name; more.append(option); }
         more.addEventListener('change', () => { if (more.value !== 'More') { void this.guard(() => this.selectTab(more.value)); } more.value = 'More'; }); nav.append(more);
         this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite'); this.notice.setAttribute('role', 'alert'); this.notice.hidden = true;
         root.append(header, nav, this.notice, this.approvals, this.content, this.status);
@@ -107,8 +111,8 @@ export class ShenScopePanel {
     private setStatus(text: string): void { this.status.textContent = text; this.status.classList.toggle('running', this.active); }
     private async selectTab(name: string): Promise<void> { this.tab = name; await this.renderTab(); }
     private async newConversation(): Promise<void> {
-        if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
-        this.sessionId = undefined; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
+        if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy()) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
+        this.sessionId = undefined; this.contextResult = undefined; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
         const distance = this.transcript.scrollHeight - this.transcript.scrollTop - this.transcript.clientHeight;
@@ -131,7 +135,7 @@ export class ShenScopePanel {
     private updateActions(): void {
         if (!this.sendButton || !this.cancelButton) { return; } const label = this.active ? 'Send guidance' : 'Send message';
         this.sendButton.setAttribute('aria-label', label); this.sendButton.title = `${label} (Ctrl / ⌘ Enter)`;
-        this.sendButton.disabled = !this.config || !this.composer.value.trim() || !!this.hooksJob || this.hooksStarting; this.cancelButton.hidden = !this.active;
+        this.sendButton.disabled = !this.config || !this.composer.value.trim() || !!this.hooksJob || this.hooksStarting || !!this.contextJob || this.contextStarting; this.cancelButton.hidden = !this.active;
         this.composer.placeholder = this.active ? 'Guide the running task…' : 'Ask, plan, or build something…';
     }
     private async send(): Promise<void> {
@@ -162,6 +166,7 @@ export class ShenScopePanel {
         if (this.tab === 'MCP' && this.capabilities.mcp) { await this.mcp(revision); return; }
         if (this.tab === 'Skills' && this.capabilities.skills) { await this.skills(revision); return; }
         if (this.tab === 'Hooks' && this.capabilities.hooks) { await this.hooks(revision); return; }
+        if (this.tab === 'Context' && this.capabilities.context_checkpoints) { await this.contextView(revision); return; }
         this.content.append(el('h2', this.tab === 'Intelligence' ? 'Project intelligence' : this.tab, 'view-title'));
         if (this.tab === 'Tools') {
             const tools = await this.bridge.request('tools/list'); if (revision !== this.renderRevision) { return; }
@@ -188,9 +193,14 @@ export class ShenScopePanel {
             if (!sessions.length) { list.append(el('p', 'Your conversations will appear here.', 'empty-text')); }
             for (const session of sessions) {
                 const row = el('article', '', 'session-card'); const open = this.button(session.title, async () => {
-                    if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting) { throw new Error('Finish the current task before switching conversations.'); }
-                    const full = await this.bridge.request('sessions/get', { session_id: session.id }); this.sessionId = full.id; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren();
-                    for (const message of full.messages) { this.addMessage(message.role, message.text); } await this.selectTab('Chat'); this.scrollToEnd(true); this.composer.focus();
+                    if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy()) { throw new Error('Finish the current task before switching conversations.'); }
+                    const openingRevision = this.renderRevision; this.sessionId = session.id; this.contextResult = undefined;
+                    const full = await this.bridge.request('sessions/get', { session_id: session.id });
+                    if (this.sessionId !== full.id) { return; }
+                    this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren();
+                    for (const message of full.messages) { this.addMessage(message.role, message.text); }
+                    if (this.tab === 'History' && this.renderRevision === openingRevision) { await this.selectTab('Chat'); this.scrollToEnd(true); this.composer.focus(); }
+                    else { await this.renderTab(); }
                 }, 'session-open');
                 row.append(open, el('small', `${session.pinned ? 'Pinned · ' : ''}${session.archived ? 'Archived · ' : ''}${session.status} · ${session.updated ?? ''}`, 'session-meta'));
                 const controls = el('details', '', 'session-controls'); controls.append(el('summary', 'Manage')); const rename = el('input'); rename.value = session.title; rename.setAttribute('aria-label', 'Conversation title');
@@ -283,7 +293,91 @@ export class ShenScopePanel {
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
         }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
     }
-    private hooksBusy(): boolean { return this.active || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || !!this.mcpJob || !!this.projectJob; }
+    private contextBusy(): boolean { return this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob; }
+    private async startContext(action: string, args: Record<string, unknown> = {}): Promise<void> {
+        if (this.contextBusy()) { throw new Error('Finish or cancel the current operation before working with context.'); }
+        this.contextStarting = true; this.contextResult = undefined;
+        if (this.tab === 'Context') { for (const button of Array.from(this.content.querySelectorAll('button'))) { button.disabled = true; } }
+        this.updateActions();
+        try {
+            const session_id = await this.ensureSession('Conversation context');
+            const result = await this.bridge.request('context/start', { session_id, action, ...args });
+            if (!this.completedContextJobs.has(result.job_id)) { this.contextJob = result.job_id; this.setStatus('Preparing conversation context…'); }
+        } finally { this.contextStarting = false; this.updateActions(); }
+        if (this.tab === 'Context') { await this.renderTab(); }
+    }
+    private async contextView(revision: number): Promise<void> {
+        const configuration = await this.bridge.request('config/get');
+        if (revision !== this.renderRevision) { return; }
+        this.config = configuration.value; this.configRevision = configuration.sha256;
+        const session_id = await this.ensureSession('Conversation context');
+        const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Conversation context'));
+        const refresh = this.button('Refresh context', async () => { this.contextResult = undefined; await this.renderTab(); }); refresh.disabled = this.contextBusy(); heading.append(refresh);
+        this.content.append(heading, el('p', 'Keep your current goal and recent work in view. Original messages stay available when older context is compacted.', 'view-description'));
+        let snapshot: any;
+        try { snapshot = await this.bridge.request('context/query', { session_id }); }
+        catch { if (this.contextResult?.action === 'status') { snapshot = this.contextResult.result; } }
+        if (revision !== this.renderRevision) { return; }
+        if (this.contextJob) {
+            this.content.append(el('p', 'Working or waiting for your approval…', 'empty-text'), this.button('Cancel context operation', async () => { await this.bridge.request('context/cancel_job', { session_id, job_id: this.contextJob }); }));
+        }
+        if (!snapshot) {
+            const load = this.button('Load context status', () => this.startContext('status')); load.disabled = this.contextBusy(); this.content.append(load);
+        } else {
+            const metrics = el('div', '', 'context-metrics');
+            const latest = snapshot.latest; const measure = latest?.measure;
+            for (const [label, value] of [['Original messages', snapshot.messages], ['Request messages', latest?.projected_messages ?? '—'], ['Estimated input tokens', measure?.estimated_tokens?.toLocaleString() ?? '—'], ['Input token allowance', measure?.input_limit?.toLocaleString() ?? '—']]) {
+                const item = el('div'); item.append(el('strong', String(value)), el('small', String(label))); metrics.append(item);
+            }
+            this.content.append(metrics);
+            if (measure) {
+                const usage = el('div', '', 'context-usage'); const meter = el('progress'); meter.max = Math.max(1, measure.input_limit); meter.value = Math.min(meter.max, measure.estimated_tokens);
+                meter.setAttribute('aria-label', 'Estimated context usage'); usage.append(meter, el('small', `${Math.round(measure.estimated_tokens / meter.max * 100)}% of input allowance · estimate`)); this.content.append(usage);
+            } else { this.content.append(el('p', 'Usage appears after the first model request.', 'empty-text')); }
+            const checkpoint = snapshot.checkpoint;
+            const card = el('section', '', 'info-card context-checkpoint');
+            card.append(el('h3', checkpoint ? 'Saved context checkpoint' : 'Complete conversation in view'));
+            card.append(el('p', checkpoint ? `Messages 1–${checkpoint.covered} · ${checkpoint.method === 'model' ? 'Model summary' : 'Evidence excerpts'} · ${checkpoint.bytes.toLocaleString()} bytes` : 'No older messages have been compacted.'));
+            if (checkpoint) {
+                card.append(el('small', `Saved ${checkpoint.created_at}`));
+                const sources = el('div', '', 'context-references');
+                for (const source of (checkpoint.sources ?? []).slice(0, 24)) {
+                    const read = this.button(`Read message ${source.message}`, () => this.startContext('source', { message: source.message, sha256: source.sha256 })); read.disabled = this.contextBusy(); sources.append(read);
+                }
+                card.append(sources);
+                const provenance = el('details'); provenance.append(el('summary', 'Source integrity'), el('code', checkpoint.prefix_sha256)); card.append(provenance);
+            }
+            this.content.append(card);
+            const actions = el('div', '', 'analysis-actions context-actions');
+            const compact = this.button('Compact older context', () => this.startContext('compact', { mode: 'extractive' }), 'primary-button'); compact.disabled = this.contextBusy() || snapshot.messages < 3;
+            const summarize = this.button('Summarize with model', () => this.startContext('compact', { mode: 'model' })); summarize.disabled = this.contextBusy() || snapshot.messages < 3;
+            actions.append(compact, summarize); this.content.append(actions, el('p', 'Model summaries use your configured model and usage budget.', 'context-footnote'));
+        }
+        const instructions = el('section', '', 'context-instructions'); const load = this.button('Inspect project instructions', () => this.startContext('instructions')); load.disabled = this.contextBusy();
+        instructions.append(el('h3', 'Applicable instructions'), el('p', 'Root instructions and directories touched by this conversation are loaded when a request is prepared.', 'empty-text'), load);
+        const sources = this.contextResult?.action === 'instructions' ? this.contextResult.result.instructions : snapshot?.latest?.instructions;
+        for (const source of sources ?? []) {
+            const card = el('details', '', 'info-card context-source'); card.append(el('summary', source.path.split(/[\\/]/).pop() ?? source.path), el('small', `${source.scope} · ${source.directory}`), el('code', source.sha256));
+            if (source.text !== undefined) { card.append(el('pre', source.text)); }
+            instructions.append(card);
+        }
+        this.content.append(instructions);
+        if (this.contextResult?.action === 'source' || this.contextResult?.action === 'artifact') {
+            const result = this.contextResult.result; const card = el('section', '', 'info-card context-evidence'); card.append(el('h3', this.contextResult.action === 'source' ? `Original message ${result.source.message}` : 'Original tool output'), el('pre', result.text));
+            if (this.contextResult.action === 'source' && !result.complete) {
+                const next = this.button('Read next page', () => this.startContext('source', { message: result.source.message, sha256: result.source.sha256, start_byte: result.next_byte })); next.disabled = this.contextBusy(); card.append(next);
+            }
+            this.content.append(card);
+        }
+        const recovery = el('details', '', 'settings-group'); recovery.append(el('summary', 'Context settings'));
+        const toggle = el('label', '', 'toggle-field'); const enabled = el('input'); enabled.type = 'checkbox'; enabled.checked = this.config.context?.auto_compact ?? true; enabled.setAttribute('aria-label', 'Automatically compact context'); toggle.append(enabled, el('span', 'Automatically compact context')); recovery.append(toggle);
+        const sourcesInput = el('textarea'); sourcesInput.rows = 2; sourcesInput.value = (this.config.context?.user_files ?? []).join('\n'); sourcesInput.setAttribute('aria-label', 'User instruction files'); const sourceLabel = el('label', 'User instruction files · absolute paths, one per line', 'field'); sourceLabel.append(sourcesInput); recovery.append(sourceLabel);
+        const save = this.button('Save context settings', async () => {
+            const next = structuredClone(this.config); next.context ??= {}; next.context.auto_compact = enabled.checked; next.context.user_files = sourcesInput.value.split('\n').map(path => path.trim()).filter(Boolean);
+            const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; await this.renderTab();
+        }); save.disabled = this.contextBusy(); recovery.append(save); this.content.append(recovery);
+    }
+    private hooksBusy(): boolean { return this.active || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.contextJob || this.contextStarting; }
     private async startHooks(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.hooksJob || this.hooksStarting) { throw new Error('Finish or cancel the current Hook operation.'); }
         this.hooksStarting = true;
@@ -572,6 +666,9 @@ export class ShenScopePanel {
         for (const [value, label] of [['openai_chat', 'OpenAI compatible'], ['openai_responses', 'OpenAI Responses'], ['anthropic', 'Anthropic'], ['gemini', 'Google Gemini'], ['ollama', 'Ollama']]) { const option = el('option', label); option.value = value; option.selected = this.config.provider.protocol === value; protocol.append(option); }
         const protocolLabel = el('label', 'Provider protocol', 'field'); protocolLabel.append(protocol); provider.append(protocolLabel);
         const name = this.field('Provider name', this.config.provider.name, provider); const endpoint = this.field('API endpoint', this.config.provider.endpoint, provider); const model = this.field('Model', this.config.provider.model, provider);
+        const modelLimits = el('details', '', 'advanced-settings'); modelLimits.append(el('summary', 'Model limits'));
+        const contextWindow = this.field('Context window · tokens', String(this.config.provider.capabilities?.context_window ?? 128000), modelLimits, 'number');
+        const maxOutput = this.field('Maximum output · tokens', String(this.config.provider.capabilities?.max_output ?? 8192), modelLimits, 'number'); provider.append(modelLimits);
         const credential = el('details', '', 'advanced-settings'); credential.append(el('summary', 'Credential options')); const keyVariable = this.field('Environment variable', this.config.provider.key_env, credential); provider.append(credential);
         const secretStatus = el('small', 'Checking credential…', 'credential-status');
         const refreshSecret = async () => { const result = await this.bridge.request('credentials/status', { variable: keyVariable.value }); secretStatus.textContent = result.configured ? 'API key configured · stored securely' : 'No API key configured'; };
@@ -585,10 +682,13 @@ export class ShenScopePanel {
         }
         const save = this.button('Save settings', async () => {
             const next = structuredClone(this.config); Object.assign(next.provider, { protocol: protocol.value, name: name.value, endpoint: endpoint.value, model: model.value, key_env: keyVariable.value });
+            const windowValue = Number(contextWindow.value); const outputValue = Number(maxOutput.value);
+            if (!Number.isSafeInteger(windowValue) || !Number.isSafeInteger(outputValue) || outputValue < 1 || outputValue >= windowValue) { throw new Error('Set a positive output limit below the context window.'); }
+            next.provider.capabilities ??= {}; Object.assign(next.provider.capabilities, { context_window: windowValue, max_output: outputValue });
             for (const [key, input] of limits) { const value = Number(input.value); if (!input.value.trim() || !Number.isFinite(value)) { throw new Error('Enter finite budget values.'); } next.budget[key] = value; }
             for (const [category, select] of permissions) { next.permissions[category] = select.value; }
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.configRevision = result.sha256; this.config = next; this.notice.hidden = true; this.setStatus('Settings saved');
-        }, 'primary-button', 'check'); form.append(provider, budget, permissionGroup, save); this.content.append(form); await refreshSecret();
+        }, 'primary-button', 'check'); save.disabled = this.contextBusy(); form.append(provider, budget, permissionGroup, save); this.content.append(form); await refreshSecret();
     }
     private addTool(payload: any): HTMLDetailsElement {
         let card = this.toolCards.get(payload.id); if (card) { return card; } this.welcome.hidden = true; card = el('details', '', 'tool-card'); const summary = el('summary'); const glyph = el('span', '', 'tool-glyph'); glyph.append(icon('tool'));
@@ -602,6 +702,15 @@ export class ShenScopePanel {
         if (this.disposed) { return; }
         if (method === 'transport/closed') { this.active = false; this.setStatus('Disconnected'); this.notice.textContent = params.message; this.notice.hidden = false; this.approvals.replaceChildren(); this.updateActions(); return; }
         if (method !== 'agent/event' || params.session_id !== this.sessionId) { return; } const payload = params.payload;
+        if (params.kind === 'context_job_completed' || params.kind === 'context_job_failed') {
+            this.completedContextJobs.add(payload.job_id); while (this.completedContextJobs.size > 64) { this.completedContextJobs.delete(this.completedContextJobs.values().next().value!); }
+            if (this.contextJob === payload.job_id) { this.contextJob = undefined; }
+            for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }
+            if (params.kind === 'context_job_completed') { this.contextResult = { action: payload.action, result: payload.result }; this.setStatus('Context operation complete'); }
+            else { this.notice.textContent = payload.error; this.notice.hidden = false; this.setStatus('Context operation stopped'); }
+            this.updateActions(); if (this.tab === 'Context') { void this.guard(() => this.renderTab()); } return;
+        }
+        if (params.kind === 'context_recovery') { this.setStatus('Reducing context after model input limit…'); return; }
         if (params.kind === 'hooks_job_completed' || params.kind === 'hooks_job_failed') {
             this.completedHooksJobs.add(payload.job_id); while (this.completedHooksJobs.size > 64) { this.completedHooksJobs.delete(this.completedHooksJobs.values().next().value!); }
             if (this.hooksJob === payload.job_id) { this.hooksJob = undefined; }
@@ -649,7 +758,7 @@ export class ShenScopePanel {
         } else if (params.kind === 'tool_started') { this.addTool(payload); }
         else if (params.kind === 'tool_completed') { const card = this.addTool(payload); card.classList.add(payload.ok ? 'succeeded' : 'failed'); card.querySelector('.tool-status')!.textContent = payload.ok ? 'Complete' : 'Failed'; card.querySelector('pre')!.textContent = JSON.stringify(payload, null, 2).slice(0, 32000); if (!payload.ok) { card.open = true; } }
         else if (params.kind === 'permission_request') {
-            const card = el('section', '', 'permission-card'); card.dataset.traceId = params.trace_id; const heading = el('div', '', 'permission-heading'); heading.append(icon('shield'), el('strong', 'Approval needed'));
+            const card = el('section', '', 'permission-card'); card.dataset.traceId = params.trace_id; card.dataset.requestId = payload.id; const heading = el('div', '', 'permission-heading'); heading.append(icon('shield'), el('strong', 'Approval needed'));
             card.append(heading, el('p', `${payload.tool} · ${payload.category}`, 'permission-action'), el('code', payload.target, 'permission-target'), el('p', payload.reason, 'permission-reason')); const actions = el('div', '', 'permission-actions');
             for (const [label, decision, style] of [['Allow once', 'once', 'primary-button'], ['Allow session', 'session', 'secondary-button'], ['Deny', 'deny', 'deny-button']]) {
                 actions.append(this.button(label, async () => {

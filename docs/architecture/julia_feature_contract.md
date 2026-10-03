@@ -9,7 +9,7 @@ for the current source tree.
 | Mechanisms | Required practical use | Current checkpoint |
 |---|---|---|
 | Multiple dispatch, traits, parametric types, union splitting | Typed provider/tool/backend/analyzer contracts; truthful capability negotiation | Provider/tool/backend/analyzer dispatch verified; compiler-semantic backend pending |
-| Task, Channel, ScopedValue, Threads | Streams, tools, index/compute/test workers share cancellation, permission and budget | Agent/tool/RPC workers and scoped context verified; durable tasks pending |
+| Task, Channel, ScopedValue, Threads | Streams, tools, index/compute/test workers share cancellation, permission and budget | Agent/tool/RPC workers, durable leased tasks and context jobs verified; mailbox and additional worker profiles pending |
 | Cmd, Process, pipelines, IO, sockets | Argument-vector processes with explicit ownership, bounded streams and cleanup | Process/tools and five model streams verified |
 | JIT, function barriers, specialization, immutable structs | Type-stable graph loops over resident data; measure first/warm time and allocations | Typed resident graph and raw nine-oracle timing/allocation evidence present; no performance advantage claimed |
 | Reflection, ambiguity detection, compiler introspection | Inspect actual contracts/methods, inferred/lowered code and unstable types | Contract/ambiguity inspection and fixed-target compiler diagnostics verified; independent extension examples pending |

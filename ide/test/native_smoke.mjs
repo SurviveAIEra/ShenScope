@@ -1,5 +1,5 @@
 import { createRequire } from 'node:module';
-import { spawn } from 'node:child_process';
+import { spawn, execFileSync } from 'node:child_process';
 import { createServer } from 'node:http';
 import { mkdtemp, writeFile, readFile, rm, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -14,6 +14,15 @@ async function waitEnabled(locator, timeout = 60_000) {
     }
     throw new Error('Expected operation controls to become enabled');
 }
+async function approve(panel, action, decision = 'Allow session') {
+    const pending = panel.locator('.permission-card').filter({ hasText: action }).first();
+    await pending.waitFor({ timeout: 60_000 });
+    const requestId = await pending.getAttribute('data-request-id');
+    assert.match(requestId, /^[0-9a-f-]+$/i);
+    const card = panel.locator(`.permission-card[data-request-id="${requestId}"]`);
+    await card.getByRole('button', { name: decision, exact: true }).click();
+    await card.waitFor({ state: 'detached' });
+}
 const { _electron } = require('playwright');
 const root = await mkdtemp(join(tmpdir(), 'shenscope-native-'));
 const checkout = '/workspace/references/vscode';
@@ -22,6 +31,8 @@ const vsix = process.argv.includes('--vsix');
 const mcpOnly = process.argv.includes('--mcp-only');
 const skillsOnly = process.argv.includes('--skills-only');
 const hooksOnly = process.argv.includes('--hooks-only');
+const contextOnly = process.argv.includes('--context-only');
+const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
 const userSkillRoot = skillsOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-skills-')) : undefined;
 const display = vsix ? ':102' : ':101';
@@ -30,6 +41,13 @@ const requests = [];
 const fixture = createServer(async (request, response) => {
     const chunks = []; for await (const chunk of request) { chunks.push(chunk); }
     const body = JSON.parse(Buffer.concat(chunks).toString()); requests.push(body);
+    if (contextOnly) {
+        const input = JSON.parse(body.messages.find(message => message.role === 'user').content);
+        const source = input.sources[0];
+        const summary = { version: 1, objective: 'CONTEXT GOAL SENTINEL 中文', constraints: 'Preserve the current restrictions', work: 'Seeded evidence requires real verification', next: 'Verify before action', citations: [{ message: source.message, sha256: source.sha256 }] };
+        response.writeHead(200, { 'Content-Type': 'text/event-stream' });
+        response.end(`data: ${JSON.stringify({ choices: [{ index: 0, delta: { content: JSON.stringify(summary) }, finish_reason: 'stop' }] })}\n\ndata: [DONE]\n\n`); return;
+    }
     const hasTool = body.messages.some(message => message.role === 'tool');
     const delta = hasTool ? { content: '**Native sidebar complete**\n\n```julia\nsum([1, 2, 3])\n```\n\n[Open file](native.txt:1)\n\n<script>window.compromised = true</script>' } : { tool_calls: [{ index: 0, id: 'native-write', type: 'function',
         function: { name: 'write', arguments: JSON.stringify({ path: 'native.txt', content: 'native Core verified' }) } }] };
@@ -41,6 +59,23 @@ await new Promise(resolve => fixture.listen(0, '127.0.0.1', resolve));
 const port = fixture.address().port;
 const config = join(root, 'config.toml');
 await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[permissions]\nnetwork = 'allow'\nedit = 'ask'\n${skillsOnly ? `[skills]\nproject_roots = ['.shenscope/skills']\nuser_roots = ['${userSkillRoot}']\n` : ''}`);
+if (contextOnly) {
+    await writeFile(config, (await readFile(config, 'utf8')) + `read = 'ask'\npersistence = 'ask'\n[context]\nuser_files = ['${join(userContextRoot, 'user.md')}']\n`);
+    await writeFile(join(userContextRoot, 'user.md'), 'CONTEXT USER INSTRUCTION');
+    await writeFile(join(root, 'AGENTS.md'), 'CONTEXT PROJECT INSTRUCTION');
+    await mkdir(join(root, 'src'), { recursive: true });
+    await writeFile(join(root, 'src', 'AGENTS.md'), 'SCOPED CONTEXT INSTRUCTION');
+    const seed = `using ShenScope
+ctx=RuntimeContext(ARGS[1];session_id="gui-context",state_dir=joinpath(ARGS[1],"state"))
+session=new_session(ctx;title="Context regression fixture")
+add_message!(session,Message(:user,"CONTEXT GOAL SENTINEL 中文 keep restrictions"))
+for index in 1:24
+    id="seed-"*string(index)
+    add_message!(session,Message(:assistant,"Seeded read";calls=[ToolCall(id,"read",Dict{String,Any}("path"=>"src/file.jl"))]))
+    add_message!(session,Message(:tool,canonical(Dict("ok"=>true,"value"=>repeat("fixture evidence 中文 ",100)));call_id=id))
+end`;
+    execFileSync('/workspace/toolchains/julia-1.11.7/bin/julia', ['--startup-file=no', `--project=${project}`, '-e', seed, root], { env: { ...process.env, JULIA_DEPOT_PATH: '/workspace/julia-depot' }, timeout: 120_000, stdio: 'pipe' });
+}
 if (hooksOnly) {
     await writeFile(config, (await readFile(config, 'utf8')) + `[hooks]\nproject_files = ['.shenscope/hooks.toml']\nuser_files = ['${join(userHookRoot, 'user-hooks.toml')}']\n`);
     await mkdir(join(root, '.shenscope'), { recursive: true });
@@ -61,6 +96,8 @@ await mkdir(join(root, 'user-data', 'User'), { recursive: true });
 await writeFile(join(root, 'user-data', 'User', 'settings.json'), JSON.stringify({
     'shenscope.juliaPath': '/workspace/toolchains/julia-1.11.7/bin/julia',
     'shenscope.corePath': project, 'shenscope.statePath': join(root, 'state'),
+    'shenscope.launcher.corePath': project, 'shenscope.launcher.statePath': join(root, 'state'),
+    'shenscope.launcher.juliaPath': '/workspace/toolchains/julia-1.11.7/bin/julia',
     'window.zoomLevel': 0, 'workbench.colorTheme': 'Default Dark Modern',
 }));
 let application;
@@ -95,10 +132,11 @@ try {
     }
     await panel.getByText('Ready · native-fixture', { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
+    await panel.locator('.permission-card').filter({ hasText: 'context.archive · persistence' }).getByRole('button', { name: 'Allow session', exact: true }).click({ timeout: 60_000 });
     await panel.getByText('Native sidebar complete', { exact: true }).waitFor({ timeout: 120_000 });
     await panel.locator('.status').filter({ hasText: 'Complete ·' }).waitFor();
     assert.equal(await readFile(join(root, 'native.txt'), 'utf8'), 'native Core verified');
@@ -198,6 +236,42 @@ try {
         await page.locator('.monaco-editor .view-lines').filter({ hasText: 'USER SOURCE SENTINEL' }).waitFor({ timeout: 60_000 });
         console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual project/user Skills discovery/activation/approval/deactivation/disable/reload and approved source files inside and outside the workspace`);
     }
+    if (contextOnly) {
+        await panel.getByRole('button', { name: 'History', exact: true }).click();
+        await panel.getByRole('button', { name: 'Context regression fixture', exact: true }).click();
+        await panel.locator('.composer-box').waitFor({ timeout: 60_000 });
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Context');
+        await panel.getByRole('button', { name: 'Load context status', exact: true }).click();
+        await approve(panel, 'context.status · read');
+        await panel.getByText('Complete conversation in view', { exact: true }).waitFor({ timeout: 60_000 });
+        await waitEnabled(panel.getByRole('button', { name: 'Inspect project instructions', exact: true }));
+        await panel.getByRole('button', { name: 'Inspect project instructions', exact: true }).click();
+        for (let index = 0; index < 3; index++) {
+            await approve(panel, 'context.instructions · read');
+        }
+        await panel.getByText('CONTEXT USER INSTRUCTION', { exact: true }).waitFor({ state: 'attached', timeout: 60_000 });
+        assert.equal(await panel.getByText('CONTEXT PROJECT INSTRUCTION', { exact: true }).count(), 1);
+        assert.equal(await panel.getByText('SCOPED CONTEXT INSTRUCTION', { exact: true }).count(), 1);
+        await waitEnabled(panel.getByRole('button', { name: 'Compact older context', exact: true }));
+        await panel.getByRole('button', { name: 'Compact older context', exact: true }).click();
+        await approve(panel, 'skills.catalog · read');
+        await approve(panel, 'context.compact · persistence');
+        await panel.getByText('Saved context checkpoint', { exact: true }).waitFor({ timeout: 60_000 });
+        await waitEnabled(panel.getByRole('button', { name: 'Read message 1', exact: true }));
+        await panel.getByRole('button', { name: 'Read message 1', exact: true }).click();
+        await panel.locator('.context-evidence pre').filter({ hasText: 'CONTEXT GOAL SENTINEL' }).waitFor({ timeout: 60_000 });
+        await waitEnabled(panel.getByRole('button', { name: 'Summarize with model', exact: true }));
+        await panel.getByRole('button', { name: 'Summarize with model', exact: true }).click();
+        await panel.locator('.context-checkpoint').filter({ hasText: 'Model summary' }).waitFor({ timeout: 60_000 });
+        assert.equal(requests.length, 1);
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-context.png`) });
+        await panel.getByText('Context settings', { exact: true }).click();
+        await panel.getByRole('checkbox', { name: 'Automatically compact context', exact: true }).uncheck();
+        await panel.getByRole('button', { name: 'Save context settings', exact: true }).click();
+        await panel.getByRole('button', { name: 'Load context status', exact: true }).waitFor({ timeout: 60_000 });
+        const text = await readFile(config, 'utf8'); assert.ok(text.includes('auto_compact = false'));
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual context status/permissions, scoped project and user instructions, extractive/model checkpoints, original-message evidence and settings`);
+    }
     if (hooksOnly) {
         await panel.getByRole('combobox', { name: 'More views' }).selectOption('Hooks');
         const projectCard = panel.locator('.hook-card').filter({ hasText: 'project-check' });
@@ -244,4 +318,5 @@ try {
     await application?.close(); xvfb.kill(); fixture.close(); await rm(root, { recursive: true, force: true });
     if (userSkillRoot) { await rm(userSkillRoot, { recursive: true, force: true }); }
     if (userHookRoot) { await rm(userHookRoot, { recursive: true, force: true }); }
+    if (userContextRoot) { await rm(userContextRoot, { recursive: true, force: true }); }
 }

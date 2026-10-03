@@ -13,7 +13,10 @@
       "codex-rs/rmcp-client/src/bounded_stdio_transport.rs",
       "codex-rs/rmcp-client/src/streamable_http_retry.rs",
       "codex-rs/ext/skills/src/loader/discovery.rs",
-      "codex-rs/hooks/src/engine/command_runner.rs"
+      "codex-rs/hooks/src/engine/command_runner.rs",
+      "codex-rs/core/src/compact.rs",
+      "codex-rs/core/src/compact_token_budget.rs",
+      "codex-rs/core/src/context_manager/history.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -35,7 +38,9 @@
       "packages/opencode/src/skill/discovery.ts",
       "packages/core/src/skill/discovery.ts",
       "packages/plugin/src/index.ts",
-      "packages/opencode/src/plugin/index.ts"
+      "packages/opencode/src/plugin/index.ts",
+      "packages/core/src/session/compaction.ts",
+      "packages/core/src/instruction-context.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -60,7 +65,10 @@
       "packages/mcp/mcp-client/src/tools.ts",
       "packages/api/session-controller/src/skill-catalog.ts",
       "packages/hooks/hook-protocol/src/runner.ts",
-      "packages/hooks/hook-protocol/src/types.ts"
+      "packages/hooks/hook-protocol/src/types.ts",
+      "packages/compaction/compaction/src/types.ts",
+      "packages/compaction/compaction/src/index.ts",
+      "packages/compaction/compaction-tool-result-pruner/src/index.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -84,7 +92,9 @@
       "packages/coding-agent/src/core/skills.ts",
       "packages/coding-agent/src/utils/frontmatter.ts",
       "packages/coding-agent/src/core/extensions/runner.ts",
-      "packages/coding-agent/src/core/extensions/types.ts"
+      "packages/coding-agent/src/core/extensions/types.ts",
+      "packages/coding-agent/src/core/compaction/compaction.ts",
+      "packages/coding-agent/src/core/compaction/utils.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -105,7 +115,10 @@
       "packages/agent-core-v2/src/agent/mcp/output.ts",
       "packages/agent-core-v2/src/features/skill/catalog/registry.ts",
       "packages/agent-core-v2/src/features/externalHooks/internal/types.ts",
-      "packages/agent-core-v2/src/features/externalHooks/agent/agentExternalHooksService.ts"
+      "packages/agent-core-v2/src/features/externalHooks/agent/agentExternalHooksService.ts",
+      "packages/agent-core-v2/src/human/compaction/controller.ts",
+      "packages/agent-core-v2/src/agent/fullCompaction/contextRecovery.ts",
+      "packages/agent-core-v2/src/workspace/workspaceInstructions/workspaceInstructionsService.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -123,7 +136,10 @@
       "apps/zcode-cli/packages/adapters/src/mcp/stdio-transport.ts",
       "packages/shared/src/skills-types.ts",
       "apps/zcode-cli/packages/core/src/hooks/configured-runner.ts",
-      "packages/shared/src/workspace-hook-discovery.ts"
+      "packages/shared/src/workspace-hook-discovery.ts",
+      "apps/zcode-cli/packages/core/src/compact/rounds.ts",
+      "apps/zcode-cli/packages/core/src/compact/policy.ts",
+      "apps/zcode-cli/packages/core/src/compact/microcompact.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -142,7 +158,10 @@
       "packages/core/src/tools/mcp-retry.ts",
       "packages/core/src/skills/skill-manager.ts",
       "packages/core/src/skills/types.ts",
-      "packages/core/src/hooks/types.ts"
+      "packages/core/src/hooks/types.ts",
+      "packages/core/src/services/compactionInputSlimming.ts",
+      "packages/core/src/services/chatCompressionService.ts",
+      "packages/core/src/config/rulesDiscovery.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

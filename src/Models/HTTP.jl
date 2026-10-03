@@ -1,4 +1,6 @@
-function http_error(status::Int)
+function http_error(status::Integer, body=nothing)
+    status in (400, 413, 422) && model_context_error(body) &&
+        return ShenScopeError(:context_overflow, "Model endpoint rejected the input context", false)
     code=status in (401,403) ? :authentication : status==429 ? :rate_limit :
         status in (408,504) ? :timeout : status>=500 ? :server : :request
     return ShenScopeError(code,"Model endpoint returned HTTP " * string(status),
@@ -23,18 +25,28 @@ end
 function stream_attempt(p::HTTPProvider,prepared::PreparedRequest,sink::Function,ctx::RuntimeContext)
     collector=StreamCollector(prepared.identity)
     decoder=SSEDecoder()
-    HTTP.open("POST",prepared.endpoint,prepared.headers;readtimeout=ceil(Int,p.config.timeout),
-            connect_timeout=ceil(Int,min(30,p.config.timeout)),retry=false,status_exception=false,redirect=false) do stream
+    remaining = lock(ctx.budget.mutex) do
+        check_budget(ctx.budget)
+        ctx.budget.limits.max_seconds - (time_ns()-ctx.budget.started_ns)/1e9
+    end
+    remaining > 0 || throw(ShenScopeError(:budget, "Model wall-clock budget exhausted"))
+    timeout = min(p.config.timeout, remaining)
+    deadline = time() + timeout
+    timeout_code = remaining <= p.config.timeout ? :budget : :timeout
+    HTTP.open("POST",prepared.endpoint,prepared.headers;readtimeout=ceil(Int,timeout),
+            connect_timeout=ceil(Int,min(30,timeout)),retry=false,status_exception=false,redirect=false) do stream
         watcher=@async begin
-            while isopen(stream) && !iscancelled(ctx.cancellation)
+            while isopen(stream) && !iscancelled(ctx.cancellation) && time() < deadline
                 sleep(0.025)
             end
-            iscancelled(ctx.cancellation) && try close(stream) catch end
+            (iscancelled(ctx.cancellation) || time() >= deadline) && try close(stream) catch end
         end
         try
+            check_cancelled(ctx.cancellation)
+            lock(ctx.budget.mutex) do; check_budget(ctx.budget); end
             write(stream,canonical(prepared.body));HTTP.closewrite(stream)
             result=HTTP.startread(stream)
-            200<=result.status<300 || throw(http_error(result.status))
+            200<=result.status<300 || throw(http_error(result.status, bounded_model_error_body(stream)))
             if prepared.protocol==:ollama
                 while !eof(stream)
                     check_cancelled(ctx.cancellation)
@@ -69,6 +81,8 @@ function stream_attempt(p::HTTPProvider,prepared::PreparedRequest,sink::Function
         finally
             try close(stream) catch end
             wait(watcher)
+            time() >= deadline && throw(ShenScopeError(timeout_code, timeout_code == :budget ?
+                "Model wall-clock budget exhausted" : "Model request timed out", timeout_code == :timeout))
         end
     end
     check_cancelled(ctx.cancellation)
@@ -78,11 +92,12 @@ end
 function stream_chat(p::HTTPProvider,request::ModelRequest,sink::Function,ctx::RuntimeContext)
     prepared=prepare_request(p,request)
     authorize!(ctx,:network,provider_name(p),string(HTTP.URI(prepared.endpoint).host);reason="Model API request")
+    lock(ctx.budget.mutex) do; check_budget(ctx.budget); end
     # The prepared headers/body remain fixed across attempts. No retry is hidden
     # once text, usage or tools reached the caller.
     delivered=Ref(false)
     guarded=(kind,payload)->begin
-        kind in (:text_delta,:usage,:tool_call) && (delivered[]=true)
+        kind in (:text_delta,:usage,:tool_call,:model_progress) && (delivered[]=true)
         sink(kind,payload)
     end
     for attempt in 0:p.config.retries
@@ -91,6 +106,7 @@ function stream_chat(p::HTTPProvider,request::ModelRequest,sink::Function,ctx::R
             return stream_attempt(p,prepared,guarded,ctx)
         catch e
             check_cancelled(ctx.cancellation)
+            lock(ctx.budget.mutex) do; check_budget(ctx.budget); end
             cause=e
             while cause isa HTTP.Exceptions.RequestError
                 cause=cause.error

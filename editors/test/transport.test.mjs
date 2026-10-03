@@ -13,7 +13,9 @@ async function until(predicate, timeout = 30_000) {
     }
 }
 
-test('Node editor transport talks to real Julia Core with scoped approvals and Unicode', { timeout: 120_000 }, async () => {
+test('Node editor transport talks to real Julia Core with scoped approvals and Unicode', { timeout: 240_000 }, async t => {
+    const started = Date.now();
+    const milestone = label => t.diagnostic(`${label}: ${Date.now() - started} ms`);
     const root = await mkdtemp(join(tmpdir(), 'shenscope-editor-'));
     const project = resolve('..');
     const script = join(root, 'script.json');
@@ -29,6 +31,7 @@ test('Node editor transport talks to real Julia Core with scoped approvals and U
     client.onNotification(event => events.push(event));
     try {
         const hello = await client.start();
+        milestone('Core initialized');
         assert.equal(hello.protocol_version, '1.0');
         const session = await client.request('sessions/create', { title: '中文对话' });
         await client.request('agent/start', { session_id: session.id, prompt: '写入文件' });
@@ -36,11 +39,25 @@ test('Node editor transport talks to real Julia Core with scoped approvals and U
         const approval = events.find(event => event.params?.kind === 'permission_request').params;
         await assert.rejects(client.request('permissions/respond', { session_id: 'foreign', request_id: approval.payload.id, decision: 'once' }), /another session/);
         await client.request('permissions/respond', { session_id: session.id, request_id: approval.payload.id, decision: 'once' });
+        milestone('Edit approved');
+        await until(() => events.some(event => event.params?.kind === 'permission_request' && event.params.payload.tool === 'context.archive'));
+        const archive = events.find(event => event.params?.kind === 'permission_request' && event.params.payload.tool === 'context.archive').params;
+        assert.equal(archive.payload.category, 'persistence');
+        assert.equal(archive.payload.target, `session:${session.id}`);
+        await assert.rejects(client.request('permissions/respond', { session_id: 'foreign', request_id: archive.payload.id, decision: 'session' }), /another session/);
+        await client.request('permissions/respond', { session_id: session.id, request_id: archive.payload.id, decision: 'session' });
+        milestone('Archive approved');
         await until(() => events.some(event => event.params?.kind === 'session_completed'));
         assert.equal(await readFile(join(root, '中文.txt'), 'utf8'), 'permission verified');
         const saved = await client.request('sessions/get', { session_id: session.id });
         assert.equal(saved.status, 'complete');
         assert.equal(saved.messages.at(-1).text, '完成');
+        const tool = saved.messages.find(message => message.role === 'tool');
+        const hash = JSON.parse(tool.text).artifact_sha256;
+        assert.match(hash, /^[0-9a-f]{64}$/);
+        const artifact = JSON.parse(await readFile(join(root, 'state', 'outputs', session.id, `${hash}.json`), 'utf8'));
+        assert.equal(artifact.ok, true);
+        milestone('Conversation and artifact verified');
         await client.request('credentials/set', { variable: 'FIXTURE_EDITOR_KEY', value: 'fixture-editor-sensitive' });
         assert.equal((await client.request('credentials/status', { variable: 'FIXTURE_EDITOR_KEY' })).configured, true);
         assert.ok(!JSON.stringify(await client.request('config/get')).includes('fixture-editor-sensitive'));

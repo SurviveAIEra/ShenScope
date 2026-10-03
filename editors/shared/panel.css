@@ -157,3 +157,17 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .skill-card pre, .skill-result pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 260px; overflow: auto; font-size: 11px; }
 
 .hook-point{text-transform:capitalize;font-weight:600}.hook-source{display:block;overflow-wrap:anywhere;color:var(--vscode-descriptionForeground)}.hook-recent{display:grid;gap:4px;padding:8px 0}.hook-recent small{color:var(--vscode-descriptionForeground)}.hook-error{color:var(--vscode-errorForeground)}.hook-card pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px}
+.shenscope-panel .context-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 16px 0; }
+.shenscope-panel .context-metrics > div { padding: 10px; border-radius: 8px; background: var(--raised); }
+.shenscope-panel .context-metrics strong { display: block; font-size: 18px; font-weight: 600; }
+.shenscope-panel .context-metrics small, .shenscope-panel .context-footnote, .shenscope-panel .context-usage small { color: var(--muted); font-size: 10px; }
+.shenscope-panel .context-usage { display: grid; gap: 5px; margin-bottom: 16px; }
+.shenscope-panel .context-usage progress { width: 100%; height: 5px; accent-color: var(--accent); }
+.shenscope-panel .context-checkpoint code, .shenscope-panel .context-source code { display: block; font-size: 10px; overflow-wrap: anywhere; }
+.shenscope-panel .context-references { display: flex; flex-wrap: wrap; gap: 4px; margin: 9px 0; }
+.shenscope-panel .context-references button { font-size: 10px; padding: 4px 6px; }
+.shenscope-panel .context-actions { margin: 12px 0 5px; }
+.shenscope-panel .context-instructions { margin: 24px 0 16px; }
+.shenscope-panel .context-instructions > h3 { font-size: 13px; margin-bottom: 7px; }
+.shenscope-panel .context-instructions > button { margin-top: 8px; }
+.shenscope-panel .context-source pre, .shenscope-panel .context-evidence pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 260px; overflow: auto; font-size: 11px; }

@@ -120,3 +120,26 @@ workflow effect barriers and lease recovery prevent implicit replay. Tests cover
 actual processes, permission/source races, agent context, worker effects and both
 client controls. Host commands still require future OS isolation; no Windows or
 live-model result is inferred from Linux fixtures.
+
+## Context source synthesis
+
+The seven primary agents were reviewed again for request preparation, compaction
+and evidence recovery. The paths are pinned in the lockfile. This extends partial
+reviews; it does not establish complete upstream coverage or reuse their code.
+
+| Source | Behavior examined | Independent Julia behavior | Remaining differences |
+|---|---|---|---|
+| Codex `compact.rs`, `compact_token_budget.rs`, `context_manager/history.rs` | Request-wide capacity, older history and bounded compaction decisions | Provider-native wire accounting, output reservation, balanced tool rounds, strictly smaller recovery requests | Exact tokenizer, upstream compaction hooks and broad multimodal history policies |
+| OpenCode `session/compaction.ts`, `instruction-context.ts` | Retained context, summary instructions and scoped project instruction refresh | Immutable transcript projections, explicit scoped instruction sources and optional no-tool summaries | Watching, conditional instruction matching, richer resume prompts and plugin transforms |
+| DeepSeek `compaction/src/types.ts`, `index.ts`, tool-result pruner | Separate compaction/pruning provenance, complete ranges and shadowed outputs | Checkpoint prefix/source hashes, read-back evidence and deterministic tool previews | Durable pruning event dialects, richer working sets and selection policies |
+| Pi `core/compaction/compaction.ts`, `utils.ts` | Recent context, file-operation awareness, usage and compaction boundaries | Whole-group selection, current user goal retention, source metadata and actual request accounting | Full branch UI, custom summary hooks and package extension behaviors |
+| Kimi compaction controller, context recovery and workspace instruction service | Explicit reasons/attempt state, retained evidence pointers and instruction reload | Bounded classified overflow recovery, attempt accounting and digest-checked source/artifact reads | Broader journal recovery workflows, multimodal and watched instructions |
+| ZCode `compact/rounds.ts`, `policy.ts`, `microcompact.ts` | Round boundaries, output reserve and request-density controls | Tool-pair validation, pinned incomplete rounds and conservative fixed-input failure | Refill density and no-progress circuit policies |
+| Qwen input slimming, chat compression and rule discovery | Media/metadata preservation, language-sensitive capacity and conditional sources | Native protocol measurement, Chinese/emoji estimation and clearly scoped instruction text | Media slimming, exact token counting and conditional rule/glob discovery |
+
+Core tests verify original journal retention, tampered/foreign evidence rejection,
+post-approval checks, structured summary failures and usage charging, five actual
+HTTP protocols, no recovery after partial reasoning/tool output and UTF-8 process
+events. Editor flows use Core ownership and permissions. Source identity is
+verified; model summary prose is not claimed to be independently proven.
+See `docs/core/context.md` for limits and executable commands.

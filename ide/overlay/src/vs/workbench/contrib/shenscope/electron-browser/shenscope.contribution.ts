@@ -59,7 +59,7 @@ class ShenScopeViewPane extends ViewPane {
             if (!root || root.scheme !== 'file') { throw new Error('Open a local workspace folder'); }
             starting = (async () => {
                 hello = await channel.call('start', { root: root.fsPath,
-                    state: URI.joinPath(this.environment.userRoamingDataHome, 'shenscope').fsPath,
+                    state: this.configurationService.getValue<string>('shenscope.launcher.statePath') || URI.joinPath(this.environment.userRoamingDataHome, 'shenscope').fsPath,
                     project: this.configurationService.getValue<string>('shenscope.launcher.corePath'),
                     executable: this.configurationService.getValue<string>('shenscope.launcher.juliaPath') });
                 const config: any = await channel.call('request', { method: 'config/get', params: {} });
@@ -128,6 +128,7 @@ Registry.as<IConfigurationRegistry>(ConfigExtensions.Configuration).registerConf
     properties: {
         'shenscope.launcher.juliaPath': { type: 'string', default: '', description: 'Julia executable; empty uses the bundled runtime or PATH.' },
         'shenscope.launcher.corePath': { type: 'string', default: '', description: 'Core project; empty uses the bundled source.' },
+        'shenscope.launcher.statePath': { type: 'string', default: '', description: 'Core state directory; empty uses the IDE user-data directory.' },
     }
 });
 Registry.as<IConfigurationRegistry>(ConfigExtensions.Configuration).registerDefaultConfigurations([{

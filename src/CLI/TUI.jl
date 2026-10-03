@@ -44,6 +44,12 @@ function terminal_event!(state::TerminalState,event::AgentEvent)
         state.status=payload["message"];state.active=false;state.dirty=true
     elseif kind==:file_changed
         terminal_push!(state,"Changed: "*get(payload,"path",""))
+    elseif kind==:context_prepared
+        state.status="Context: "*string(payload["measure"]["estimated_tokens"])*" estimated input tokens";state.dirty=true
+    elseif kind==:context_compacted
+        terminal_push!(state,"Context checkpoint saved; original messages remain available.")
+    elseif kind==:context_recovery
+        state.status="Reducing context after model input limit";state.dirty=true
     end
 end
 
@@ -204,6 +210,7 @@ function run_tui(provider::AbstractModelProvider,ctx::RuntimeContext,session::Se
         for tool in tools;tool isa MCPControlTool && cleanup_mcp!(tool.manager);end
         for tool in tools;tool isa SkillsTool && cleanup_skills!(tool.manager);end
         for tool in tools;tool isa HooksTool && cleanup_hooks!(tool.manager);end
+        for tool in tools;tool isa ContextTool && cleanup_context!(tool.manager);end
         REPL.Terminals.raw!(terminal,false)
         write(output,"\e[?25h\e[?1049l");flush(output)
         ctx.sink=old_sink;ctx.approve=old_approval

@@ -1,0 +1,682 @@
+{
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "checkpoint": 12,
+  "recorded_at": "2026-10-03T22:13:48.513012+00:00",
+  "platform": "Linux, Julia 1.11.7, Electron 43.7.5",
+  "verification": {
+    "affected_core": {
+      "passing_assertions": 1239,
+      "testsets": [
+        {
+          "name": "Cancellation tree and dynamic context",
+          "passed": 7,
+          "seconds": 1.0
+        },
+        {
+          "name": "Concurrent budget reservation and accounting",
+          "passed": 9,
+          "seconds": 1.3
+        },
+        {
+          "name": "Permission decisions and path containment",
+          "passed": 7,
+          "seconds": 0.6
+        },
+        {
+          "name": "Durable journal, torn tails and revision conflicts",
+          "passed": 6,
+          "seconds": 2.7
+        },
+        {
+          "name": "Session reconstruction and unknown side effects",
+          "passed": 11,
+          "seconds": 4.7
+        },
+        {
+          "name": "Atomic replacement remains complete to concurrent readers",
+          "passed": 3,
+          "seconds": 0.4
+        },
+        {
+          "name": "Oversized unterminated journal input is bounded",
+          "passed": 2,
+          "seconds": 0.1
+        },
+        {
+          "name": "Configuration profiles, credential rejection and CAS",
+          "passed": 10,
+          "seconds": 5.5
+        },
+        {
+          "name": "Canonical numeric journal round trips",
+          "passed": 3,
+          "seconds": 1.4
+        },
+        {
+          "name": "Scoped memory, lexical retrieval and durable versions",
+          "passed": 25,
+          "seconds": 12.2
+        },
+        {
+          "name": "Memory import validates every item before atomic commit",
+          "passed": 7,
+          "seconds": 1.6
+        },
+        {
+          "name": "Julia interface contracts, ambiguity evidence and world-age boundary",
+          "passed": 19,
+          "seconds": 3.1
+        },
+        {
+          "name": "Compiler diagnostics use listed targets, bounded output and independent processes",
+          "passed": 23,
+          "seconds": 29.9
+        },
+        {
+          "name": "Task definition validation and independent graph checks",
+          "passed": 15,
+          "seconds": 3.5
+        },
+        {
+          "name": "Claims, dependency release, priority, fences and detached views",
+          "passed": 13,
+          "seconds": 7.1
+        },
+        {
+          "name": "Safe retries, uncertain effects and explicit reconciliation",
+          "passed": 16,
+          "seconds": 2.3
+        },
+        {
+          "name": "Exclusive effects, cancellation propagation and read-only recovery",
+          "passed": 16,
+          "seconds": 1.3
+        },
+        {
+          "name": "Large result artifacts, digest verification and descriptor collisions",
+          "passed": 6,
+          "seconds": 0.6
+        },
+        {
+          "name": "Bounded JSON-RPC framing and UTF-8 lengths",
+          "passed": 8,
+          "seconds": 0.7
+        },
+        {
+          "name": "Protocol version, config ownership, secrets and session commands",
+          "passed": 15,
+          "seconds": 15.1
+        },
+        {
+          "name": "Agent protocol permission ownership and cancellation",
+          "passed": 13,
+          "seconds": 2.6
+        },
+        {
+          "name": "Asynchronous task protocol, approvals and session ownership",
+          "passed": 13,
+          "seconds": 5.2
+        },
+        {
+          "name": "Task jobs block config replacement and drain owned processes",
+          "passed": 5,
+          "seconds": 1.5
+        },
+        {
+          "name": "MCP bounded schema assertions and references",
+          "passed": 40,
+          "seconds": 20.0
+        },
+        {
+          "name": "MCP framing, content and configuration bounds",
+          "passed": 25,
+          "seconds": 1.4
+        },
+        {
+          "name": "MCP async protocol keeps approvals, jobs and connections session scoped",
+          "passed": 33,
+          "seconds": 5.8
+        },
+        {
+          "name": "Skills YAML metadata is bounded, typed and independently validated",
+          "passed": 21,
+          "seconds": 3.6
+        },
+        {
+          "name": "Skills discovery preserves sources, precedence, diagnostics and lazy bodies",
+          "passed": 12,
+          "seconds": 1.3
+        },
+        {
+          "name": "Skills activation, resource confinement, replay and permission boundaries",
+          "passed": 22,
+          "seconds": 2.7
+        },
+        {
+          "name": "Skills source revisions are rechecked after approval",
+          "passed": 3,
+          "seconds": 0.1
+        },
+        {
+          "name": "Skills RPC scopes approvals, durable activation and source-opening proof",
+          "passed": 23,
+          "seconds": 2.7
+        },
+        {
+          "name": "Skills job cancellation drains approval and retains peer policy",
+          "passed": 6,
+          "seconds": 0.5
+        },
+        {
+          "name": "Hooks configuration has explicit points, bounds and no permission grants",
+          "passed": 29,
+          "seconds": 0.6
+        },
+        {
+          "name": "Hook source identity, read scope, ambiguity and explicit reload",
+          "passed": 14,
+          "seconds": 2.0
+        },
+        {
+          "name": "Context settings and exact model envelopes",
+          "passed": 50,
+          "seconds": 2.1
+        },
+        {
+          "name": "Instruction scope discovery, permissions and source revisions",
+          "passed": 13,
+          "seconds": 0.5
+        },
+        {
+          "name": "Balanced tool groups, no reasoning split and Unicode excerpts",
+          "passed": 24,
+          "seconds": 0.2
+        },
+        {
+          "name": "Durable context projections preserve transcripts and provenance",
+          "passed": 17,
+          "seconds": 1.7
+        },
+        {
+          "name": "Compaction failure is atomic and fixed context is retained",
+          "passed": 7,
+          "seconds": 0.5
+        },
+        {
+          "name": "Original tool artifacts are scoped, permissioned and digest checked",
+          "passed": 9,
+          "seconds": 0.6
+        },
+        {
+          "name": "Optional model summaries bind citations and shared budget",
+          "passed": 10,
+          "seconds": 1.5
+        },
+        {
+          "name": "Incremental process UTF-8 boundaries and malformed byte recovery",
+          "passed": 128,
+          "seconds": 0.0
+        },
+        {
+          "name": "Actual fragmented stdout and stderr match retained process output",
+          "passed": 7,
+          "seconds": 0.7
+        },
+        {
+          "name": "Terminal rendering sanitizes control sequences and handles wide text",
+          "passed": 16,
+          "seconds": 0.5
+        },
+        {
+          "name": "SSE Unicode fragmentation, multiline and limits",
+          "passed": 3,
+          "seconds": 0.4
+        },
+        {
+          "name": "OpenAI-compatible real HTTP tool stream and native replay",
+          "passed": 7,
+          "seconds": 7.8
+        },
+        {
+          "name": "Anthropic signature and tool continuation",
+          "passed": 5,
+          "seconds": 2.9
+        },
+        {
+          "name": "OpenAI Responses encrypted reasoning and call stream",
+          "passed": 3,
+          "seconds": 2.3
+        },
+        {
+          "name": "Gemini and Ollama native protocols",
+          "passed": 5,
+          "seconds": 5.6
+        },
+        {
+          "name": "Retry before delivery, no replay after delivery, malformed calls",
+          "passed": 5,
+          "seconds": 8.0
+        },
+        {
+          "name": "HTTP context overflow recovers before delivery without replay",
+          "passed": 13,
+          "seconds": 4.1
+        },
+        {
+          "name": "Model network approval respects the remaining shared wall-clock budget",
+          "passed": 7,
+          "seconds": 3.0
+        },
+        {
+          "name": "Reasoning and partial tool arguments fence model retry and recovery",
+          "passed": 21,
+          "seconds": 1.5
+        },
+        {
+          "name": "Completed stream calls remain undispatched when a later call is malformed",
+          "passed": 8,
+          "seconds": 0.6
+        },
+        {
+          "name": "Provider usage survives failed context attempts and disabled recovery",
+          "passed": 14,
+          "seconds": 0.8
+        },
+        {
+          "name": "Context RPC ownership, permissions, asynchronous cancellation and CAS",
+          "passed": 16,
+          "seconds": 1.5
+        },
+        {
+          "name": "Manual context checkpoints are shared by RPC and subsequent agent runs",
+          "passed": 8,
+          "seconds": 0.9
+        },
+        {
+          "name": "Workspace tools conflict guard, schema and transactional validation",
+          "passed": 9,
+          "seconds": 1.3
+        },
+        {
+          "name": "Process execution, bounded logs, ownership, input and timeout",
+          "passed": 12,
+          "seconds": 0.9
+        },
+        {
+          "name": "Agent repairs a failing Python test with real tool execution",
+          "passed": 10,
+          "seconds": 1.2
+        },
+        {
+          "name": "Actual worker DAG binds verified dependency results",
+          "passed": 5,
+          "seconds": 0.4
+        },
+        {
+          "name": "Test processes, timeout uncertainty and separate model sessions",
+          "passed": 16,
+          "seconds": 1.8
+        },
+        {
+          "name": "Two real Julia processes cannot claim the same task",
+          "passed": 3,
+          "seconds": 13.1
+        },
+        {
+          "name": "Agent and headless CLI invoke the same durable task tool",
+          "passed": 6,
+          "seconds": 4.7
+        },
+        {
+          "name": "Actual MCP stdio lifecycle and discovery",
+          "passed": 34,
+          "seconds": 4.6
+        },
+        {
+          "name": "Actual Streamable HTTP JSON, SSE and session ownership",
+          "passed": 10,
+          "seconds": 6.2
+        },
+        {
+          "name": "HTTP MCP does not replay failed POST or follow redirects",
+          "passed": 24,
+          "seconds": 1.6
+        },
+        {
+          "name": "SSE HTTP response ends a request while the server keeps the stream open",
+          "passed": 3,
+          "seconds": 1.6
+        },
+        {
+          "name": "Actual HTTP GET notification resumption keeps the same session",
+          "passed": 7,
+          "seconds": 0.8
+        },
+        {
+          "name": "MCP rejects invalid servers and preserves dirty catalogs",
+          "passed": 26,
+          "seconds": 0.8
+        },
+        {
+          "name": "MCP environment, permission, ownership and error isolation",
+          "passed": 11,
+          "seconds": 0.7
+        },
+        {
+          "name": "MCP timeouts, cancellation, fencing and no tool replay",
+          "passed": 17,
+          "seconds": 1.5
+        },
+        {
+          "name": "MCP flapping connection exhausts one bounded outage",
+          "passed": 4,
+          "seconds": 0.9
+        },
+        {
+          "name": "MCP parent cancellation closes its owned process without cancelling peers",
+          "passed": 4,
+          "seconds": 0.3
+        },
+        {
+          "name": "Agent advertises discovered MCP tools on the next request",
+          "passed": 12,
+          "seconds": 1.9
+        },
+        {
+          "name": "MCP CLI executes the same permissioned Core and closes its process",
+          "passed": 6,
+          "seconds": 1.0
+        },
+        {
+          "name": "Actual agent lazily activates a Skill and narrows its next declarations",
+          "passed": 9,
+          "seconds": 0.8
+        },
+        {
+          "name": "Headless Skills CLI reads shared references and preserves session state",
+          "passed": 6,
+          "seconds": 0.1
+        },
+        {
+          "name": "Real Hook commands have bounded metadata, private output and narrowed environment",
+          "passed": 14,
+          "seconds": 1.2
+        },
+        {
+          "name": "Hook approval rechecks source identity and current policy before launch",
+          "passed": 8,
+          "seconds": 0.5
+        },
+        {
+          "name": "Hook timeouts, cancellation, malformed output and bounded history",
+          "passed": 14,
+          "seconds": 1.0
+        },
+        {
+          "name": "Actual agent applies Hook context and lifecycle observations without exposing chat",
+          "passed": 10,
+          "seconds": 1.2
+        },
+        {
+          "name": "Before-effect Hook denial prevents writes; post-effect failure preserves receipts",
+          "passed": 11,
+          "seconds": 0.6
+        },
+        {
+          "name": "Owned processes drain descendants and bound blocked stdin",
+          "passed": 8,
+          "seconds": 1.8
+        },
+        {
+          "name": "Hook RPC scopes command approval, cancellation and source-opening proof",
+          "passed": 29,
+          "seconds": 2.6
+        },
+        {
+          "name": "Actual durable workers persist Hook effects and serialize unknown command checks",
+          "passed": 12,
+          "seconds": 1.2
+        },
+        {
+          "name": "Lost leases cannot silently replay declared Hook effects or accept foreign markers",
+          "passed": 8,
+          "seconds": 0.5
+        },
+        {
+          "name": "Hooks CLI uses the same commands, permissions and failure status",
+          "passed": 6,
+          "seconds": 0.9
+        },
+        {
+          "name": "Headless CLI, offline task and session lifecycle",
+          "passed": 9,
+          "seconds": 1.0
+        }
+      ]
+    },
+    "focused_context": {
+      "passing_assertions": 380,
+      "testsets": [
+        {
+          "name": "Context settings and exact model envelopes",
+          "passed": 50,
+          "seconds": 18.6
+        },
+        {
+          "name": "Instruction scope discovery, permissions and source revisions",
+          "passed": 13,
+          "seconds": 3.7
+        },
+        {
+          "name": "Balanced tool groups, no reasoning split and Unicode excerpts",
+          "passed": 24,
+          "seconds": 1.0
+        },
+        {
+          "name": "Durable context projections preserve transcripts and provenance",
+          "passed": 17,
+          "seconds": 13.8
+        },
+        {
+          "name": "Compaction failure is atomic and fixed context is retained",
+          "passed": 7,
+          "seconds": 0.9
+        },
+        {
+          "name": "Original tool artifacts are scoped, permissioned and digest checked",
+          "passed": 9,
+          "seconds": 1.9
+        },
+        {
+          "name": "Optional model summaries bind citations and shared budget",
+          "passed": 10,
+          "seconds": 6.0
+        },
+        {
+          "name": "SSE Unicode fragmentation, multiline and limits",
+          "passed": 3,
+          "seconds": 0.7
+        },
+        {
+          "name": "OpenAI-compatible real HTTP tool stream and native replay",
+          "passed": 7,
+          "seconds": 13.7
+        },
+        {
+          "name": "Anthropic signature and tool continuation",
+          "passed": 5,
+          "seconds": 3.3
+        },
+        {
+          "name": "OpenAI Responses encrypted reasoning and call stream",
+          "passed": 3,
+          "seconds": 2.2
+        },
+        {
+          "name": "Gemini and Ollama native protocols",
+          "passed": 5,
+          "seconds": 4.7
+        },
+        {
+          "name": "Retry before delivery, no replay after delivery, malformed calls",
+          "passed": 5,
+          "seconds": 6.8
+        },
+        {
+          "name": "HTTP context overflow recovers before delivery without replay",
+          "passed": 13,
+          "seconds": 19.5
+        },
+        {
+          "name": "Model network approval respects the remaining shared wall-clock budget",
+          "passed": 7,
+          "seconds": 3.2
+        },
+        {
+          "name": "Reasoning and partial tool arguments fence model retry and recovery",
+          "passed": 21,
+          "seconds": 1.8
+        },
+        {
+          "name": "Completed stream calls remain undispatched when a later call is malformed",
+          "passed": 8,
+          "seconds": 1.4
+        },
+        {
+          "name": "Provider usage survives failed context attempts and disabled recovery",
+          "passed": 14,
+          "seconds": 1.0
+        },
+        {
+          "name": "Context RPC ownership, permissions, asynchronous cancellation and CAS",
+          "passed": 16,
+          "seconds": 16.8
+        },
+        {
+          "name": "Manual context checkpoints are shared by RPC and subsequent agent runs",
+          "passed": 8,
+          "seconds": 4.1
+        },
+        {
+          "name": "Incremental process UTF-8 boundaries and malformed byte recovery",
+          "passed": 128,
+          "seconds": 0.0
+        },
+        {
+          "name": "Actual fragmented stdout and stderr match retained process output",
+          "passed": 7,
+          "seconds": 1.3
+        }
+      ]
+    },
+    "editor_transport": {
+      "passed": 3,
+      "failed": 0,
+      "cancelled": 0,
+      "actual_julia_core": true,
+      "elapsed_seconds": 65.06,
+      "core_initialize_seconds": 49.057
+    },
+    "editor_typecheck": "passed",
+    "editor_build": "passed",
+    "full_workbench_typecheck": "passed",
+    "native_context_gui": "passed with extensions disabled",
+    "standalone_vsix_webview_context_gui": "passed",
+    "commands": [
+      "JULIA_DEPOT_PATH=/workspace/julia-depot julia --startup-file=no --threads=4 --project=. test/runtests.jl",
+      "npm run check && npm run build (editors)",
+      "npm test (editors)",
+      "npm run typecheck-client (pinned Code-OSS)",
+      "node ide/test/native_smoke.mjs --context-only",
+      "node ide/test/native_smoke.mjs --context-only --vsix",
+      "python3 scripts/package_vsix.py",
+      "python3 scripts/core_size.py"
+    ],
+    "archive_payloads": {
+      "approved": true,
+      "denied_optional_archive_does_not_replay_edit": true,
+      "foreign_approval_rejected": true
+    },
+    "sources_sha256": "a4f9e443c8af5ff3db9021f494dacc4060588dfe9afe8ce3f2665ef093621e2c",
+    "vsix": {
+      "bytes": 242075,
+      "sha256": "9bd4f2f6ff198f1c1ab6695a916900773a1e28cfcc7b81f6c506fc0e51e07a32",
+      "core_and_manifest_files_byte_verified": 96,
+      "distribution": "Core source included; installed Julia and dependency depot still required"
+    }
+  },
+  "footprint": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 88,
+      "blank": 540,
+      "comment": 77,
+      "code": 10170
+    },
+    "cli_tui": {
+      "nFiles": 6,
+      "blank": 14,
+      "comment": 6,
+      "code": 582
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 239830,
+    "line_target_percent": 4.068,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "total_gib": 31.451,
+    "free_gib": 17.699,
+    "large_build_allowed": true,
+    "safe_scratch_paths": [
+      "/workspace/ShenScope/.local/tmp",
+      "/workspace/ShenScope/.local/build-scratch"
+    ]
+  },
+  "reference_review": {
+    "primary_agents": [
+      "Codex",
+      "OpenCode",
+      "DeepSeek Harness",
+      "Pi",
+      "Kimi Code",
+      "ZCode",
+      "Qwen Code"
+    ],
+    "new_inspected_context_paths": 19,
+    "review_status": "partial_source_reviews",
+    "agent_code_reuse": false
+  },
+  "negative_results_and_fixes": [
+    "Actual HTTP response status is Int16; status classification now accepts Integer.",
+    "RPC rejects foreign conversation source access using ShenScopeError, not a framing RPCFault; the ownership expectation was corrected.",
+    "Cold JIT exceeded a subsecond fixture wall budget. The I/O deadline fixture warms the identical request path; no hard CPU/JIT preemption is claimed.",
+    "Native GUI initially used its own state directory and could not find the seeded conversation. Native launcher statePath is now configurable.",
+    "Selecting Context while sessions/get was pending returned the UI to Chat. History callbacks now preserve newer navigation and selected-session ownership.",
+    "Consecutive instruction approvals shared an action label. Tests now track distinct permission request IDs.",
+    "Legacy protocol and editor tests awaited completion before responding to the new optional archive persistence request. They now explicitly approve or deny archive persistence and verify scoped ownership.",
+    "The 120-second editor test wrapper could expire while a 120-second initialize request ran alongside CPU-heavy checks. The wrapper now has 240 seconds, RPC deadlines remain unchanged, milestones are recorded, and the final actual flow took 60.84 seconds."
+  ],
+  "limits": [
+    "Token counts are byte/Unicode estimates, not exact provider tokenizers.",
+    "Source citations verify message identity, not the semantic correctness of model summaries; no live-model quality result.",
+    "No recursive instruction discovery, conditional rule globs or watcher.",
+    "No multimedia slimming, automatic model summaries or pre/post-compaction Hooks.",
+    "Original session journals remain unbounded by this checkpoint; large-history indexing and artifact/checkpoint garbage collection remain unfinished.",
+    "HTTP I/O deadlines and Julia cancellation are soft budgets, not OS isolation or forced JIT/CPU preemption.",
+    "Process events decode fragmented UTF-8; PTY and native terminal integration remain pending.",
+    "Development Workbench is not a completed desktop installer; Windows packaging remains unfinished.",
+    "Cloud onboarding configuration is saved as a draft, not published/applied or restoration-verified.",
+    "The 250000 authored Core LOC and full functional gates are not reached; development continues."
+  ]
+}

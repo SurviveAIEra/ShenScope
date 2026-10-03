@@ -59,12 +59,13 @@ function execute_batch_owned(tools::Dict{String,AbstractTool},calls::Vector{Tool
     return results
 end
 
-function core_tools(; tasks = true, mcp = true, skills = true, hooks = true, config = Dict(), config_source=nothing, credential_lookup = key -> get(ENV, key, ""))
+function core_tools(; tasks = true, mcp = true, skills = true, hooks = true, context = true, config = Dict(), config_source=nothing, credential_lookup = key -> get(ENV, key, ""))
     process=ProcessTool()
     tools = AbstractTool[ReadTool(),SearchTool(),EditTool(),WriteTool(),PatchTool(),process,GitTool(process),MemoryTool(),ProjectTool(),DiagnosticsTool()]
     mcp && push!(tools, MCPControlTool(MCPManager(config; credential_lookup)))
     skills && push!(tools, SkillsTool(SkillManager(config)))
     hooks && push!(tools, HooksTool(HookManager(config;config_source,credential_lookup)))
+    context && push!(tools, ContextTool(ContextManager(config)))
     tasks && push!(tools, TaskTool(WorkExecutor(; tools)))
     tools
 end

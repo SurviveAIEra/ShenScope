@@ -57,13 +57,29 @@ function validate_config(c::ProviderConfig)
         isfinite(c.output_price) && c.input_price>=0 && c.output_price>=0 ||
         throw(ShenScopeError(:config,"Invalid provider limits or prices"))
     occursin(r"^[A-Za-z_][A-Za-z0-9_]*$",c.key_env) || throw(ShenScopeError(:config,"Invalid key variable name"))
+    1 <= c.capabilities.max_output < c.capabilities.context_window <= 4_000_000 ||
+        throw(ShenScopeError(:config, "Invalid model context or output capacity"))
     return c
 end
 
+function estimate_text_tokens(text::AbstractString)
+    supplement = 0
+    for character in text
+        code = UInt32(character)
+        if 0x3040 <= code <= 0x30ff || 0x3400 <= code <= 0x9fff || 0xac00 <= code <= 0xd7af ||
+                0xf900 <= code <= 0xfaff || 0x20000 <= code <= 0x3134f
+            supplement += 1
+        elseif 0x1f000 <= code <= 0x1faff
+            supplement += 2
+        end
+    end
+    cld(ncodeunits(text), 3) + supplement
+end
+
 function estimate_request_tokens(request::ModelRequest)
-    bytes = sum(ncodeunits(canonical(message_dict(m))) for m in request.messages;init=0)
-    bytes += ncodeunits(canonical(request.tools)) + ncodeunits(canonical(request.options))
-    return cld(bytes,3) + 32
+    tokens = sum(estimate_text_tokens(canonical(message_dict(message))) for message in request.messages; init=0)
+    tokens += estimate_text_tokens(canonical(request.tools)) + estimate_text_tokens(canonical(request.options))
+    tokens + 32
 end
 
 function validate_request(provider::AbstractModelProvider, request::ModelRequest)

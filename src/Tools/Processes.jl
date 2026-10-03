@@ -146,6 +146,7 @@ function start_process!(manager::ProcessManager,argv::Vector{String},ctx::Runtim
         readers=Task[]
         for (stream,buffer,label) in ((out,stdout,"stdout"),(err,stderr,"stderr"))
             push!(readers,@async begin
+                decoder = UTF8StreamDecoder()
                 try
                     while !eof(stream)
                         data = UInt8[read(stream, UInt8)]
@@ -153,12 +154,16 @@ function start_process!(manager::ProcessManager,argv::Vector{String},ctx::Runtim
                         available > 0 && append!(data, read(stream, available))
                         capture!(buffer,data)
                         # The retained output is bounded; event chunks also are.
-                        emit_output && !isempty(data) && emit!(ctx,:process_output,Dict("handle"=>id,"stream"=>label,
-                            "text"=>process_utf8(copy(data))))
+                        if emit_output
+                            text = feed_utf8!(decoder, data)
+                            isempty(text) || emit!(ctx,:process_output,Dict("handle"=>id,"stream"=>label,"text"=>text))
+                        end
                     end
                 catch cause
                     cause isa EOFError || !isopen(stream) || rethrow()
                 finally
+                    final_text = finish_utf8!(decoder)
+                    emit_output && !isempty(final_text) && emit!(ctx,:process_output,Dict("handle"=>id,"stream"=>label,"text"=>final_text))
                     close(stream)
                 end
             end)

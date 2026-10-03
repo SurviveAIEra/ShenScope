@@ -51,3 +51,11 @@ different scope remain in the inventory instead of receiving invented features.
 Present verified behavior and missing capabilities separately. The initial
 streaming/tool/agent checkpoint and shared editor protocol do not establish
 complete synthesis, superiority, live-model quality or the Core size target.
+
+Context checkpoint 012 adds primary-source observations for all seven main
+agents in `reference_synthesis.md`: provider-native accounting, scoped
+instructions, immutable projections/checkpoints, evidence read-back and bounded
+overflow recovery. Both actual editor clients pass the same ownership/approval
+flow. Exact tokenizers, media slimming, watched/conditional instructions,
+pre/post-compaction Hooks and full branch navigation are still absent. Semantic
+project backends are the next domain; existing syntax call links remain heuristic.

@@ -7,7 +7,8 @@ const DEFAULT_CONFIG=Dict{String,Any}(
         "network"=>"ask","mcp"=>"ask","dynamic"=>"ask","persistence"=>"ask"),
     "mcp"=>Dict{String,Any}("servers"=>Dict{String,Any}()),
     "skills"=>Dict{String,Any}(),
-    "hooks"=>Dict{String,Any}())
+    "hooks"=>Dict{String,Any}(),
+    "context"=>Dict{String,Any}())
 
 function merge_config!(target::Dict,source::AbstractDict)
     for (k,v) in source
@@ -47,14 +48,30 @@ function load_config(;path=config_path(),profile=nothing)
     mcp_specs_from_config(config)
     skill_config(config)
     hook_config(config)
+    context_config(config)
     return config
 end
 
 function provider_from_config(config::AbstractDict)
     p=config["provider"]
+    document = get(p, "capabilities", Dict())
+    document isa AbstractDict || throw(ShenScopeError(:config, "Provider capabilities must be a table"))
+    names = Set(String.(fieldnames(ModelCapabilities)))
+    all(key -> key in names, keys(document)) || throw(ShenScopeError(:config, "Unknown model capability"))
+    values = Dict{Symbol,Any}()
+    for (key, value) in document
+        if key in ("context_window", "max_output")
+            value isa Integer && !(value isa Bool) && 1 <= value <= 4_000_000 ||
+                throw(ShenScopeError(:config, "Invalid model capacity"))
+        else
+            value isa Bool || throw(ShenScopeError(:config, "Model capability must be Boolean"))
+        end
+        values[Symbol(key)] = value
+    end
+    capability = ModelCapabilities(; values...)
     c=ProviderConfig(;protocol=Symbol(p["protocol"]),name=p["name"],endpoint=p["endpoint"],model=p["model"],
         key_env=p["key_env"],timeout=p["timeout"],retries=p["retries"],
-        input_price=p["input_price"],output_price=p["output_price"])
+        input_price=p["input_price"],output_price=p["output_price"],capabilities=capability)
     return HTTPProvider(validate_config(c))
 end
 limits_from_config(c::AbstractDict)=BudgetLimits(;max_steps=c["budget"]["max_steps"],max_tokens=c["budget"]["max_tokens"],
@@ -76,6 +93,7 @@ function save_config!(config::Dict;path=config_path(),expected_sha256=nothing,be
             observed==expected_sha256 || throw(ShenScopeError(:conflict,"Configuration changed"))
         end
         sanitized=merge_config!(Dict{String,Any}(),config)
+        context_config(sanitized)
         provider_from_config(sanitized);BudgetLedger(limits_from_config(sanitized));permissions_from_config(sanitized);mcp_specs_from_config(sanitized);skill_config(sanitized);hook_config(sanitized)
         io=IOBuffer();TOML.print(io,sanitized;sorted=true)
         text=String(take!(io));before_write();atomic_write(path,text)

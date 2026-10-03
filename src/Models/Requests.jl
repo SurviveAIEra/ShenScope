@@ -97,15 +97,17 @@ function gemini_contents(messages::Vector{Message},identity::String)
     return contents,join(system,"\n\n")
 end
 
-function prepare_request(p::HTTPProvider,request::ModelRequest)
-    validate_config(p.config);validate_request(p,request)
+function prepare_request(p::HTTPProvider,request::ModelRequest; accounting=false)
+    validate_config(p.config)
+    accounting || validate_request(p,request)
     c=p.config
-    key=CredentialSnapshot(p.credential_lookup(c.key_env))
+    key=CredentialSnapshot(accounting ? "" : p.credential_lookup(c.key_env))
     identity=string(c.protocol,":",c.name,":",c.model,":",digest(c.endpoint))
     endpoint=rstrip(c.endpoint,'/')
     headers=Pair{String,String}["Content-Type"=>"application/json"]
     options=deepcopy(request.options)
-    protected=Set(["model","messages","input","tools","stream","contents","system"])
+    protected=Set(["model","messages","input","tools","stream","contents","system",
+        "max_tokens","max_output_tokens","max_completion_tokens","generationConfig","options"])
     any(k->k in protected,keys(options)) && throw(ShenScopeError(:config,"Request options override a protected field"))
     if c.protocol==:openai_chat
         endpoint *= "/chat/completions"
@@ -146,3 +148,5 @@ function prepare_request(p::HTTPProvider,request::ModelRequest)
     merge!(body,options)
     return PreparedRequest(endpoint,headers,body,c.protocol,identity,key)
 end
+
+model_body(provider::HTTPProvider, request::ModelRequest) = prepare_request(provider, request; accounting=true).body

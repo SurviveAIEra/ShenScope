@@ -36,7 +36,7 @@ function save_budget!(session::Session,ctx::RuntimeContext)
 end
 
 function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::RuntimeContext;
-        session=nothing,tools=core_tools(),control=AgentControl(),max_output=2048,
+        session=nothing,tools=core_tools(),control=AgentControl(),max_output=min(2048,capabilities(provider).max_output),
         options=Dict{String,Any}(),concurrency=4,context_bytes=256*1024)
     s=session===nothing ? new_session(ctx;title=cliptext(prompt,128)) : session
     s.id==ctx.session_id && realpath(s.root)==ctx.root || throw(ShenScopeError(:session,"Runtime session identity mismatch"))
@@ -60,47 +60,13 @@ function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::
                     add_message!(s,Message(:user,text));emit!(ctx,:steering_applied,Dict("text"=>text))
                 end
                 enforce_hook_outcomes!(run_lifecycle_hooks!(HookBeforeModel,ctx;metadata=Dict("provider"=>provider_name(provider),"step"=>budget_status(ctx.budget)["steps"])))
-                messages=request_messages(s,ctx;context_bytes,tools)
+                bind_request_sessions!(tools, s, ctx)
+                hook_context=take_hook_context!()
                 available=active_tools(tools,ctx)
                 registry=Dict{String,AbstractTool}(tool_name(t)=>t for t in available)
                 schemas=declaration.(available)
-                request=ModelRequest(messages,deepcopy(schemas),max_output,deepcopy(options))
-                validate_request(provider,request)
-                estimated=estimate_request_tokens(request)
-                prices=provider isa HTTPProvider ? (provider.config.input_price,provider.config.output_price) : (0.0,0.0)
-                lease=reserve!(ctx.budget,estimated+max_output,(estimated*prices[1]+max_output*prices[2])/1_000_000)
-                partial=IOBuffer();delivered_usage=Ref{Union{Nothing,Usage}}(nothing)
-                sink=(kind,payload)->begin
-                    kind==:text_delta && write(partial,payload)
-                    kind==:usage && (delivered_usage[]=payload)
-                    if kind==:tool_call
-                        emit!(ctx,kind,Dict("id"=>payload.id,"name"=>payload.name,"arguments"=>payload.arguments))
-                    elseif kind==:usage
-                        emit!(ctx,:usage,Dict("input_tokens"=>payload.input_tokens,"output_tokens"=>payload.output_tokens))
-                    else
-                        emit!(ctx,kind,Dict("text"=>payload))
-                    end
-                end
-                model_result=try
-                    emit!(ctx,:model_request,Dict("provider"=>provider_name(provider),"estimated_input_tokens"=>estimated))
-                    result=stream_chat(provider,request,sink,ctx)
-                    settle!(ctx.budget,lease,result.usage);record_usage!(s,result.usage)
-                    result
-                catch
-                    active=lock(ctx.budget.mutex) do;haskey(ctx.budget.reservations,lease);end
-                    if active
-                        if delivered_usage[]!==nothing
-                            settle!(ctx.budget,lease,delivered_usage[]);record_usage!(s,delivered_usage[])
-                        else
-                            release!(ctx.budget,lease)
-                        end
-                    end
-                    text=String(take!(partial))
-                    !isempty(text) && add_message!(s,Message(:assistant,text;native=Dict("interrupted"=>true)))
-                    rethrow()
-                finally
-                    save_budget!(s,ctx)
-                end
+                model_result=request_with_context_recovery!(provider,s,ctx;
+                    tools,schemas,max_output,options,context_bytes,hook_context)
                 add_message!(s,model_result.message)
                 observe_lifecycle_hooks!(HookAfterModel,ctx;metadata=Dict("provider"=>provider_name(provider),
                     "finish"=>String(model_result.finish),"input_tokens"=>model_result.usage.input_tokens,"output_tokens"=>model_result.usage.output_tokens))
@@ -116,8 +82,8 @@ function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::
                 any(c->c.id in prior_ids,calls) && throw(ShenScopeError(:protocol,"Model reused a prior tool call ID"))
                 results=execute_batch(registry,calls,ctx;concurrency)
                 for result in results
-                    archive_output!(ctx,result)
-                    add_message!(s,Message(:tool,trim_tool_result(result);call_id=result.id))
+                    artifact=archive_output!(ctx,result)
+                    add_message!(s,Message(:tool,trim_tool_result(result;artifact_sha256=artifact);call_id=result.id))
                 end
                 hook_stop_requested() && throw(ShenScopeError(:hook_stopped,"Configured Hook requested a stop after the tool batch"))
                 signature=digest(canonical([Dict("name"=>call.name,"args"=>call.arguments,

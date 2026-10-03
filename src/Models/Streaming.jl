@@ -85,7 +85,7 @@ function openai_usage(d::AbstractDict)
 end
 
 function collect_chat!(c::StreamCollector,d::AbstractDict,sink::Function)
-    haskey(d,"error") && throw(ShenScopeError(:provider,"Model returned a stream error"))
+    haskey(d,"error") && throw(model_stream_error(d))
     usage=get(d,"usage",nothing)
     usage!==nothing && (c.usage=openai_usage(usage);sink(:usage,c.usage))
     for choice in get(d,"choices",[])
@@ -98,6 +98,7 @@ function collect_chat!(c::StreamCollector,d::AbstractDict,sink::Function)
             old=get(c.native,"reasoning_content","")
             ncodeunits(old)+ncodeunits(reasoning)<=c.max_output_bytes || throw(ShenScopeError(:protocol,"Reasoning exceeds limit"))
             c.native["reasoning_content"]=old * reasoning
+            !isempty(reasoning) && sink(:model_progress,Dict("channel"=>"reasoning","bytes"=>ncodeunits(reasoning)))
         end
         for call in get(delta,"tool_calls",[])
             slot=call_slot!(c,get(call,"index",0))
@@ -105,6 +106,7 @@ function collect_chat!(c::StreamCollector,d::AbstractDict,sink::Function)
             f=get(call,"function",Dict())
             slot["name"] *= get(f,"name","")
             append_arguments!(c,slot,get(f,"arguments",""))
+            sink(:model_progress,Dict("channel"=>"tool_arguments","bytes"=>ncodeunits(get(f,"arguments",""))))
         end
         finish=get(choice,"finish_reason",nothing)
         if finish!==nothing
@@ -124,17 +126,20 @@ function collect_responses!(c::StreamCollector,d::AbstractDict,sink::Function)
             slot=call_slot!(c,get(d,"output_index",0))
             slot["id"]=item["call_id"];slot["name"]=item["name"]
             slot["arguments"]=get(item,"arguments","")
+            sink(:model_progress,Dict("channel"=>"tool_arguments","bytes"=>ncodeunits(slot["arguments"])))
         end
     elseif kind=="response.function_call_arguments.delta"
         append_arguments!(c,call_slot!(c,d["output_index"]),d["delta"])
+        sink(:model_progress,Dict("channel"=>"tool_arguments","bytes"=>ncodeunits(d["delta"])))
     elseif kind=="response.output_item.done" && d["item"]["type"]=="reasoning"
         push!(get!(c.native,"reasoning_items",Any[]),d["item"])
+        sink(:model_progress,Dict("channel"=>"reasoning","bytes"=>ncodeunits(canonical(d["item"]))))
     elseif kind=="response.completed"
         r=d["response"]
         c.usage=openai_usage(get(r,"usage",Dict()));sink(:usage,c.usage)
         c.terminal=true;c.finish=isempty(c.calls) ? :stop : :tools
     elseif kind in ("response.failed","response.incomplete","error")
-        throw(ShenScopeError(:provider,"Responses stream failed or was incomplete"))
+        throw(model_stream_error(d;message="Responses stream failed or was incomplete"))
     end
 end
 
@@ -151,8 +156,11 @@ function collect_anthropic!(c::StreamCollector,d::AbstractDict,sink::Function)
             slot=call_slot!(c,index);slot["id"]=block["id"];slot["name"]=block["name"]
             initial=get(block,"input",Dict())
             !isempty(initial) && (slot["arguments"]=canonical(initial))
+            sink(:model_progress,Dict("channel"=>"tool_arguments","bytes"=>ncodeunits(slot["arguments"])))
         elseif block["type"]=="text"
             collect_text!(c,get(block,"text",""),sink)
+        elseif block["type"] in ("thinking","redacted_thinking")
+            sink(:model_progress,Dict("channel"=>"reasoning","bytes"=>ncodeunits(canonical(block))))
         end
     elseif kind=="content_block_delta"
         delta=d["delta"];t=delta["type"];index=d["index"]
@@ -161,11 +169,13 @@ function collect_anthropic!(c::StreamCollector,d::AbstractDict,sink::Function)
             collect_text!(c,delta["text"],sink)
         elseif t=="input_json_delta"
             append_arguments!(c,call_slot!(c,index),delta["partial_json"])
+            sink(:model_progress,Dict("channel"=>"tool_arguments","bytes"=>ncodeunits(delta["partial_json"])))
         elseif t in ("thinking_delta","signature_delta")
             key=t=="thinking_delta" ? "thinking" : "signature"
             value=get(c.blocks[index],key,"") * delta[key]
             ncodeunits(value)<=c.max_output_bytes || throw(ShenScopeError(:protocol,"Thinking block exceeds limit"))
             c.blocks[index][key]=value
+            sink(:model_progress,Dict("channel"=>"reasoning","bytes"=>ncodeunits(delta[key])))
         end
     elseif kind=="message_delta"
         u=get(d,"usage",Dict());old=c.usage
@@ -178,12 +188,12 @@ function collect_anthropic!(c::StreamCollector,d::AbstractDict,sink::Function)
         c.native["thinking_blocks"]=[b for (_,b) in sort!(collect(c.blocks);by=first)
             if b["type"] in ("thinking","redacted_thinking")]
     elseif kind=="error"
-        throw(ShenScopeError(:provider,"Anthropic stream returned an error"))
+        throw(model_stream_error(d;message="Anthropic stream returned an error"))
     end
 end
 
 function collect_gemini!(c::StreamCollector,d::AbstractDict,sink::Function)
-    haskey(d,"error") && throw(ShenScopeError(:provider,"Gemini stream returned an error"))
+    haskey(d,"error") && throw(model_stream_error(d;message="Gemini stream returned an error"))
     for candidate in get(d,"candidates",[])
         get(candidate,"index",0)==0 || continue
         parts=get(get(candidate,"content",Dict()),"parts",[])
@@ -195,6 +205,9 @@ function collect_gemini!(c::StreamCollector,d::AbstractDict,sink::Function)
                 f=part["functionCall"];index=length(c.calls)
                 slot=call_slot!(c,index);slot["id"]=get(f,"id",string(uuid4()))
                 slot["name"]=f["name"];slot["arguments"]=canonical(get(f,"args",Dict()))
+                sink(:model_progress,Dict("channel"=>"tool_arguments","bytes"=>ncodeunits(slot["arguments"])))
+            elseif get(part,"thought",false) || haskey(part,"thoughtSignature")
+                sink(:model_progress,Dict("channel"=>"reasoning","bytes"=>ncodeunits(canonical(part))))
             end
         end
         if haskey(candidate,"finishReason")
@@ -211,13 +224,16 @@ function collect_gemini!(c::StreamCollector,d::AbstractDict,sink::Function)
 end
 
 function collect_ollama!(c::StreamCollector,d::AbstractDict,sink::Function)
-    haskey(d,"error") && throw(ShenScopeError(:provider,"Ollama stream returned an error"))
+    haskey(d,"error") && throw(model_stream_error(d;message="Ollama stream returned an error"))
     message=get(d,"message",Dict())
     collect_text!(c,get(message,"content",""),sink)
+    thought=get(message,"thinking",nothing)
+    thought isa AbstractString && !isempty(thought) && sink(:model_progress,Dict("channel"=>"reasoning","bytes"=>ncodeunits(thought)))
     for call in get(message,"tool_calls",[])
         f=call["function"];slot=call_slot!(c,length(c.calls))
         slot["id"]=get(call,"id",string(uuid4()));slot["name"]=f["name"]
         args=get(f,"arguments",Dict());slot["arguments"]=args isa String ? args : canonical(args)
+        sink(:model_progress,Dict("channel"=>"tool_arguments","bytes"=>ncodeunits(slot["arguments"])))
     end
     if get(d,"done",false)
         c.terminal=true;c.finish=isempty(c.calls) ? :stop : :tools

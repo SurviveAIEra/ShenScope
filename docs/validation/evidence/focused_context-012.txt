@@ -1,0 +1,81 @@
+Precompiling ShenScope...
+   7969.5 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 8 seconds. 39 already precompiled.
+[ Info: Listening on: 127.0.0.1:40435, thread id: 1
+[ Info: Server on 127.0.0.1:40435 closing
+[ Info: Listening on: 127.0.0.1:33975, thread id: 1
+[ Info: Server on 127.0.0.1:33975 closing
+[ Info: Listening on: 127.0.0.1:34509, thread id: 1
+[ Info: Server on 127.0.0.1:34509 closing
+[ Info: Listening on: 127.0.0.1:38525, thread id: 1
+[ Info: Server on 127.0.0.1:38525 closing
+[ Info: Listening on: 127.0.0.1:35719, thread id: 1
+[ Info: Server on 127.0.0.1:35719 closing
+[ Info: Listening on: 127.0.0.1:43475, thread id: 2
+[ Info: Server on 127.0.0.1:43475 closing
+[ Info: Listening on: 127.0.0.1:41443, thread id: 1
+[ Info: Server on 127.0.0.1:41443 closing
+[ Info: Listening on: 127.0.0.1:38975, thread id: 1
+[ Info: Server on 127.0.0.1:38975 closing
+[ Info: Listening on: 127.0.0.1:43203, thread id: 1
+[ Info: Server on 127.0.0.1:43203 closing
+[ Info: Listening on: 127.0.0.1:36663, thread id: 1
+[ Info: Server on 127.0.0.1:36663 closing
+[ Info: Listening on: 127.0.0.1:44443, thread id: 1
+[ Info: Server on 127.0.0.1:44443 closing
+[ Info: Listening on: 127.0.0.1:41141, thread id: 1
+[ Info: Server on 127.0.0.1:41141 closing
+[ Info: Listening on: 127.0.0.1:43675, thread id: 1
+[ Info: Server on 127.0.0.1:43675 closing
+[ Info: Listening on: 127.0.0.1:37797, thread id: 2
+[ Info: Server on 127.0.0.1:37797 closing
+[ Info: Listening on: 127.0.0.1:42543, thread id: 1
+[ Info: Server on 127.0.0.1:42543 closing
+[ Info: Listening on: 127.0.0.1:44099, thread id: 2
+[ Info: Server on 127.0.0.1:44099 closing
+[ Info: Listening on: 127.0.0.1:45509, thread id: 1
+[ Info: Server on 127.0.0.1:45509 closing
+Test Summary:                              | Pass  Total   Time
+Context settings and exact model envelopes |   50     50  18.6s
+Test Summary:                                                 | Pass  Total  Time
+Instruction scope discovery, permissions and source revisions |   13     13  3.7s
+Test Summary:                                                 | Pass  Total  Time
+Balanced tool groups, no reasoning split and Unicode excerpts |   24     24  1.0s
+Test Summary:                                                   | Pass  Total   Time
+Durable context projections preserve transcripts and provenance |   17     17  13.8s
+Test Summary:                                              | Pass  Total  Time
+Compaction failure is atomic and fixed context is retained |    7      7  0.9s
+Test Summary:                                                       | Pass  Total  Time
+Original tool artifacts are scoped, permissioned and digest checked |    9      9  1.9s
+Test Summary:                                             | Pass  Total  Time
+Optional model summaries bind citations and shared budget |   10     10  6.0s
+Test Summary:                                   | Pass  Total  Time
+SSE Unicode fragmentation, multiline and limits |    3      3  0.7s
+Test Summary:                                             | Pass  Total   Time
+OpenAI-compatible real HTTP tool stream and native replay |    7      7  13.7s
+Test Summary:                             | Pass  Total  Time
+Anthropic signature and tool continuation |    5      5  3.3s
+Test Summary:                                        | Pass  Total  Time
+OpenAI Responses encrypted reasoning and call stream |    3      3  2.2s
+Test Summary:                      | Pass  Total  Time
+Gemini and Ollama native protocols |    5      5  4.7s
+Test Summary:                                                    | Pass  Total  Time
+Retry before delivery, no replay after delivery, malformed calls |    5      5  6.8s
+Test Summary:                                                 | Pass  Total   Time
+HTTP context overflow recovers before delivery without replay |   13     13  19.5s
+Test Summary:                                                          | Pass  Total  Time
+Model network approval respects the remaining shared wall-clock budget |    7      7  3.2s
+Test Summary:                                                       | Pass  Total  Time
+Reasoning and partial tool arguments fence model retry and recovery |   21     21  1.8s
+Test Summary:                                                             | Pass  Total  Time
+Completed stream calls remain undispatched when a later call is malformed |    8      8  1.4s
+Test Summary:                                                         | Pass  Total  Time
+Provider usage survives failed context attempts and disabled recovery |   14     14  1.0s
+Test Summary:                                                         | Pass  Total   Time
+Context RPC ownership, permissions, asynchronous cancellation and CAS |   16     16  16.8s
+Test Summary:                                                          | Pass  Total  Time
+Manual context checkpoints are shared by RPC and subsequent agent runs |    8      8  4.1s
+Test Summary:                                                    | Pass  Total  Time
+Incremental process UTF-8 boundaries and malformed byte recovery |  128    128  0.0s
+Test Summary:                                                     | Pass  Total  Time
+Actual fragmented stdout and stderr match retained process output |    7      7  1.3s

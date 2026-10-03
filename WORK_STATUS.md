@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 8,806 authored Julia Core code lines across 71 files;
-CLI/TUI add 525 lines and are counted separately. This is 3.5224% of the
-minimum line target, leaving 241,194 lines. These are early implementations,
+Latest cloc 2.11 count: 10,170 authored Julia Core code lines across 88 files;
+CLI/TUI add 582 lines and are counted separately. This is 4.068% of the
+minimum line target, leaving 239,830 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -160,3 +160,21 @@ decoding. Continue feature development immediately after the remote checkpoint.
 Continuous development is authorized and required: a tested checkpoint is a
 commit/push boundary, not permission to stop before the Core target and product
 gates. Continue from the next unfinished module without claiming completion.
+
+Context checkpoint: actual provider request accounting, output reservations,
+bounded scoped project/user instructions, whole tool-round projections and
+immutable original evidence; owned digest-checked checkpoints, explicit optional
+structured model summaries, permissioned output artifacts and paged read-back.
+Classified context overflow retries only before delivery and only with smaller
+requests; interrupted undispatched tools are never replayed. Shared usage and
+HTTP I/O deadlines apply. Process event decoding now preserves fragmented UTF-8.
+CLI/TUI and both actual editor GUIs expose the same Core. Full affected suite:
+1,239 assertions across 89 testsets; final focused suite: 380 assertions; three
+Node transport tests and complete editor/Workbench checks pass. Both GUI flows
+verify context status, instruction approvals, extractive/model checkpoints,
+source evidence and settings. VSIX: 242,075 bytes, 96 Core/manifest payload files
+byte-verified. See docs/core/context.md and
+docs/validation/context-checkpoint-012.json. Estimates are not exact tokenizers;
+model citations do not prove summary prose; no OS isolation, instruction watcher,
+history compaction, media slimming or live-model quality is claimed. Next:
+compiler-semantic project backend and Julia analysis/runtime requirements.

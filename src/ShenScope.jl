@@ -7,15 +7,19 @@ const VERSION = v"0.1.0"
 
 include("Core/Types.jl")
 include("Runtime/Cancellation.jl")
+include("Runtime/UTF8.jl")
 include("Security/Budgets.jl")
 include("Security/Permissions.jl")
 include("Runtime/Context.jl")
 include("Security/Files.jl")
 include("Storage/Journal.jl")
+include("Storage/JSON.jl")
 include("Storage/Versioned.jl")
 include("Context/Sessions.jl")
 include("Models/Provider.jl")
 include("Models/Requests.jl")
+include("Models/Errors.jl")
+include("Models/Delivery.jl")
 include("Models/Streaming.jl")
 include("Models/HTTP.jl")
 include("Tools/Schema.jl")
@@ -54,6 +58,17 @@ include("Hooks/Catalog.jl")
 include("Hooks/Runner.jl")
 include("Tools/Hooks.jl")
 include("Hooks/Lifecycle.jl")
+include("Context/Types.jl")
+include("Context/Config.jl")
+include("Context/Instructions.jl")
+include("Context/Accounting.jl")
+include("Context/Groups.jl")
+include("Context/Checkpoints.jl")
+include("Context/Pruning.jl")
+include("Context/Projection.jl")
+include("Context/Evidence.jl")
+include("Context/Summarization.jl")
+include("Tools/Context.jl")
 include("Tasks/Types.jl")
 include("Tasks/Graph.jl")
 include("Tasks/Serialization.jl")
@@ -63,6 +78,7 @@ include("Tasks/Lifecycle.jl")
 include("Tasks/Queries.jl")
 include("Runtime/ToolScheduler.jl")
 include("Context/Preparation.jl")
+include("Context/Recovery.jl")
 include("Core/AgentLoop.jl")
 include("Core/Config.jl")
 include("Tasks/Executor.jl")
@@ -75,6 +91,7 @@ include("Protocol/Tasks.jl")
 include("Protocol/MCP.jl")
 include("Protocol/Skills.jl")
 include("Protocol/Hooks.jl")
+include("Protocol/Context.jl")
 
 export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
     dispatch_rpc, serve_stdio, stop_server!, capability_manifest
@@ -116,6 +133,11 @@ export HookPoint, HookSpec, HookConfig, HookCatalog, HookOutcome, HookManager, H
     hook_config, hook_point, hooks_list, hooks_read_configuration, run_hook!, cleanup_hooks!,
     with_lifecycle_hooks, run_lifecycle_hooks!
 
+export ContextConfig, InstructionSource, ContextGroup, ContextMeasure, ContextCheckpoint,
+    ContextProjection, ContextManager, ContextTool, context_config, context_groups,
+    load_project_instructions, context_measure, measure_view, prepare_context!,
+    context_status, context_source, context_artifact, context_compact!, cleanup_context!
+
 export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectDataBackend,
     AbstractAnalyzer, AbstractContextStrategy, AbstractScheduler, ShenScopeError,
     ToolCall, ToolResult, Message, ModelCapabilities, Usage, ModelResponse, ModelRequest,
@@ -132,6 +154,7 @@ include("CLI/Main.jl")
 include("CLI/MCP.jl")
 include("CLI/Skills.jl")
 include("CLI/Hooks.jl")
+include("CLI/Context.jl")
 include("CLI/TUI.jl")
 main(args=ARGS)=cli_main(args)
 
