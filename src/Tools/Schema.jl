@@ -82,6 +82,7 @@ function execute_call(t::AbstractTool,call::ToolCall,ctx::RuntimeContext)
     validate_tool_arguments(t,call.arguments)
     emit!(ctx,:tool_started,Dict("id"=>call.id,"name"=>call.name))
     result=try
+        before_tool_hooks!(call,ctx)
         value=with_context(()->execute(t,call.arguments,ctx),ctx)
         ToolResult(call.id,is_successful_tool_result(t,value),value,tool_failure_message(t,value))
     catch e
@@ -92,5 +93,6 @@ function execute_call(t::AbstractTool,call::ToolCall,ctx::RuntimeContext)
     end
     emit!(ctx,:tool_completed,Dict("id"=>call.id,"name"=>call.name,"ok"=>result.ok,
         "value"=>result.value,"error"=>result.error))
+    after_tool_hooks!(call,result,ctx;testing=t isa ProcessTool && get(call.arguments,"purpose","")=="test" && get(call.arguments,"action","")=="run")
     return result
 end

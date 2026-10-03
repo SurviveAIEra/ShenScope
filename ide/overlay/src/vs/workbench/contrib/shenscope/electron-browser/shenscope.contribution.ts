@@ -101,6 +101,10 @@ class ShenScopeViewPane extends ViewPane {
             openSkillSource: async (job_id, session_id) => {
                 const source: any = await channel.call('request', { method: 'skills/source_path', params: { job_id, session_id } });
                 await this.editors.openEditor({ resource: URI.file(source.path) });
+            },
+            openHookSource: async (job_id, session_id) => {
+                const source: any = await channel.call('request', { method: 'hooks/source_path', params: { job_id, session_id } });
+                await this.editors.openEditor({ resource: URI.file(source.path) });
             }
         });
         void this.panel.initialize();

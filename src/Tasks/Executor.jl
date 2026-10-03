@@ -24,6 +24,15 @@ function worker_tool(executor::WorkExecutor, operation::String)
     tool
 end
 
+function worker_hooks_barrier(executor::WorkExecutor,ctx::RuntimeContext)
+    managers=[tool.manager for tool in values(executor.tools) if tool isa HooksTool]
+    isempty(managers) && return false
+    manager=only(managers)
+    manager.config.enabled || return false
+    catalog=hook_catalog!(manager,ctx)
+    any(spec -> hook_enabled(manager,spec) && !spec.replay_safe,catalog.specs)
+end
+
 function execute_worker_tool(executor::WorkExecutor, operation::String, arguments::AbstractDict, ctx::RuntimeContext)
     tool = worker_tool(executor, operation)
     operation == "process" && get(arguments, "action", "") != "run" &&
@@ -31,23 +40,39 @@ function execute_worker_tool(executor::WorkExecutor, operation::String, argument
     validate_tool_arguments(tool, arguments)
     check_cancelled(ctx.cancellation)
     id = string(uuid4())
+    call = ToolCall(id, operation, Dict{String,Any}(arguments))
     emit!(ctx, :tool_started, Dict("id" => id, "name" => operation, "worker" => true))
     result = nothing
     try
+        before_tool_hooks!(call, ctx;worker=true)
         result = with_context(() -> execute(tool, arguments, ctx), ctx)
         success = is_successful_tool_result(tool, result)
         success || throw(ShenScopeError(:tool_failed, "Worker tool reported a failure"))
         emit!(ctx, :tool_completed, Dict("id" => id, "name" => operation, "ok" => success,
             "worker" => true, "value" => result))
+        after_tool_hooks!(call, ToolResult(id, success, result, nothing), ctx;worker=true,
+            testing=operation == "process" && get(arguments,"purpose","") == "test")
         result
     catch error
         emit!(ctx, :tool_completed, Dict("id" => id, "name" => operation, "ok" => false,
             "worker" => true, "value" => result, "error" => error isa ShenScopeError ? sprint(showerror, error) : "Worker tool failed"))
+        after_tool_hooks!(call, ToolResult(id, false, result, "Worker tool failed"), ctx;worker=true,
+            testing=operation == "process" && get(arguments,"purpose","") == "test")
         rethrow()
     end
 end
 
 function execute_work(executor::WorkExecutor, workflow::Workflow, record::WorkRecord, ctx::RuntimeContext)
+    observer = spec -> begin
+        record.lease === nothing && throw(ShenScopeError(:tasks,"Durable Hook effects require an owned execution lease"))
+        mark_work_hook_effect!(workflow,ctx,record.spec.id;worker=record.lease.worker,token=record.lease.token,hook_id=spec.id)
+    end
+    with_lifecycle_hooks(values(executor.tools),ctx;effect_observer=observer) do
+        execute_work_owned(executor,workflow,record,ctx)
+    end
+end
+
+function execute_work_owned(executor::WorkExecutor, workflow::Workflow, record::WorkRecord, ctx::RuntimeContext)
     arguments = resolve_work_arguments(workflow, record, ctx)
     spec = record.spec
     if spec.kind == :tool
@@ -55,6 +80,7 @@ function execute_work(executor::WorkExecutor, workflow::Workflow, record::WorkRe
     elseif spec.kind == :test
         spec.operation == "process" || throw(ShenScopeError(:tasks, "Test workers require process operation"))
         get(arguments, "action", "run") == "run" || throw(ShenScopeError(:tasks, "Test workers require a foreground process"))
+        arguments["purpose"] = "test"
         result = execute_worker_tool(executor, "process", arguments, ctx)
         get(result, "timed_out", false) && throw(ShenScopeError(:timeout, "Test process timed out"))
         get(result, "exit_code", -1) == 0 || throw(ShenScopeError(:test_failed, "Test process reported a failure"))
@@ -106,6 +132,7 @@ function cleanup_executor!(executor::WorkExecutor, session_id::String)
         tool isa ProcessTool && cleanup_processes!(tool.manager, session_id)
         tool isa MCPControlTool && cleanup_mcp!(tool.manager; session_id)
         tool isa SkillsTool && cleanup_skills!(tool.manager; session_id)
+        tool isa HooksTool && cleanup_hooks!(tool.manager; session_id)
     end
     nothing
 end

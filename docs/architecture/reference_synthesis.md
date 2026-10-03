@@ -97,3 +97,26 @@ Executable verification lives in unit/skills.jl, unit/skills_protocol.jl and
 integration/skills.jl. Source hashes, schema restrictions and ownership are
 implemented using ShenScope's own types and policies. YAML.jl is a general parser
 dependency, excluded from authored Core counts. See docs/core/skills.md.
+
+## Hooks source synthesis
+
+All seven primary agent lines were read again before Hook implementation. These
+are partial source reviews, not claims of complete upstream feature coverage.
+
+| Source | Behavior examined | Independent Core decision | Remaining differences |
+|---|---|---|---|
+| Codex command runner | Owned child runtime, bounded asynchronous seats, environment restrictions and Windows Job Objects | Shared process ownership, eight command slots, cancellation and bounded capture | Fire-and-forget hooks, spill artifacts and Windows Job Objects remain pending |
+| DeepSeek Harness protocol/runner | Paired invoked/result events, dialect-fenced decisions, stdin, cancellation and controlled failures | One small strict JSON protocol, metadata-only inputs, public result pairs | Claude/Codex dialect adapters and regex matcher compatibility remain pending |
+| OpenCode plugin interface/trigger | Ordered lifecycle interception, tool and model/system transforms | Explicit named points and bounded opt-in context; completed tool results remain evidence | Arbitrary argument/header/result rewriting and plugin package hooks remain pending |
+| Pi extension runner/types | Snapshot dispatch, before-tool blocking, result changes and failure isolation | Before-effect denial, stop after recording batch results, separate post-effect failures | Dynamic extension handlers, structured-result replacement and custom UI hooks remain pending |
+| Kimi external hook types/service | Typed session/tool/turn/compaction events, tool veto, observable hook results | Shared agent/worker points, controlled observable outcomes and session ownership | Heartbeats, compaction and broad event integrations remain pending |
+| ZCode configured runner | Source admission, declaration fingerprints, enabled flags, timeout/output bounds | Source/declaration hash targets rechecked after approval, explicit reload and enable controls | Full plugin admission and workspace hook dialects remain pending |
+| Qwen hook types | Project/user/system source types, broad event vocabulary and pre/post-write distinction | Explicit project/user/inline scopes and separation of before decisions from after observations | HTTP hooks, additional scopes and complete event vocabulary remain pending |
+
+Hook commands are not translated upstream code. Core uses Julia ScopedValue for
+owned lifecycle context, Task/Channel cancellation paths and ordinary dispatch
+interfaces. Durable task receipts persist potential Hook effects before launch;
+workflow effect barriers and lease recovery prevent implicit replay. Tests cover
+actual processes, permission/source races, agent context, worker effects and both
+client controls. Host commands still require future OS isolation; no Windows or
+live-model result is inferred from Linux fixtures.

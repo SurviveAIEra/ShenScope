@@ -58,5 +58,7 @@ function request_messages(session::Session,ctx::RuntimeContext;context_bytes=256
         extra = extra_context(tool, session, ctx)
         isempty(extra) || (system *= "\n\n" * extra)
     end
+    hook_context = take_hook_context!()
+    isempty(hook_context) || (system *= "\n\n" * hook_context)
     return vcat([Message(:system,system)],compact_messages(session.messages;max_bytes=context_bytes))
 end

@@ -8,7 +8,8 @@ const methods = new Set(['health', 'config/get', 'config/set', 'credentials/stat
     'agent/start', 'agent/cancel', 'agent/steer', 'permissions/respond', 'tools/list', 'runtime/status',
     'project/backends', 'project/start', 'project/job', 'project/cancel', 'project/query',
     'tasks/start', 'tasks/query', 'tasks/job', 'tasks/cancel_job', 'mcp/start', 'mcp/query', 'mcp/job', 'mcp/cancel_job',
-    'skills/start', 'skills/query', 'skills/job', 'skills/cancel_job']);
+    'skills/start', 'skills/query', 'skills/job', 'skills/cancel_job',
+    'hooks/start', 'hooks/query', 'hooks/job', 'hooks/cancel_job']);
 
 class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
     private client?: CoreClient;
@@ -76,8 +77,8 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
                         await this.client!.request('credentials/set', { variable, value });
                     }
                     result = null;
-                } else if (message.method === 'editor/openSkillSource') {
-                    const source = await this.client!.request('skills/source_path', message.params ?? {});
+                } else if (message.method === 'editor/openSkillSource' || message.method === 'editor/openHookSource') {
+                    const source = await this.client!.request(message.method === 'editor/openSkillSource' ? 'skills/source_path' : 'hooks/source_path', message.params ?? {});
                     await vscode.window.showTextDocument(vscode.Uri.file(source.path)); result = null;
                 } else if (message.method === 'editor/openFile') {
                     const root = vscode.workspace.workspaceFolders![0].uri.fsPath;

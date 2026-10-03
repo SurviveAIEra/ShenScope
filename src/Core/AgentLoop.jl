@@ -50,12 +50,16 @@ function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::
     last_signature="";repeats=0
     try
         return with_context(ctx) do
+          with_lifecycle_hooks(tools,ctx) do
+           try
+            enforce_hook_outcomes!(run_lifecycle_hooks!(HookSessionStart,ctx;metadata=Dict("provider"=>provider_name(provider),"status"=>"running")))
             while true
                 check_cancelled(ctx.cancellation)
                 while isready(control.steering)
                     text=take!(control.steering)
                     add_message!(s,Message(:user,text));emit!(ctx,:steering_applied,Dict("text"=>text))
                 end
+                enforce_hook_outcomes!(run_lifecycle_hooks!(HookBeforeModel,ctx;metadata=Dict("provider"=>provider_name(provider),"step"=>budget_status(ctx.budget)["steps"])))
                 messages=request_messages(s,ctx;context_bytes,tools)
                 available=active_tools(tools,ctx)
                 registry=Dict{String,AbstractTool}(tool_name(t)=>t for t in available)
@@ -98,6 +102,9 @@ function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::
                     save_budget!(s,ctx)
                 end
                 add_message!(s,model_result.message)
+                observe_lifecycle_hooks!(HookAfterModel,ctx;metadata=Dict("provider"=>provider_name(provider),
+                    "finish"=>String(model_result.finish),"input_tokens"=>model_result.usage.input_tokens,"output_tokens"=>model_result.usage.output_tokens))
+                check_cancelled(ctx.cancellation)
                 calls=model_result.message.calls
                 if isempty(calls)
                     model_result.finish==:stop || throw(ShenScopeError(:incomplete,"Model did not complete the turn"))
@@ -112,6 +119,7 @@ function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::
                     archive_output!(ctx,result)
                     add_message!(s,Message(:tool,trim_tool_result(result);call_id=result.id))
                 end
+                hook_stop_requested() && throw(ShenScopeError(:hook_stopped,"Configured Hook requested a stop after the tool batch"))
                 signature=digest(canonical([Dict("name"=>call.name,"args"=>call.arguments,
                     "ok"=>result.ok,"value"=>result.value,"error"=>result.error) for (call,result) in zip(calls,results)]))
                 repeats=signature==last_signature ? repeats+1 : 0
@@ -119,6 +127,11 @@ function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::
                 repeats>=2 && emit!(ctx,:no_progress,Dict("identical_result_batches"=>repeats+1))
                 repeats>=5 && throw(ShenScopeError(:no_progress,"Repeated tool batches returned identical evidence"))
             end
+           finally
+            terminal_status = s.status == :running ? iscancelled(ctx.cancellation) ? :cancelled : :interrupted : s.status
+            observe_lifecycle_hooks!(HookSessionEnd,ctx;metadata=Dict("status"=>String(terminal_status)))
+           end
+          end
         end
     catch e
         recover_tool_pairs!(s)

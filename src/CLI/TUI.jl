@@ -203,6 +203,7 @@ function run_tui(provider::AbstractModelProvider,ctx::RuntimeContext,session::Se
         for tool in tools;tool isa ProcessTool && cleanup_processes!(tool.manager,ctx.session_id);end
         for tool in tools;tool isa MCPControlTool && cleanup_mcp!(tool.manager);end
         for tool in tools;tool isa SkillsTool && cleanup_skills!(tool.manager);end
+        for tool in tools;tool isa HooksTool && cleanup_hooks!(tool.manager);end
         REPL.Terminals.raw!(terminal,false)
         write(output,"\e[?25h\e[?1049l");flush(output)
         ctx.sink=old_sink;ctx.approve=old_approval

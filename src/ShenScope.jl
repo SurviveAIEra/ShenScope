@@ -10,6 +10,7 @@ include("Runtime/Cancellation.jl")
 include("Security/Budgets.jl")
 include("Security/Permissions.jl")
 include("Runtime/Context.jl")
+include("Security/Files.jl")
 include("Storage/Journal.jl")
 include("Storage/Versioned.jl")
 include("Context/Sessions.jl")
@@ -47,6 +48,12 @@ include("Skills/Discovery.jl")
 include("Skills/Activation.jl")
 include("Skills/Projection.jl")
 include("Tools/Skills.jl")
+include("Hooks/Types.jl")
+include("Hooks/Config.jl")
+include("Hooks/Catalog.jl")
+include("Hooks/Runner.jl")
+include("Tools/Hooks.jl")
+include("Hooks/Lifecycle.jl")
 include("Tasks/Types.jl")
 include("Tasks/Graph.jl")
 include("Tasks/Serialization.jl")
@@ -67,6 +74,7 @@ include("Protocol/Project.jl")
 include("Protocol/Tasks.jl")
 include("Protocol/MCP.jl")
 include("Protocol/Skills.jl")
+include("Protocol/Hooks.jl")
 
 export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
     dispatch_rpc, serve_stdio, stop_server!, capability_manifest
@@ -104,6 +112,10 @@ export SkillConfig, SkillManifest, SkillCatalog, SkillActivation, SkillManager, 
     skill_config, skills_list, discover_skills, activate_skill!, deactivate_skill!,
     skill_read_source, skill_read_resource, bind_skills_session!, restore_skills!, cleanup_skills!
 
+export HookPoint, HookSpec, HookConfig, HookCatalog, HookOutcome, HookManager, HooksTool,
+    hook_config, hook_point, hooks_list, hooks_read_configuration, run_hook!, cleanup_hooks!,
+    with_lifecycle_hooks, run_lifecycle_hooks!
+
 export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectDataBackend,
     AbstractAnalyzer, AbstractContextStrategy, AbstractScheduler, ShenScopeError,
     ToolCall, ToolResult, Message, ModelCapabilities, Usage, ModelResponse, ModelRequest,
@@ -119,6 +131,7 @@ export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectData
 include("CLI/Main.jl")
 include("CLI/MCP.jl")
 include("CLI/Skills.jl")
+include("CLI/Hooks.jl")
 include("CLI/TUI.jl")
 main(args=ARGS)=cli_main(args)
 

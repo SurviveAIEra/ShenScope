@@ -1,0 +1,1 @@
+PASS: VSIX webview, actual Hook project/user/inline configuration, command approval/test/status, per-source/global enable, reload and configuration opening inside/outside the workspace

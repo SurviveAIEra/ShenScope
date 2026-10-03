@@ -15,23 +15,8 @@ function skill_root_path(ctx::RuntimeContext, path::String, scope::Symbol)
 end
 
 function skill_read_file(ctx::RuntimeContext, root::String, path::String, maximum::Int; authorized = false)
-    original = normpath(isabspath(path) ? path : joinpath(root, path))
-    target = workspace_path(root, path; must_exist = true)
-    target == original && !islink(original) || throw(ShenScopeError(:permission, "Skills source symlinks are not supported"))
-    authorized || authorize!(ctx, :read, "skills.read", target; reason = "Read a Skills source or resource")
-    before = stat(target)
-    before.size <= maximum || throw(ShenScopeError(:skill_size, "Skills file exceeds the configured capacity"))
-    bytes = open(target, "r") do input
-        read(input, maximum + 1)
-    end
-    length(bytes) <= maximum || throw(ShenScopeError(:skill_size, "Skills file exceeds the configured capacity"))
-    check_cancelled(ctx.cancellation)
-    after = stat(target)
-    (before.inode, before.device, before.size, before.mtime) == (after.inode, after.device, after.size, after.mtime) &&
-        realpath(target) == target || throw(ShenScopeError(:conflict, "Skills source changed while reading"))
-    text = String(bytes)
-    isvalid(text) || throw(ShenScopeError(:skill_encoding, "Skills text must contain valid UTF-8"))
-    text
+    read_scoped_text(ctx, root, path, maximum; authorized, tool="skills.read", reason="Read a Skills source or resource",
+        size_error=:skill_size, encoding_error=:skill_encoding)
 end
 
 function discover_skills(config::SkillConfig, ctx::RuntimeContext; generation = 1)

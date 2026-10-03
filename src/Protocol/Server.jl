@@ -29,7 +29,7 @@ function CoreServer(root::AbstractString;state_dir=get(ENV,"SHENSCOPE_STATE_DIR"
         Dict{String,RuntimeContext}(),Dict{String,Tuple{String,Channel{Symbol}}}(),
         Dict{String,String}(),core_tools(),s->nothing)
     lookup=key->lock(server.mutex) do;get(server.credentials,key,get(ENV,key,""));end
-    server.tools=core_tools(;config=server.config,credential_lookup=lookup)
+    server.tools=core_tools(;config=server.config,config_source=server.config_file,credential_lookup=lookup)
     server.provider_factory=provider_factory===nothing ? s->begin
         provider=provider_from_config(deepcopy(s.config))
         HTTPProvider(provider.config,key->lock(s.mutex) do;get(s.credentials,key,get(ENV,key,""));end)
@@ -115,6 +115,11 @@ function start_agent!(server::CoreServer,params::AbstractDict)
         any(job->job.status==:running && job.context.session_id==session.id,values(skillsmanager.jobs)) &&
             throw(ShenScopeError(:skill_busy,"Finish the conversation's Skills operation before starting the agent"))
     end
+    hooksmanager=server_hooks_tool(server).manager
+    lock(hooksmanager.mutex) do
+        any(job->job.status==:running && job.context.session_id==session.id,values(hooksmanager.jobs)) &&
+            throw(ShenScopeError(:hook_busy,"Finish the conversation's Hook operation before starting the agent"))
+    end
     length(server.runs)<8 || throw(ShenScopeError(:runtime,"Concurrent agent limit reached"))
     prompt=rpc_string(params,"prompt";max_bytes=1024*1024)
     isempty(strip(prompt)) && throw(RPCFault(-32602,"Prompt required"))
@@ -141,9 +146,9 @@ end
 
 function capability_manifest()
     Dict("agent"=>true,"streaming_protocols"=>["openai_chat","openai_responses","anthropic","gemini","ollama"],
-        "tools"=>["read","search","edit","write","patch","process","git","memory","project","diagnostics","tasks","mcp","skills"],"session_journal"=>true,"memory"=>true,
+        "tools"=>["read","search","edit","write","patch","process","git","memory","project","diagnostics","tasks","mcp","skills","hooks"],"session_journal"=>true,"memory"=>true,
         "permission_approvals"=>true,"config_profiles"=>true,"os_isolation"=>false,
-        "mcp"=>true,"mcp_transports"=>["stdio","streamable_http"],"skills"=>true,"hooks"=>false,"project_intelligence"=>true,
+        "mcp"=>true,"mcp_transports"=>["stdio","streamable_http"],"skills"=>true,"hooks"=>true,"project_intelligence"=>true,
         "durable_tasks"=>true,"dynamic_analyzers"=>false)
 end
 
@@ -162,6 +167,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     startswith(method,"tasks/") && return tasks_rpc(server,method,params)
     startswith(method,"mcp/") && return mcp_rpc(server,method,params)
     startswith(method,"skills/") && return skills_rpc(server,method,params)
+    startswith(method,"hooks/") && return hooks_rpc(server,method,params)
     if method=="health"
         return Dict("ready"=>!server.stopping,"active_runs"=>length(server.runs),"pending_approvals"=>length(server.approvals))
     elseif method=="shutdown"
@@ -193,14 +199,21 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
             any(job->job.status==:running,values(skillsmanager.jobs)) &&
                 throw(ShenScopeError(:config,"Finish Skills operations before changing configuration"))
         end
+        hooksmanager=server_hooks_tool(server).manager
+        lock(hooksmanager.mutex) do
+            (any(job->job.status==:running,values(hooksmanager.jobs)) || !isempty(hooksmanager.active)) &&
+                throw(ShenScopeError(:config,"Finish Hook operations before changing configuration"))
+        end
         value=get(params,"value",nothing)
         value isa AbstractDict || throw(RPCFault(-32602,"Configuration object required"))
         expected=rpc_string(params,"expected_sha256";max_bytes=64)
         revision=save_config!(Dict{String,Any}(value);path=server.config_file,expected_sha256=expected,
-            before_write=()->begin;cleanup_mcp!(mcpmanager);cleanup_skills!(skillsmanager);end)
+            before_write=()->begin;cleanup_mcp!(mcpmanager);cleanup_skills!(skillsmanager);cleanup_hooks!(hooksmanager);end)
         server.config=load_config(;path=server.config_file)
         mcpmanager.specs=mcp_specs_from_config(server.config)
         skillsmanager.config=skill_config(server.config)
+        hooksmanager.config=hook_config(server.config)
+        hooksmanager.config_source_digest=revision
         empty!(server.contexts)
         rpc_notify(server,"config/changed",Dict("sha256"=>revision))
         return Dict("sha256"=>revision)
@@ -301,6 +314,7 @@ function stop_server!(server::CoreServer)
     cleanup_tasks!(server_task_tool(server).manager)
     cleanup_mcp!(server_mcp_tool(server).manager)
     cleanup_skills!(server_skills_tool(server).manager)
+    cleanup_hooks!(server_hooks_tool(server).manager)
     for tool in server.tools
         tool isa ProjectTool && cleanup_projects!(tool.manager)
         tool isa ProcessTool || continue

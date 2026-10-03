@@ -195,7 +195,14 @@ struct WorkReceipt
     finished_at::Union{Nothing,Float64}
     result_sha256::Union{Nothing,String}
     evidence::String
+    hooks_started::Bool
+    hooks_barrier::Bool
 end
+
+WorkReceipt(execution_id,attempt,phase,started_at,finished_at,result_sha256,evidence) =
+    WorkReceipt(execution_id,attempt,phase,started_at,finished_at,result_sha256,evidence,false,false)
+WorkReceipt(execution_id,attempt,phase,started_at,finished_at,result_sha256,evidence,hooks_started) =
+    WorkReceipt(execution_id,attempt,phase,started_at,finished_at,result_sha256,evidence,hooks_started,hooks_started)
 
 struct WorkRecord
     spec::WorkSpec

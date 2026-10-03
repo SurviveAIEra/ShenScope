@@ -5,6 +5,7 @@ export interface PanelBridge {
     setCredential(variable: string): Promise<void>;
     openFile(path: string, line?: number): Promise<void>;
     openSkillSource(jobId: string, sessionId: string): Promise<void>;
+    openHookSource(jobId: string, sessionId: string): Promise<void>;
 }
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, text = '', className = ''): HTMLElementTagNameMap[K] {
     const node = document.createElement(tag); node.textContent = text; node.className = className; return node;
@@ -57,6 +58,10 @@ export class ShenScopePanel {
     private skillsStarting = false;
     private skillsResult?: { action: string; result: any };
     private completedSkillsJobs = new Set<string>();
+    private hooksJob?: string;
+    private hooksStarting = false;
+    private hooksResult?: { action: string; result: any };
+    private completedHooksJobs = new Set<string>();
     constructor(private readonly root: HTMLElement, private readonly bridge: PanelBridge) {
         root.classList.add('shenscope-panel');
         const header = el('header', '', 'panel-header'); const brand = el('div', '', 'brand'); const mark = el('span', '', 'brand-mark'); mark.append(icon('scope')); brand.append(mark, el('strong', 'ShenScope'));
@@ -102,7 +107,7 @@ export class ShenScopePanel {
     private setStatus(text: string): void { this.status.textContent = text; this.status.classList.toggle('running', this.active); }
     private async selectTab(name: string): Promise<void> { this.tab = name; await this.renderTab(); }
     private async newConversation(): Promise<void> {
-        if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
+        if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
         this.sessionId = undefined; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
@@ -126,7 +131,7 @@ export class ShenScopePanel {
     private updateActions(): void {
         if (!this.sendButton || !this.cancelButton) { return; } const label = this.active ? 'Send guidance' : 'Send message';
         this.sendButton.setAttribute('aria-label', label); this.sendButton.title = `${label} (Ctrl / ⌘ Enter)`;
-        this.sendButton.disabled = !this.config || !this.composer.value.trim(); this.cancelButton.hidden = !this.active;
+        this.sendButton.disabled = !this.config || !this.composer.value.trim() || !!this.hooksJob || this.hooksStarting; this.cancelButton.hidden = !this.active;
         this.composer.placeholder = this.active ? 'Guide the running task…' : 'Ask, plan, or build something…';
     }
     private async send(): Promise<void> {
@@ -156,6 +161,7 @@ export class ShenScopePanel {
         if (this.tab === 'Intelligence' && this.capabilities.project_intelligence) { await this.project(revision); return; }
         if (this.tab === 'MCP' && this.capabilities.mcp) { await this.mcp(revision); return; }
         if (this.tab === 'Skills' && this.capabilities.skills) { await this.skills(revision); return; }
+        if (this.tab === 'Hooks' && this.capabilities.hooks) { await this.hooks(revision); return; }
         this.content.append(el('h2', this.tab === 'Intelligence' ? 'Project intelligence' : this.tab, 'view-title'));
         if (this.tab === 'Tools') {
             const tools = await this.bridge.request('tools/list'); if (revision !== this.renderRevision) { return; }
@@ -182,7 +188,7 @@ export class ShenScopePanel {
             if (!sessions.length) { list.append(el('p', 'Your conversations will appear here.', 'empty-text')); }
             for (const session of sessions) {
                 const row = el('article', '', 'session-card'); const open = this.button(session.title, async () => {
-                    if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting) { throw new Error('Finish the current task before switching conversations.'); }
+                    if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting) { throw new Error('Finish the current task before switching conversations.'); }
                     const full = await this.bridge.request('sessions/get', { session_id: session.id }); this.sessionId = full.id; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren();
                     for (const message of full.messages) { this.addMessage(message.role, message.text); } await this.selectTab('Chat'); this.scrollToEnd(true); this.composer.focus();
                 }, 'session-open');
@@ -201,7 +207,7 @@ export class ShenScopePanel {
         return this.sessionId!;
     }
     private async startSkills(action: string, args: Record<string, unknown> = {}): Promise<void> {
-        if (this.skillsJob || this.skillsStarting) { throw new Error('Finish or cancel the current Skills operation.'); }
+        if (this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting) { throw new Error('Finish or cancel the current Skills operation.'); }
         this.skillsStarting = true;
         try {
             const session_id = await this.ensureSession('Workspace skills'); this.skillsResult = undefined;
@@ -238,7 +244,7 @@ export class ShenScopePanel {
                     card.append(title, el('p', skill.description), el('small', skill.path, 'skill-source'));
                     if (!skill.selected) { card.append(el('small', 'Another source has priority for this name. You can choose this source explicitly.')); }
                     const enabled = el('input'); enabled.type = 'checkbox'; enabled.checked = skill.enabled; enabled.setAttribute('aria-label', `Enabled ${skill.name}`);
-                    enabled.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob;
+                    enabled.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.hooksJob || this.hooksStarting;
                     const label = el('label', '', 'checkbox-field'); label.append(enabled, el('span', 'Enabled')); card.append(label);
                     enabled.addEventListener('change', () => { enabled.disabled = true; void this.guard(async () => {
                         const next = structuredClone(this.config); next.skills ??= {};
@@ -275,7 +281,87 @@ export class ShenScopePanel {
             const next = structuredClone(this.config); next.skills ??= {};
             for (const [key, input] of inputs) { next.skills[key] = input.value.split('\n').map(line => line.trim()).filter(Boolean); }
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
-        }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob; roots.append(save); this.content.append(roots);
+        }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
+    }
+    private hooksBusy(): boolean { return this.active || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || !!this.mcpJob || !!this.projectJob; }
+    private async startHooks(action: string, args: Record<string, unknown> = {}): Promise<void> {
+        if (this.hooksJob || this.hooksStarting) { throw new Error('Finish or cancel the current Hook operation.'); }
+        this.hooksStarting = true;
+        if (this.tab === 'Hooks') { for (const control of Array.from(this.content.querySelectorAll<HTMLButtonElement | HTMLInputElement>('button, input[type="checkbox"]'))) { control.disabled = true; } }
+        this.updateActions();
+        try {
+            const session_id = await this.ensureSession('Workspace hooks'); this.hooksResult = undefined;
+            const result = await this.bridge.request('hooks/start', { session_id, action, ...args });
+            if (!this.completedHooksJobs.has(result.job_id)) { this.hooksJob = result.job_id; this.setStatus('Working with Hooks…'); }
+        } finally { this.hooksStarting = false; }
+        if (this.tab === 'Hooks') { await this.renderTab(); }
+    }
+    private async hooks(revision: number): Promise<void> {
+        const configuration = await this.bridge.request('config/get');
+        if (revision !== this.renderRevision) { return; }
+        this.config = configuration.value; this.configRevision = configuration.sha256;
+        const session_id = await this.ensureSession('Workspace hooks');
+        const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Lifecycle Hooks'));
+        const reload = this.button('Reload hooks', () => this.startHooks('reload')); reload.disabled = this.hooksBusy(); heading.append(reload);
+        this.content.append(heading, el('p', 'Run your configured checks at specific stages. Each command uses your process permissions.', 'view-description'));
+        const globalLabel = el('label', '', 'toggle-field'); const global = el('input'); global.type = 'checkbox'; global.checked = this.config.hooks?.enabled ?? true;
+        global.setAttribute('aria-label', 'Enable lifecycle Hooks'); global.disabled = this.hooksBusy(); globalLabel.append(global, el('span', 'Enable lifecycle Hooks')); this.content.append(globalLabel);
+        global.addEventListener('change', () => { void this.guard(async () => { const next = structuredClone(this.config); next.hooks ??= {}; next.hooks.enabled = global.checked; await this.saveHooksConfig(next); }); });
+        if (this.hooksJob) { this.content.append(el('p', 'Waiting for the command or your approval…', 'empty-text'), this.button('Cancel hook operation', async () => { await this.bridge.request('hooks/cancel_job', { session_id, job_id: this.hooksJob }); })); }
+        let snapshot: any;
+        try { snapshot = await this.bridge.request('hooks/query', { session_id }); }
+        catch { snapshot = ['list', 'reload'].includes(this.hooksResult?.action ?? '') ? this.hooksResult?.result : undefined; }
+        if (revision !== this.renderRevision) { return; }
+        if (snapshot && !snapshot.indexed && !this.hooksJob && !this.hooksStarting) { await this.startHooks('list'); return; }
+        if (!snapshot?.hooks?.length) { this.content.append(el('p', 'No configured hooks. Add a command or select a project configuration file.', 'empty-text')); }
+        for (const hook of snapshot?.hooks ?? []) {
+            const card = el('section', '', 'info-card hook-card'); const title = el('div', '', 'view-heading');
+            title.append(el('h3', hook.name), el('span', hook.enabled ? 'Enabled' : 'Disabled', `badge badge-${hook.enabled ? 'allow' : 'deny'}`)); card.append(title);
+            card.append(el('p', hook.point.replaceAll('_', ' '), 'hook-point'), el('small', `${hook.scope} · ${hook.source ?? 'Inline configuration'}`, 'hook-source'));
+            const toggleLabel = el('label', '', 'toggle-field'); const enabled = el('input'); enabled.type = 'checkbox'; enabled.checked = hook.enabled;
+            enabled.setAttribute('aria-label', `Enabled ${hook.name}`); enabled.disabled = this.hooksBusy() || !snapshot.enabled || (!hook.declared_enabled && hook.scope !== 'config'); toggleLabel.append(enabled, el('span', 'Enabled')); card.append(toggleLabel);
+            enabled.addEventListener('change', () => { void this.guard(async () => {
+                const next = structuredClone(this.config); next.hooks ??= {};
+                next.hooks.disabled = (next.hooks.disabled ?? []).filter((id: string) => id !== hook.id && (enabled.checked ? id !== hook.name : true));
+                if (!enabled.checked) { next.hooks.disabled.push(hook.id); }
+                // A declaration-level disabled state is edited in its own configuration source.
+                if (enabled.checked && next.hooks.entries) { for (const entry of next.hooks.entries) { if (entry.name === hook.name && hook.scope === 'config') { entry.enabled = true; } } }
+                await this.saveHooksConfig(next);
+            }); });
+            if (hook.recent) {
+                const recent = el('div', '', 'hook-recent'); recent.append(el('strong', `Last run · ${hook.recent.status}`), el('small', `${Math.round(hook.recent.duration_seconds * 1000)} ms · ${hook.recent.timestamp}`));
+                if (hook.recent.error) { recent.append(el('p', hook.recent.error, 'hook-error')); }
+                if (hook.recent.reason) { recent.append(el('p', hook.recent.reason)); }
+                card.append(recent);
+            } else { card.append(el('p', 'No runs in this conversation', 'empty-text')); }
+            const details = el('details'); details.append(el('summary', 'Command and behavior'), el('pre', hook.argv.map((arg: string) => JSON.stringify(arg)).join(' ')), el('small', `${hook.cwd} · ${hook.timeout}s · errors ${hook.on_failure} · context ${hook.allow_context ? 'enabled' : 'disabled'}`)); card.append(details);
+            const actions = el('div', '', 'button-row'); const test = this.button('Test hook', () => this.startHooks('test', { name: hook.id })); test.disabled = !hook.enabled || this.hooksBusy(); actions.append(test);
+            if (hook.source) { const open = this.button('Open configuration', () => this.startHooks('source', { name: hook.id })); open.disabled = this.hooksBusy(); actions.append(open); }
+            card.append(actions); this.content.append(card);
+        }
+        this.hookConfigurationForm();
+    }
+    private async saveHooksConfig(next: any): Promise<void> {
+        const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision });
+        this.config = next; this.configRevision = result.sha256; this.hooksResult = undefined; await this.renderTab();
+    }
+    private hookConfigurationForm(): void {
+        const sources = el('details', '', 'settings-group'); sources.append(el('summary', 'Configuration sources'));
+        const project = el('textarea'); project.rows = 2; project.value = (this.config.hooks?.project_files ?? ['.shenscope/hooks.toml']).join('\n'); project.setAttribute('aria-label', 'Project Hook configuration files');
+        const user = el('textarea'); user.rows = 2; user.value = (this.config.hooks?.user_files ?? []).join('\n'); user.setAttribute('aria-label', 'User Hook configuration files');
+        for (const [label, input] of [['Project files · one per line', project], ['User files · absolute paths', user]] as const) { const field = el('label', label, 'field'); field.append(input); sources.append(field); }
+        const saveSources = this.button('Save hook sources', async () => {
+            const next = structuredClone(this.config); next.hooks ??= {}; next.hooks.project_files = project.value.split('\n').map(value => value.trim()).filter(Boolean); next.hooks.user_files = user.value.split('\n').map(value => value.trim()).filter(Boolean); await this.saveHooksConfig(next);
+        }); saveSources.disabled = this.hooksBusy(); sources.append(saveSources); this.content.append(sources);
+        const form = el('details', '', 'settings-group'); form.append(el('summary', 'Add command hook'));
+        const name = this.field('Hook name', '', form); const point = el('select'); point.setAttribute('aria-label', 'Hook lifecycle point');
+        for (const value of ['session_start', 'before_model', 'after_model', 'before_tool', 'after_tool', 'after_edit', 'after_test', 'session_end']) { const option = el('option', value.replaceAll('_', ' ')); option.value = value; point.append(option); }
+        const pointField = el('label', 'Lifecycle point', 'field'); pointField.append(point); form.append(pointField);
+        const executable = this.field('Hook executable', '', form); const argumentsInput = el('textarea'); argumentsInput.rows = 3; argumentsInput.setAttribute('aria-label', 'Hook arguments · one per line'); const argumentsField = el('label', 'Arguments · one per line', 'field'); argumentsField.append(argumentsInput); form.append(argumentsField);
+        const save = this.button('Add hook', async () => {
+            const next = structuredClone(this.config); next.hooks ??= {}; next.hooks.entries ??= [];
+            next.hooks.entries.push({ name: name.value.trim(), point: point.value, argv: [executable.value.trim(), ...argumentsInput.value.split('\n').filter(value => value.length > 0)], enabled: true }); await this.saveHooksConfig(next);
+        }, 'primary-button'); save.disabled = this.hooksBusy(); form.append(save); this.content.append(form);
     }
     private async startMCP(server: string, action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.mcpJob) { throw new Error('Finish or cancel the current MCP operation.'); }
@@ -312,7 +398,7 @@ export class ShenScopePanel {
             title.append(el('h3', server.name), el('span', server.state, `badge badge-${server.state === 'ready' ? 'allow' : 'ask'}`));
             card.append(title, el('small', `${server.transport === 'stdio' ? 'Local process' : 'HTTP endpoint'}${server.server_info?.name ? ' · ' + server.server_info.name : ''}`, 'session-meta'));
             const enabledLabel = el('label', '', 'checkbox-field'); const enabled = el('input'); enabled.type = 'checkbox'; enabled.checked = server.enabled;
-            enabled.setAttribute('aria-label', `Enabled ${server.name}`); enabled.disabled = !!this.mcpJob || this.active || !!this.projectJob;
+            enabled.setAttribute('aria-label', `Enabled ${server.name}`); enabled.disabled = !!this.mcpJob || this.active || !!this.projectJob || !!this.hooksJob || this.hooksStarting;
             enabledLabel.append(enabled, el('span', 'Enabled')); card.append(enabledLabel);
             enabled.addEventListener('change', () => { enabled.disabled = true; void this.guard(async () => {
                 const next = structuredClone(this.config); next.mcp.servers[server.name].enabled = enabled.checked;
@@ -370,7 +456,7 @@ export class ShenScopePanel {
             next.mcp.servers[name.value.trim()] = spec;
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision });
             this.config = next; this.configRevision = result.sha256; this.notice.hidden = true; this.setStatus('Connection saved'); await this.renderTab();
-        }, 'primary-button'); save.disabled = !!this.mcpJob || this.active || !!this.projectJob; parent.append(save);
+        }, 'primary-button'); save.disabled = !!this.mcpJob || this.active || !!this.projectJob || !!this.hooksJob || this.hooksStarting; parent.append(save);
         if (existingName) {
             const remove = this.button('Remove connection', async () => {
                 const next = structuredClone(this.config); delete next.mcp.servers[existingName];
@@ -516,6 +602,17 @@ export class ShenScopePanel {
         if (this.disposed) { return; }
         if (method === 'transport/closed') { this.active = false; this.setStatus('Disconnected'); this.notice.textContent = params.message; this.notice.hidden = false; this.approvals.replaceChildren(); this.updateActions(); return; }
         if (method !== 'agent/event' || params.session_id !== this.sessionId) { return; } const payload = params.payload;
+        if (params.kind === 'hooks_job_completed' || params.kind === 'hooks_job_failed') {
+            this.completedHooksJobs.add(payload.job_id); while (this.completedHooksJobs.size > 64) { this.completedHooksJobs.delete(this.completedHooksJobs.values().next().value!); }
+            if (this.hooksJob === payload.job_id) { this.hooksJob = undefined; }
+            for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }
+            if (params.kind === 'hooks_job_completed') {
+                this.hooksResult = { action: payload.action, result: payload.result }; this.setStatus('Hook operation complete');
+                if (payload.action === 'source' && this.sessionId) { void this.guard(() => this.bridge.openHookSource(payload.job_id, this.sessionId!)); }
+            } else { this.notice.textContent = payload.error; this.notice.hidden = false; this.setStatus('Hook operation stopped'); }
+            this.updateActions(); if (this.tab === 'Hooks') { void this.guard(() => this.renderTab()); } return;
+        }
+        if (params.kind === 'hook_result') { if (this.tab === 'Hooks' && !this.hooksJob && !this.hooksStarting) { void this.guard(() => this.renderTab()); } return; }
         if (params.kind === 'skills_job_completed' || params.kind === 'skills_job_failed') {
             this.completedSkillsJobs.add(payload.job_id); while (this.completedSkillsJobs.size > 64) { this.completedSkillsJobs.delete(this.completedSkillsJobs.values().next().value!); }
             if (this.skillsJob === payload.job_id) { this.skillsJob = undefined; }

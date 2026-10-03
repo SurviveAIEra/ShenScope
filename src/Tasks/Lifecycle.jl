@@ -11,9 +11,9 @@ end
 function replace_work_receipt(record::WorkRecord, phase::Symbol; now,
         result_sha256 = nothing, evidence = "")
     current = current_work_receipt(record)
-    finished = phase in (:claimed, :started) ? nothing : max(Float64(now), current.started_at)
+    finished = phase in (:claimed, :started, :hook_started) ? nothing : max(Float64(now), current.started_at)
     receipt = WorkReceipt(current.execution_id, current.attempt, phase, current.started_at,
-        finished, result_sha256, cliptext(evidence, 4096))
+        finished, result_sha256, cliptext(evidence, 4096), current.hooks_started, current.hooks_barrier)
     vcat(record.receipts[1:end-1], [receipt])
 end
 
@@ -37,7 +37,7 @@ function recover_expired_work!(tasks::Dict{String,WorkRecord}, changed::Set{Stri
         record.status == WorkRunning || continue
         record.lease.expires_at <= now || continue
         receipt = current_work_receipt(record)
-        effects_uncertain = receipt.phase == :started && !record.spec.safe_retry
+        effects_uncertain = receipt.phase in (:started,:hook_started) && (!record.spec.safe_retry || receipt.hooks_started)
         failure = WorkFailure(:lease_expired, "Execution lease expired before a durable completion", true, effects_uncertain)
         if effects_uncertain
             status = WorkUncertain
@@ -68,12 +68,13 @@ function recover_workflow!(workflow::Workflow, ctx::RuntimeContext; now = time()
 end
 
 function claim_work!(workflow::Workflow, ctx::RuntimeContext; worker::AbstractString,
-        kinds = collect(WORK_KINDS), lease_seconds = 30.0, max_running = 8, now = time())
+        kinds = collect(WORK_KINDS), lease_seconds = 30.0, max_running = 8, now = time(), hooks_barrier=false)
     owner = valid_id(worker)
     clock = valid_work_clock(now)
     isfinite(lease_seconds) && 1 <= lease_seconds <= 3600 || throw(ShenScopeError(:tasks, "Invalid lease duration"))
     max_running isa Integer && !(max_running isa Bool) && 1 <= max_running <= 64 || throw(ShenScopeError(:tasks, "Invalid workflow concurrency"))
     permitted = Set(Symbol.(kinds))
+    hooks_barrier isa Bool || throw(ShenScopeError(:tasks,"Invalid Hook effect barrier"))
     issubset(permitted, WORK_KINDS) || throw(ShenScopeError(:tasks, "Unknown worker capability"))
     mutate_workflow!(workflow, ctx; operation = "claim") do tasks, changed
         recover_expired_work!(tasks, changed, clock)
@@ -84,14 +85,14 @@ function claim_work!(workflow::Workflow, ctx::RuntimeContext; worker::AbstractSt
         isempty(candidates) && return nothing
         sort!(candidates; by = record -> (-record.spec.priority, record.spec.id))
         active = [record for record in values(tasks) if record.status == WorkRunning]
-        any(record -> !work_replay_safe(record.spec.kind, record.spec.operation, record.spec.arguments), active) && return nothing
-        eligible = filter(record -> isempty(active) || work_replay_safe(record.spec.kind, record.spec.operation, record.spec.arguments), candidates)
+        any(record -> current_work_receipt(record).hooks_barrier || !work_replay_safe(record.spec.kind, record.spec.operation, record.spec.arguments), active) && return nothing
+        eligible = filter(record -> isempty(active) || !hooks_barrier && work_replay_safe(record.spec.kind, record.spec.operation, record.spec.arguments), candidates)
         isempty(eligible) && return nothing
         record = first(eligible)
         record.attempts < record.spec.retry.max_attempts || throw(ShenScopeError(:tasks, "Ready task exhausted its attempts"))
         attempt = record.attempts + 1
         lease = WorkLease(owner, string(uuid4()), attempt, clock, clock + lease_seconds)
-        receipt = WorkReceipt(string(uuid4()), attempt, :claimed, clock, nothing, nothing, "")
+        receipt = WorkReceipt(string(uuid4()), attempt, :claimed, clock, nothing, nothing, "",false,hooks_barrier)
         next = replace_work(record; status = WorkRunning, attempts = attempt, lease,
             not_before = 0.0, failure = nothing, receipts = vcat(record.receipts, [receipt]))
         tasks[record.spec.id] = next
@@ -116,6 +117,27 @@ function start_work!(workflow::Workflow, ctx::RuntimeContext, id::AbstractString
         tasks[identifier] = replace_work(record; receipts)
         push!(changed, identifier)
         work_view(tasks[identifier])
+    end
+end
+
+function mark_work_hook_effect!(workflow::Workflow, ctx::RuntimeContext, id::AbstractString;
+        worker::AbstractString, token::AbstractString, hook_id::AbstractString, now=time())
+    clock=valid_work_clock(now)
+    mutate_workflow!(workflow,ctx;operation="hook_effect") do tasks, changed
+        record=get(tasks,valid_id(id),nothing)
+        record !== nothing || throw(ShenScopeError(:tasks,"Task does not exist"))
+        check_work_lease(record,valid_id(worker),valid_id(token),clock)
+        current=current_work_receipt(record)
+        current.phase in (:started,:hook_started) || throw(ShenScopeError(:tasks,"Task Hook requires a started execution"))
+        record.cancel_requested && throw(ShenScopeError(:cancelled,"Task cancellation was requested"))
+        current.hooks_started && return nothing
+        any(other -> other.spec.id != record.spec.id && other.status == WorkRunning, values(tasks)) &&
+            throw(ShenScopeError(:hook_busy,"Unknown Hook effects require an exclusive task slot"))
+        receipt=WorkReceipt(current.execution_id,current.attempt,:hook_started,current.started_at,
+            current.finished_at,current.result_sha256,"Configured Hook " * valid_id(hook_id) * " may have external effects",true,true)
+        tasks[record.spec.id]=replace_work(record;receipts=vcat(record.receipts[1:end-1],[receipt]))
+        push!(changed,record.spec.id)
+        nothing
     end
 end
 
@@ -144,7 +166,11 @@ function finish_work!(workflow::Workflow, ctx::RuntimeContext, id::AbstractStrin
         record = get(tasks, valid_id(id), nothing)
         record === nothing && throw(ShenScopeError(:tasks, "Task does not exist"))
         check_work_lease(record, valid_id(worker), valid_id(token), clock)
-        current_work_receipt(record).phase == :started || throw(ShenScopeError(:tasks, "Task execution has not started"))
+        current_work_receipt(record).phase in (:started,:hook_started) || throw(ShenScopeError(:tasks, "Task execution has not started"))
+        if failure !== nothing && current_work_receipt(record).hooks_started &&
+                (failure.retryable || failure.effects_uncertain || failure.code in (:cancelled,:timeout,:lease_lost,:hook_denied,:hook_stopped))
+            failure=WorkFailure(failure.code,failure.message,false,true)
+        end
         stored_result = failure === nothing ? store_work_result_locked!(workflow, serialized) : nothing
         if failure === nothing
             status = WorkSucceeded

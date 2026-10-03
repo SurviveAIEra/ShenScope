@@ -1,0 +1,466 @@
+{
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "platform": "Linux, Julia 1.11.7, Electron 43.7.5",
+  "verification": {
+    "affected_core": {
+      "passing_assertions": 885,
+      "testsets": [
+        {
+          "name": "Cancellation tree and dynamic context",
+          "passed": 7
+        },
+        {
+          "name": "Concurrent budget reservation and accounting",
+          "passed": 9
+        },
+        {
+          "name": "Permission decisions and path containment",
+          "passed": 7
+        },
+        {
+          "name": "Durable journal, torn tails and revision conflicts",
+          "passed": 6
+        },
+        {
+          "name": "Session reconstruction and unknown side effects",
+          "passed": 11
+        },
+        {
+          "name": "Atomic replacement remains complete to concurrent readers",
+          "passed": 3
+        },
+        {
+          "name": "Oversized unterminated journal input is bounded",
+          "passed": 2
+        },
+        {
+          "name": "Configuration profiles, credential rejection and CAS",
+          "passed": 10
+        },
+        {
+          "name": "Canonical numeric journal round trips",
+          "passed": 3
+        },
+        {
+          "name": "Scoped memory, lexical retrieval and durable versions",
+          "passed": 25
+        },
+        {
+          "name": "Memory import validates every item before atomic commit",
+          "passed": 7
+        },
+        {
+          "name": "Agent tool calling preserves contract evidence without loading code",
+          "passed": 4
+        },
+        {
+          "name": "Julia interface contracts, ambiguity evidence and world-age boundary",
+          "passed": 19
+        },
+        {
+          "name": "Compiler diagnostics use listed targets, bounded output and independent processes",
+          "passed": 23
+        },
+        {
+          "name": "Task definition validation and independent graph checks",
+          "passed": 15
+        },
+        {
+          "name": "Claims, dependency release, priority, fences and detached views",
+          "passed": 13
+        },
+        {
+          "name": "Safe retries, uncertain effects and explicit reconciliation",
+          "passed": 16
+        },
+        {
+          "name": "Exclusive effects, cancellation propagation and read-only recovery",
+          "passed": 16
+        },
+        {
+          "name": "Large result artifacts, digest verification and descriptor collisions",
+          "passed": 6
+        },
+        {
+          "name": "Bounded JSON-RPC framing and UTF-8 lengths",
+          "passed": 8
+        },
+        {
+          "name": "Protocol version, config ownership, secrets and session commands",
+          "passed": 15
+        },
+        {
+          "name": "Agent protocol permission ownership and cancellation",
+          "passed": 7
+        },
+        {
+          "name": "Asynchronous task protocol, approvals and session ownership",
+          "passed": 13
+        },
+        {
+          "name": "Task jobs block config replacement and drain owned processes",
+          "passed": 5
+        },
+        {
+          "name": "MCP bounded schema assertions and references",
+          "passed": 40
+        },
+        {
+          "name": "MCP framing, content and configuration bounds",
+          "passed": 25
+        },
+        {
+          "name": "MCP async protocol keeps approvals, jobs and connections session scoped",
+          "passed": 33
+        },
+        {
+          "name": "Skills YAML metadata is bounded, typed and independently validated",
+          "passed": 21
+        },
+        {
+          "name": "Skills discovery preserves sources, precedence, diagnostics and lazy bodies",
+          "passed": 12
+        },
+        {
+          "name": "Skills activation, resource confinement, replay and permission boundaries",
+          "passed": 22
+        },
+        {
+          "name": "Skills source revisions are rechecked after approval",
+          "passed": 3
+        },
+        {
+          "name": "Skills RPC scopes approvals, durable activation and source-opening proof",
+          "passed": 23
+        },
+        {
+          "name": "Skills job cancellation drains approval and retains peer policy",
+          "passed": 6
+        },
+        {
+          "name": "Hooks configuration has explicit points, bounds and no permission grants",
+          "passed": 29
+        },
+        {
+          "name": "Hook source identity, read scope, ambiguity and explicit reload",
+          "passed": 14
+        },
+        {
+          "name": "Terminal rendering sanitizes control sequences and handles wide text",
+          "passed": 16
+        },
+        {
+          "name": "SSE Unicode fragmentation, multiline and limits",
+          "passed": 3
+        },
+        {
+          "name": "OpenAI-compatible real HTTP tool stream and native replay",
+          "passed": 7
+        },
+        {
+          "name": "Anthropic signature and tool continuation",
+          "passed": 5
+        },
+        {
+          "name": "OpenAI Responses encrypted reasoning and call stream",
+          "passed": 3
+        },
+        {
+          "name": "Gemini and Ollama native protocols",
+          "passed": 5
+        },
+        {
+          "name": "Retry before delivery, no replay after delivery, malformed calls",
+          "passed": 5
+        },
+        {
+          "name": "Workspace tools conflict guard, schema and transactional validation",
+          "passed": 9
+        },
+        {
+          "name": "Process execution, bounded logs, ownership, input and timeout",
+          "passed": 12
+        },
+        {
+          "name": "Agent repairs a failing Python test with real tool execution",
+          "passed": 10
+        },
+        {
+          "name": "Actual worker DAG binds verified dependency results",
+          "passed": 5
+        },
+        {
+          "name": "Test processes, timeout uncertainty and separate model sessions",
+          "passed": 16
+        },
+        {
+          "name": "Two real Julia processes cannot claim the same task",
+          "passed": 3
+        },
+        {
+          "name": "Agent and headless CLI invoke the same durable task tool",
+          "passed": 6
+        },
+        {
+          "name": "Actual MCP stdio lifecycle and discovery",
+          "passed": 34
+        },
+        {
+          "name": "Actual Streamable HTTP JSON, SSE and session ownership",
+          "passed": 10
+        },
+        {
+          "name": "HTTP MCP does not replay failed POST or follow redirects",
+          "passed": 24
+        },
+        {
+          "name": "SSE HTTP response ends a request while the server keeps the stream open",
+          "passed": 3
+        },
+        {
+          "name": "Actual HTTP GET notification resumption keeps the same session",
+          "passed": 7
+        },
+        {
+          "name": "MCP rejects invalid servers and preserves dirty catalogs",
+          "passed": 26
+        },
+        {
+          "name": "MCP environment, permission, ownership and error isolation",
+          "passed": 11
+        },
+        {
+          "name": "MCP timeouts, cancellation, fencing and no tool replay",
+          "passed": 17
+        },
+        {
+          "name": "MCP flapping connection exhausts one bounded outage",
+          "passed": 4
+        },
+        {
+          "name": "MCP parent cancellation closes its owned process without cancelling peers",
+          "passed": 4
+        },
+        {
+          "name": "Agent advertises discovered MCP tools on the next request",
+          "passed": 12
+        },
+        {
+          "name": "MCP CLI executes the same permissioned Core and closes its process",
+          "passed": 6
+        },
+        {
+          "name": "Actual agent lazily activates a Skill and narrows its next declarations",
+          "passed": 9
+        },
+        {
+          "name": "Headless Skills CLI reads shared references and preserves session state",
+          "passed": 6
+        },
+        {
+          "name": "Real Hook commands have bounded metadata, private output and narrowed environment",
+          "passed": 14
+        },
+        {
+          "name": "Hook approval rechecks source identity and current policy before launch",
+          "passed": 8
+        },
+        {
+          "name": "Hook timeouts, cancellation, malformed output and bounded history",
+          "passed": 14
+        },
+        {
+          "name": "Actual agent applies Hook context and lifecycle observations without exposing chat",
+          "passed": 10
+        },
+        {
+          "name": "Before-effect Hook denial prevents writes; post-effect failure preserves receipts",
+          "passed": 11
+        },
+        {
+          "name": "Owned processes drain descendants and bound blocked stdin",
+          "passed": 8
+        },
+        {
+          "name": "Hook RPC scopes command approval, cancellation and source-opening proof",
+          "passed": 29
+        },
+        {
+          "name": "Actual durable workers persist Hook effects and serialize unknown command checks",
+          "passed": 12
+        },
+        {
+          "name": "Lost leases cannot silently replay declared Hook effects or accept foreign markers",
+          "passed": 8
+        },
+        {
+          "name": "Hooks CLI uses the same commands, permissions and failure status",
+          "passed": 6
+        },
+        {
+          "name": "Headless CLI, offline task and session lifecycle",
+          "passed": 9
+        }
+      ]
+    },
+    "final_focused_hooks_and_tasks": {
+      "passing_assertions": 228,
+      "testsets": [
+        {
+          "name": "Task definition validation and independent graph checks",
+          "passed": 15
+        },
+        {
+          "name": "Claims, dependency release, priority, fences and detached views",
+          "passed": 13
+        },
+        {
+          "name": "Safe retries, uncertain effects and explicit reconciliation",
+          "passed": 16
+        },
+        {
+          "name": "Exclusive effects, cancellation propagation and read-only recovery",
+          "passed": 16
+        },
+        {
+          "name": "Large result artifacts, digest verification and descriptor collisions",
+          "passed": 6
+        },
+        {
+          "name": "Hooks configuration has explicit points, bounds and no permission grants",
+          "passed": 29
+        },
+        {
+          "name": "Hook source identity, read scope, ambiguity and explicit reload",
+          "passed": 14
+        },
+        {
+          "name": "Real Hook commands have bounded metadata, private output and narrowed environment",
+          "passed": 14
+        },
+        {
+          "name": "Hook approval rechecks source identity and current policy before launch",
+          "passed": 8
+        },
+        {
+          "name": "Hook timeouts, cancellation, malformed output and bounded history",
+          "passed": 14
+        },
+        {
+          "name": "Actual agent applies Hook context and lifecycle observations without exposing chat",
+          "passed": 10
+        },
+        {
+          "name": "Before-effect Hook denial prevents writes; post-effect failure preserves receipts",
+          "passed": 11
+        },
+        {
+          "name": "Owned processes drain descendants and bound blocked stdin",
+          "passed": 7
+        },
+        {
+          "name": "Hook RPC scopes command approval, cancellation and source-opening proof",
+          "passed": 29
+        },
+        {
+          "name": "Actual durable workers persist Hook effects and serialize unknown command checks",
+          "passed": 12
+        },
+        {
+          "name": "Lost leases cannot silently replay declared Hook effects or accept foreign markers",
+          "passed": 8
+        },
+        {
+          "name": "Hooks CLI uses the same commands, permissions and failure status",
+          "passed": 6
+        }
+      ],
+      "coverage_note": "The final complete 885-assertion suite additionally covers the later global-process-budget case and final receipt invariants."
+    },
+    "new_hooks_and_process_assertions": 163,
+    "editor_typecheck": "passed",
+    "full_workbench_typecheck": "passed",
+    "editor_transport_tests": 3,
+    "vsix_gui": {
+      "status": "passed",
+      "flow": "PASS: VSIX webview, actual Hook project/user/inline configuration, command approval/test/status, per-source/global enable, reload and configuration opening inside/outside the workspace"
+    },
+    "native_gui": {
+      "status": "passed",
+      "flow": "PASS: native Workbench with extensions disabled, actual Hook project/user/inline configuration, command approval/test/status, per-source/global enable, reload and configuration opening inside/outside the workspace"
+    },
+    "commands": [
+      "julia --threads=4 --project=. test/runtests.jl",
+      "julia --threads=4 --project=. -e include(unit/tasks;unit/hooks;integration/hooks;unit/hooks_protocol;integration/hooks_workers)",
+      "npm run check; npm run build; npm run test (editors)",
+      "npm run typecheck-client (pinned Code-OSS)",
+      "node ide/test/native_smoke.mjs --hooks-only [--vsix]",
+      "python3 scripts/package_vsix.py",
+      "python3 scripts/core_size.py"
+    ]
+  },
+  "core_size": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 71,
+      "blank": 472,
+      "comment": 63,
+      "code": 8806
+    },
+    "cli_tui": {
+      "nFiles": 5,
+      "blank": 14,
+      "comment": 6,
+      "code": 525
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 241194,
+    "line_target_percent": 3.5224,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "total_gib": 31.451,
+    "free_gib": 17.7,
+    "large_build_allowed": true,
+    "safe_scratch_paths": [
+      "/workspace/ShenScope/.local/tmp",
+      "/workspace/ShenScope/.local/build-scratch"
+    ]
+  },
+  "vsix": {
+    "bytes": 210822,
+    "sha256": "f00e52d1931712c50f668534d76a7ccb087ae403c0227a960fd130d707661ca6",
+    "packaged_core_source_match": true,
+    "matched_core_and_manifest_files": 78,
+    "frontend_asset_match": true
+  },
+  "source_synthesis": "docs/architecture/reference_synthesis.md",
+  "failure_history": [
+    "An initial agent fixture passed an unsupported overwrite argument to the create-only write tool; it was corrected before the functional suite passed.",
+    "The GUI harness encountered a detached transient Webview frame; it now selects the ready extension frame and handles detachment during polling.",
+    "A native GUI source-open probe raced a pending reload; the UI now disables operation controls immediately and the probe waits for completed reload.",
+    "A VSIX probe ambiguously matched two Enabled labels; it now targets the status badge.",
+    "The standalone editor typecheck rejected NodeList iteration without DOM.Iterable; Array.from corrected it. Check and build now use fail-fast shell execution.",
+    "A broad run loaded an earlier Core snapshot while a newly added duplicate-key test was written; that run failed and is not the final evidence. After freezing implementation, the final complete suite passed.",
+    "An actual /bin/true hook showed that a successful command closing stdin was being reported as an input failure. Closed-input handling now preserves its real exit/output and records stdin_written; final tests include this case."
+  ],
+  "limits": [
+    "The 250,000-line Core target and complete upstream synthesis remain unfinished.",
+    "Host commands are not an OS sandbox; child filesystem/network effects are not individually mediated by Core read/edit/network rules.",
+    "Linux ownership covers the process group; descendants deliberately escaping it require future OS isolation. Windows direct-child cleanup is not descendant cleanup.",
+    "Replay-safe Hook declarations are explicit operator assertions, not a security guarantee. Effect barriers are scoped to one durable workflow.",
+    "Hook audit history is bounded in memory and is not durable across Core restart.",
+    "HTTP/prompt/fire-and-forget hooks, upstream dialect adapters, permission notifications, compaction lifecycle and plugin package integration remain pending.",
+    "Actual GUI evidence covers development native Workbench and VSIX Webview; no complete installer, live-model or Windows runtime verification is claimed."
+  ]
+}

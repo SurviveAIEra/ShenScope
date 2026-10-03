@@ -36,7 +36,7 @@ function work_receipt_dict(receipt::WorkReceipt)
     Dict("execution_id" => receipt.execution_id, "attempt" => receipt.attempt,
         "phase" => String(receipt.phase), "started_at" => receipt.started_at,
         "finished_at" => receipt.finished_at, "result_sha256" => receipt.result_sha256,
-        "evidence" => receipt.evidence)
+        "evidence" => receipt.evidence, "hooks_started" => receipt.hooks_started, "hooks_barrier"=>receipt.hooks_barrier)
 end
 
 function work_receipt_from(value::AbstractDict)
@@ -47,8 +47,11 @@ function work_receipt_from(value::AbstractDict)
     finished = get(value, "finished_at", nothing)
     result_hash = get(value, "result_sha256", nothing)
     evidence = get(value, "evidence", "")
+    hooks_started = get(value,"hooks_started",false)
+    hooks_barrier = get(value,"hooks_barrier",false)
+    hooks_started isa Bool && hooks_barrier isa Bool || throw(ShenScopeError(:storage,"Invalid Hook execution marker"))
     attempt isa Integer && !(attempt isa Bool) && 1 <= attempt <= 32 || throw(ShenScopeError(:storage, "Invalid receipt attempt"))
-    phase in (:claimed, :started, :succeeded, :failed, :cancelled, :interrupted, :reconciled) ||
+    phase in (:claimed, :started, :hook_started, :succeeded, :failed, :cancelled, :interrupted, :reconciled) ||
         throw(ShenScopeError(:storage, "Invalid receipt phase"))
     started isa Real && isfinite(started) && started >= 0 || throw(ShenScopeError(:storage, "Invalid receipt start"))
     finished === nothing || finished isa Real && isfinite(finished) && finished >= started ||
@@ -56,7 +59,9 @@ function work_receipt_from(value::AbstractDict)
     result_hash === nothing || result_hash isa String && occursin(r"^[a-f0-9]{64}$", result_hash) ||
         throw(ShenScopeError(:storage, "Invalid receipt result hash"))
     evidence isa String && ncodeunits(evidence) <= 4096 || throw(ShenScopeError(:storage, "Receipt evidence exceeds limit"))
-    WorkReceipt(execution, Int(attempt), phase, Float64(started), finished === nothing ? nothing : Float64(finished), result_hash, evidence)
+    phase == :hook_started && !hooks_started && throw(ShenScopeError(:storage,"Hook phase lacks its execution marker"))
+    hooks_started && (!hooks_barrier || phase == :claimed) && throw(ShenScopeError(:storage,"Hook execution lacks its effect barrier"))
+    WorkReceipt(execution, Int(attempt), phase, Float64(started), finished === nothing ? nothing : Float64(finished), result_hash, evidence, hooks_started, hooks_barrier)
 end
 
 function work_runtime_dict(record::WorkRecord; include_token = true)

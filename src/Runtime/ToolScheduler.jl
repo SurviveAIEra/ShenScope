@@ -15,6 +15,13 @@ end
 
 function execute_batch(tools::Dict{String,AbstractTool},calls::Vector{ToolCall},ctx::RuntimeContext;
         concurrency=4)
+    with_lifecycle_hooks(values(tools),ctx) do
+        execute_batch_owned(tools,calls,ctx;concurrency)
+    end
+end
+
+function execute_batch_owned(tools::Dict{String,AbstractTool},calls::Vector{ToolCall},ctx::RuntimeContext;
+        concurrency=4)
     concurrency>0 || throw(ArgumentError("Concurrency must be positive"))
     results=Vector{ToolResult}(undef,length(calls))
     next=1
@@ -52,11 +59,12 @@ function execute_batch(tools::Dict{String,AbstractTool},calls::Vector{ToolCall},
     return results
 end
 
-function core_tools(; tasks = true, mcp = true, skills = true, config = Dict(), credential_lookup = key -> get(ENV, key, ""))
+function core_tools(; tasks = true, mcp = true, skills = true, hooks = true, config = Dict(), config_source=nothing, credential_lookup = key -> get(ENV, key, ""))
     process=ProcessTool()
     tools = AbstractTool[ReadTool(),SearchTool(),EditTool(),WriteTool(),PatchTool(),process,GitTool(process),MemoryTool(),ProjectTool(),DiagnosticsTool()]
     mcp && push!(tools, MCPControlTool(MCPManager(config; credential_lookup)))
     skills && push!(tools, SkillsTool(SkillManager(config)))
+    hooks && push!(tools, HooksTool(HookManager(config;config_source,credential_lookup)))
     tasks && push!(tools, TaskTool(WorkExecutor(; tools)))
     tools
 end

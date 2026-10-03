@@ -11,7 +11,8 @@ const methods = new Set(['health', 'config/get', 'config/set', 'credentials/set'
     'sessions/branch', 'agent/start', 'agent/cancel', 'agent/steer', 'permissions/respond', 'tools/list', 'runtime/status',
     'project/backends', 'project/start', 'project/job', 'project/cancel', 'project/query',
     'tasks/start', 'tasks/query', 'tasks/job', 'tasks/cancel_job', 'mcp/start', 'mcp/query', 'mcp/job', 'mcp/cancel_job',
-    'skills/start', 'skills/query', 'skills/job', 'skills/cancel_job', 'skills/source_path']);
+    'skills/start', 'skills/query', 'skills/job', 'skills/cancel_job', 'skills/source_path',
+    'hooks/start', 'hooks/query', 'hooks/job', 'hooks/cancel_job', 'hooks/source_path']);
 
 // Runs in Code-OSS's shared utility process, independently of extension hosts.
 export class ShenScopeChannel extends Disposable implements IServerChannel<string> {

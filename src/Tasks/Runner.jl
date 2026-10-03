@@ -91,6 +91,7 @@ function run_workflow!(executor::WorkExecutor, workflow::Workflow, ctx::RuntimeC
     token = CancellationToken(ctx.cancellation)
     runctx = child_context(ctx)
     runctx.cancellation = token
+    hooks_barrier = worker_hooks_barrier(executor,runctx)
     deadline = time() + max_seconds
     workers = Task[]
     errors = Any[]
@@ -107,7 +108,7 @@ function run_workflow!(executor::WorkExecutor, workflow::Workflow, ctx::RuntimeC
                             break
                         end
                         lock(runctx.budget.mutex) do; check_budget(runctx.budget); end
-                        record = claim_work!(workflow, runctx; worker, kinds, lease_seconds, max_running = concurrency)
+                        record = claim_work!(workflow, runctx; worker, kinds, lease_seconds, max_running = concurrency, hooks_barrier)
                         if record !== nothing
                             run_leased_work!(executor, workflow, record, runctx; lease_seconds)
                             continue

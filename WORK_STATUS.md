@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 7,837 authored Julia Core code lines across 63 files;
-CLI/TUI add 501 lines and are counted separately. This is 3.1348% of the
-minimum line target, leaving 242,163 lines. These are early implementations,
+Latest cloc 2.11 count: 8,806 authored Julia Core code lines across 71 files;
+CLI/TUI add 525 lines and are counted separately. This is 3.5224% of the
+minimum line target, leaving 241,194 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -140,6 +140,22 @@ tests pass. Six Pi fixtures are accepted and eight rejected; strict compatibilit
 limits remain documented. See docs/core/skills.md and
 docs/validation/skills-checkpoint-010.json. Next: configurable observable Hooks,
 context recovery and Julia-specific project/runtime requirements.
+
+Hooks checkpoint: explicit project/user/inline command declarations and eight
+lifecycle points; bounded metadata-only stdin and strict output decisions; source/
+declaration digests, permission and enabled-state rechecks after approval; bounded
+process ownership, cancellation, budgets, private capture and observable results.
+Agent, durable workers, CLI and async RPC share Julia Core. Workflow receipts
+persist potential Hook effects before launch and enforce exclusive slots/lease
+recovery without hidden replay. Both actual editor GUIs verify command tests,
+approvals, statuses, source/global enable, reload and configuration opening inside/
+outside the workspace. Full affected suite: 885 assertions passed; full Workbench
+and editor checks plus three Node transport tests pass. See docs/core/hooks.md
+and docs/validation/hooks-checkpoint-011.json. Host OS isolation, durable Hook
+audit and complete upstream Hook dialect/event coverage remain unfinished. Next:
+context preparation/recovery and project instructions, Julia semantic/project
+backends and process/terminal requirements including incremental UTF-8 event
+decoding. Continue feature development immediately after the remote checkpoint.
 
 Continuous development is authorized and required: a tested checkpoint is a
 commit/push boundary, not permission to stop before the Core target and product

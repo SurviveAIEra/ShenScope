@@ -6,7 +6,8 @@ const DEFAULT_CONFIG=Dict{String,Any}(
     "permissions"=>Dict{String,Any}("read"=>"allow","edit"=>"ask","process"=>"ask",
         "network"=>"ask","mcp"=>"ask","dynamic"=>"ask","persistence"=>"ask"),
     "mcp"=>Dict{String,Any}("servers"=>Dict{String,Any}()),
-    "skills"=>Dict{String,Any}())
+    "skills"=>Dict{String,Any}(),
+    "hooks"=>Dict{String,Any}())
 
 function merge_config!(target::Dict,source::AbstractDict)
     for (k,v) in source
@@ -45,6 +46,7 @@ function load_config(;path=config_path(),profile=nothing)
     permissions_from_config(config)
     mcp_specs_from_config(config)
     skill_config(config)
+    hook_config(config)
     return config
 end
 
@@ -74,7 +76,7 @@ function save_config!(config::Dict;path=config_path(),expected_sha256=nothing,be
             observed==expected_sha256 || throw(ShenScopeError(:conflict,"Configuration changed"))
         end
         sanitized=merge_config!(Dict{String,Any}(),config)
-        provider_from_config(sanitized);BudgetLedger(limits_from_config(sanitized));permissions_from_config(sanitized);mcp_specs_from_config(sanitized);skill_config(sanitized)
+        provider_from_config(sanitized);BudgetLedger(limits_from_config(sanitized));permissions_from_config(sanitized);mcp_specs_from_config(sanitized);skill_config(sanitized);hook_config(sanitized)
         io=IOBuffer();TOML.print(io,sanitized;sorted=true)
         text=String(take!(io));before_write();atomic_write(path,text)
         return digest(text)

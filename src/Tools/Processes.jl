@@ -23,11 +23,18 @@ function output_text(b::OutputBuffer)
         if b.total>retained
             # String(Vector{UInt8}) takes ownership of its input. A snapshot
             # must not consume the retained bytes or mutate future polls.
-            return String(copy(b.head)) * "\n… output omitted …\n" * String(copy(b.tail))
+            return process_utf8(copy(b.head)) * "\n… output omitted …\n" * process_utf8(copy(b.tail))
         end
-        return String(vcat(b.head,b.tail))
+        return process_utf8(vcat(b.head,b.tail))
     end
 end
+
+function process_utf8(bytes::Vector{UInt8})
+    text = String(bytes)
+    isvalid(text) ? text : join(isvalid(character) ? string(character) : "�" for character in text)
+end
+
+output_bytes(b::OutputBuffer) = lock(b.mutex) do; vcat(b.head, b.tail); end
 
 mutable struct ProcessHandle
     id::String
@@ -43,6 +50,11 @@ mutable struct ProcessHandle
     cancellation::CancellationToken
     timed_out::Bool
     monitor::Union{Nothing,Task}
+    process_id::Int
+    output::Pipe
+    error::Pipe
+    terminated::Bool
+    termination_mutex::ReentrantLock
 end
 
 mutable struct ProcessManager
@@ -60,37 +72,74 @@ tool_description(::ProcessTool)="Run argument-vector commands; start/poll/write/
 tool_schema(::ProcessTool)=object_schema(Dict("action"=>Dict("type"=>"string","enum"=>["run","start","poll","write","terminate"]),
     "argv"=>Dict("type"=>"array","minItems"=>1,"maxItems"=>128,"items"=>string_schema(;max=65536)),
     "cwd"=>string_schema(;max=4096),"timeout"=>Dict("type"=>"number","minimum"=>0.05,"maximum"=>3600),
-    "handle"=>string_schema(;max=128),"input"=>string_schema(),"close_input"=>Dict("type"=>"boolean"));required=["action"])
+    "handle"=>string_schema(;max=128),"input"=>string_schema(),"close_input"=>Dict("type"=>"boolean"),
+    "purpose"=>Dict("type"=>"string","enum"=>["command","test"]));required=["action"])
 
 function terminate_process!(h::ProcessHandle)
-    process_exited(h.process) && return
-    if Sys.islinux()
-        # setsid gives this process its own session/group; descendants share it.
-        ccall(:kill,Cint,(Cint,Cint),-getpid(h.process),15)
-    else
-        kill(h.process,Base.SIGTERM)
+    lock(h.termination_mutex) do
+        h.terminated && return
+        h.terminated = true
+        grouped = Sys.islinux() && h.process_id > 0
+        group_alive = grouped && ccall(:kill, Cint, (Cint, Cint), -h.process_id, 0) == 0
+        if group_alive
+            ccall(:kill, Cint, (Cint, Cint), -h.process_id, 15)
+        elseif !process_exited(h.process)
+            try kill(h.process, Base.SIGTERM) catch end
+        end
+        deadline = time() + 0.25
+        while time() < deadline
+            alive = grouped ? ccall(:kill, Cint, (Cint, Cint), -h.process_id, 0) == 0 : !process_exited(h.process)
+            !alive && process_exited(h.process) && break
+            sleep(0.01)
+        end
+        # The leader may have exited while descendants still hold the pipes.
+        grouped && ccall(:kill, Cint, (Cint, Cint), -h.process_id, 9)
+        !process_exited(h.process) && try kill(h.process, Base.SIGKILL) catch end
+        isopen(h.input) && try close(h.input) catch end
     end
-    finish=time()+0.25
-    while !process_exited(h.process) && time()<finish;sleep(0.01);end
-    if !process_exited(h.process)
-        Sys.islinux() ? ccall(:kill,Cint,(Cint,Cint),-getpid(h.process),9) : kill(h.process,Base.SIGKILL)
-    end
+    nothing
 end
 
 function start_process!(manager::ProcessManager,argv::Vector{String},ctx::RuntimeContext;
-        cwd=ctx.root,timeout=120.0,output_limit=256*1024)
+        cwd=ctx.root,timeout=120.0,output_limit=256*1024,environment=nothing,
+        emit_output=true,permission_target=nothing,permission_tool="process",before_start=()->nothing)
     isempty(argv) && throw(ShenScopeError(:arguments,"Empty command"))
+    length(argv) <= 128 && all(value -> !occursin('\0', value) && ncodeunits(value) <= 65536, argv) ||
+        throw(ShenScopeError(:arguments, "Invalid process argument vector"))
+    timeout isa Real && !(timeout isa Bool) && isfinite(timeout) && 0.01 <= timeout <= 3600 ||
+        throw(ShenScopeError(:arguments, "Invalid process timeout"))
+    output_limit isa Int && 64 <= output_limit <= 4 * 1024 * 1024 || throw(ShenScopeError(:arguments, "Invalid process output limit"))
     path=workspace_path(ctx.root,cwd)
     isdir(path) || throw(ShenScopeError(:path,"Process directory does not exist"))
-    authorize!(ctx,:process,"process",canonical(argv);reason="Run workspace process")
+    target = permission_target === nothing ? canonical(Dict("argv" => argv, "cwd" => path)) : String(permission_target)
+    authorize!(ctx,:process,permission_tool,target;reason="Run workspace process")
+    check_cancelled(ctx.cancellation)
+    # Callers can revalidate a declaration after asynchronous approval.
+    before_start()
+    workspace_path(ctx.root, cwd) == path && isdir(path) || throw(ShenScopeError(:path, "Process directory changed after approval"))
+    permission_decision(ctx.permissions, PermissionRequest("process-start", :process, String(permission_tool), target, "Recheck process launch")) == Deny &&
+        throw(ShenScopeError(:permission, "Process launch is now denied"))
+    effective_timeout = lock(ctx.budget.mutex) do
+        check_budget(ctx.budget)
+        remaining = ctx.budget.limits.max_seconds - (time_ns()-ctx.budget.started_ns)/1e9
+        remaining > 0 || throw(ShenScopeError(:budget,"Process wall-clock budget exhausted"))
+        min(Float64(timeout),remaining)
+    end
     return lock(manager.mutex) do
         length(manager.handles)<manager.max_handles || throw(ShenScopeError(:process,"Process handle limit reached"))
         command=Sys.islinux() ? vcat(["setsid"],argv) : argv
         cmd=Cmd(Cmd(command);dir=path)
         # Keep an explicit inherited environment for compiler usability. Dynamic
         # analyzers use a separate restricted sandbox rather than this host tool.
+        environment !== nothing && (cmd = setenv(cmd, environment))
         out=Pipe();err=Pipe();input=Pipe()
-        process=run(pipeline(ignorestatus(cmd);stdin=input,stdout=out,stderr=err);wait=false)
+        process=try
+            run(pipeline(ignorestatus(cmd);stdin=input,stdout=out,stderr=err);wait=false)
+        catch
+            for stream in (out, err, input); isopen(stream) && try close(stream) catch end; end
+            throw(ShenScopeError(:process, "Unable to start workspace command"))
+        end
+        process_id = getpid(process)
         close(out.in);close(err.in);close(input.out)
         stdout=OutputBuffer(output_limit);stderr=OutputBuffer(output_limit)
         id=string(uuid4())
@@ -99,19 +148,23 @@ function start_process!(manager::ProcessManager,argv::Vector{String},ctx::Runtim
             push!(readers,@async begin
                 try
                     while !eof(stream)
-                        data=readavailable(stream)
+                        data = UInt8[read(stream, UInt8)]
+                        available = min(bytesavailable(stream), 8191)
+                        available > 0 && append!(data, read(stream, available))
                         capture!(buffer,data)
                         # The retained output is bounded; event chunks also are.
-                        !isempty(data) && emit!(ctx,:process_output,Dict("handle"=>id,"stream"=>label,
-                            "text"=>cliptext(transcode(String,data),64*1024)))
+                        emit_output && !isempty(data) && emit!(ctx,:process_output,Dict("handle"=>id,"stream"=>label,
+                            "text"=>process_utf8(copy(data))))
                     end
+                catch cause
+                    cause isa EOFError || !isopen(stream) || rethrow()
                 finally
                     close(stream)
                 end
             end)
         end
-        h=ProcessHandle(id,ctx.session_id,argv,process,input,stdout,stderr,readers,time(),time()+timeout,
-            ctx.cancellation,false,nothing)
+        h=ProcessHandle(id,ctx.session_id,argv,process,input,stdout,stderr,readers,time(),time()+effective_timeout,
+            ctx.cancellation,false,nothing,process_id,out,err,false,ReentrantLock())
         manager.handles[id]=h
         h.monitor=@async begin
             while !process_exited(process)
@@ -122,7 +175,11 @@ function start_process!(manager::ProcessManager,argv::Vector{String},ctx::Runtim
                 sleep(0.025)
             end
             wait(process)
-            foreach(wait,readers)
+            drain_deadline = time() + 0.15
+            while !all(istaskdone, readers) && time() < drain_deadline; sleep(0.01); end
+            terminate_process!(h)
+            for stream in (out, err); isopen(stream) && try close(stream) catch end; end
+            for reader in readers; try wait(reader) catch end; end
             isopen(input) && close(input)
         end
         return h
@@ -136,6 +193,38 @@ function process_status(h::ProcessHandle)
         "stdout"=>output_text(h.stdout),"stderr"=>output_text(h.stderr),
         "stdout_bytes"=>h.stdout.total,"stderr_bytes"=>h.stderr.total,
         "timed_out"=>h.timed_out,"elapsed_seconds"=>time()-h.started)
+end
+
+function process_input!(h::ProcessHandle, text::AbstractString, ctx::RuntimeContext; close_input=true, allow_closed_input=false)
+    ncodeunits(text) <= 1024 * 1024 || throw(ShenScopeError(:arguments, "Process input exceeds capacity"))
+    writer = @async begin
+        try
+            write(h.input, text); flush(h.input)
+            true
+        catch cause
+            closed = cause isa Base.IOError && cause.code in (Base.UV_EPIPE,Base.UV_ECONNRESET,Base.UV_EBADF) ||
+                cause isa ArgumentError && !isopen(h.input)
+            allow_closed_input && closed || rethrow()
+            false
+        finally
+            close_input && isopen(h.input) && close(h.input)
+        end
+    end
+    written = try
+        while !istaskdone(writer)
+            check_cancelled(ctx.cancellation)
+            time() < h.deadline || throw(ShenScopeError(:timeout, "Process input timed out"))
+            sleep(0.01)
+        end
+        fetch(writer)
+    catch cause
+        terminate_process!(h)
+        try wait(writer) catch end
+        cause isa ShenScopeError && rethrow()
+        throw(ShenScopeError(:process, "Process input is unavailable"))
+    end
+    check_cancelled(ctx.cancellation)
+    written
 end
 
 function owned_handle(manager::ProcessManager,id::String,ctx::RuntimeContext)
@@ -167,8 +256,7 @@ function execute(t::ProcessTool,args::AbstractDict,ctx::RuntimeContext)
     if action=="write"
         authorize!(ctx,:process,"process.write",h.id)
         process_exited(h.process) && throw(ShenScopeError(:process,"Process has exited"))
-        write(h.input,get(args,"input",""));flush(h.input)
-        get(args,"close_input",false) && close(h.input)
+        process_input!(h,get(args,"input",""),ctx;close_input=get(args,"close_input",false))
     elseif action=="terminate"
         terminate_process!(h);wait(h.monitor)
     end
