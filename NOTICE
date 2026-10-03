@@ -1,0 +1,10 @@
+ShenScope
+Copyright 2026 SurviveAIEra and ShenScope contributors
+
+Project initiated by SurviveAIEra.
+Canonical repository: https://github.com/SurviveAIEra/ShenScope
+
+ShenScope's original Agent Core is independently implemented in Julia.
+Research references are listed in docs/architecture/reference_lockfile.json.
+Third-party components retain their own copyrights and licenses; see
+THIRD_PARTY_NOTICES.md.

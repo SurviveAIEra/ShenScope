@@ -1,0 +1,175 @@
+[
+  {
+    "name": "codex",
+    "repository": "openai/codex",
+    "status": "cloned",
+    "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+    "license": "Apache-2.0",
+    "inspected_paths": [
+      "codex-rs/core/src/guardian/request_budget.rs"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "opencode",
+    "repository": "anomalyco/opencode",
+    "status": "cloned",
+    "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+    "license": "MIT",
+    "inspected_paths": [
+      "packages/opencode/src/session/llm/native-request.ts"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "deepseek-harness",
+    "repository": "deepseek-ai/deepseek-harness",
+    "status": "cloned",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "license": "MIT",
+    "inspected_paths": [
+      "packages/core/agent-loop/src/tool-calls.ts"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "pi-mono",
+    "repository": "badlogic/pi-mono",
+    "status": "cloned",
+    "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+    "license": "MIT",
+    "inspected_paths": [
+      "packages/agent/src/agent-loop.ts",
+      "packages/coding-agent/src/core/session-manager.ts"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "kimi-code",
+    "repository": "MoonshotAI/kimi-code",
+    "status": "cloned",
+    "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+    "license": "MIT",
+    "inspected_paths": [
+      "packages/agent-core-v2/src/agent/loop/machine/requester.ts"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "ZCode",
+    "repository": "zai-org/ZCode",
+    "status": "cloned",
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "license": "Apache-2.0",
+    "inspected_paths": [
+      "apps/zcode-cli/packages/core/src/runtime/methods/turn-loop.ts"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "qwen-code",
+    "repository": "QwenLM/qwen-code",
+    "status": "cloned",
+    "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+    "license": "Apache-2.0",
+    "inspected_paths": [
+      "packages/core/src/providers/provider-config.ts"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "aider",
+    "repository": "Aider-AI/aider",
+    "status": "cloned",
+    "commit": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+    "license": "Apache-2.0",
+    "inspected_paths": [
+      "aider/repomap.py"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "serena",
+    "repository": "oraios/serena",
+    "status": "cloned",
+    "commit": "d0f7f92631c23dc4c5ed0b5ccd35bc623b19a809",
+    "license": "GPL-3.0-or-later application; MIT SolidLSP",
+    "inspected_paths": [
+      "src/serena/repl/facade.py"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "CodeGraphContext",
+    "repository": "CodeGraphContext/CodeGraphContext",
+    "status": "cloned",
+    "commit": "642c3215f8ef87fba03bc5dea6dbcb28d655fbd8",
+    "license": "MIT",
+    "inspected_paths": [
+      "src/codegraphcontext/tools/graph_builder.py",
+      "src/codegraphcontext/tools/tree_sitter_parser.py",
+      "pyproject.toml"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "hermes-agent",
+    "repository": "NousResearch/hermes-agent",
+    "status": "cloned",
+    "commit": "f4d3e626a732010d23d02c24018091b311a2eb06",
+    "license": "MIT",
+    "inspected_paths": [
+      "tools/terminal_tool_lifecycle.py"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "Aries-cli",
+    "repository": "aayoawoyemi/Aries-cli",
+    "status": "cloned",
+    "commit": "9863894076e03ec03b82f309fc5ef742aa1994d9",
+    "license": "Apache-2.0",
+    "inspected_paths": [
+      "src/repl/process.ts",
+      "body/repl.py"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "vscode",
+    "repository": "microsoft/vscode",
+    "status": "cloned",
+    "commit": "7f20cdad4f4ab923272e91e330a7701c52706fc7",
+    "license": "MIT",
+    "inspected_paths": [
+      "src/vs/workbench/browser/parts/sidebar/sidebarPart.ts",
+      ".nvmrc"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "vscodium",
+    "repository": "VSCodium/vscodium",
+    "status": "cloned",
+    "commit": "5a73682ca091082675b10c9dc3f348c1d824d94f",
+    "license": "MIT",
+    "inspected_paths": [
+      "build.sh"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  }
+]

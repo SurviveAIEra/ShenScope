@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SHENSCOPE_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+SHENSCOPE_JULIA="${SHENSCOPE_JULIA:-/workspace/toolchains/julia-1.11.7/bin/julia}"
+if [[ ! -x "$SHENSCOPE_JULIA" ]]; then
+    SHENSCOPE_JULIA="$(command -v julia)"
+fi
+export JULIA_DEPOT_PATH="${JULIA_DEPOT_PATH:-/workspace/julia-depot}"
+exec "$SHENSCOPE_JULIA" --startup-file=no --threads="${SHENSCOPE_THREADS:-4}" \
+    --project="$SHENSCOPE_ROOT" -e 'using ShenScope; exit(ShenScope.main())' -- "$@"

@@ -1,0 +1,15 @@
+.local/
+dist/
+build/
+node_modules/
+__pycache__/
+*.pyc
+*.ji
+*.so
+*.dll
+*.dylib
+.env
+.env.*
+!.env.example
+*.log
+coverage/
