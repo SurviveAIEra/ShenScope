@@ -1,0 +1,106 @@
+struct CompilerTarget
+    name::String
+    callable::Function
+    arguments::Type
+end
+function compiler_targets()
+    [CompilerTarget("digest_string",digest,Tuple{String}),
+     CompilerTarget("canonical_dictionary",canonical,Tuple{Dict{String,Any}}),
+     CompilerTarget("cliptext_string",cliptext,Tuple{String,Int}),
+     CompilerTarget("symbol_identity",symbol_id,Tuple{String,Int}),
+     CompilerTarget("resolve_call_reference",resolve_reference,Tuple{ProjectState,CallReference}),
+     CompilerTarget("remove_graph_edge",remove_edge!,Tuple{ProjectState,String})]
+end
+function compiler_target(name::AbstractString)
+    index=findfirst(t->t.name==name,compiler_targets())
+    index===nothing && throw(ShenScopeError(:diagnostics,"Unknown compiler diagnostic target"))
+    compiler_targets()[index]
+end
+
+mutable struct DiagnosticBuffer <: IO
+    bytes::Vector{UInt8}
+    total::Int
+    limit::Int
+end
+Base.isopen(::DiagnosticBuffer)=true
+Base.iswritable(::DiagnosticBuffer)=true
+function Base.write(io::DiagnosticBuffer,byte::UInt8)
+    io.total+=1;length(io.bytes)<io.limit && push!(io.bytes,byte);1
+end
+function Base.unsafe_write(io::DiagnosticBuffer,data::Ptr{UInt8},count::UInt)
+    retained=min(Int(count),io.limit-length(io.bytes));io.total+=Int(count)
+    for index in 1:retained;push!(io.bytes,unsafe_load(data,index));end
+    count
+end
+function diagnostic_text(io::DiagnosticBuffer)
+    bytes=copy(io.bytes)
+    # A byte limit may split the last Unicode code point.
+    while !isempty(bytes) && !isvalid(String(copy(bytes)));pop!(bytes);end
+    String(bytes)
+end
+function inference_type_summary(type)
+    small_union=type isa Union && length(Base.uniontypes(type))<=4 && all(isconcretetype,Base.uniontypes(type))
+    Dict("type"=>cliptext(string(type),2048),"concrete"=>isconcretetype(type),"small_concrete_union"=>small_union,
+        "bottom"=>type===Union{})
+end
+function compiler_report(name::AbstractString;mode="typed",max_ir_bytes=64*1024)
+    mode in ("typed","lowered") && 1024<=max_ir_bytes<=128*1024 || throw(ShenScopeError(:diagnostics,"Invalid compiler diagnostic limits"))
+    target=compiler_target(name);started=time_ns()
+    entries=mode=="typed" ? Base.code_typed(target.callable,target.arguments;optimize=false) : Base.code_lowered(target.callable,target.arguments)
+    io=DiagnosticBuffer(UInt8[],0,max_ir_bytes);methods=Dict{String,Any}[]
+    for entry in entries[1:min(length(entries),8)]
+        code=mode=="typed" ? entry.first : entry
+        summary=Dict{String,Any}("statements"=>length(code.code))
+        if mode=="typed"
+            summary["return"]=inference_type_summary(entry.second)
+            slots=code.slottypes===nothing ? Any[] : collect(code.slottypes)
+            summary["any_slots"]=count(t->t===Any,slots)
+            summary["nonconcrete_slots"]=count(t->t!==Union{} && !(t isa Core.Const) && !(t isa Type && isconcretetype(t)),slots)
+            summary["slot_count"]=length(slots)
+        end
+        push!(methods,summary);show(IOContext(io,:limit=>true,:compact=>true),MIME("text/plain"),entry);write(io,UInt8('\n'))
+    end
+    Dict("target"=>target.name,"arguments"=>string(target.arguments),"mode"=>mode,"methods"=>methods,
+        "ir"=>diagnostic_text(io),"ir_total_bytes"=>io.total,"truncated"=>io.total>max_ir_bytes || length(entries)>8,
+        "elapsed_seconds"=>(time_ns()-started)/1e9,"julia_version"=>string(Base.VERSION),
+        "limits"=>["Inference of explicitly listed trusted Core methods; project source is not loaded.",
+            "Concrete return types do not prove all intermediates are type-stable or that the algorithm is fast."])
+end
+
+function compiler_worker_main()
+    while !eof(stdin)
+        raw=bounded_record(stdin,8192);isempty(raw) && break
+        endswith(raw,"\n") || return 1
+        identifier=nothing
+        response=try
+            request=parsejson(raw);identifier=request["id"]
+            request["operation"]=="compiler" || throw(ShenScopeError(:diagnostics,"Unknown diagnostics operation"))
+            keys_allowed=Set(["id","operation","target","mode","max_ir_bytes"])
+            all(key->key in keys_allowed,keys(request)) || throw(ShenScopeError(:diagnostics,"Unknown diagnostics field"))
+            result=compiler_report(request["target"];mode=get(request,"mode","typed"),max_ir_bytes=get(request,"max_ir_bytes",64*1024))
+            Dict("id"=>identifier,"result"=>result)
+        catch error
+            Dict("id"=>identifier,"error"=>Dict("message"=>error isa ShenScopeError ? error.message : "Compiler diagnostics failed"))
+        end
+        println(stdout,canonical(response));flush(stdout)
+    end
+    0
+end
+function run_compiler_diagnostic(ctx::RuntimeContext,target::AbstractString;mode="typed",timeout=60.0,max_ir_bytes=64*1024)
+    compiler_target(target)
+    0.1<=timeout<=120 && mode in ("typed","lowered") && 1024<=max_ir_bytes<=128*1024 ||
+        throw(ShenScopeError(:diagnostics,"Invalid compiler diagnostic limits"))
+    authorize!(ctx,:dynamic,"runtime.diagnostics",target;reason="Infer trusted Core methods in a separate Julia process")
+    check_cancelled(ctx.cancellation)
+    project=dirname(dirname(@__DIR__))
+    argv=[first(Base.julia_cmd().exec),"--startup-file=no","--history-file=no","--compiled-modules=existing","--threads=1",
+        "--project="*project,"-e","using ShenScope; exit(ShenScope.compiler_worker_main())"]
+    worker=BackendWorker(argv)
+    try
+        worker_start!(worker,ctx)
+        result=worker_request(worker,"compiler",Dict("target"=>target,"mode"=>mode,"max_ir_bytes"=>max_ir_bytes),ctx;timeout)
+        result["execution"]=Dict("separate_process"=>true,"os_sandbox"=>false,"timeout_seconds"=>timeout)
+        emit!(ctx,:compiler_diagnostic,Dict("target"=>target,"mode"=>mode,"elapsed_seconds"=>result["elapsed_seconds"],"truncated"=>result["truncated"]))
+        result
+    finally;worker_close!(worker);end
+end

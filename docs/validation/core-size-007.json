@@ -1,0 +1,29 @@
+{
+  "tool": "cloc",
+  "version": "2.11",
+  "core": {
+    "nFiles": 33,
+    "blank": 191,
+    "comment": 38,
+    "code": 3602
+  },
+  "cli_tui": {
+    "nFiles": 2,
+    "blank": 13,
+    "comment": 6,
+    "code": 366
+  },
+  "minimum_core_target": 250000,
+  "remaining_lines": 246398,
+  "line_target_percent": 1.4408,
+  "excludes": [
+    "CLI/TUI",
+    "tests",
+    "documentation",
+    "frontend",
+    "helper scripts",
+    "generated code",
+    "third-party code"
+  ],
+  "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+}

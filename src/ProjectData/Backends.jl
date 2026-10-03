@@ -36,7 +36,7 @@ function worker_start!(worker::BackendWorker,ctx::RuntimeContext)
         worker_close!(worker)
         input=Pipe();output=Pipe();err=Pipe()
         command=Sys.islinux() ? vcat(["setsid"],worker.argv) : worker.argv
-        env=Dict(key=>ENV[key] for key in ("PATH","SYSTEMROOT","WINDIR","LD_LIBRARY_PATH") if haskey(ENV,key))
+        env=Dict(key=>ENV[key] for key in ("PATH","SYSTEMROOT","WINDIR","LD_LIBRARY_PATH","JULIA_DEPOT_PATH") if haskey(ENV,key))
         env["SHENSCOPE_PARSER_CACHE"]=get(ENV,"SHENSCOPE_PARSER_CACHE","/workspace/tool-cache")
         env["PYTHONNOUSERSITE"]="1";env["PYTHONUTF8"]="1";env["OMP_NUM_THREADS"]="2"
         worker.process=run(pipeline(ignorestatus(setenv(Cmd(Cmd(command);dir=ctx.root),env));stdin=input,stdout=output,stderr=err);wait=false)

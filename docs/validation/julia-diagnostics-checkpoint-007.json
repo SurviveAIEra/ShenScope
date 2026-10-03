@@ -1,0 +1,34 @@
+{
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "platform": "Linux, Julia 1.11.7, four threads",
+  "targeted_extensions_assertions": 46,
+  "affected_agent_tool_assertions": 31,
+  "affected_cli_assertions": 9,
+  "compiler_targets": "fixed trusted Core functions only",
+  "cli_compiler_diagnostic": "passed in a real separate Julia process",
+  "cli_contract_catalog": {
+    "types": 18,
+    "all_valid": true
+  },
+  "typed_digest_return": "String",
+  "typed_digest_nonconcrete_slots": 0,
+  "ir_retention_limit_bytes": 131072,
+  "timeout_and_permission_tests": "passed",
+  "os_sandbox": false,
+  "core_lines": 3602,
+  "vsix": {
+    "bytes": 110500,
+    "sha256": "eb34c168ae4b88587046e192e1e0fd223dad6d680e3f563763a6ba834fd7fd95",
+    "packaged_core_source_match": true
+  },
+  "failure_history": [
+    "Initial targeted invocation omitted a shared fixture; fixture setup was extracted and affected cases passed.",
+    "An added agent fixture initially used the fixture-module scope without Test; its scope was corrected and the complete 46-case extension suite passed."
+  ],
+  "limits": [
+    "Dispatch presence is not behavioral correctness.",
+    "Concrete return types do not prove all intermediates stable or performance superiority.",
+    "Separate processes here do not enforce no-network/no-write/memory isolation for generated code.",
+    "Optional package discovery, version/promotion/archive and full product/250000-line gates remain unfinished."
+  ]
+}

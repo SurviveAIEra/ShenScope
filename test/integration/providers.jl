@@ -12,11 +12,6 @@ function mock_http(f::Function,handler::Function)
 end
 sse(d)= "data: " * canonical(d) * "\n\n"
 
-function model_context(root)
-    RuntimeContext(root;state_dir=joinpath(root,"state"),
-        permissions=PermissionPolicy(;rules=Dict(:network=>Allow,:read=>Allow,:edit=>Allow,:process=>Allow)))
-end
-
 @testset "SSE Unicode fragmentation, multiline and limits" begin
     d=SSEDecoder();result=Tuple{String,String}[]
     bytes=collect(codeunits(": comment\r\nevent: item\r\ndata: 中文\r\ndata: second\r\n\r\n"))

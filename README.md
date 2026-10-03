@@ -20,3 +20,5 @@ lines. Work in progress is not represented as a finished release.
 
 See `docs/requirements/reconstruction.md` for precedence and acceptance rules,
 and `docs/architecture/competitive_reference_notes.md` for source research.
+`python scripts/core_size.py` reports actual cloc counts with CLI/TUI, tests,
+frontend, helpers and third-party code excluded from the Julia Core target.

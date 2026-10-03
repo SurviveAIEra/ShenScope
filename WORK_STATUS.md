@@ -1,6 +1,11 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
+Latest cloc 2.11 count: 3,602 authored Julia Core code lines across 33 files;
+CLI/TUI add 366 lines and are counted separately. This is 1.4408% of the
+minimum line target, leaving 246,398 lines. These are early implementations,
+not a mature agent or a complete synthesis of the upstream projects. Reproduce
+with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
 Read `docs/requirements/reconstruction.md` for the reconciled requirements.
 Prepared: 22 shallow upstream research repositories, Julia 1.11.7 from the
@@ -69,6 +74,15 @@ jobs and approvals in both editor clients. Detailed limits and commands are in
 `docs/core/project_data.md`. Syntax call links remain heuristic; CodeGraph has
 global relink/export cost; compiler semantics, watcher/compaction and large-graph
 evidence are pending. No Julia performance or live-model quality claim is made.
+
+Julia diagnostics: concrete extension contract reflection, bounded actual
+dispatch ambiguity scans, a permissioned invokelatest boundary and separately
+executed fixed-target lowered/typed compiler reports. Tests include real missing
+methods, deliberate dispatch ambiguity, a World Age failure/latest invocation,
+permission denial, IR limits/UTF-8, actual child compilation and timeout.
+CLI and the diagnostics tool expose the same implementation. See
+`docs/core/julia_diagnostics.md`. This is trusted-Core introspection, not an OS
+sandbox for generated analyzers or a completed extension package manager.
 
 Only tested runnable checkpoints will be labeled verified. Update this file
 after each checkpoint and push so another machine can resume without chat state.

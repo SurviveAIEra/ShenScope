@@ -12,8 +12,8 @@ for the current source tree.
 | Task, Channel, ScopedValue, Threads | Streams, tools, index/compute/test workers share cancellation, permission and budget | Agent/tool/RPC workers and scoped context verified; durable tasks pending |
 | Cmd, Process, pipelines, IO, sockets | Argument-vector processes with explicit ownership, bounded streams and cleanup | Process/tools and five model streams verified |
 | JIT, function barriers, specialization, immutable structs | Type-stable graph loops over resident data; measure first/warm time and allocations | Typed resident graph and raw nine-oracle timing/allocation evidence present; no performance advantage claimed |
-| Reflection, ambiguity detection, compiler introspection | Inspect actual contracts/methods, inferred/lowered code and unstable types | Pending implementation and extension examples |
-| World Age, invokelatest, Module, Revise | Explicit trusted hot-load boundary; version/archive pointers for rollback | Pending; Module/World Age do not provide sandbox/rollback |
+| Reflection, ambiguity detection, compiler introspection | Inspect actual contracts/methods, inferred/lowered code and unstable types | Contract/ambiguity inspection and fixed-target compiler diagnostics verified; independent extension examples pending |
+| World Age, invokelatest, Module, Revise | Explicit trusted hot-load boundary; version/archive pointers for rollback | Permissioned invokelatest for loaded trusted callables verified; load/archive/rollback pending; Module/World Age provide no sandbox |
 | Expr, hygienic macros, generated functions, effect analysis | Bounded analysis intent/plans and dynamic-code risk classification | Pending; ordinary functions first, no unrestricted Core eval |
 | Pkg, Manifest, extensions/weakdeps, Artifacts, Preferences | Reproducible, independently installable optional backends/plugins | Manifest pinned; independent extension/artifact contracts pending |
 | Precompilation, sysimage, PackageCompiler | Measure/install bundled runtime without requiring Julia knowledge | Shared verified toolchain/setup present; standalone distribution pending |

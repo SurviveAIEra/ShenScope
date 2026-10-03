@@ -29,7 +29,7 @@ end
 function parse_cli(args::Vector{String})
     flags=Dict{String,Any}();positionals=String[]
     valued=Set(["--root","--state-dir","--config","--profile","--session","--script","--backend"])
-    switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence"])
+    switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic"])
     i=1
     while i<=length(args)
         arg=args[i]
@@ -89,9 +89,9 @@ function cli_main(args=ARGS)
     end
     if isempty(args) || args==["--help"]
         println("ShenScope — Open coding intelligence for serious codebases.")
-        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | doctor | serve --stdio")
+        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | diagnostics ACTION | doctor | serve --stdio")
         println("Options: --root PATH --state-dir PATH --config PATH --profile NAME --session ID --json")
-        println("Explicit permissions: --allow-edit --allow-process --allow-network --allow-persistence")
+        println("Explicit permissions: --allow-edit --allow-process --allow-network --allow-persistence --allow-dynamic")
         println("Offline protocol fixture: --script JSON_FILE")
         return 0
     end
@@ -104,6 +104,16 @@ function cli_main(args=ARGS)
             return cli_session_command(positional[2:end],state_dir)
         end
         config=load_config(;path=get(flags,"--config",config_path()),profile=get(flags,"--profile",nothing))
+        if command=="diagnostics"
+            length(positional)>=2 || throw(ShenScopeError(:input,"Diagnostics action required"))
+            policy=permissions_from_config(config)
+            get(flags,"--allow-process",false) && (policy.rules[:process]=Allow)
+            get(flags,"--allow-dynamic",false) && (policy.rules[:dynamic]=Allow)
+            ctx=RuntimeContext(get(flags,"--root",pwd());state_dir,permissions=policy,approve=cli_approval)
+            args=Dict{String,Any}("action"=>positional[2])
+            length(positional)>=3 && (args["target"]=positional[3])
+            tool=DiagnosticsTool();validate_schema(args,tool_schema(tool));println(canonical(execute(tool,args,ctx)));return 0
+        end
         if command=="project"
             length(positional)>=2 || throw(ShenScopeError(:input,"Project action required"))
             policy=permissions_from_config(config)
@@ -136,7 +146,7 @@ function cli_main(args=ARGS)
         command in ("chat","tui") || throw(ShenScopeError(:input,"Unknown command"))
         root=get(flags,"--root",pwd())
         policy=permissions_from_config(config)
-        for (flag,category) in (("--allow-edit",:edit),("--allow-process",:process),("--allow-network",:network),("--allow-persistence",:persistence))
+        for (flag,category) in (("--allow-edit",:edit),("--allow-process",:process),("--allow-network",:network),("--allow-persistence",:persistence),("--allow-dynamic",:dynamic))
             get(flags,flag,false) && (policy.rules[category]=Allow)
         end
         provider=haskey(flags,"--script") ? scripted_provider(flags["--script"]) : provider_from_config(config)

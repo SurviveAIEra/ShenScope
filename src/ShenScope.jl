@@ -27,6 +27,9 @@ include("ProjectData/Backends.jl")
 include("ProjectData/Queries.jl")
 include("Analysis/Builtin.jl")
 include("Tools/Project.jl")
+include("Extensions/Contracts.jl")
+include("Extensions/CompilerDiagnostics.jl")
+include("Tools/Diagnostics.jl")
 include("Runtime/ToolScheduler.jl")
 include("Context/Preparation.jl")
 include("Core/AgentLoop.jl")
@@ -54,6 +57,8 @@ export ProviderConfig, HTTPProvider, MockProvider, provider_name, capabilities,
     feed_sse!, finish_sse!, declaration, tool_name, tool_schema, execution_mode,
     validate_schema, execute, execute_call, ReadTool, SearchTool, EditTool, WriteTool,
     PatchTool, ProcessTool, ProcessManager, cleanup_processes!, GitTool
+export contract_report, interface_catalog, dispatch_ambiguities, invoke_extension_latest,
+    compiler_report, run_compiler_diagnostic, compiler_targets, DiagnosticsTool
 
 export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectDataBackend,
     AbstractAnalyzer, AbstractContextStrategy, AbstractScheduler, ShenScopeError,
