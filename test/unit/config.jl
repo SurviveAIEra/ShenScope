@@ -11,6 +11,12 @@
         delete!(config["provider"],"api_key")
         config["budget"]["max_steps"]=0
         @test_throws ArgumentError save_config!(config;path)
+        config["budget"]["max_steps"]=100
+        config["provider"]["timeout"]=Inf
+        @test_throws ShenScopeError save_config!(config;path)
+        config["provider"]["timeout"]=120.0
+        config["budget"]["max_seconds"]=Inf
+        @test_throws ArgumentError save_config!(config;path)
         @test digest(read(path,String))==revision
         write(path,"[profiles.local.provider]\nprotocol = 'ollama'\nendpoint = 'http://127.0.0.1:11434'\nmodel = 'fixture'\n")
         localconfig=load_config(;path,profile="local")

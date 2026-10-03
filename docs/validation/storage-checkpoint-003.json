@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-03",
+  "platform": "Linux x86_64",
+  "julia": "1.11.7",
+  "broad_suite_assertions_passed": 165,
+  "targeted_atomic_and_record_assertions_passed": 5,
+  "targeted_finite_config_assertions_added": 2,
+  "coverage": ["OS atomic replacement", "complete snapshots under concurrent readers", "bounded oversized journal input", "finite provider and budget configuration", "shared budget synchronization"],
+  "classification": "IMPLEMENTED_AND_VERIFIED",
+  "limits": ["Windows API branches have source but require Windows runtime validation", "No power-failure hardware experiment", "Not a full project release"]
+}

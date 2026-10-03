@@ -43,9 +43,11 @@ function workspace_path(root::String, path::AbstractString; must_exist=false)
     parts = splitpath(relative)
     (isabspath(relative) || (!isempty(parts) && first(parts)=="..")) &&
         throw(ShenScopeError(:permission,"Path escapes workspace"))
-    any(p -> p in (".git", ".env", ".aws", ".ssh"),parts) &&
+    protected_parts=Sys.iswindows() ? lowercase.(parts) : parts
+    any(p -> p in (".git", ".env", ".aws", ".ssh"),protected_parts) &&
         throw(ShenScopeError(:permission,"Protected path"))
-    startswith(basename(resolved),".env.") && throw(ShenScopeError(:permission,"Protected secret file"))
+    filename=Sys.iswindows() ? lowercase(basename(resolved)) : basename(resolved)
+    startswith(filename,".env.") && throw(ShenScopeError(:permission,"Protected secret file"))
     must_exist && !isfile(resolved) && throw(ShenScopeError(:path,"File does not exist"))
     return resolved
 end

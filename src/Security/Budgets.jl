@@ -22,7 +22,7 @@ mutable struct BudgetLedger
 end
 function BudgetLedger(limits=BudgetLimits())
     limits.max_steps > 0 && limits.max_tokens > 0 && limits.max_cost >= 0 &&
-        isfinite(limits.max_cost) && limits.max_seconds > 0 ||
+        isfinite(limits.max_cost) && isfinite(limits.max_seconds) && limits.max_seconds > 0 ||
         throw(ArgumentError("Invalid budget limits"))
     return BudgetLedger(limits,0,0,0.0,0.0,Dict{String,Reservation}(),time_ns(),ReentrantLock())
 end

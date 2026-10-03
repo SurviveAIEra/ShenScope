@@ -1,3 +1,36 @@
+function sync_file(io::IOStream)
+    if Sys.iswindows()
+        handle=Base.Libc._get_osfhandle(Base.RawFD(fd(io)))
+        ccall((:FlushFileBuffers,"kernel32"),Int32,(Ptr{Cvoid},),handle)!=0 ||
+            throw(ShenScopeError(:storage,"File flush failed"))
+    elseif Sys.isunix()
+        ccall(:fsync,Cint,(Cint,),fd(io))==0 || throw(ShenScopeError(:storage,"File flush failed"))
+    else
+        throw(ShenScopeError(:platform,"Durable file flush is unavailable"))
+    end
+end
+
+function atomic_replace(source::AbstractString,destination::AbstractString)
+    if Sys.iswindows()
+        src=vcat(transcode(UInt16,String(source)),UInt16(0))
+        dst=vcat(transcode(UInt16,String(destination)),UInt16(0))
+        ccall((:MoveFileExW,"kernel32"),Int32,(Ptr{UInt16},Ptr{UInt16},UInt32),src,dst,0x00000009)!=0 ||
+            throw(ShenScopeError(:storage,"Atomic file replacement failed"))
+    elseif Sys.isunix()
+        ccall(:rename,Cint,(Cstring,Cstring),source,destination)==0 ||
+            throw(ShenScopeError(:storage,"Atomic file replacement failed"))
+        directory=ccall(:open,Cint,(Cstring,Cint),dirname(destination),0)
+        directory>=0 || throw(ShenScopeError(:storage,"Cannot open parent directory for flush"))
+        try
+            ccall(:fsync,Cint,(Cint,),directory)==0 || throw(ShenScopeError(:storage,"Directory flush failed"))
+        finally
+            ccall(:close,Cint,(Cint,),directory)
+        end
+    else
+        throw(ShenScopeError(:platform,"Atomic replacement is unavailable"))
+    end
+end
+
 function atomic_write(path::AbstractString, content::AbstractString; mode=0o600)
     mkpath(dirname(path))
     temp,io = mktemp(dirname(path))
@@ -5,10 +38,9 @@ function atomic_write(path::AbstractString, content::AbstractString; mode=0o600)
         chmod(temp,mode)
         write(io,content)
         flush(io)
-        Sys.isunix() && ccall(:fsync,Cint,(Cint,),fd(io)) != 0 &&
-            throw(ShenScopeError(:storage,"fsync failed"))
+        sync_file(io)
         close(io)
-        mv(temp,path;force=true)
+        atomic_replace(temp,path)
     finally
         isopen(io) && close(io)
         isfile(temp) && rm(temp)
@@ -18,17 +50,42 @@ end
 
 function store_lock(f::Function, path::AbstractString)
     mkpath(dirname(path))
-    Sys.isunix() || throw(ShenScopeError(:platform,"Cross-process journal locking unavailable on this platform"))
     open(path * ".lock","a+") do io
         chmod(path * ".lock",0o600)
-        ccall(:flock,Cint,(Cint,Cint),fd(io),2) == 0 ||
-            throw(ShenScopeError(:storage,"Journal lock failed"))
+        overlap=zeros(UInt64,4)
+        if Sys.iswindows()
+            Sys.WORD_SIZE==64 || throw(ShenScopeError(:platform,"Windows locking requires a 64-bit runtime"))
+            handle=Base.Libc._get_osfhandle(Base.RawFD(fd(io)))
+            ccall((:LockFileEx,"kernel32"),Int32,(Ptr{Cvoid},UInt32,UInt32,UInt32,UInt32,Ptr{UInt64}),
+                handle,0x00000002,0,0xffffffff,0xffffffff,overlap)!=0 || throw(ShenScopeError(:storage,"Journal lock failed"))
+        elseif Sys.isunix()
+            ccall(:flock,Cint,(Cint,Cint),fd(io),2)==0 || throw(ShenScopeError(:storage,"Journal lock failed"))
+        else
+            throw(ShenScopeError(:platform,"Cross-process locking is unavailable"))
+        end
         try
             return f()
         finally
-            ccall(:flock,Cint,(Cint,Cint),fd(io),8)
+            if Sys.iswindows()
+                handle=Base.Libc._get_osfhandle(Base.RawFD(fd(io)))
+                ccall((:UnlockFileEx,"kernel32"),Int32,(Ptr{Cvoid},UInt32,UInt32,UInt32,Ptr{UInt64}),
+                    handle,0,0xffffffff,0xffffffff,overlap)
+            else
+                ccall(:flock,Cint,(Cint,Cint),fd(io),8)
+            end
         end
     end
+end
+
+function bounded_record(io::IO,max_bytes::Int)
+    result=IOBuffer(;maxsize=max_bytes)
+    while !eof(io)
+        byte=read(io,UInt8)
+        position(result)<max_bytes || throw(ShenScopeError(:storage,"Oversized journal record"))
+        write(result,byte)
+        byte==0x0a && break
+    end
+    return String(take!(result))
 end
 
 mutable struct Journal
@@ -44,7 +101,7 @@ function journal_records(j::Journal; repair_tail=false)
     good_offset = 0
     open(j.path,"r") do io
         while !eof(io)
-            raw = readline(io;keep=true)
+            raw = bounded_record(io,j.max_record_bytes)
             ncodeunits(raw) <= j.max_record_bytes || throw(ShenScopeError(:storage,"Oversized journal record"))
             if !endswith(raw,"\n")
                 break
@@ -64,6 +121,7 @@ function journal_records(j::Journal; repair_tail=false)
     if repair_tail && filesize(j.path)>good_offset
         open(j.path,"r+") do io
             truncate(io,good_offset)
+            flush(io);sync_file(io)
         end
     end
     return records
@@ -82,8 +140,7 @@ function append_record!(j::Journal,record::AbstractDict; expected_revision=nothi
         open(j.path,"a") do io
             chmod(j.path,0o600)
             write(io,raw);flush(io)
-            Sys.isunix() && ccall(:fsync,Cint,(Cint,),fd(io)) != 0 &&
-                throw(ShenScopeError(:storage,"Journal fsync failed"))
+            sync_file(io)
         end
         return revision+1
     end

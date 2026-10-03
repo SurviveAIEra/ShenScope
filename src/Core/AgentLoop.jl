@@ -81,7 +81,8 @@ function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::
                     settle!(ctx.budget,lease,result.usage);record_usage!(s,result.usage)
                     result
                 catch
-                    if haskey(ctx.budget.reservations,lease)
+                    active=lock(ctx.budget.mutex) do;haskey(ctx.budget.reservations,lease);end
+                    if active
                         if delivered_usage[]!==nothing
                             settle!(ctx.budget,lease,delivered_usage[]);record_usage!(s,delivered_usage[])
                         else

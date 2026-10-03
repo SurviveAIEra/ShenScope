@@ -53,7 +53,8 @@ function validate_config(c::ProviderConfig)
         throw(ShenScopeError(:config,"Unsupported model protocol"))
     validate_endpoint(c.endpoint)
     isempty(c.model) && throw(ShenScopeError(:config,"Model missing"))
-    c.timeout>0 && c.retries>=0 && c.input_price>=0 && c.output_price>=0 ||
+    isfinite(c.timeout) && c.timeout>0 && c.retries>=0 && isfinite(c.input_price) &&
+        isfinite(c.output_price) && c.input_price>=0 && c.output_price>=0 ||
         throw(ShenScopeError(:config,"Invalid provider limits or prices"))
     occursin(r"^[A-Za-z_][A-Za-z0-9_]*$",c.key_env) || throw(ShenScopeError(:config,"Invalid key variable name"))
     return c

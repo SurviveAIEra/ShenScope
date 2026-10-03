@@ -32,6 +32,13 @@ Full built-in-extension packaging and Windows installer validation are pending.
 MCP integration, graph backend and real OS isolation remain unfinished.
 Core remains far below the 250,000-line delivery target.
 
+Storage hardening: atomic replacement now uses OS replacement primitives;
+Unix file/directory flushes; bounded journal record reads; shared-ledger checks
+under its mutex; finite provider/budget values. Windows 64-bit file flush,
+replacement and cross-process lock source is present but not runtime-verified.
+Broad Linux suite: 165 assertions passed after shared storage changes; targeted
+atomic/bounded-record tests: five passed; finite-config tests add two cases.
+
 Full-project research inventory: `docs/architecture/capability_matrix.md` covers
 all 22 pinned checkouts. Rows distinguish research directions from verified
 implementations; no complete-synthesis or model-quality claim is made.
