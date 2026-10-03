@@ -6,10 +6,15 @@
     "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
     "license": "Apache-2.0",
     "inspected_paths": [
-      "codex-rs/core/src/guardian/request_budget.rs"
+      "codex-rs/core/src/guardian/request_budget.rs",
+      "codex-rs/ext/agent-message-board/src/api.rs",
+      "codex-rs/ext/agent-message-board/src/local/queries.rs",
+      "codex-rs/ext/agent-message-board/src/local/lifecycle.rs"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "primary_agent"
   },
   {
     "name": "opencode",
@@ -18,10 +23,13 @@
     "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
     "license": "MIT",
     "inspected_paths": [
-      "packages/opencode/src/session/llm/native-request.ts"
+      "packages/opencode/src/session/llm/native-request.ts",
+      "packages/opencode/src/tool/task.ts"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "primary_agent"
   },
   {
     "name": "deepseek-harness",
@@ -30,10 +38,18 @@
     "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
     "license": "MIT",
     "inspected_paths": [
-      "packages/core/agent-loop/src/tool-calls.ts"
+      "packages/core/agent-loop/src/tool-calls.ts",
+      "packages/experimental/agent-team/src/task-graph.ts",
+      "packages/experimental/agent-team/src/task-board.ts",
+      "packages/experimental/agent-team/src/task-view.ts",
+      "packages/experimental/agent-team/src/mailbox.ts",
+      "packages/session/session-persistence-jsonl/src/lease.ts",
+      "docs/subsystems/agent-team.md"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "primary_agent"
   },
   {
     "name": "pi-mono",
@@ -43,10 +59,14 @@
     "license": "MIT",
     "inspected_paths": [
       "packages/agent/src/agent-loop.ts",
-      "packages/coding-agent/src/core/session-manager.ts"
+      "packages/coding-agent/src/core/session-manager.ts",
+      "packages/durable/src/tasks.ts",
+      "packages/durable/src/harness/output.ts"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "primary_agent"
   },
   {
     "name": "kimi-code",
@@ -58,7 +78,9 @@
       "packages/agent-core-v2/src/agent/loop/machine/requester.ts"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "primary_agent"
   },
   {
     "name": "ZCode",
@@ -70,7 +92,9 @@
       "apps/zcode-cli/packages/core/src/runtime/methods/turn-loop.ts"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "primary_agent"
   },
   {
     "name": "qwen-code",
@@ -82,7 +106,9 @@
       "packages/core/src/providers/provider-config.ts"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "primary_agent"
   },
   {
     "name": "aider",
@@ -94,7 +120,9 @@
       "aider/repomap.py"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "serena",
@@ -106,7 +134,9 @@
       "src/serena/repl/facade.py"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "CodeGraphContext",
@@ -120,7 +150,9 @@
       "pyproject.toml"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "hermes-agent",
@@ -129,10 +161,13 @@
     "commit": "f4d3e626a732010d23d02c24018091b311a2eb06",
     "license": "MIT",
     "inspected_paths": [
-      "tools/terminal_tool_lifecycle.py"
+      "tools/terminal_tool_lifecycle.py",
+      "cron/lifecycle_guard.py"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "Aries-cli",
@@ -145,7 +180,9 @@
       "body/repl.py"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "vscode",
@@ -158,7 +195,9 @@
       ".nvmrc"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "vscodium",
@@ -170,7 +209,9 @@
       "build.sh"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "cline",
@@ -184,7 +225,9 @@
       "sdk/packages/core/src/hooks/checkpoint-hooks.ts"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "goose",
@@ -194,10 +237,13 @@
     "license": "Apache-2.0",
     "inspected_paths": [
       "README.md",
-      "crates/goose/src/context_mgmt/mod.rs"
+      "crates/goose/src/context_mgmt/mod.rs",
+      "crates/goose/src/agents/subagent_execution_tool/notification_events.rs"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "OpenHands",
@@ -209,7 +255,9 @@
       "README.md"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "JuliaMCP.jl",
@@ -222,7 +270,9 @@
       "src/mcp_protocol.jl"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "Kaimon.jl",
@@ -235,7 +285,9 @@
       "src/security.jl"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "AgentREPL.jl",
@@ -248,7 +300,9 @@
       "src/worker.jl"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "PromptingTools.jl",
@@ -262,7 +316,9 @@
       "src/Experimental/AgentTools/retry.jl"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   },
   {
     "name": "software-agent-sdk",
@@ -272,9 +328,12 @@
     "license": "MIT",
     "inspected_paths": [
       "openhands-sdk/openhands/sdk/agent/agent.py",
-      "openhands-sdk/openhands/sdk/conversation/stuck_detector.py"
+      "openhands-sdk/openhands/sdk/conversation/stuck_detector.py",
+      "openhands-agent-server/openhands/agent_server/conversation_lease.py"
     ],
     "code_reuse": false,
-    "cloned_date": "2026-10-03"
+    "cloned_date": "2026-10-03",
+    "review_status": "partial_source_review",
+    "priority": "specialist_or_supplementary"
   }
 ]

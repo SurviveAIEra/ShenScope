@@ -104,7 +104,8 @@ mutable struct Journal
 end
 Journal(path::AbstractString) = Journal(String(path),16*1024*1024)
 
-function journal_records(j::Journal; repair_tail=false)
+function journal_records(j::Journal; repair_tail=false, valid_bytes=nothing)
+    valid_bytes !== nothing && (valid_bytes[] = 0)
     !isfile(j.path) && return Dict{String,Any}[]
     records = Dict{String,Any}[]
     expected = 1
@@ -128,6 +129,7 @@ function journal_records(j::Journal; repair_tail=false)
             good_offset = position(io)
         end
     end
+    valid_bytes !== nothing && (valid_bytes[] = good_offset)
     if repair_tail && filesize(j.path)>good_offset
         open(j.path,"r+") do io
             truncate(io,good_offset)

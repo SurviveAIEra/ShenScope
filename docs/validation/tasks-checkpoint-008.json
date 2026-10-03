@@ -1,0 +1,262 @@
+{
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "platform": "Linux, Julia 1.11.7",
+  "verification": {
+    "affected_core": {
+      "passing_assertions": 359,
+      "testsets": [
+        {
+          "name": "Cancellation tree and dynamic context",
+          "passed": 7
+        },
+        {
+          "name": "Concurrent budget reservation and accounting",
+          "passed": 9
+        },
+        {
+          "name": "Permission decisions and path containment",
+          "passed": 7
+        },
+        {
+          "name": "Durable journal, torn tails and revision conflicts",
+          "passed": 6
+        },
+        {
+          "name": "Session reconstruction and unknown side effects",
+          "passed": 11
+        },
+        {
+          "name": "Atomic replacement remains complete to concurrent readers",
+          "passed": 3
+        },
+        {
+          "name": "Oversized unterminated journal input is bounded",
+          "passed": 2
+        },
+        {
+          "name": "Configuration profiles, credential rejection and CAS",
+          "passed": 10
+        },
+        {
+          "name": "Canonical numeric journal round trips",
+          "passed": 3
+        },
+        {
+          "name": "Scoped memory, lexical retrieval and durable versions",
+          "passed": 25
+        },
+        {
+          "name": "Memory import validates every item before atomic commit",
+          "passed": 7
+        },
+        {
+          "name": "Agent tool calling preserves contract evidence without loading code",
+          "passed": 4
+        },
+        {
+          "name": "Julia interface contracts, ambiguity evidence and world-age boundary",
+          "passed": 19
+        },
+        {
+          "name": "Compiler diagnostics use listed targets, bounded output and independent processes",
+          "passed": 23
+        },
+        {
+          "name": "Task definition validation and independent graph checks",
+          "passed": 15
+        },
+        {
+          "name": "Claims, dependency release, priority, fences and detached views",
+          "passed": 13
+        },
+        {
+          "name": "Safe retries, uncertain effects and explicit reconciliation",
+          "passed": 16
+        },
+        {
+          "name": "Exclusive effects, cancellation propagation and read-only recovery",
+          "passed": 16
+        },
+        {
+          "name": "Large result artifacts, digest verification and descriptor collisions",
+          "passed": 6
+        },
+        {
+          "name": "Bounded JSON-RPC framing and UTF-8 lengths",
+          "passed": 8
+        },
+        {
+          "name": "Protocol version, config ownership, secrets and session commands",
+          "passed": 15
+        },
+        {
+          "name": "Agent protocol permission ownership and cancellation",
+          "passed": 7
+        },
+        {
+          "name": "Asynchronous task protocol, approvals and session ownership",
+          "passed": 13
+        },
+        {
+          "name": "Task jobs block config replacement and drain owned processes",
+          "passed": 5
+        },
+        {
+          "name": "Terminal rendering sanitizes control sequences and handles wide text",
+          "passed": 16
+        },
+        {
+          "name": "SSE Unicode fragmentation, multiline and limits",
+          "passed": 3
+        },
+        {
+          "name": "OpenAI-compatible real HTTP tool stream and native replay",
+          "passed": 7
+        },
+        {
+          "name": "Anthropic signature and tool continuation",
+          "passed": 5
+        },
+        {
+          "name": "OpenAI Responses encrypted reasoning and call stream",
+          "passed": 3
+        },
+        {
+          "name": "Gemini and Ollama native protocols",
+          "passed": 5
+        },
+        {
+          "name": "Retry before delivery, no replay after delivery, malformed calls",
+          "passed": 5
+        },
+        {
+          "name": "Workspace tools conflict guard, schema and transactional validation",
+          "passed": 9
+        },
+        {
+          "name": "Process execution, bounded logs, ownership, input and timeout",
+          "passed": 12
+        },
+        {
+          "name": "Agent repairs a failing Python test with real tool execution",
+          "passed": 10
+        },
+        {
+          "name": "Actual worker DAG binds verified dependency results",
+          "passed": 5
+        },
+        {
+          "name": "Test processes, timeout uncertainty and separate model sessions",
+          "passed": 11
+        },
+        {
+          "name": "Two real Julia processes cannot claim the same task",
+          "passed": 3
+        },
+        {
+          "name": "Agent and headless CLI invoke the same durable task tool",
+          "passed": 6
+        },
+        {
+          "name": "Headless CLI, offline task and session lifecycle",
+          "passed": 9
+        }
+      ]
+    },
+    "final_tasks": {
+      "passing_assertions": 114,
+      "testsets": [
+        {
+          "name": "Task definition validation and independent graph checks",
+          "passed": 15
+        },
+        {
+          "name": "Claims, dependency release, priority, fences and detached views",
+          "passed": 13
+        },
+        {
+          "name": "Safe retries, uncertain effects and explicit reconciliation",
+          "passed": 16
+        },
+        {
+          "name": "Exclusive effects, cancellation propagation and read-only recovery",
+          "passed": 16
+        },
+        {
+          "name": "Large result artifacts, digest verification and descriptor collisions",
+          "passed": 6
+        },
+        {
+          "name": "Actual worker DAG binds verified dependency results",
+          "passed": 5
+        },
+        {
+          "name": "Test processes, timeout uncertainty and separate model sessions",
+          "passed": 16
+        },
+        {
+          "name": "Two real Julia processes cannot claim the same task",
+          "passed": 3
+        },
+        {
+          "name": "Agent and headless CLI invoke the same durable task tool",
+          "passed": 6
+        },
+        {
+          "name": "Asynchronous task protocol, approvals and session ownership",
+          "passed": 13
+        },
+        {
+          "name": "Task jobs block config replacement and drain owned processes",
+          "passed": 5
+        }
+      ]
+    }
+  },
+  "core_size": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 44,
+      "blank": 272,
+      "comment": 46,
+      "code": 5022
+    },
+    "cli_tui": {
+      "nFiles": 2,
+      "blank": 13,
+      "comment": 6,
+      "code": 407
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 244978,
+    "line_target_percent": 2.0088,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "vsix": {
+    "bytes": 134272,
+    "sha256": "a79ba45095617d98af148a820f30376321f0c5c62752d740bcb08da78d5f7735",
+    "packaged_core_source_match": true
+  },
+  "source_synthesis": "docs/architecture/reference_synthesis.md",
+  "failure_history": [
+    "An initial task test referenced the wrong shared budget counter; it was corrected to steps and the subsequent complete task suite passed."
+  ],
+  "limits": [
+    "Primary-agent source reviews are partial; comprehensive synthesis is not complete.",
+    "Core line target and complete application scope remain unfinished.",
+    "Task execution fencing does not undo external effects or establish exactly-once execution.",
+    "No OS isolation or non-cooperative Julia worker termination.",
+    "No task Runtime GUI, durable mailbox, graph editing, journal compaction, cross-machine scheduling or result GC.",
+    "VSIX source packaging was refreshed; earlier UI screenshots do not constitute task dashboard validation."
+  ]
+}

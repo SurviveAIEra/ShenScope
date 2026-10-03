@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 3,602 authored Julia Core code lines across 33 files;
-CLI/TUI add 366 lines and are counted separately. This is 1.4408% of the
-minimum line target, leaving 246,398 lines. These are early implementations,
+Latest cloc 2.11 count: 5,022 authored Julia Core code lines across 44 files;
+CLI/TUI add 407 lines and are counted separately. This is 2.0088% of the
+minimum line target, leaving 244,978 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -86,3 +86,24 @@ sandbox for generated analyzers or a completed extension package manager.
 
 Only tested runnable checkpoints will be labeled verified. Update this file
 after each checkpoint and push so another machine can resume without chat state.
+
+Durable-task checkpoint: immutable validated DAGs, session/workspace ownership,
+checksummed atomic updates, local dependency readiness, leased claims/start/
+heartbeat/finish with token+generation fencing, conservative uncertain effects,
+explicit reconciliation, safe bounded retries, exclusive effect barriers and
+verified dependency result bindings. Tool/test/index/analysis/model dispatch
+uses shared policies and budgets; model attempts own separate sessions; workers
+exclude recursive task tools. Large results have bounded digest-checked artifacts.
+Agent tools, CLI and async RPC use the same Core. Linux broad suite: 359 passing
+assertions; final task-focused suite: 114 passing assertions, including actual
+two-Julia-process contention and large process outputs. See docs/core/tasks.md
+and docs/validation/tasks-checkpoint-008.json. No OS isolation, cross-machine
+scheduler, mailbox, editable graph, task-history compaction or GUI Runtime
+dashboard is claimed.
+
+Primary-agent priority is explicit in docs/architecture/reference_synthesis.md:
+Codex/OpenCode/DeepSeek Harness/Pi/Kimi/ZCode/Qwen remain the main research line.
+All reference reviews are marked partial; specialist Hermes/Goose/SDK examples
+do not replace the primary projects. Further references named in the history
+remain to be evaluated. Next: MCP transport/discovery/lifecycle, followed by
+remaining primary-agent and Julia-specific Core requirements.

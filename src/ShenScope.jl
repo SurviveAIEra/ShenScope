@@ -30,13 +30,24 @@ include("Tools/Project.jl")
 include("Extensions/Contracts.jl")
 include("Extensions/CompilerDiagnostics.jl")
 include("Tools/Diagnostics.jl")
+include("Tasks/Types.jl")
+include("Tasks/Graph.jl")
+include("Tasks/Serialization.jl")
+include("Tasks/Store.jl")
+include("Tasks/Results.jl")
+include("Tasks/Lifecycle.jl")
+include("Tasks/Queries.jl")
 include("Runtime/ToolScheduler.jl")
 include("Context/Preparation.jl")
 include("Core/AgentLoop.jl")
 include("Core/Config.jl")
+include("Tasks/Executor.jl")
+include("Tasks/Runner.jl")
+include("Tools/Tasks.jl")
 include("Protocol/Framing.jl")
 include("Protocol/Server.jl")
 include("Protocol/Project.jl")
+include("Protocol/Tasks.jl")
 
 export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
     dispatch_rpc, serve_stdio, stop_server!, capability_manifest
@@ -59,6 +70,11 @@ export ProviderConfig, HTTPProvider, MockProvider, provider_name, capabilities,
     PatchTool, ProcessTool, ProcessManager, cleanup_processes!, GitTool
 export contract_report, interface_catalog, dispatch_ambiguities, invoke_extension_latest,
     compiler_report, run_compiler_diagnostic, compiler_targets, DiagnosticsTool
+export WorkStatus, WorkSpec, WorkRetryPolicy, WorkLease, WorkFailure, WorkReceipt,
+    WorkRecord, Workflow, create_workflow, load_workflow, claim_work!, start_work!,
+    heartbeat_work!, finish_work!, cancel_work!, recover_workflow!, reconcile_work!, work_view,
+    workflow_status, workflow_tasks, workflow_task, list_workflows, materialize_work_result,
+    WorkExecutor, execute_work, run_workflow!, TaskTool
 
 export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectDataBackend,
     AbstractAnalyzer, AbstractContextStrategy, AbstractScheduler, ShenScopeError,

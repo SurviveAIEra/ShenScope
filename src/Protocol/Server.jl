@@ -61,7 +61,8 @@ function server_approval(server::CoreServer,session_id::String,token::Cancellati
     try
         deadline=time()+300
         while !isready(channel)
-            (server.stopping || iscancelled(token) || time()>deadline) && return :deny
+            active = CURRENT_CONTEXT[]
+            (server.stopping || iscancelled(token) || active !== nothing && iscancelled(active.cancellation) || time()>deadline) && return :deny
             sleep(0.025)
         end
         return take!(channel)
@@ -133,10 +134,10 @@ end
 
 function capability_manifest()
     Dict("agent"=>true,"streaming_protocols"=>["openai_chat","openai_responses","anthropic","gemini","ollama"],
-        "tools"=>["read","search","edit","write","patch","process","git","memory","project"],"session_journal"=>true,"memory"=>true,
+        "tools"=>["read","search","edit","write","patch","process","git","memory","project","diagnostics","tasks"],"session_journal"=>true,"memory"=>true,
         "permission_approvals"=>true,"config_profiles"=>true,"os_isolation"=>false,
         "mcp"=>false,"skills"=>false,"hooks"=>false,"project_intelligence"=>true,
-        "durable_tasks"=>false,"dynamic_analyzers"=>false)
+        "durable_tasks"=>true,"dynamic_analyzers"=>false)
 end
 
 function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
@@ -151,6 +152,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     server.initialized || throw(RPCFault(-32002,"Initialize first"))
     server.stopping && method!="shutdown" && throw(RPCFault(-32003,"Server is stopping"))
     startswith(method,"project/") && return project_rpc(server,method,params)
+    startswith(method,"tasks/") && return tasks_rpc(server,method,params)
     if method=="health"
         return Dict("ready"=>!server.stopping,"active_runs"=>length(server.runs),"pending_approvals"=>length(server.approvals))
     elseif method=="shutdown"
@@ -162,6 +164,11 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
         return Dict("value"=>deepcopy(server.config),"sha256"=>revision)
     elseif method=="config/set"
         isempty(server.runs) || throw(ShenScopeError(:config,"Finish active runs before changing configuration"))
+        taskmanager = server_task_tool(server).manager
+        lock(taskmanager.mutex) do
+            any(job -> job.status == :running, values(taskmanager.jobs)) &&
+                throw(ShenScopeError(:config, "Finish task jobs before changing configuration"))
+        end
         manager=server_project_tool(server).manager
         lock(manager.mutex) do
             any(job->job["status"]=="running",values(manager.jobs)) &&
@@ -269,6 +276,7 @@ function stop_server!(server::CoreServer)
     server.stopping=true
     for run in collect(values(server.runs));cancel!(run.context.cancellation);end
     for run in collect(values(server.runs));run.task!==nothing && wait(run.task);end
+    cleanup_tasks!(server_task_tool(server).manager)
     for tool in server.tools
         tool isa ProjectTool && cleanup_projects!(tool.manager)
         tool isa ProcessTool || continue

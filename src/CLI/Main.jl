@@ -89,7 +89,7 @@ function cli_main(args=ARGS)
     end
     if isempty(args) || args==["--help"]
         println("ShenScope — Open coding intelligence for serious codebases.")
-        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | diagnostics ACTION | doctor | serve --stdio")
+        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | tasks ACTION | diagnostics ACTION | doctor | serve --stdio")
         println("Options: --root PATH --state-dir PATH --config PATH --profile NAME --session ID --json")
         println("Explicit permissions: --allow-edit --allow-process --allow-network --allow-persistence --allow-dynamic")
         println("Offline protocol fixture: --script JSON_FILE")
@@ -104,6 +104,47 @@ function cli_main(args=ARGS)
             return cli_session_command(positional[2:end],state_dir)
         end
         config=load_config(;path=get(flags,"--config",config_path()),profile=get(flags,"--profile",nothing))
+        if command=="tasks"
+            length(positional)>=2 || throw(ShenScopeError(:input,"Task action required"))
+            policy=permissions_from_config(config)
+            for (flag,category) in (("--allow-edit",:edit),("--allow-process",:process),("--allow-network",:network),("--allow-persistence",:persistence),("--allow-dynamic",:dynamic))
+                get(flags,flag,false) && (policy.rules[category]=Allow)
+            end
+            ctx=RuntimeContext(get(flags,"--root",pwd());state_dir,session_id=get(flags,"--session","cli-tasks"),
+                permissions=policy,budget=BudgetLedger(limits_from_config(config)),approve=cli_approval)
+            action=positional[2];args=Dict{String,Any}("action"=>action)
+            if action=="create"
+                length(positional)==3 || throw(ShenScopeError(:input,"Use tasks create DEFINITION.json"))
+                path=workspace_path(ctx.root,positional[3];must_exist=true)
+                authorize!(ctx,:read,"tasks.definition",path)
+                filesize(path)<=8*1024*1024 || throw(ShenScopeError(:input,"Workflow definition exceeds limit"))
+                definition=parsejson(read(path,String))
+                definition isa AbstractDict || throw(ShenScopeError(:input,"Workflow definition must be an object"))
+                merge!(args,definition);args["action"]="create"
+            elseif action!="list"
+                length(positional)>=3 || throw(ShenScopeError(:input,"Workflow ID required"))
+                args["workflow_id"]=positional[3]
+                if action in ("get","reconcile")
+                    length(positional)>=4 || throw(ShenScopeError(:input,"Task ID required"))
+                    args["task_id"]=positional[4]
+                    action=="get" && (args["materialize"]=true)
+                    if action=="reconcile"
+                        length(positional)>=6 || throw(ShenScopeError(:input,"Reconciliation requires disposition and evidence"))
+                        args["disposition"]=positional[5];args["evidence"]=join(positional[6:end]," ")
+                    end
+                elseif action=="cancel" && length(positional)>3
+                    args["ids"]=positional[4:end]
+                end
+            end
+            factory=haskey(flags,"--script") ? ctx->scripted_provider(flags["--script"]) : ctx->provider_from_config(config)
+            tool=TaskTool(WorkExecutor(;provider_factory=factory))
+            try
+                validate_schema(args,tool_schema(tool));println(canonical(execute(tool,args,ctx)))
+            finally
+                cleanup_tasks!(tool.manager)
+            end
+            return 0
+        end
         if command=="diagnostics"
             length(positional)>=2 || throw(ShenScopeError(:input,"Diagnostics action required"))
             policy=permissions_from_config(config)

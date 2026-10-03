@@ -52,7 +52,9 @@ function execute_batch(tools::Dict{String,AbstractTool},calls::Vector{ToolCall},
     return results
 end
 
-function core_tools()
+function core_tools(; tasks = true)
     process=ProcessTool()
-    return AbstractTool[ReadTool(),SearchTool(),EditTool(),WriteTool(),PatchTool(),process,GitTool(process),MemoryTool(),ProjectTool(),DiagnosticsTool()]
+    tools = AbstractTool[ReadTool(),SearchTool(),EditTool(),WriteTool(),PatchTool(),process,GitTool(process),MemoryTool(),ProjectTool(),DiagnosticsTool()]
+    tasks && push!(tools, TaskTool(WorkExecutor(; tools)))
+    tools
 end
