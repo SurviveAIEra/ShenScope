@@ -16,3 +16,9 @@ cd "$SHENSCOPE_ROOT"
 "$SHENSCOPE_JULIA" --startup-file=no --project=. \
     -e 'using Pkg; Pkg.instantiate(; update_registry=false); Pkg.precompile()'
 "$SHENSCOPE_JULIA" --startup-file=no --project=. -e 'using ShenScope; exit(ShenScope.main(["--version"]))'
+if [[ "${1:-}" == "--editors" ]]; then
+    cd "$SHENSCOPE_ROOT/editors"
+    npm ci --cache /workspace/npm-cache --ignore-scripts --no-audit --no-fund
+    npm run check
+    npm run build
+fi
