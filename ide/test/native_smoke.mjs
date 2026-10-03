@@ -29,6 +29,7 @@ const port = fixture.address().port;
 const config = join(root, 'config.toml');
 await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[permissions]\nnetwork = 'allow'\nedit = 'ask'\n`);
 await writeFile(join(root, 'README.md'), 'Native sidebar test workspace\n');
+await writeFile(join(root, 'sample.go'), 'package fixture\nfunc Greet() int { return 1 }\nfunc TestGreet() int { return Greet() }\n');
 await mkdir(join(root, 'user-data', 'User'), { recursive: true });
 await writeFile(join(root, 'user-data', 'User', 'settings.json'), JSON.stringify({
     'shenscope.juliaPath': '/workspace/toolchains/julia-1.11.7/bin/julia',
@@ -36,6 +37,7 @@ await writeFile(join(root, 'user-data', 'User', 'settings.json'), JSON.stringify
     'window.zoomLevel': 0, 'workbench.colorTheme': 'Default Dark Modern',
 }));
 let application;
+let panel;
 try {
     await new Promise(resolve => setTimeout(resolve, 500));
     application = await _electron.launch({ executablePath: join(checkout, '.build/electron/electron'), cwd: checkout,
@@ -48,7 +50,7 @@ try {
     await page.locator('.monaco-workbench').waitFor({ timeout: 120_000 });
     const icon = page.getByRole('tab', { name: 'ShenScope', exact: true });
     await (vsix ? icon.last() : icon.first()).click({ timeout: 60_000 });
-    let panel = page.locator('.shenscope-panel');
+    panel = page.locator('.shenscope-panel');
     if (vsix) {
         const deadline = Date.now() + 120_000;
         let frame;
@@ -75,7 +77,24 @@ try {
     await panel.getByRole('button', { name: 'Write a file from the native sidebar', exact: true }).waitFor();
     await panel.getByRole('button', { name: 'Chat', exact: true }).click();
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-conversation.png`) });
+    await panel.getByRole('button', { name: 'Project', exact: true }).click();
+    await panel.getByRole('combobox', { name: 'Project backend' }).selectOption('go_ast');
+    await panel.getByRole('button', { name: 'Index project', exact: true }).click();
+    for (let approval = 0; approval < 2; approval++) { await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 30_000 }); }
+    await panel.getByRole('button', { name: 'Refresh index', exact: true }).waitFor({ timeout: 120_000 });
+    await panel.getByRole('textbox', { name: 'Search project symbols' }).fill('Greet');
+    await panel.getByRole('button', { name: 'Greet', exact: true }).waitFor();
+    await panel.getByRole('textbox', { name: 'Files to analyze (comma separated)' }).fill('sample.go');
+    await panel.getByRole('button', { name: 'Test candidates', exact: true }).click();
+    await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
+    await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+} catch (error) {
+    if (panel) {
+        console.error('Panel failure state:', await panel.innerText().catch(() => 'Unavailable'));
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-failure.png`) }).catch(() => {});
+    }
+    throw error;
 } finally {
     await application?.close(); xvfb.kill(); fixture.close(); await rm(root, { recursive: true, force: true });
 }

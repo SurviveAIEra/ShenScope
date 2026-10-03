@@ -21,12 +21,19 @@ include("Tools/Schema.jl")
 include("Tools/Files.jl")
 include("Tools/Processes.jl")
 include("Memory/Store.jl")
+include("ProjectData/Types.jl")
+include("ProjectData/State.jl")
+include("ProjectData/Backends.jl")
+include("ProjectData/Queries.jl")
+include("Analysis/Builtin.jl")
+include("Tools/Project.jl")
 include("Runtime/ToolScheduler.jl")
 include("Context/Preparation.jl")
 include("Core/AgentLoop.jl")
 include("Core/Config.jl")
 include("Protocol/Framing.jl")
 include("Protocol/Server.jl")
+include("Protocol/Project.jl")
 
 export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
     dispatch_rpc, serve_stdio, stop_server!, capability_manifest
@@ -36,6 +43,11 @@ export core_tools, execute_batch, AgentControl, steer!, run_agent!, load_config,
 export VersionedStore, version_get, version_put!, version_list, version_history,
     MemoryStore, memory_store, memory_put!, memory_get, memory_search, memory_delete!,
     memory_export, memory_import!, lexical_tokens, MemoryTool
+export SymbolId, SourceRange, CodeSymbol, Relation, FileFacts, CallReference,
+    BackendCapabilities, ProjectState, ProjectDelta, TreeSitterBackend, CodeGraphBackend,
+    GoASTBackend, backend_capabilities, backend_close!, build!, update!, load_project,
+    graph_snapshot, graph_search, graph_traverse, ProjectTool, ImpactAnalyzer,
+    TestSelectionAnalyzer, ArchitectureAnalyzer, analyze, analyzer_name, requirements
 
 export ProviderConfig, HTTPProvider, MockProvider, provider_name, capabilities,
     response, prepare_request, stream_chat, estimate_request_tokens, SSEDecoder,

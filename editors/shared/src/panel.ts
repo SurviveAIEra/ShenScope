@@ -45,6 +45,10 @@ export class ShenScopePanel {
     private toolCards = new Map<string, HTMLDetailsElement>();
     private renderRevision = 0;
     private disposed = false;
+    private projectBackend = 'tree_sitter';
+    private projectJob?: string;
+    private projectResult: any;
+    private completedProjectJobs = new Set<string>();
     constructor(private readonly root: HTMLElement, private readonly bridge: PanelBridge) {
         root.classList.add('shenscope-panel');
         const header = el('header', '', 'panel-header'); const brand = el('div', '', 'brand'); const mark = el('span', '', 'brand-mark'); mark.append(icon('scope')); brand.append(mark, el('strong', 'ShenScope'));
@@ -90,7 +94,7 @@ export class ShenScopePanel {
     private setStatus(text: string): void { this.status.textContent = text; this.status.classList.toggle('running', this.active); }
     private async selectTab(name: string): Promise<void> { this.tab = name; await this.renderTab(); }
     private async newConversation(): Promise<void> {
-        if (this.active) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
+        if (this.active || this.projectJob) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
         this.sessionId = undefined; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
@@ -141,6 +145,7 @@ export class ShenScopePanel {
         }
         if (this.tab === 'History') { await this.history(revision); return; }
         if (this.tab === 'Settings') { await this.settings(revision); return; }
+        if (this.tab === 'Intelligence' && this.capabilities.project_intelligence) { await this.project(revision); return; }
         this.content.append(el('h2', this.tab === 'Intelligence' ? 'Project intelligence' : this.tab, 'view-title'));
         if (this.tab === 'Tools') {
             const tools = await this.bridge.request('tools/list'); if (revision !== this.renderRevision) { return; }
@@ -167,7 +172,7 @@ export class ShenScopePanel {
             if (!sessions.length) { list.append(el('p', 'Your conversations will appear here.', 'empty-text')); }
             for (const session of sessions) {
                 const row = el('article', '', 'session-card'); const open = this.button(session.title, async () => {
-                    if (this.active) { throw new Error('Finish the current task before switching conversations.'); }
+                    if (this.active || this.projectJob) { throw new Error('Finish the current task before switching conversations.'); }
                     const full = await this.bridge.request('sessions/get', { session_id: session.id }); this.sessionId = full.id; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren();
                     for (const message of full.messages) { this.addMessage(message.role, message.text); } await this.selectTab('Chat'); this.scrollToEnd(true); this.composer.focus();
                 }, 'session-open');
@@ -180,6 +185,61 @@ export class ShenScopePanel {
     }
     private field(label: string, value: string, parent: HTMLElement, type = 'text'): HTMLInputElement {
         const wrapper = el('label', '', 'field'); wrapper.append(el('span', label)); const input = el('input'); input.value = value; input.type = type; wrapper.append(input); parent.append(wrapper); return input;
+    }
+    private async project(revision: number): Promise<void> {
+        const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Project intelligence'));
+        const backend = el('select', '', 'backend-select'); backend.setAttribute('aria-label', 'Project backend');
+        for (const [value, label] of [['tree_sitter', 'Tree-sitter'], ['go_ast', 'Go AST'], ['codegraph', 'CodeGraph']]) {
+            const option = el('option', label); option.value = value; option.selected = value === this.projectBackend; backend.append(option);
+        }
+        backend.disabled = !!this.projectJob;
+        backend.addEventListener('change', () => { this.projectBackend = backend.value; this.projectResult = undefined; void this.guard(() => this.renderTab()); });
+        this.content.append(heading, el('p', 'Explore symbols and trace the evidence behind affected code and test candidates.', 'view-description'), backend);
+        if (this.projectJob) {
+            this.content.append(el('p', 'Working on the project index…', 'empty-text'), this.button('Cancel indexing', async () => { await this.bridge.request('project/cancel', { job_id: this.projectJob }); })); return;
+        }
+        const index = this.button('Index project', () => this.startProject('build'), 'primary-button', 'graph'); this.content.append(index);
+        const status = await this.bridge.request('project/query', { backend: this.projectBackend, action: 'status', ...(this.sessionId ? { session_id: this.sessionId } : {}) });
+        if (revision !== this.renderRevision) { return; }
+        if (status.indexed) { index.querySelector('span')!.textContent = 'Refresh index'; index.setAttribute('aria-label', 'Refresh index'); }
+        if (!status.indexed) { this.content.append(el('p', 'Index source files to search declarations and compute dependency candidates. Your approval controls parsing and storage.', 'view-description')); return; }
+        const metrics = el('div', '', 'project-metrics');
+        for (const [label, value] of [['Files', status.files], ['Symbols', status.symbols], ['Relations', status.relations], ['Revision', status.revision]]) {
+            const metric = el('div'); metric.append(el('strong', Number(value).toLocaleString()), el('small', String(label))); metrics.append(metric);
+        }
+        this.content.append(metrics, el('p', 'Last indexed snapshot. Refresh after changes. Call links use syntax evidence and may miss dynamic or unresolved calls.', 'view-description'));
+        const query = el('input', '', 'history-search'); query.placeholder = 'Search a symbol…'; query.setAttribute('aria-label', 'Search project symbols');
+        const results = el('div', '', 'symbol-results'); this.content.append(query, results); let request = 0; let timer: ReturnType<typeof setTimeout> | undefined;
+        const search = async () => {
+            const current = ++request; const result = await this.bridge.request('project/query', { backend: this.projectBackend, action: 'search', query: query.value, limit: 30, ...(this.sessionId ? { session_id: this.sessionId } : {}) });
+            if (current !== request || revision !== this.renderRevision) { return; } results.replaceChildren();
+            for (const symbol of result.symbols) {
+                const row = el('div', '', 'symbol-row');
+                row.append(this.button(symbol.name, () => this.bridge.openFile(symbol.location.file, symbol.location.start_line), 'source-link'), el('small', `${symbol.kind} · ${symbol.location.file}:${symbol.location.start_line}`)); results.append(row);
+            }
+            if (!result.symbols.length) { results.append(el('p', 'No matching symbols.', 'empty-text')); }
+        };
+        query.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => { void this.guard(search); }, 180); });
+        const paths = this.field('Files to analyze (comma separated)', '', this.content); paths.placeholder = 'src/main.go';
+        const actions = el('div', '', 'analysis-actions');
+        actions.append(this.button('Impact', () => this.startProject('impact', paths.value)), this.button('Test candidates', () => this.startProject('test_selection', paths.value)), this.button('Architecture', () => this.startProject('architecture'))); this.content.append(actions);
+        if (this.projectResult?.analyzer) {
+            const result = this.projectResult; this.content.append(el('h3', result.analyzer.replaceAll('_', ' '), 'analysis-title'));
+            for (const candidate of result.candidates ?? []) {
+                const symbol = candidate.symbol; const card = el('section', '', 'info-card');
+                card.append(this.button(symbol.name, () => this.bridge.openFile(symbol.location.file, symbol.location.start_line), 'source-link'), el('p', candidate.reason), el('small', `${symbol.location.file}:${symbol.location.start_line} · confidence ${Math.round(candidate.confidence * 100)}%`)); this.content.append(card);
+            }
+            for (const cycle of result.cycles ?? []) { const card = el('section', '', 'info-card'); card.append(el('h3', 'Dependency cycle')); for (const path of cycle) { card.append(this.button(path, () => this.bridge.openFile(path), 'source-link')); } this.content.append(card); }
+            if (result.candidates?.length === 0 || result.cycles?.length === 0) { this.content.append(el('p', 'No candidates found in the recorded relations.', 'empty-text')); }
+            for (const limit of result.limitations ?? []) { this.content.append(el('p', limit, 'view-description')); }
+        }
+        await search();
+    }
+    private async startProject(action: string, paths = ''): Promise<void> {
+        if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title: 'Project analysis' }); this.sessionId = session.id; }
+        const result = await this.bridge.request('project/start', { session_id: this.sessionId, backend: this.projectBackend, action, paths: paths.split(/[\n,]/).map(path => path.trim()).filter(Boolean) });
+        if (!this.completedProjectJobs.has(result.job_id)) { this.projectJob = result.job_id; this.setStatus('Analyzing project…'); }
+        await this.renderTab();
     }
     private async settings(revision: number): Promise<void> {
         const snapshot = await this.bridge.request('config/get'); if (revision !== this.renderRevision) { return; } this.config = snapshot.value; this.configRevision = snapshot.sha256;
@@ -218,6 +278,15 @@ export class ShenScopePanel {
         if (this.disposed) { return; }
         if (method === 'transport/closed') { this.active = false; this.setStatus('Disconnected'); this.notice.textContent = params.message; this.notice.hidden = false; this.approvals.replaceChildren(); this.updateActions(); return; }
         if (method !== 'agent/event' || params.session_id !== this.sessionId) { return; } const payload = params.payload;
+        if (params.kind === 'project_completed' || params.kind === 'project_failed') {
+            this.completedProjectJobs.add(payload.job_id);
+            while (this.completedProjectJobs.size > 64) { this.completedProjectJobs.delete(this.completedProjectJobs.values().next().value!); }
+            this.projectJob = undefined;
+            for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }
+            if (params.kind === 'project_completed') { this.projectResult = payload.result; this.setStatus('Project analysis complete'); }
+            else { this.notice.textContent = payload.message; this.notice.hidden = false; this.setStatus('Project analysis stopped'); }
+            if (this.tab === 'Intelligence') { void this.guard(() => this.renderTab()); } return;
+        }
         if (params.kind === 'model_request') { this.flushAssistant(); this.assistant = undefined; this.assistantText = ''; }
         else if (params.kind === 'text_delta') {
             if (!this.assistant) { this.assistant = this.addMessage('assistant', ''); } this.assistantText = (this.assistantText + payload.text).slice(0, 1_000_000);
@@ -225,11 +294,13 @@ export class ShenScopePanel {
         } else if (params.kind === 'tool_started') { this.addTool(payload); }
         else if (params.kind === 'tool_completed') { const card = this.addTool(payload); card.classList.add(payload.ok ? 'succeeded' : 'failed'); card.querySelector('.tool-status')!.textContent = payload.ok ? 'Complete' : 'Failed'; card.querySelector('pre')!.textContent = JSON.stringify(payload, null, 2).slice(0, 32000); if (!payload.ok) { card.open = true; } }
         else if (params.kind === 'permission_request') {
-            const card = el('section', '', 'permission-card'); const heading = el('div', '', 'permission-heading'); heading.append(icon('shield'), el('strong', 'Approval needed'));
+            const card = el('section', '', 'permission-card'); card.dataset.traceId = params.trace_id; const heading = el('div', '', 'permission-heading'); heading.append(icon('shield'), el('strong', 'Approval needed'));
             card.append(heading, el('p', `${payload.tool} · ${payload.category}`, 'permission-action'), el('code', payload.target, 'permission-target'), el('p', payload.reason, 'permission-reason')); const actions = el('div', '', 'permission-actions');
             for (const [label, decision, style] of [['Allow once', 'once', 'primary-button'], ['Allow session', 'session', 'secondary-button'], ['Deny', 'deny', 'deny-button']]) { actions.append(this.button(label, async () => { await this.bridge.request('permissions/respond', { session_id: params.session_id, request_id: payload.id, decision }); card.remove(); }, style)); } card.append(actions); this.approvals.append(card);
         } else if (params.kind === 'session_completed' || params.kind === 'session_error') {
-            this.flushAssistant(); this.active = false; this.assistant = undefined; this.approvals.replaceChildren(); this.updateActions();
+            this.flushAssistant(); this.active = false; this.assistant = undefined;
+            for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }
+            this.updateActions();
             this.setStatus(params.kind === 'session_completed' ? `Complete · ${payload.budget.tokens.toLocaleString()} tokens · $${payload.budget.cost.toFixed(4)}` : 'Task stopped'); if (params.kind === 'session_error') { this.notice.textContent = payload.message; this.notice.hidden = false; }
         } else if (params.kind === 'usage') { this.setStatus(`Working · ${(payload.input_tokens + payload.output_tokens).toLocaleString()} tokens`); }
     }

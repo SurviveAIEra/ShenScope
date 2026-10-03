@@ -34,3 +34,8 @@ Windows-first installer/portable/upgrade/uninstall packaging, bundled Julia,
 full parity, branding assets and release checksums remain in development.
 Large source/binary build outputs stay outside Git and need not be rebuilt on
 every Core change. Reuse the compiled desktop while Julia modules develop.
+After the initial client transpilation, authored panel/channel-only changes can
+use `node scripts/transpile_codeoss_panel.mjs` following overlay installation.
+This updates a few modules and CSS in place. The standalone Webview uses
+`cd editors && npm run check && npm run build`; its GUI test adds `--vsix` to
+`ide/test/native_smoke.mjs`. Project-view validation also requires backend setup.

@@ -133,9 +133,9 @@ end
 
 function capability_manifest()
     Dict("agent"=>true,"streaming_protocols"=>["openai_chat","openai_responses","anthropic","gemini","ollama"],
-        "tools"=>["read","search","edit","write","patch","process","git","memory"],"session_journal"=>true,"memory"=>true,
+        "tools"=>["read","search","edit","write","patch","process","git","memory","project"],"session_journal"=>true,"memory"=>true,
         "permission_approvals"=>true,"config_profiles"=>true,"os_isolation"=>false,
-        "mcp"=>false,"skills"=>false,"hooks"=>false,"project_intelligence"=>false,
+        "mcp"=>false,"skills"=>false,"hooks"=>false,"project_intelligence"=>true,
         "durable_tasks"=>false,"dynamic_analyzers"=>false)
 end
 
@@ -150,6 +150,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     end
     server.initialized || throw(RPCFault(-32002,"Initialize first"))
     server.stopping && method!="shutdown" && throw(RPCFault(-32003,"Server is stopping"))
+    startswith(method,"project/") && return project_rpc(server,method,params)
     if method=="health"
         return Dict("ready"=>!server.stopping,"active_runs"=>length(server.runs),"pending_approvals"=>length(server.approvals))
     elseif method=="shutdown"
@@ -161,6 +162,11 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
         return Dict("value"=>deepcopy(server.config),"sha256"=>revision)
     elseif method=="config/set"
         isempty(server.runs) || throw(ShenScopeError(:config,"Finish active runs before changing configuration"))
+        manager=server_project_tool(server).manager
+        lock(manager.mutex) do
+            any(job->job["status"]=="running",values(manager.jobs)) &&
+                throw(ShenScopeError(:config,"Finish project jobs before changing configuration"))
+        end
         value=get(params,"value",nothing)
         value isa AbstractDict || throw(RPCFault(-32602,"Configuration object required"))
         expected=rpc_string(params,"expected_sha256";max_bytes=64)
@@ -264,6 +270,7 @@ function stop_server!(server::CoreServer)
     for run in collect(values(server.runs));cancel!(run.context.cancellation);end
     for run in collect(values(server.runs));run.task!==nothing && wait(run.task);end
     for tool in server.tools
+        tool isa ProjectTool && cleanup_projects!(tool.manager)
         tool isa ProcessTool || continue
         for id in keys(server.contexts);cleanup_processes!(tool.manager,id);end
     end

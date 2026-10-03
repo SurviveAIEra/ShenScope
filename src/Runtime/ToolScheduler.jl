@@ -54,5 +54,5 @@ end
 
 function core_tools()
     process=ProcessTool()
-    return AbstractTool[ReadTool(),SearchTool(),EditTool(),WriteTool(),PatchTool(),process,GitTool(process),MemoryTool()]
+    return AbstractTool[ReadTool(),SearchTool(),EditTool(),WriteTool(),PatchTool(),process,GitTool(process),MemoryTool(),ProjectTool()]
 end

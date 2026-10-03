@@ -5,7 +5,8 @@ import { CoreClient } from '../../shared/src/rpcClient.js';
 
 const methods = new Set(['health', 'config/get', 'config/set', 'credentials/status', 'sessions/list', 'sessions/create',
     'sessions/get', 'sessions/export', 'sessions/rename', 'sessions/archive', 'sessions/pin', 'sessions/branch',
-    'agent/start', 'agent/cancel', 'agent/steer', 'permissions/respond', 'tools/list', 'runtime/status']);
+    'agent/start', 'agent/cancel', 'agent/steer', 'permissions/respond', 'tools/list', 'runtime/status',
+    'project/backends', 'project/start', 'project/job', 'project/cancel', 'project/query']);
 
 class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
     private client?: CoreClient;

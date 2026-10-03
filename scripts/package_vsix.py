@@ -14,6 +14,12 @@ for source in (root / 'src').rglob('*.jl'):
     destination = core / source.relative_to(root)
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(source, destination)
+for source in (root / 'scripts/backends').glob('*'):
+    if source.suffix not in ('.py', '.go', '.mjs'):
+        continue
+    destination = core / source.relative_to(root)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(source, destination)
 shutil.copyfile(root / 'LICENSE', extension / 'LICENSE')
 output = root / 'dist'
 output.mkdir(exist_ok=True)

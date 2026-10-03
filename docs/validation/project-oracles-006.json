@@ -1,0 +1,153 @@
+{
+    "trials": [
+        {
+            "incremental_bytes": 456608,
+            "backend": "go_ast",
+            "phases": {
+                "total": 0.01219797134399414,
+                "scan": 0.0003809928894042969,
+                "persist": 0.0002238750457763672,
+                "extract": 0.011291980743408203,
+                "apply": 4.220008850097656e-5
+            },
+            "oracle": "equal",
+            "full_seconds": 0.062530461,
+            "incremental_seconds": 0.012253766,
+            "full_bytes": 6614376,
+            "changed_files": 1
+        },
+        {
+            "incremental_bytes": 2079336,
+            "backend": "go_ast",
+            "phases": {
+                "total": 0.014104843139648438,
+                "scan": 0.00010991096496582031,
+                "persist": 0.0007879734039306641,
+                "extract": 0.012190818786621094,
+                "apply": 0.00021004676818847656
+            },
+            "oracle": "equal",
+            "full_seconds": 0.01896537,
+            "incremental_seconds": 0.014234831,
+            "full_bytes": 5647704,
+            "changed_files": 5
+        },
+        {
+            "incremental_bytes": 8242792,
+            "backend": "go_ast",
+            "phases": {
+                "total": 0.020144939422607422,
+                "scan": 0.0004189014434814453,
+                "persist": 0.003022909164428711,
+                "extract": 0.01288604736328125,
+                "apply": 0.0008330345153808594
+            },
+            "oracle": "equal",
+            "full_seconds": 0.039885929,
+            "incremental_seconds": 0.020421427,
+            "full_bytes": 5653496,
+            "changed_files": 20
+        },
+        {
+            "incremental_bytes": 461560,
+            "backend": "tree_sitter",
+            "phases": {
+                "total": 0.01258993148803711,
+                "scan": 2.288818359375e-5,
+                "persist": 0.0002720355987548828,
+                "extract": 0.01199483871459961,
+                "apply": 7.104873657226562e-5
+            },
+            "oracle": "equal",
+            "full_seconds": 0.129142011,
+            "incremental_seconds": 0.01262841,
+            "full_bytes": 5633392,
+            "changed_files": 1
+        },
+        {
+            "incremental_bytes": 2080256,
+            "backend": "tree_sitter",
+            "phases": {
+                "total": 0.01534891128540039,
+                "scan": 0.00010895729064941406,
+                "persist": 0.0013720989227294922,
+                "extract": 0.012372970581054688,
+                "apply": 0.0002529621124267578
+            },
+            "oracle": "equal",
+            "full_seconds": 0.141634387,
+            "incremental_seconds": 0.015488441,
+            "full_bytes": 5639584,
+            "changed_files": 5
+        },
+        {
+            "incremental_bytes": 8244440,
+            "backend": "tree_sitter",
+            "phases": {
+                "total": 0.08853507041931152,
+                "scan": 0.00034117698669433594,
+                "persist": 0.07234001159667969,
+                "extract": 0.012670040130615234,
+                "apply": 0.0004429817199707031
+            },
+            "oracle": "equal",
+            "full_seconds": 0.108985662,
+            "incremental_seconds": 0.089026373,
+            "full_bytes": 5646888,
+            "changed_files": 20
+        },
+        {
+            "incremental_bytes": 6455024,
+            "backend": "codegraph",
+            "phases": {
+                "total": 0.35808801651000977,
+                "scan": 2.5033950805664062e-5,
+                "persist": 0.00028395652770996094,
+                "extract": 0.35387492179870605,
+                "apply": 2.5987625122070312e-5
+            },
+            "oracle": "equal",
+            "full_seconds": 2.385250977,
+            "incremental_seconds": 0.35814924,
+            "full_bytes": 7814552,
+            "changed_files": 1
+        },
+        {
+            "incremental_bytes": 7391520,
+            "backend": "codegraph",
+            "phases": {
+                "total": 0.6055459976196289,
+                "scan": 0.0003669261932373047,
+                "persist": 0.0008940696716308594,
+                "extract": 0.5536799430847168,
+                "apply": 7.200241088867188e-5
+            },
+            "oracle": "equal",
+            "full_seconds": 1.804408523,
+            "incremental_seconds": 0.605862444,
+            "full_bytes": 7827624,
+            "changed_files": 5
+        },
+        {
+            "incremental_bytes": 10871648,
+            "backend": "codegraph",
+            "phases": {
+                "total": 1.7342729568481445,
+                "scan": 0.0003800392150878906,
+                "persist": 0.016386985778808594,
+                "extract": 1.7028939723968506,
+                "apply": 0.0006558895111083984
+            },
+            "oracle": "equal",
+            "full_seconds": 3.342263102,
+            "incremental_seconds": 1.734636124,
+            "full_bytes": 7850800,
+            "changed_files": 20
+        }
+    ],
+    "fixture_files": 21,
+    "limits": [
+        "Small offline fixtures; timings include first JIT where applicable.",
+        "CodeGraph SDK still performs global relinking/export; no competitive performance claim."
+    ]
+}

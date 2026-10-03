@@ -20,3 +20,21 @@ jobs:
           SHENSCOPE_JULIA: julia
           JULIA_DEPOT_PATH: /home/runner/.julia
       - run: git diff --check
+  project-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.11'
+      - uses: julia-actions/cache@v2
+      - run: python scripts/setup_backends.py
+        env:
+          SHENSCOPE_TOOLS_DIR: ${{ runner.temp }}/shenscope-tools
+          SHENSCOPE_REFERENCES: ${{ runner.temp }}/shenscope-references
+          SHENSCOPE_PARSER_CACHE: ${{ runner.temp }}/shenscope-parser-cache
+      - run: julia --project=. -e 'using Pkg; Pkg.instantiate()'
+      - run: julia --startup-file=no --threads=4 --project=. test/project_data.jl

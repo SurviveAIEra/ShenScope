@@ -10,7 +10,10 @@ bin/shenscope doctor --state-dir .local/state
 ```
 
 `scripts/setup.sh --editors` also installs/checks/builds the editor assets with
-the shared npm cache. `scripts/clone_references.py` prepares the one pinned
+the shared npm cache. Add `--backends` to prepare pinned CodeGraphContext,
+Tree-sitter grammars and the Go AST compiler/helper in shared locations.
+See `docs/core/project_data.md` for alternate paths and validation commands.
+`scripts/clone_references.py` prepares the one pinned
 checkout per research dependency; it refuses to replace changed references.
 The single Code-OSS checkout is a designated build dependency and contains the
 small native overlay. Research/depot/registry checkouts are not application

@@ -1,0 +1,39 @@
+{
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "platform": "Linux, Julia 1.11.7, four threads, Electron 43.7.5",
+  "core_project_integration_assertions": 108,
+  "latest_project_protocol_assertions": 27,
+  "existing_protocol_assertions": 30,
+  "incremental_oracles": 9,
+  "fixture_files": 21,
+  "backends": [
+    "Go stdlib AST (Go 1.27.1)",
+    "native Tree-sitter 0.25.2/language-pack 1.20.0",
+    "CodeGraphContext 0.6.13/Ladybug 0.19.1"
+  ],
+  "backends_are_real": true,
+  "cli_build_and_fresh_process_cache_query": "passed",
+  "editor_typecheck": "passed",
+  "full_workbench_typecheck": "passed",
+  "node_core_transport_tests": 2,
+  "gui": {
+    "vsix": "passed with actual Webview and Go AST index/analysis",
+    "native": "passed with extensions disabled and Go AST index/analysis"
+  },
+  "vsix_bytes": 104885,
+  "authored_julia_core_lines": 3383,
+  "storage": {
+    "free_gib_approx": 18,
+    "project_journal_cap_mib": 128,
+    "whole_project_copies": 0
+  },
+  "raw_oracles": "docs/validation/project-oracles-006.json",
+  "limits": [
+    "Small offline fixtures, not live-model or competitive benchmarks.",
+    "CodeGraph still globally relinks/exports; source-less SDK nodes are omitted.",
+    "Syntax calls are heuristic; compiler-semantic backend, watcher, compaction and large-graph evidence remain pending.",
+    "Installed shared parser toolchains are required; desktop distribution/Windows validation remain unfinished.",
+    "The minimum 250,000 authored Core lines and full product gates are not reached."
+  ],
+  "broad_core_assertions": 204
+}

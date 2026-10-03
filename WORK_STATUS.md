@@ -29,7 +29,7 @@ Workbench/shared-process overlay passes the complete upstream client typecheck
 and a real GUI HTTP/tool/approval/file-write test with extensions disabled.
 This is a development desktop runtime, not a completed desktop distribution.
 Full built-in-extension packaging and Windows installer validation are pending.
-MCP integration, graph backend and real OS isolation remain unfinished.
+MCP integration and real OS isolation remain unfinished.
 Core remains far below the 250,000-line delivery target.
 
 Storage hardening: atomic replacement now uses OS replacement primitives;
@@ -49,8 +49,8 @@ characters/bigrams and atomic import/export. Nonblocking cross-process locks
 fix worker starvation under concurrent writes. Broad affected suite: 204 passing
 assertions (32 new memory assertions). `docs/core/memory.md` describes limits.
 
-Next: improve editor UI; real project backends/analysis; durable tasks/MCP;
-extensions/diagnostics; measured release preparation.
+Next: compiler-semantic project backend; durable tasks/MCP;
+Julia extensions/diagnostics and isolated analyzers; measured release preparation.
 
 Editor UI checkpoint: compact primary navigation, anchored composer, starter
 prompts, safe Markdown/code/file links, grouped tool cards, visible permission
@@ -58,6 +58,17 @@ cards, searchable/manageable conversations, structured settings and secure-key
 status. Actual native GUI and VSIX Webview flows pass. Full Workbench typecheck
 and two Node/Core transport tests pass. V3 Julia-specific requirements have been
 rechecked in `docs/architecture/julia_feature_contract.md`; graph work is next.
+
+Project-data checkpoint: stable Core facts/revisions/evidence, resident local
+adjacency, checksummed transactional journal, real Go AST, native Tree-sitter
+and actual CodeGraphContext/Ladybug backends. Impact/TestSelection/Architecture
+are shared ordinary Julia analyzers. Nine 1/5/20-file incremental/full rebuild
+oracles agree on a 21-file fixture; 108 integration assertions pass. Protocol
+ownership/reload/deny/capacity tests pass. The Project view is connected to Core
+jobs and approvals in both editor clients. Detailed limits and commands are in
+`docs/core/project_data.md`. Syntax call links remain heuristic; CodeGraph has
+global relink/export cost; compiler semantics, watcher/compaction and large-graph
+evidence are pending. No Julia performance or live-model quality claim is made.
 
 Only tested runnable checkpoints will be labeled verified. Update this file
 after each checkpoint and push so another machine can resume without chat state.

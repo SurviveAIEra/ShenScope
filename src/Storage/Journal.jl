@@ -88,7 +88,7 @@ function store_lock(f::Function, path::AbstractString)
 end
 
 function bounded_record(io::IO,max_bytes::Int)
-    result=IOBuffer(;maxsize=max_bytes)
+    result=IOBuffer(;maxsize=max_bytes,sizehint=min(max_bytes,8192))
     while !eof(io)
         byte=read(io,UInt8)
         position(result)<max_bytes || throw(ShenScopeError(:storage,"Oversized journal record"))
