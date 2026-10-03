@@ -1,13 +1,132 @@
-.shenscope-panel { box-sizing: border-box; font: 13px system-ui, sans-serif; color: var(--vscode-foreground, #ddd); background: var(--vscode-sideBar-background, #181c22); height: 100%; padding: 12px; overflow: auto; }
-.shenscope-panel header { font-size: 20px; font-weight: 650; }
-.shenscope-panel small { display: block; font-size: 11px; opacity: .7; margin: 5px 0; }
-.shenscope-panel nav, .shenscope-panel .actions { display: flex; gap: 5px; flex-wrap: wrap; margin: 12px 0; }
-.shenscope-panel button { background: var(--vscode-button-background, #12685b); color: var(--vscode-button-foreground, #fff); border: 0; padding: 6px 9px; border-radius: 3px; cursor: pointer; }
-.shenscope-panel .status { margin-top: 8px; color: var(--vscode-descriptionForeground, #b4b9c3); }
-.shenscope-panel .transcript { max-height: 55vh; overflow: auto; }
-.shenscope-panel article { border-bottom: 1px solid var(--vscode-panel-border, #333); padding: 10px 0; }
-.shenscope-panel pre { white-space: pre-wrap; overflow-wrap: anywhere; font: 12px ui-monospace, monospace; margin: 7px 0; }
-.shenscope-panel textarea, .shenscope-panel input, .shenscope-panel select { box-sizing: border-box; width: 100%; margin: 6px 0; padding: 7px; background: var(--vscode-input-background, #252b34); color: var(--vscode-input-foreground, #fff); border: 1px solid var(--vscode-input-border, #444); }
-.shenscope-panel label { display: block; margin: 8px 0; }
-.shenscope-panel .permission { padding: 10px; border: 1px solid var(--vscode-focusBorder, #289981); margin: 8px 0; }
-.shenscope-panel .permission button { margin: 8px 5px 0 0; }
+.shenscope-panel {
+    --surface: var(--vscode-sideBar-background, #15191f); --raised: var(--vscode-editorWidget-background, #20252d);
+    --border: var(--vscode-widget-border, #ffffff18); --muted: var(--vscode-descriptionForeground, #9ba4b1);
+    --accent: var(--vscode-button-background, #347c71); --text: var(--vscode-foreground, #e3e8ef);
+    box-sizing: border-box; height: 100%; min-height: 0; width: 100%; display: flex; flex-direction: column;
+    color: var(--text); background: var(--surface); font: 13px/1.55 var(--vscode-font-family, system-ui, sans-serif);
+}
+.shenscope-panel *, .shenscope-panel *::before, .shenscope-panel *::after { box-sizing: border-box; }
+.shenscope-panel [hidden] { display: none !important; }
+.shenscope-panel svg { width: 18px; height: 18px; flex-shrink: 0; }
+.shenscope-panel button, .shenscope-panel select, .shenscope-panel input, .shenscope-panel textarea { font: inherit; }
+.shenscope-panel button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid transparent; border-radius: 7px; cursor: pointer; color: inherit; background: transparent; padding: 6px 10px; }
+.shenscope-panel button:hover { background: var(--vscode-toolbar-hoverBackground, #ffffff0b); }
+.shenscope-panel button:disabled { opacity: .4; cursor: default; }
+.shenscope-panel :focus-visible { outline: 2px solid var(--vscode-focusBorder, #6ac5b3); outline-offset: 2px; }
+.shenscope-panel .panel-header { display: flex; align-items: center; justify-content: space-between; padding: 17px 16px 10px; flex-shrink: 0; }
+.shenscope-panel .brand { display: flex; gap: 9px; align-items: center; font-size: 15px; letter-spacing: -.3px; }
+.shenscope-panel .brand-mark { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 9px; color: var(--vscode-textLink-foreground, #73c9b9); background: color-mix(in srgb, currentColor 10%, transparent); }
+.shenscope-panel .icon-button { padding: 6px; color: var(--muted); }
+.shenscope-panel .primary-nav { display: flex; gap: 3px; margin: 0 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.shenscope-panel .nav-button { padding: 7px 9px; color: var(--muted); font-size: 12px; flex: 1; }
+.shenscope-panel .nav-button svg { width: 15px; height: 15px; }
+.shenscope-panel .nav-button.selected { color: var(--text); background: var(--raised); }
+.shenscope-panel .more-views { width: 55px; padding: 3px; border: none; color: var(--muted); background: var(--surface); font-size: 11px; cursor: pointer; }
+.shenscope-panel .panel-content { flex: 1; overflow-y: auto; min-height: 0; padding: 16px; }
+.shenscope-panel .chat-view { padding: 0 12px; display: flex; flex-direction: column; overflow: hidden; }
+.shenscope-panel .conversation { flex: 1; min-height: 0; position: relative; display: flex; flex-direction: column; }
+.shenscope-panel .welcome { padding: 42px 10px 24px; margin: auto 0; overflow-y: auto; }
+.shenscope-panel .welcome-mark { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--border); border-radius: 14px; margin-bottom: 20px; color: var(--vscode-textLink-foreground, #73c9b9); }
+.shenscope-panel .welcome-mark svg { width: 26px; height: 26px; }
+.shenscope-panel .welcome h1 { font-size: 22px; line-height: 1.3; font-weight: 600; letter-spacing: -.6px; margin: 0 0 9px; }
+.shenscope-panel .welcome > p { color: var(--muted); margin: 0 0 24px; max-width: 30ch; font-size: 12px; }
+.shenscope-panel .starter-prompts { display: grid; gap: 8px; }
+.shenscope-panel .starter { display: grid; grid-template-columns: 1fr auto; justify-content: start; text-align: left; gap: 2px 8px; padding: 11px 12px; border: 1px solid var(--border); border-radius: 9px; }
+.shenscope-panel .starter span { font-size: 12px; font-weight: 500; }
+.shenscope-panel .starter small { grid-column: 1; color: var(--muted); font-size: 11px; }
+.shenscope-panel .starter svg { grid-column: 2; grid-row: 1 / 3; color: var(--muted); width: 15px; }
+.shenscope-panel .transcript { flex: 1; overflow-y: auto; min-height: 0; padding: 8px 2px 20px; scrollbar-width: thin; }
+.shenscope-panel .welcome:not([hidden]) + .transcript { display: none; }
+.shenscope-panel .message { margin: 15px 0 24px; }
+.shenscope-panel .message-label { font-weight: 600; font-size: 11px; margin-bottom: 9px; color: var(--muted); }
+.shenscope-panel .message-user .message-body, .shenscope-panel .message-steering .message-body { background: var(--raised); padding: 11px 13px; border: 1px solid var(--border); border-radius: 11px; white-space: pre-wrap; }
+.shenscope-panel .message-body { line-height: 1.65; overflow-wrap: anywhere; }
+.shenscope-panel .message-body p { margin: 0 0 10px; white-space: pre-wrap; }
+.shenscope-panel .message-body h2, .shenscope-panel .message-body h3 { font-size: 15px; margin: 18px 0 8px; }
+.shenscope-panel .message-body h4, .shenscope-panel .message-body h5 { font-size: 13px; margin: 15px 0 6px; }
+.shenscope-panel .message-body ul, .shenscope-panel .message-body ol { padding-left: 22px; margin: 8px 0 13px; }
+.shenscope-panel .message-body li { margin: 5px 0; }
+.shenscope-panel code, .shenscope-panel pre { font: 12px/1.6 var(--vscode-editor-font-family, ui-monospace, monospace); }
+.shenscope-panel .message-body p code, .shenscope-panel li code { background: var(--raised); padding: 2px 4px; border-radius: 4px; }
+.shenscope-panel .code-block { border: 1px solid var(--border); border-radius: 8px; background: var(--vscode-editor-background, #11151a); margin: 12px 0; overflow: hidden; }
+.shenscope-panel .code-label { font-size: 10px; color: var(--muted); padding: 6px 11px; border-bottom: 1px solid var(--border); }
+.shenscope-panel .code-block pre { margin: 0; padding: 11px; overflow-x: auto; white-space: pre; }
+.shenscope-panel blockquote { border-left: 2px solid var(--accent); padding-left: 12px; color: var(--muted); margin: 12px 0; }
+.shenscope-panel .source-link { display: inline; padding: 0; color: var(--vscode-textLink-foreground, #73c9b9); text-decoration: underline; border-radius: 2px; }
+.shenscope-panel .table-scroll { overflow-x: auto; margin: 12px 0; }
+.shenscope-panel table { border-collapse: collapse; font-size: 12px; }
+.shenscope-panel th, .shenscope-panel td { border: 1px solid var(--border); padding: 7px; text-align: left; }
+.shenscope-panel .composer-box { flex-shrink: 0; background: var(--vscode-input-background, #20252d); border: 1px solid var(--vscode-input-border, var(--border)); border-radius: 12px; padding: 10px; margin-top: 8px; }
+.shenscope-panel .composer-box:focus-within { border-color: var(--vscode-focusBorder, #6ac5b3); }
+.shenscope-panel textarea { width: 100%; resize: vertical; max-height: 200px; min-height: 70px; border: none; background: transparent; color: var(--vscode-input-foreground, var(--text)); padding: 2px; outline: none; }
+.shenscope-panel textarea:focus-visible { outline: none; }
+.shenscope-panel textarea::placeholder { color: var(--vscode-input-placeholderForeground, var(--muted)); font-size: 12px; }
+.shenscope-panel .composer-toolbar, .shenscope-panel .composer-actions { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.shenscope-panel .model-button { justify-content: start; padding: 4px 5px; min-width: 0; color: var(--muted); font-size: 11px; max-width: 65%; }
+.shenscope-panel .model-button span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.shenscope-panel .send-button { background: var(--accent); color: var(--vscode-button-foreground, #fff); width: 30px; height: 30px; padding: 5px; border-radius: 8px; }
+.shenscope-panel .send-button span { display: none; }
+.shenscope-panel .send-button:hover { background: var(--vscode-button-hoverBackground, #419789); }
+.shenscope-panel .stop-button { font-size: 11px; padding: 3px 6px; }
+.shenscope-panel .stop-button svg { width: 11px; height: 11px; }
+.shenscope-panel .composer-hint { padding: 7px 0 3px; text-align: center; font-size: 10px; color: var(--muted); }
+.shenscope-panel .status { flex-shrink: 0; padding: 8px 16px; color: var(--muted); font-size: 10px; display: flex; align-items: center; gap: 7px; min-height: 31px; }
+.shenscope-panel .status::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--vscode-testing-iconPassed, #73c9b9); flex-shrink: 0; }
+.shenscope-panel .status.running::before { animation: shenscope-pulse 1.3s ease-in-out infinite; }
+.shenscope-panel .notice { margin: 9px 12px 0; padding: 9px 11px; border: 1px solid var(--vscode-inputValidation-errorBorder, #ba5353); border-radius: 7px; font-size: 12px; overflow-wrap: anywhere; }
+.shenscope-panel .approvals { max-height: 40%; overflow-y: auto; flex-shrink: 0; }
+.shenscope-panel .permission-card { margin: 10px 12px 0; padding: 13px; border: 1px solid var(--vscode-inputValidation-warningBorder, #b99a54); border-radius: 9px; background: var(--raised); }
+.shenscope-panel .permission-heading { display: flex; gap: 8px; align-items: center; font-size: 12px; }
+.shenscope-panel .permission-heading svg { color: var(--vscode-editorWarning-foreground, #d7b56f); }
+.shenscope-panel .permission-action, .shenscope-panel .permission-reason { font-size: 11px; color: var(--muted); margin: 7px 0; }
+.shenscope-panel .permission-target { display: block; overflow-wrap: anywhere; white-space: pre-wrap; }
+.shenscope-panel .permission-actions { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 11px; }
+.shenscope-panel .permission-actions button { font-size: 11px; padding: 5px 8px; }
+.shenscope-panel .primary-button { background: var(--vscode-button-background, #347c71); color: var(--vscode-button-foreground, #fff); }
+.shenscope-panel .primary-button:hover { background: var(--vscode-button-hoverBackground, #419789); }
+.shenscope-panel .secondary-button { background: var(--vscode-button-secondaryBackground, #ffffff0b); color: var(--vscode-button-secondaryForeground, var(--text)); }
+.shenscope-panel .deny-button { color: var(--vscode-errorForeground, #ef8f8f); }
+.shenscope-panel .tool-card { border: 1px solid var(--border); border-radius: 8px; margin: 8px 0; overflow: hidden; }
+.shenscope-panel .tool-card > summary { display: flex; align-items: center; gap: 8px; padding: 9px 11px; cursor: pointer; font-size: 11px; }
+.shenscope-panel .tool-glyph { display: flex; color: var(--muted); }
+.shenscope-panel .tool-glyph svg { width: 14px; height: 14px; }
+.shenscope-panel .tool-name { font-weight: 500; flex: 1; }
+.shenscope-panel .tool-status { color: var(--muted); font-size: 10px; }
+.shenscope-panel .succeeded .tool-status { color: var(--vscode-testing-iconPassed, #73c9b9); }
+.shenscope-panel .failed .tool-status { color: var(--vscode-errorForeground, #ef8f8f); }
+.shenscope-panel .tool-output, .shenscope-panel .diagnostics pre { max-height: 260px; overflow: auto; margin: 0; padding: 11px; border-top: 1px solid var(--border); white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
+.shenscope-panel .view-title, .shenscope-panel .view-heading h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.3px; }
+.shenscope-panel .view-description { color: var(--muted); font-size: 12px; margin: 8px 0 22px; }
+.shenscope-panel .view-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.shenscope-panel .history-search, .shenscope-panel .field input, .shenscope-panel .field select, .shenscope-panel .session-controls input { width: 100%; color: var(--vscode-input-foreground, var(--text)); background: var(--vscode-input-background, var(--raised)); border: 1px solid var(--vscode-input-border, var(--border)); border-radius: 6px; padding: 7px 9px; }
+.shenscope-panel .session-card { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.shenscope-panel .session-open { display: block; width: 100%; text-align: left; padding: 0; font-size: 13px; }
+.shenscope-panel .session-meta { display: block; color: var(--muted); font-size: 10px; margin: 5px 0; overflow-wrap: anywhere; }
+.shenscope-panel .session-controls { color: var(--muted); font-size: 11px; }
+.shenscope-panel summary { cursor: pointer; }
+.shenscope-panel .session-controls input { margin: 9px 0 5px; }
+.shenscope-panel .session-controls button { font-size: 11px; padding: 4px 7px; margin: 3px 3px 0 0; }
+.shenscope-panel fieldset { border: 1px solid var(--border); border-radius: 9px; padding: 13px; margin: 0 0 18px; min-width: 0; }
+.shenscope-panel legend { font-size: 12px; font-weight: 600; padding: 0 6px; }
+.shenscope-panel .field { display: block; color: var(--muted); font-size: 11px; margin-bottom: 13px; }
+.shenscope-panel .field input, .shenscope-panel .field select { display: block; margin-top: 5px; font-size: 12px; }
+.shenscope-panel .advanced-settings, .shenscope-panel .settings-group { font-size: 12px; margin: 10px 0 16px; }
+.shenscope-panel .settings-group { padding: 11px 13px; border: 1px solid var(--border); border-radius: 8px; }
+.shenscope-panel .settings-group summary, .shenscope-panel .advanced-settings summary { margin-bottom: 9px; }
+.shenscope-panel .credential-status { display: block; margin-top: 8px; color: var(--muted); font-size: 10px; }
+.shenscope-panel .info-card { border: 1px solid var(--border); border-radius: 9px; padding: 12px; margin-top: 11px; }
+.shenscope-panel .info-card h3 { font-size: 13px; margin: 0 0 5px; }
+.shenscope-panel .info-card p, .shenscope-panel .empty-text { color: var(--muted); font-size: 12px; margin: 0; }
+.shenscope-panel .empty-state { text-align: center; padding: 40px 15px; color: var(--muted); }
+.shenscope-panel .empty-state svg { width: 30px; height: 30px; }
+.shenscope-panel .empty-state h3 { color: var(--text); font-size: 14px; margin: 15px 0 8px; }
+.shenscope-panel .empty-state p { font-size: 12px; }
+.shenscope-panel .property-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.shenscope-panel .badge { border: 1px solid var(--border); padding: 1px 7px; border-radius: 5px; font-size: 10px; }
+.shenscope-panel .badge-ask { color: var(--vscode-editorWarning-foreground, #d7b56f); }
+.shenscope-panel .badge-deny { color: var(--vscode-errorForeground, #ef8f8f); }
+.shenscope-panel .diagnostics { margin-top: 20px; font-size: 11px; }
+@keyframes shenscope-pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .shenscope-panel .status.running::before { animation: none; } }
+@media (max-width: 290px) { .shenscope-panel .nav-button { padding: 7px 5px; } .shenscope-panel .nav-button svg { display: none; } .shenscope-panel .welcome { padding: 20px 4px; } .shenscope-panel .welcome h1 { font-size: 19px; } }
+body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflow: hidden; }

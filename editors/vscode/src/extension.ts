@@ -73,7 +73,8 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
                     const path = resolve(root, String(message.params?.path));
                     const rel = relative(root, path);
                     if (isAbsolute(rel) || rel.startsWith('..')) { throw new Error('File escapes workspace'); }
-                    await vscode.window.showTextDocument(vscode.Uri.file(path)); result = null;
+                    const line = Math.max(1, Math.min(10_000_000, Number(message.params?.line) || 1));
+                    await vscode.window.showTextDocument(vscode.Uri.file(path), { selection: new vscode.Range(line - 1, 0, line - 1, 0) }); result = null;
                 } else {
                     if (!methods.has(message.method)) { throw new Error('Unknown editor operation'); }
                     result = await this.client!.request(message.method, message.params ?? {});

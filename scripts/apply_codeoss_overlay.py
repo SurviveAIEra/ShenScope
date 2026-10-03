@@ -23,6 +23,7 @@ def install(checkout):
     shared = {
         'editors/shared/src/rpcClient.ts': 'src/vs/platform/shenscope/common/rpcClient.ts',
         'editors/shared/src/panel.ts': 'src/vs/workbench/contrib/shenscope/browser/panel.ts',
+        'editors/shared/src/markdown.ts': 'src/vs/workbench/contrib/shenscope/browser/markdown.ts',
         'editors/shared/panel.css': 'src/vs/workbench/contrib/shenscope/electron-browser/shenscope.css',
     }
     for source, relative in shared.items():

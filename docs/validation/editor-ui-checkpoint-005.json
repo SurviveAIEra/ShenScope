@@ -1,0 +1,13 @@
+{
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "platform": "Linux, Electron 43.7.5",
+  "editor_typecheck": "passed",
+  "full_workbench_typecheck": "passed",
+  "transport_tests": 2,
+  "native_gui": "passed with extensions disabled",
+  "vsix_gui": "passed using extension development host and real Webview",
+  "verified_flows": ["HTTP tool turn", "write approval", "session history", "Markdown/code", "HTML rendered as text", "workspace file jump"],
+  "screenshots": [".local/vsix-welcome.png", ".local/vsix-conversation.png"],
+  "vsix_bytes_approx": 80000,
+  "limits": ["Development VSIX requires an installed Julia runtime/dependencies.", "Graph/MCP/skills/hook panels still depend on later Core implementation.", "Built-in desktop extension packaging remains incomplete."]
+}

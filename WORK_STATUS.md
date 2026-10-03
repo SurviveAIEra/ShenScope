@@ -52,5 +52,12 @@ assertions (32 new memory assertions). `docs/core/memory.md` describes limits.
 Next: improve editor UI; real project backends/analysis; durable tasks/MCP;
 extensions/diagnostics; measured release preparation.
 
+Editor UI checkpoint: compact primary navigation, anchored composer, starter
+prompts, safe Markdown/code/file links, grouped tool cards, visible permission
+cards, searchable/manageable conversations, structured settings and secure-key
+status. Actual native GUI and VSIX Webview flows pass. Full Workbench typecheck
+and two Node/Core transport tests pass. V3 Julia-specific requirements have been
+rechecked in `docs/architecture/julia_feature_contract.md`; graph work is next.
+
 Only tested runnable checkpoints will be labeled verified. Update this file
 after each checkpoint and push so another machine can resume without chat state.

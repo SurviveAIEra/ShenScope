@@ -70,7 +70,7 @@ class ShenScopeViewPane extends ViewPane {
             })();
             try { return await starting; } catch (error) { starting = undefined; throw error; }
         };
-        const host = document.createElement('div'); container.append(host);
+        const host = document.createElement('div'); host.style.height = '100%'; container.append(host);
         this.panel = new ShenScopePanel(host, {
             request: async (method, params = {}) => {
                 await connect();
