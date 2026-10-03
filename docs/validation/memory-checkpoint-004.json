@@ -1,0 +1,9 @@
+{
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "platform": "Linux",
+  "julia": "1.11.7",
+  "command": "julia --startup-file=no --threads=4 --project=. test/runtests.jl",
+  "assertions_passed": 204,
+  "memory_assertions": 32,
+  "notes": ["Concurrent CAS tests found and fixed blocking OS-lock worker starvation.", "Windows lock branches are implemented but not runtime validated."]
+}

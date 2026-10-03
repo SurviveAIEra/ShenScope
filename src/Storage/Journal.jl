@@ -53,13 +53,23 @@ function store_lock(f::Function, path::AbstractString)
     open(path * ".lock","a+") do io
         chmod(path * ".lock",0o600)
         overlap=zeros(UInt64,4)
+        deadline=time()+30
         if Sys.iswindows()
             Sys.WORD_SIZE==64 || throw(ShenScopeError(:platform,"Windows locking requires a 64-bit runtime"))
             handle=Base.Libc._get_osfhandle(Base.RawFD(fd(io)))
-            ccall((:LockFileEx,"kernel32"),Int32,(Ptr{Cvoid},UInt32,UInt32,UInt32,UInt32,Ptr{UInt64}),
-                handle,0x00000002,0,0xffffffff,0xffffffff,overlap)!=0 || throw(ShenScopeError(:storage,"Journal lock failed"))
+            while ccall((:LockFileEx,"kernel32"),Int32,(Ptr{Cvoid},UInt32,UInt32,UInt32,UInt32,Ptr{UInt64}),
+                    handle,0x00000003,0,0xffffffff,0xffffffff,overlap)==0
+                code=ccall((:GetLastError,"kernel32"),UInt32,())
+                code==33 || throw(ShenScopeError(:storage,"Journal lock failed"))
+                time()<deadline || throw(ShenScopeError(:storage,"Journal lock timeout"))
+                sleep(0.005)
+            end
         elseif Sys.isunix()
-            ccall(:flock,Cint,(Cint,Cint),fd(io),2)==0 || throw(ShenScopeError(:storage,"Journal lock failed"))
+            while ccall(:flock,Cint,(Cint,Cint),fd(io),6)!=0
+                Base.Libc.errno() in (11,35) || throw(ShenScopeError(:storage,"Journal lock failed"))
+                time()<deadline || throw(ShenScopeError(:storage,"Journal lock timeout"))
+                sleep(0.005)
+            end
         else
             throw(ShenScopeError(:platform,"Cross-process locking is unavailable"))
         end

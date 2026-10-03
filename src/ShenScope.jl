@@ -11,6 +11,7 @@ include("Security/Budgets.jl")
 include("Security/Permissions.jl")
 include("Runtime/Context.jl")
 include("Storage/Journal.jl")
+include("Storage/Versioned.jl")
 include("Context/Sessions.jl")
 include("Models/Provider.jl")
 include("Models/Requests.jl")
@@ -19,6 +20,7 @@ include("Models/HTTP.jl")
 include("Tools/Schema.jl")
 include("Tools/Files.jl")
 include("Tools/Processes.jl")
+include("Memory/Store.jl")
 include("Runtime/ToolScheduler.jl")
 include("Context/Preparation.jl")
 include("Core/AgentLoop.jl")
@@ -31,6 +33,9 @@ export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
 
 export core_tools, execute_batch, AgentControl, steer!, run_agent!, load_config,
     save_config!, provider_from_config, limits_from_config, permissions_from_config
+export VersionedStore, version_get, version_put!, version_list, version_history,
+    MemoryStore, memory_store, memory_put!, memory_get, memory_search, memory_delete!,
+    memory_export, memory_import!, lexical_tokens, MemoryTool
 
 export ProviderConfig, HTTPProvider, MockProvider, provider_name, capabilities,
     response, prepare_request, stream_chat, estimate_request_tokens, SSEDecoder,

@@ -43,8 +43,14 @@ Full-project research inventory: `docs/architecture/capability_matrix.md` covers
 all 22 pinned checkouts. Rows distinguish research directions from verified
 implementations; no complete-synthesis or model-quality claim is made.
 
-Next: shared versioned protocol and editor clients; durable runtime/context/MCP;
-incremental data/backends/analysis; full terminal UI; measured release preparation.
+Memory checkpoint: workspace/session/user namespaces, provenance/content hashes,
+CAS, tombstones, eight-revision histories, expiry, lexical BM25 with Chinese
+characters/bigrams and atomic import/export. Nonblocking cross-process locks
+fix worker starvation under concurrent writes. Broad affected suite: 204 passing
+assertions (32 new memory assertions). `docs/core/memory.md` describes limits.
+
+Next: improve editor UI; real project backends/analysis; durable tasks/MCP;
+extensions/diagnostics; measured release preparation.
 
 Only tested runnable checkpoints will be labeled verified. Update this file
 after each checkpoint and push so another machine can resume without chat state.

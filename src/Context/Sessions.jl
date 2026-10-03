@@ -48,6 +48,7 @@ function load_session(state_dir::AbstractString,id::AbstractString)
         else
             throw(ShenScopeError(:storage,"Unsupported session event"))
         end
+        session.metadata["updated"]=rec["timestamp"]
     end
     session.status==:running && (session.status=:interrupted)
     return session
@@ -57,6 +58,8 @@ function session_record!(s::Session,kind::String,value)
     lock(s.mutex) do
         s.revision = append_record!(s.journal,Dict("kind"=>kind,"value"=>value,
             "timestamp"=>utcstamp());expected_revision=s.revision)
+        s.metadata["updated"]=utcstamp()
+        kind=="metadata" && merge!(s.metadata,value)
     end
 end
 
@@ -97,9 +100,11 @@ function list_sessions(state_dir::AbstractString;search="",include_archived=fals
         !include_archived && get(s.metadata,"archived",false) && continue
         occursin(lowercase(search),lowercase(s.title)) || continue
         push!(result,Dict("id"=>s.id,"title"=>s.title,"root"=>s.root,"status"=>String(s.status),
-            "created"=>s.metadata["created"],"revision"=>s.revision,"messages"=>length(s.messages)))
+            "created"=>s.metadata["created"],"updated"=>get(s.metadata,"updated",s.metadata["created"]),
+            "pinned"=>get(s.metadata,"pinned",false),"archived"=>get(s.metadata,"archived",false),
+            "revision"=>s.revision,"messages"=>length(s.messages)))
     end
-    return sort!(result;by=r->r["created"],rev=true)
+    return sort!(result;by=r->(r["pinned"],r["updated"]),rev=true)
 end
 
 function recover_tool_pairs!(s::Session)

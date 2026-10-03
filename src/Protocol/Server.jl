@@ -133,7 +133,7 @@ end
 
 function capability_manifest()
     Dict("agent"=>true,"streaming_protocols"=>["openai_chat","openai_responses","anthropic","gemini","ollama"],
-        "tools"=>["read","search","edit","write","patch","process","git"],"session_journal"=>true,
+        "tools"=>["read","search","edit","write","patch","process","git","memory"],"session_journal"=>true,"memory"=>true,
         "permission_approvals"=>true,"config_profiles"=>true,"os_isolation"=>false,
         "mcp"=>false,"skills"=>false,"hooks"=>false,"project_intelligence"=>false,
         "durable_tasks"=>false,"dynamic_analyzers"=>false)
