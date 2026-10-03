@@ -15,13 +15,14 @@ mutable struct ProjectState
     journal_bytes::Int
     journal_sequence::Int
     mutex::ReentrantLock
+    metadata::Dict{String,Any}
 end
 function ProjectState(ctx::RuntimeContext,backend::AbstractProjectDataBackend)
     caps=backend_capabilities(backend)
     path=joinpath(ctx.state_dir,"projects",digest(ctx.root),digest(caps.name)*".jsonl")
     ProjectState(ctx.root,caps.name,caps,Dict{String,FileFacts}(),Dict{SymbolId,CodeSymbol}(),Dict{String,Relation}(),
         Dict{SymbolId,Set{String}}(),Dict{SymbolId,Set{String}}(),Dict{String,Set{SymbolId}}(),Dict{String,Set{String}}(),
-        Dict{String,Set{String}}(),0,Journal(path),0,0,ReentrantLock())
+        Dict{String,Set{String}}(),0,Journal(path),0,0,ReentrantLock(),Dict{String,Any}())
 end
 struct ProjectDelta
     revision::Int
@@ -134,14 +135,18 @@ function project_paths(ctx::RuntimeContext,caps::BackendCapabilities;limit=10000
     end
     sort!(paths)
 end
-function source_documents(ctx::RuntimeContext,paths::AbstractVector)
+function source_documents(ctx::RuntimeContext,paths::AbstractVector; maximum_bytes=32*1024*1024)
     documents=Dict{String,Any}[]
+    total=0
     length(paths)<=10000 || throw(ShenScopeError(:graph,"Changed file limit reached"))
     for path in sort!(unique(String.(paths)))
         check_cancelled(ctx.cancellation);absolute=workspace_path(ctx.root,path)
         !isfile(absolute) && continue
         filesize(absolute)<=8*1024*1024 || throw(ShenScopeError(:graph,"Source file exceeds limit"))
-        text=read(absolute,String);isvalid(text) || throw(ShenScopeError(:graph,"Source is not valid UTF-8"))
+        total+filesize(absolute)<=maximum_bytes || throw(ShenScopeError(:graph,"Source snapshot exceeds aggregate capacity"))
+        text=read_scoped_text(ctx,ctx.root,absolute,8*1024*1024;authorized=true,tool="project.index",size_error=:graph,encoding_error=:graph)
+        total+=ncodeunits(text)
+        total<=maximum_bytes || throw(ShenScopeError(:graph,"Source snapshot changed beyond aggregate capacity"))
         push!(documents,Dict("path"=>replace(relpath(absolute,ctx.root),'\\'=>'/'),"source"=>text,"sha256"=>digest(text),
             "language"=>get(SOURCE_LANGUAGES,lowercase(splitext(path)[2]),"")))
     end
@@ -168,12 +173,19 @@ function validate_facts(state::ProjectState,changes::Dict{String,Union{Nothing,F
             edge.location.file==facts.path || throw(ShenScopeError(:graph,"Relation evidence escapes file owner"))
         end
         all(r->r.src in identities,facts.references) || throw(ShenScopeError(:graph,"Invalid reference source"))
+        length(facts.occurrences)<=200000 && ncodeunits(canonical(facts.metadata))<=512*1024 ||
+            throw(ShenScopeError(:graph,"Semantic facts exceed capacity"))
+        for occurrence in facts.occurrences
+            occurrence.location.file==facts.path && all(id->id in identities || existing(id),occurrence.targets) ||
+                throw(ShenScopeError(:graph,"Semantic occurrence has a foreign range or missing target"))
+        end
     end
 end
 
 const MAX_PROJECT_JOURNAL_BYTES=128*1024*1024
-function persist_delta!(state::ProjectState,changes::Dict{String,Union{Nothing,FileFacts}})
+function persist_delta!(state::ProjectState,changes::Dict{String,Union{Nothing,FileFacts}};metadata=state.metadata)
     records=Dict{String,Any}[Dict("kind"=>"project_begin","revision"=>state.revision+1,"root"=>state.root,"backend"=>state.backend)]
+    isempty(metadata) || (records[1]["metadata"]=project_metadata(metadata))
     for (path,facts) in sort!(collect(changes);by=first)
         push!(records,Dict("kind"=>"project_file","path"=>path,"facts"=>facts===nothing ? nothing : facts_dict(facts)))
     end
@@ -204,13 +216,13 @@ function update!(backend::AbstractProjectDataBackend,state::ProjectState,paths::
     backend_prepare!(backend,ctx)
     paths=[replace(relpath(workspace_path(ctx.root,p),ctx.root),'\\'=>'/') for p in paths]
     lock(state.mutex) do
-        started=time();documents=source_documents(ctx,paths);scan=time()-started
-        selected=full ? documents : [d for d in documents if !haskey(state.files,d["path"]) || state.files[d["path"]].sha256!=d["sha256"]]
-        deleted=[String(p) for p in paths if haskey(state.files,String(p)) && !isfile(workspace_path(ctx.root,p))]
-        full && append!(deleted,setdiff(collect(keys(state.files)),[d["path"] for d in documents]))
-        isempty(selected) && isempty(deleted) && return ProjectDelta(state.revision,String[],String[],0,0,0,0,Dict("scan"=>scan,"total"=>time()-started))
-        parse_started=time();facts=extract_files(backend,selected,ctx;all_documents=documents,deleted,full)
+        started=time();inputs=project_inputs(backend,state,paths,ctx;full);scan=time()-started
+        documents=inputs.documents;selected=inputs.selected;deleted=inputs.removed
+        metadata_changed=canonical(inputs.metadata)!=canonical(state.metadata)
+        isempty(selected) && isempty(deleted) && !metadata_changed && return ProjectDelta(state.revision,String[],String[],0,0,0,0,Dict("scan"=>scan,"total"=>time()-started))
+        parse_started=time();facts=project_extract_files(backend,inputs,ctx;full)
         parse_seconds=time()-parse_started
+        deleted=project_removed_files(backend,state,inputs,facts)
         changes=Dict{String,Union{Nothing,FileFacts}}(path=>nothing for path in unique(deleted))
         for fact in facts
             old=get(state.files,fact.path,nothing)
@@ -221,17 +233,24 @@ function update!(backend::AbstractProjectDataBackend,state::ProjectState,paths::
         # backend re-read during global resolution. Concurrent edits abort.
         for (path,fact) in changes
             if fact===nothing
-                !isfile(workspace_path(ctx.root,path)) || throw(ShenScopeError(:conflict,"Deleted source was recreated during indexing"))
+                project_verify_removed(backend,inputs,path,ctx)
                 continue
             end
             absolute=workspace_path(ctx.root,path)
-            isfile(absolute) && filesize(absolute)<=8*1024*1024 && digest(read(absolute,String))==fact.sha256 ||
+            isfile(absolute) && digest(read_scoped_text(ctx,ctx.root,absolute,8*1024*1024;authorized=true,
+                tool="project.index",size_error=:graph,encoding_error=:graph))==fact.sha256 ||
                 throw(ShenScopeError(:conflict,"Source changed during graph extraction"))
         end
-        isempty(changes) && return ProjectDelta(state.revision,String[],String[],0,0,0,0,Dict("scan"=>scan,"extract"=>parse_seconds,"total"=>time()-started))
+        project_verify_inputs(backend,inputs,ctx)
+        isempty(changes) && !metadata_changed && return ProjectDelta(state.revision,String[],String[],0,0,0,0,Dict("scan"=>scan,"extract"=>parse_seconds,"total"=>time()-started))
         check_cancelled(ctx.cancellation);validate_facts(state,changes)
-        persisted=time();persist_delta!(state,changes);persist_seconds=time()-persisted
-        applied=time();dirty,added,removed,added_edges,removed_edges=install_facts!(state,changes);state.revision+=1
+        for (category,target) in ((:read,ctx.root),(:persistence,state.journal.path))
+            permission_decision(ctx.permissions,PermissionRequest("project-commit",category,"project.index",target,"Commit project facts"))!=Deny ||
+                throw(ShenScopeError(:permission,"Project permission changed before commit"))
+        end
+        lock(ctx.budget.mutex) do;check_budget(ctx.budget);end
+        persisted=time();persist_delta!(state,changes;metadata=inputs.metadata);persist_seconds=time()-persisted
+        applied=time();dirty,added,removed,added_edges,removed_edges=install_facts!(state,changes);state.revision+=1;state.metadata=deepcopy(inputs.metadata)
         delta=ProjectDelta(state.revision,sort!(collect(keys(changes))),dirty,added,removed,added_edges,removed_edges,
             Dict("scan"=>scan,"extract"=>parse_seconds,"persist"=>persist_seconds,"apply"=>time()-applied,"total"=>time()-started))
         emit!(ctx,:project_updated,delta_dict(delta));delta
@@ -249,19 +268,19 @@ function load_project(backend::AbstractProjectDataBackend,ctx::RuntimeContext)
         isfile(state.journal.path) && filesize(state.journal.path)>MAX_PROJECT_JOURNAL_BYTES &&
             throw(ShenScopeError(:graph,"Project cache exceeds the supported size limit"))
         records=journal_records(state.journal;repair_tail=true)
-        pending=Dict{String,Union{Nothing,FileFacts}}();target=0;committed=0
+        pending=Dict{String,Union{Nothing,FileFacts}}();target=0;committed=0;metadata=Dict{String,Any}()
         for (index,record) in enumerate(records)
             kind=record["kind"]
             if kind=="project_begin"
                 target==0 && record["root"]==ctx.root && record["backend"]==state.backend && record["revision"]==state.revision+1 ||
                     throw(ShenScopeError(:storage,"Invalid project transaction header"))
-                target=record["revision"];empty!(pending)
+                target=record["revision"];empty!(pending);metadata=project_metadata(get(record,"metadata",state.metadata))
             elseif kind=="project_file"
                 target!=0 && !haskey(pending,record["path"]) || throw(ShenScopeError(:storage,"Invalid project file record"))
                 pending[record["path"]]=record["facts"]===nothing ? nothing : facts_from(record["facts"])
             elseif kind=="project_commit"
                 target!=0 && record["revision"]==target && record["files"]==length(pending) || throw(ShenScopeError(:storage,"Invalid project commit"))
-                validate_facts(state,pending);install_facts!(state,pending);state.revision=target;target=0;committed=index
+                validate_facts(state,pending);install_facts!(state,pending);state.revision=target;state.metadata=metadata;target=0;committed=index
             else;throw(ShenScopeError(:storage,"Unknown project record"));end
         end
         # Incomplete transactions are not visible. Reframe only on recovery,

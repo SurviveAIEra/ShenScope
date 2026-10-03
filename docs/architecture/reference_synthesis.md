@@ -143,3 +143,32 @@ HTTP protocols, no recovery after partial reasoning/tool output and UTF-8 proces
 events. Editor flows use Core ownership and permissions. Source identity is
 verified; model summary prose is not claimed to be independently proven.
 See `docs/core/context.md` for limits and executable commands.
+
+## Semantic project data source synthesis
+
+The V3 continuation's P2 requirement specifies an actual TypeScript compiler or
+language-server semantic path. The execution prompt requires stable backend
+facts, local deltas and 1/5/20-file full rebuild oracles. The following source
+sections were read before/during this implementation, not copied or translated.
+Paths are pinned in the lockfile; these are bounded partial reviews.
+
+| Source | Inspected behavior | Independent Julia implementation | Remaining scope |
+|---|---|---|---|
+| OpenCode `lsp/client.ts`, `tool/lsp.ts` | UTF-16 positions, synchronized documents, definition/reference/type/call operations and permissioned source access | Validated SourceMap conversion, explicit capability gating, committed source digests and permissioned navigation | Generic LSP sync/registrations and multiple language servers |
+| DeepSeek `lsp-stdio/src/framing.ts`, `docs/subsystems/lsp.md` | Bounded framing, capability service separation, workspace URI/position normalization and cancellation | Closed compiler protocol, strict response ownership/identity, bounded request pipes and linked runtime cancellation | Full LSP transport/provider federation |
+| Qwen `LspResponseNormalizer.ts`, `native-lsp-service.ts` | Diagnostic normalization, document versions, source ownership and response freshness | Core-normalized diagnostic/range schema, whole-input/configuration digest, revision/source guards | General LSP clients, related diagnostic information and native Problems |
+| Serena TypeScript language-server adapter | Version-pinned dependencies and distinction between service readiness, indexing and failed startup | Pinned real TypeScript checker, controlled process/config failures and complete snapshot commit | Other languages, asynchronous server indexing readiness and rename; GPL source remains research only |
+| Codex deferred `tool_search.rs`, `tool_search_spec.rs` | Metadata cache identity, bounded descriptions and discovery separate from execution | Project capability metadata, explicit bounded navigation/tool schema and unchanged existing lazy working-set behavior | Broader dynamic tool discovery/cache invalidation; no Codex LSP observation is claimed |
+| Pi `tools/read.ts` | Injectable bounded source reads and cancellation | Bounded approved source snapshots with source identity checks | Broader remote/read-operation extension hooks |
+| Kimi `tools/os/read/read.ts` | Bounded character reads, cursor units and continuation | Explicit UTF-8/UTF-16 input units and bounded evidence pages | Remote/multimedia read operations |
+| ZCode `read-file-state.ts` | Normalized read ownership and latest-source freshness | Verified snapshot source digest before cursor navigation and optional caller digest/revision | Automatic watchers and stale-aware editor mutations |
+
+Julia implements resident graph identity, occurrences, metadata, strict compiler
+normalization, transactional source rechecks and navigation over ordinary typed
+data. The helper uses the installed TypeScript checker only for compiler facts.
+Static checker links retain their provenance and unresolved counts; runtime
+dispatch completeness is not inferred. Existing analyzers run unchanged over
+the fourth backend. Real compiler/transport/RPC tests and both editor clients
+verify the documented path. Compiler checking remains global after input changes;
+the small-fixture oracle establishes correctness, not competitive performance.
+See `docs/core/semantic.md` and checkpoint 013 for precise limits/evidence.

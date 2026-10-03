@@ -13,15 +13,21 @@ tool_name(::ProjectTool)="project"
 tool_description(::ProjectTool)="Index source with a real parser backend, search symbols and compute evidence-bearing impact/test/architecture candidates."
 execution_mode(::ProjectTool)=:exclusive
 tool_schema(::ProjectTool)=object_schema(Dict(
-    "action"=>Dict("type"=>"string","enum"=>["build","update","status","search","impact","test_selection","architecture"]),
-    "backend"=>Dict("type"=>"string","enum"=>["tree_sitter","go_ast","codegraph"]),
+    "action"=>Dict("type"=>"string","enum"=>["build","update","status","search","impact","test_selection","architecture",
+        "definitions","references","hover","incoming_calls","outgoing_calls","implementations","diagnostics"]),
+    "backend"=>Dict("type"=>"string","enum"=>["tree_sitter","go_ast","codegraph","typescript"]),
     "paths"=>Dict("type"=>"array","maxItems"=>10000,"items"=>string_schema(;max=4096)),
-    "query"=>string_schema(;max=4096),"limit"=>integer_schema(1,1000),"offset"=>integer_schema(0,100000));required=["action"])
+    "query"=>string_schema(;max=4096),"limit"=>integer_schema(1,1000),"offset"=>integer_schema(0,100000),
+    "symbol_id"=>string_schema(;max=32),"file"=>string_schema(;max=4096),"line"=>integer_schema(1,8*1024*1024),
+    "column"=>integer_schema(1,8*1024*1024),"column_unit"=>Dict("type"=>"string","enum"=>["utf8_byte","utf16"]),
+    "revision"=>integer_schema(0),"sha256"=>string_schema(;max=64),"include_declarations"=>Dict("type"=>"boolean"),
+    "category"=>Dict("type"=>"string","enum"=>["error","warning","suggestion","message"]));required=["action"])
 function project_backend!(manager::ProjectManager,name::String)
     get!(manager.backends,name) do
         name=="tree_sitter" && return TreeSitterBackend()
         name=="go_ast" && return GoASTBackend()
         name=="codegraph" && return CodeGraphBackend()
+        name=="typescript" && return TypeScriptSemanticBackend()
         throw(ShenScopeError(:backend,"Unknown project backend"))
     end
 end
@@ -47,6 +53,7 @@ function execute(tool::ProjectTool,args::AbstractDict,ctx::RuntimeContext)
     state===nothing && throw(ShenScopeError(:graph,"Build this workspace index first"))
     state.root==ctx.root || throw(ShenScopeError(:permission,"Project state belongs to another workspace"))
     action=="update" && return delta_dict(update!(backend,state,get(args,"paths",String[]),ctx))
+    action in PROJECT_NAVIGATION_ACTIONS && return project_navigation(state,args,ctx)
     authorize!(ctx,:read,"project.query",ctx.root)
     action=="status" && return project_status(state)
     action=="search" && return graph_search(state,get(args,"query","");limit=get(args,"limit",50),offset=get(args,"offset",0))

@@ -32,6 +32,7 @@ const mcpOnly = process.argv.includes('--mcp-only');
 const skillsOnly = process.argv.includes('--skills-only');
 const hooksOnly = process.argv.includes('--hooks-only');
 const contextOnly = process.argv.includes('--context-only');
+const semanticOnly = process.argv.includes('--semantic-only');
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
 const userSkillRoot = skillsOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-skills-')) : undefined;
@@ -92,6 +93,10 @@ if (skillsOnly) {
 }
 await writeFile(join(root, 'README.md'), 'Native sidebar test workspace\n');
 await writeFile(join(root, 'sample.go'), 'package fixture\nfunc Greet() int { return 1 }\nfunc TestGreet() int { return Greet() }\n');
+if (semanticOnly) {
+    await writeFile(join(root, 'greeter.ts'), "export interface Greeter { greet(name: string): string; }\nexport class English implements Greeter { greet(name: string): string { return 'Hello ' + name; } }\n");
+    await writeFile(join(root, 'main.ts'), "import { English } from './greeter';\nexport function TestGreet(): string { const agent = new English(); return agent.greet('中😀'); }\nexport const wrong: number = 'type error';\n");
+}
 await mkdir(join(root, 'user-data', 'User'), { recursive: true });
 await writeFile(join(root, 'user-data', 'User', 'settings.json'), JSON.stringify({
     'shenscope.juliaPath': '/workspace/toolchains/julia-1.11.7/bin/julia',
@@ -132,7 +137,7 @@ try {
     }
     await panel.getByText('Ready · native-fixture', { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -161,6 +166,36 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (semanticOnly) {
+        await panel.getByRole('button', { name: 'Project', exact: true }).click();
+        await panel.getByRole('combobox', { name: 'Project backend' }).selectOption('typescript');
+        await panel.getByRole('button', { name: 'Index project', exact: true }).click();
+        await approve(panel, 'project.index · persistence');
+        await approve(panel, 'project.backend · process');
+        await panel.getByRole('button', { name: 'Refresh index', exact: true }).waitFor({ timeout: 120_000 });
+        await panel.getByText('TypeScript 5.9.2', { exact: true }).waitFor();
+        await panel.getByRole('textbox', { name: 'Search project symbols' }).fill('TestGreet');
+        await panel.getByRole('button', { name: 'Inspect TestGreet', exact: true }).click();
+        await panel.locator('.semantic-type').filter({ hasText: '() => string' }).waitFor();
+        await panel.getByRole('button', { name: 'Calls', exact: true }).click();
+        await panel.locator('.navigation-entry').filter({ hasText: 'English.greet' }).waitFor();
+        await panel.getByRole('button', { name: 'Definitions', exact: true }).click();
+        await panel.locator('.navigation-entry').filter({ hasText: 'TestGreet' }).waitFor();
+        await panel.getByRole('textbox', { name: 'Search project symbols' }).fill('English');
+        await panel.getByRole('button', { name: 'Inspect English.greet', exact: true }).click();
+        await panel.getByRole('button', { name: 'Callers', exact: true }).click();
+        await panel.locator('.navigation-entry').filter({ hasText: 'TestGreet' }).waitFor();
+        await panel.getByRole('button', { name: 'References', exact: true }).click();
+        await panel.locator('.navigation-entry').filter({ hasText: 'main.ts:2' }).waitFor();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-semantic.png`) });
+        await panel.getByRole('button', { name: 'Open declaration', exact: true }).click();
+        await page.locator('.monaco-editor .view-lines').filter({ hasText: 'class English' }).waitFor();
+        await panel.getByRole('button', { name: 'Show diagnostics', exact: true }).click();
+        await panel.locator('.navigation-entry').filter({ hasText: '2322' }).waitFor();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-semantic-diagnostics.png`) });
+        assert.equal(requests.length, 0, 'Compiler navigation must not call the model');
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual TypeScript checker indexing, permissions, type, definitions, references, calls, diagnostics and source navigation`);
     }
     if (mcpOnly) {
         await panel.getByRole('combobox', { name: 'More views' }).selectOption('MCP');

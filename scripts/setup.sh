@@ -19,9 +19,12 @@ cd "$SHENSCOPE_ROOT"
 if [[ " $* " == *" --backends "* ]]; then
     python "$SHENSCOPE_ROOT/scripts/setup_backends.py"
 fi
-if [[ " $* " == *" --editors "* ]]; then
+if [[ " $* " == *" --editors "* || " $* " == *" --semantic "* ]]; then
     cd "$SHENSCOPE_ROOT/editors"
     npm ci --cache /workspace/npm-cache --ignore-scripts --no-audit --no-fund
+    python "$SHENSCOPE_ROOT/scripts/setup_semantic.py" --verify
+fi
+if [[ " $* " == *" --editors "* ]]; then
     npm run check
     npm run build
 fi

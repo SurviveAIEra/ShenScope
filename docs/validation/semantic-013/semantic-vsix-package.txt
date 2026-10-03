@@ -1,0 +1,26 @@
+ INFO  Files included in the VSIX:
+shenscope-0.1.0.vsix
+├─ [Content_Types].xml
+├─ extension.vsixmanifest
+└─ extension/
+   ├─ LICENSE.txt [10.67 KB]
+   ├─ package.json [1.4 KB]
+   ├─ readme.md
+   ├─ core/
+   │  ├─ LICENSE [10.67 KB]
+   │  ├─ Manifest.toml [6.42 KB]
+   │  ├─ NOTICE [0.18 KB]
+   │  ├─ Project.toml [0.69 KB]
+   │  ├─ scripts/ (3 files) [33.68 KB]
+   │  └─ src/ (101 files) [650.54 KB]
+   ├─ dist/
+   │  ├─ extension.js [14.88 KB]
+   │  ├─ panel.css [20.97 KB]
+   │  └─ panel.js [96.81 KB]
+   └─ media/
+      └─ icon.svg [0.2 KB]
+
+=> Run vsce ls --tree to see all included files.
+
+ DONE  Packaged: /workspace/ShenScope/dist/shenscope-0.1.0.vsix (117 files, 263.04 KB)
+/workspace/ShenScope/dist/shenscope-0.1.0.vsix

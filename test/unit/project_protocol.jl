@@ -5,18 +5,22 @@
         try
             @test_throws RPCFault dispatch_rpc(server,"project/backends",Dict())
             dispatch_rpc(server,"initialize",Dict("protocol_version"=>PROTOCOL_VERSION))
-            @test length(dispatch_rpc(server,"project/backends",Dict()))==3
+            @test length(dispatch_rpc(server,"project/backends",Dict()))==4
             @test dispatch_rpc(server,"project/query",Dict("backend"=>"go_ast"))["indexed"]==false
             session=dispatch_rpc(server,"sessions/create",Dict("title"=>"Project graph"));id=session["id"]
+            foreign=dispatch_rpc(server,"sessions/create",Dict("title"=>"Separate conversation"))["id"]
             started=dispatch_rpc(server,"project/start",Dict("session_id"=>id,"backend"=>"go_ast","action"=>"build"))
             jobid=started["job_id"]
             @test started["started"]
+            @test_throws ShenScopeError dispatch_rpc(server,"project/job",Dict("job_id"=>jobid,"session_id"=>foreign))
+            @test_throws ShenScopeError dispatch_rpc(server,"project/cancel",Dict("job_id"=>jobid,"session_id"=>foreign))
+            @test_throws RPCFault dispatch_rpc(server,"project/job",Dict("job_id"=>jobid))
             @test_throws ShenScopeError dispatch_rpc(server,"project/start",Dict("session_id"=>id,"backend"=>"go_ast","action"=>"build"))
             @test_throws ShenScopeError dispatch_rpc(server,"project/query",Dict("backend"=>"go_ast"))
             snapshot=dispatch_rpc(server,"config/get",Dict())
             @test_throws ShenScopeError dispatch_rpc(server,"config/set",Dict("value"=>snapshot["value"],"expected_sha256"=>snapshot["sha256"]))
             deadline=time()+30;approvals=0;answered=Set{String}()
-            while dispatch_rpc(server,"project/job",Dict("job_id"=>jobid))["status"]=="running" && time()<deadline
+            while dispatch_rpc(server,"project/job",Dict("job_id"=>jobid,"session_id"=>id))["status"]=="running" && time()<deadline
                 for request in collect(keys(server.approvals))
                     request in answered && continue
                     @test_throws ShenScopeError dispatch_rpc(server,"permissions/respond",Dict("session_id"=>string(Base.UUID(1)),"request_id"=>request,"decision"=>"once"))
@@ -26,7 +30,7 @@
                 sleep(0.02)
             end
             @test approvals>=2
-            @test dispatch_rpc(server,"project/job",Dict("job_id"=>jobid))["status"]=="complete"
+            @test dispatch_rpc(server,"project/job",Dict("job_id"=>jobid,"session_id"=>id))["status"]=="complete"
             status=dispatch_rpc(server,"project/query",Dict("backend"=>"go_ast"))
             @test status["files"]==1
             @test status["capabilities"]["types"]==false
@@ -51,9 +55,22 @@
             @test isempty(server.approvals)
             @test isempty(load_session(server.state_dir,id).messages)
             started=dispatch_rpc(server,"project/start",Dict("session_id"=>id,"backend"=>"tree_sitter","action"=>"build"))
-            dispatch_rpc(server,"project/cancel",Dict("job_id"=>started["job_id"]))
-            @test timedwait(()->dispatch_rpc(server,"project/job",Dict("job_id"=>started["job_id"]))["status"]!="running",10)==:ok
-            @test dispatch_rpc(server,"project/job",Dict("job_id"=>started["job_id"]))["status"]=="failed"
+            dispatch_rpc(server,"project/cancel",Dict("job_id"=>started["job_id"],"session_id"=>id))
+            @test timedwait(()->dispatch_rpc(server,"project/job",Dict("job_id"=>started["job_id"],"session_id"=>id))["status"]!="running",10)==:ok
+            @test dispatch_rpc(server,"project/job",Dict("job_id"=>started["job_id"],"session_id"=>id))["status"]=="failed"
+            @test !iscancelled(server.contexts[id].cancellation)
+            job=manager.jobs[started["job_id"]]
+            @test job["context"].cancellation.parent===server.contexts[id].cancellation
+            @test job["context"].budget===server.contexts[id].budget
+            # A project child must cancel its own pending approval without
+            # cancelling the conversation or waiting for the approval timeout.
+            empty!(server.contexts[id].permissions.grants)
+            started=dispatch_rpc(server,"project/start",Dict("session_id"=>id,"backend"=>"tree_sitter","action"=>"build"))
+            @test timedwait(()->!isempty(server.approvals),10;pollint=0.01)==:ok
+            dispatch_rpc(server,"project/cancel",Dict("job_id"=>started["job_id"],"session_id"=>id))
+            @test timedwait(()->dispatch_rpc(server,"project/job",Dict("job_id"=>started["job_id"],"session_id"=>id))["status"]=="failed",5;pollint=0.01)==:ok
+            @test isempty(server.approvals)
+            @test !iscancelled(server.contexts[id].cancellation)
             @test_throws RPCFault dispatch_rpc(server,"project/query",Dict("backend"=>"go_ast","action"=>"unknown"))
         finally;stop_server!(server);end
     end

@@ -17,7 +17,8 @@ struct SourceRange
     start_column::Int
     end_column::Int
     function SourceRange(file::AbstractString,start_line::Integer,end_line::Integer;start_column=1,end_column=1)
-        1<=start_line<=end_line && start_column>=1 && end_column>=1 || throw(ShenScopeError(:graph,"Invalid source range"))
+        1<=start_line<=end_line && start_column>=1 && end_column>=1 &&
+            (start_line<end_line || start_column<=end_column) || throw(ShenScopeError(:graph,"Invalid source range"))
         new(String(file),start_line,end_line,start_column,end_column)
     end
 end
@@ -54,6 +55,20 @@ struct CallReference
     qualified::Bool
 end
 
+struct SymbolOccurrence
+    location::SourceRange
+    targets::Vector{SymbolId}
+    role::Symbol
+    type_text::String
+    write::Bool
+    function SymbolOccurrence(location::SourceRange, targets::Vector{SymbolId}, role::Symbol, type_text::String, write::Bool)
+        role in (:declaration, :reference, :import, :type, :call) && length(targets) <= 16 &&
+            length(unique(targets)) == length(targets) && isvalid(type_text) && ncodeunits(type_text) <= 4096 ||
+            throw(ShenScopeError(:compiler_protocol, "Invalid semantic occurrence"))
+        new(location, targets, role, type_text, write)
+    end
+end
+
 struct FileFacts
     path::String
     sha256::String
@@ -61,7 +76,11 @@ struct FileFacts
     relations::Vector{Relation}
     references::Vector{CallReference}
     diagnostics::Vector{Dict{String,Any}}
+    occurrences::Vector{SymbolOccurrence}
+    metadata::Dict{String,Any}
 end
+FileFacts(path, sha256, symbols, relations, references, diagnostics) =
+    FileFacts(path, sha256, symbols, relations, references, diagnostics, SymbolOccurrence[], Dict{String,Any}())
 
 Base.@kwdef struct BackendCapabilities
     name::String
@@ -75,6 +94,8 @@ Base.@kwdef struct BackendCapabilities
     diagnostics::Bool=false
     incremental_parse::Bool=true
     global_relink::Bool=false
+    implementations::Bool=false
+    rename::Bool=false
 end
 backend_capabilities(::AbstractProjectDataBackend)=throw(ShenScopeError(:extension,"Backend must implement capabilities"))
 extract_files(::AbstractProjectDataBackend,files,ctx)=throw(ShenScopeError(:extension,"Backend must implement extract_files"))
@@ -98,13 +119,21 @@ function relation_from(d::AbstractDict)
     r.id==d["id"] || throw(ShenScopeError(:storage,"Relation identity mismatch"));r
 end
 function facts_dict(f::FileFacts)
-    Dict("path"=>f.path,"sha256"=>f.sha256,"symbols"=>symbol_dict.(f.symbols),"relations"=>relation_dict.(f.relations),
+    result = Dict{String,Any}("path"=>f.path,"sha256"=>f.sha256,"symbols"=>symbol_dict.(f.symbols),"relations"=>relation_dict.(f.relations),
         "references"=>[Dict("src"=>r.src.value,"name"=>r.name,"location"=>range_dict(r.location),"qualified"=>r.qualified) for r in f.references],
         "diagnostics"=>f.diagnostics)
+    isempty(f.occurrences) || (result["occurrences"] = occurrence_dict.(f.occurrences))
+    isempty(f.metadata) || (result["metadata"] = f.metadata)
+    result
 end
+occurrence_dict(value::SymbolOccurrence) = Dict("location" => range_dict(value.location),
+    "targets" => [id.value for id in value.targets], "role" => String(value.role), "type" => value.type_text, "write" => value.write)
+occurrence_from(value::AbstractDict) = SymbolOccurrence(range_from(value["location"]),
+    SymbolId.(value["targets"]), Symbol(value["role"]), value["type"], value["write"])
 function facts_from(d::AbstractDict)
     FileFacts(d["path"],d["sha256"],symbol_from.(d["symbols"]),relation_from.(d["relations"]),
         [CallReference(SymbolId(r["src"]),r["name"],range_from(r["location"]),r["qualified"]) for r in d["references"]],
-        Dict{String,Any}.(d["diagnostics"]))
+        Dict{String,Any}.(d["diagnostics"]), occurrence_from.(get(d,"occurrences",Any[])),
+        Dict{String,Any}(get(d,"metadata",Dict())))
 end
 capability_dict(c::BackendCapabilities)=Dict(String(field)=>getfield(c,field) isa Symbol ? String(getfield(c,field)) : getfield(c,field) for field in fieldnames(BackendCapabilities))

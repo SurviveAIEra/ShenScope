@@ -1,0 +1,6 @@
+Test Summary:                                                        | Pass  Total   Time
+Real parser backends share analyzers and 1/5/20-file rebuild oracles |   99     99  37.1s
+Test Summary:                                               | Pass  Total  Time
+Syntax ambiguity, cross-file invalidation, cycles and scope |    9      9  0.9s
+Test Summary:                                                | Pass  Total   Time
+Project RPC lifecycle, approvals and responsive cancellation |   33     33  34.0s

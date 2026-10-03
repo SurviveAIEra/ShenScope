@@ -16,7 +16,9 @@
       "codex-rs/hooks/src/engine/command_runner.rs",
       "codex-rs/core/src/compact.rs",
       "codex-rs/core/src/compact_token_budget.rs",
-      "codex-rs/core/src/context_manager/history.rs"
+      "codex-rs/core/src/context_manager/history.rs",
+      "codex-rs/core/src/tools/handlers/tool_search.rs",
+      "codex-rs/core/src/tools/handlers/tool_search_spec.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -40,7 +42,9 @@
       "packages/plugin/src/index.ts",
       "packages/opencode/src/plugin/index.ts",
       "packages/core/src/session/compaction.ts",
-      "packages/core/src/instruction-context.ts"
+      "packages/core/src/instruction-context.ts",
+      "packages/opencode/src/lsp/client.ts",
+      "packages/opencode/src/tool/lsp.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -68,7 +72,9 @@
       "packages/hooks/hook-protocol/src/types.ts",
       "packages/compaction/compaction/src/types.ts",
       "packages/compaction/compaction/src/index.ts",
-      "packages/compaction/compaction-tool-result-pruner/src/index.ts"
+      "packages/compaction/compaction-tool-result-pruner/src/index.ts",
+      "packages/lsp/lsp-stdio/src/framing.ts",
+      "docs/subsystems/lsp.md"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -94,7 +100,8 @@
       "packages/coding-agent/src/core/extensions/runner.ts",
       "packages/coding-agent/src/core/extensions/types.ts",
       "packages/coding-agent/src/core/compaction/compaction.ts",
-      "packages/coding-agent/src/core/compaction/utils.ts"
+      "packages/coding-agent/src/core/compaction/utils.ts",
+      "packages/coding-agent/src/core/tools/read.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -118,7 +125,8 @@
       "packages/agent-core-v2/src/features/externalHooks/agent/agentExternalHooksService.ts",
       "packages/agent-core-v2/src/human/compaction/controller.ts",
       "packages/agent-core-v2/src/agent/fullCompaction/contextRecovery.ts",
-      "packages/agent-core-v2/src/workspace/workspaceInstructions/workspaceInstructionsService.ts"
+      "packages/agent-core-v2/src/workspace/workspaceInstructions/workspaceInstructionsService.ts",
+      "packages/agent-core-v2/src/agent/tools/os/read/read.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -139,7 +147,8 @@
       "packages/shared/src/workspace-hook-discovery.ts",
       "apps/zcode-cli/packages/core/src/compact/rounds.ts",
       "apps/zcode-cli/packages/core/src/compact/policy.ts",
-      "apps/zcode-cli/packages/core/src/compact/microcompact.ts"
+      "apps/zcode-cli/packages/core/src/compact/microcompact.ts",
+      "apps/zcode-cli/packages/core/src/tool/read-file-state.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -161,7 +170,9 @@
       "packages/core/src/hooks/types.ts",
       "packages/core/src/services/compactionInputSlimming.ts",
       "packages/core/src/services/chatCompressionService.ts",
-      "packages/core/src/config/rulesDiscovery.ts"
+      "packages/core/src/config/rulesDiscovery.ts",
+      "packages/core/src/lsp/LspResponseNormalizer.ts",
+      "packages/core/src/lsp/native-lsp-service.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -189,7 +200,8 @@
     "commit": "d0f7f92631c23dc4c5ed0b5ccd35bc623b19a809",
     "license": "GPL-3.0-or-later application; MIT SolidLSP",
     "inspected_paths": [
-      "src/serena/repl/facade.py"
+      "src/serena/repl/facade.py",
+      "src/solidlsp/language_servers/typescript_language_server.py"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

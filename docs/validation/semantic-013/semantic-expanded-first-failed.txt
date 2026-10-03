@@ -1,0 +1,56 @@
+Precompiling ShenScope...
+   4945.8 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 5 seconds. 39 already precompiled.
+ERROR: LoadError: Some tests did not pass: 21 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/semantic.jl:28
+in expression starting at /workspace/ShenScope/test/semantic.jl:4
+Test Summary:                                                        |  Pass  Total  Time
+Compiler UTF-16 positions normalize to validated UTF-8 source ranges | 12050  12050  0.4s
+Test Summary:                                                             | Pass  Total  Time
+Compiler JSONC preserves literals and rejects ambiguous or excessive data |   13     13  0.4s
+Test Summary:                                                            | Pass  Total  Time
+Compiler configuration inheritance, source scope and post-read integrity |   17     17  7.3s
+Test Summary:                                               | Pass  Total  Time
+Compiler globs have bounded segment and recursive semantics |    6      6  0.0s
+Navigation returns compiler evidence in both cursor encodings: Error During Test at /workspace/ShenScope/test/integration/semantic.jl:92
+  Got exception outside of a @test
+  MethodError: no method matching transcode(::Type{UInt16}, ::SubString{String})
+  The function `transcode` exists, but no method is defined for this combination of argument types.
+
+  Closest candidates are:
+    transcode(::Type{UInt16}, !Matched::AbstractVector{UInt8})
+     @ Base strings/cstring.jl:181
+    transcode(!Matched::Type{String}, ::Any)
+     @ Base strings/cstring.jl:179
+    transcode(::Any, !Matched::String)
+     @ Base strings/cstring.jl:178
+    ...
+
+  Stacktrace:
+    [1] semantic_cursor(root::String, path::String, needle::String; unit::String)
+      @ Main /workspace/ShenScope/test/integration/semantic.jl:24
+    [2] semantic_cursor
+      @ /workspace/ShenScope/test/integration/semantic.jl:20 [inlined]
+    [3] macro expansion
+      @ /workspace/ShenScope/test/integration/semantic.jl:95 [inlined]
+    [4] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+    [5] (::var"#14#48")(root::String)
+      @ Main /workspace/ShenScope/test/integration/semantic.jl:93
+    [6] mktempdir(fn::var"#14#48", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [7] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [8] macro expansion
+      @ /workspace/ShenScope/test/integration/semantic.jl:29 [inlined]
+    [9] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [10] top-level scope
+      @ /workspace/ShenScope/test/integration/semantic.jl:29
+   [11] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [12] top-level scope
+      @ /workspace/ShenScope/test/semantic.jl:4
+Test Summary:                                                                                    | Pass  Error  Total   Time
+Actual TypeScript checker resolves aliases, methods, overloads and diagnostics without execution |   21      1     22  25.5s
+  Navigation returns compiler evidence in both cursor encodings                                  |           1      1   1.5s

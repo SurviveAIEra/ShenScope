@@ -1,7 +1,7 @@
 function read_scoped_text(ctx::RuntimeContext, root::String, path::String, maximum::Int;
         authorized=false, tool="source.read", reason="Read a configured text source",
         size_error=:source_size, encoding_error=:source_encoding)
-    0 < maximum <= 4 * 1024 * 1024 || throw(ArgumentError("Invalid text source capacity"))
+    0 < maximum <= 8 * 1024 * 1024 || throw(ArgumentError("Invalid text source capacity"))
     original = normpath(isabspath(path) ? path : joinpath(root, path))
     target = workspace_path(root, path; must_exist=true)
     target == original && !islink(original) || throw(ShenScopeError(:permission, "Source symlinks are not supported"))

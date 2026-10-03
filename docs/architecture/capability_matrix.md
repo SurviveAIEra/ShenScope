@@ -58,4 +58,15 @@ instructions, immutable projections/checkpoints, evidence read-back and bounded
 overflow recovery. Both actual editor clients pass the same ownership/approval
 flow. Exact tokenizers, media slimming, watched/conditional instructions,
 pre/post-compaction Hooks and full branch navigation are still absent. Semantic
-project backends are the next domain; existing syntax call links remain heuristic.
+project backends are extended by checkpoint 013 below; existing syntax call links remain heuristic.
+
+Semantic checkpoint 013 adds an actual TypeScript checker backend, bounded
+workspace/compiler configuration, UTF-16/UTF-8 coordinate conversion, typed
+source occurrences and shared tool/CLI/RPC/editor navigation. The three
+1/5/20-file semantic oracles compare complete facts, graph and metadata with full
+builds. Existing nine syntax/database oracles still pass. All seven primary
+reviews remain partial; only OpenCode/DeepSeek/Qwen/Serena semantic-related paths
+are documented as such. The other primary reviews contribute bounded discovery,
+source reads and freshness; no LSP subsystem is invented for them. Watching,
+journal compaction, large graph evidence, multi-project/other-language semantics,
+rename and native Problems integration remain pending.

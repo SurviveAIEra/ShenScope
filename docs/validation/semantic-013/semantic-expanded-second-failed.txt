@@ -1,0 +1,53 @@
+Precompiling ShenScope...
+   4881.0 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 5 seconds. 39 already precompiled.
+ERROR: LoadError: Some tests did not pass: 39 passed, 1 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/backend_transport.jl:1
+in expression starting at /workspace/ShenScope/test/semantic.jl:6
+Test Summary:                                                        |  Pass  Total  Time
+Compiler UTF-16 positions normalize to validated UTF-8 source ranges | 12050  12050  0.3s
+Test Summary:                                                             | Pass  Total  Time
+Compiler JSONC preserves literals and rejects ambiguous or excessive data |   13     13  0.3s
+Test Summary:                                                            | Pass  Total  Time
+Compiler configuration inheritance, source scope and post-read integrity |   17     17  5.8s
+Test Summary:                                               | Pass  Total  Time
+Compiler globs have bounded segment and recursive semantics |    6      6  0.0s
+Test Summary:                                                                                    | Pass  Total   Time
+Actual TypeScript checker resolves aliases, methods, overloads and diagnostics without execution |   53     53  23.4s
+Test Summary:                                                             | Pass  Total  Time
+Compiler 1/5/20-file deltas match full facts and preserve symbol identity |   43     43  8.7s
+Parser transport bounds blocked pipes, failed framing and command approval: Error During Test at /workspace/ShenScope/test/integration/backend_transport.jl:38
+  Test threw exception
+  Expression: length(worker.diagnostics.bytes) <= 64 * 1024
+  type OutputBuffer has no field bytes
+  Stacktrace:
+   [1] getproperty(x::ShenScope.OutputBuffer, f::Symbol)
+     @ Base ./Base.jl:49
+   [2] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [3] (::var"#96#112")(root::String)
+     @ Main /workspace/ShenScope/test/integration/backend_transport.jl:38
+Parser transport bounds blocked pipes, failed framing and command approval: Test Failed at /workspace/ShenScope/test/integration/backend_transport.jl:91
+  Expression: semantic_error_code((()->begin
+                #= /workspace/ShenScope/test/integration/backend_transport.jl:91 =#
+                ShenScope.worker_start!(missing, ctx)
+            end)) == :backend
+   Evaluated: nothing == backend
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#96#112")(root::String)
+   @ Main /workspace/ShenScope/test/integration/backend_transport.jl:91
+ [3] mktempdir(fn::var"#96#112", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/backend_transport.jl:2 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/integration/backend_transport.jl:2
+Test Summary:                                                              | Pass  Fail  Error  Total  Time
+Parser transport bounds blocked pipes, failed framing and command approval |   39     1      1     41  4.5s

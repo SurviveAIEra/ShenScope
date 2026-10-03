@@ -14,6 +14,7 @@ changing a signature can change it. Ranges use one-based UTF-8 byte columns.
 | `go_ast` | Compiled helper using Go `go/parser` and `go/ast` | Go syntax; unique-name call candidates, no type checking |
 | `tree_sitter` | Native Tree-sitter grammars through language-pack 1.20.0 | Seven languages, partial declaration/call extraction, no compiler semantics |
 | `codegraph` | CodeGraphContext 0.6.13, pinned commit `642c3215f8ef87fba03bc5dea6dbcb28d655fbd8`, Ladybug 0.19.1 | Six languages; source-bound nodes/relations; global call/inheritance relink and export remain |
+| `typescript` | TypeScript 5.9.2 language service/checker | Single workspace program; semantic types/references/calls/diagnostics; restricted external dependencies; see [semantic.md](semantic.md) |
 
 The CodeGraph adapter invokes the actual SDK `GraphBuilder.parse_file`,
 `pre_scan_imports`, graph writers, `link_function_calls` and `link_inheritance`.
@@ -46,7 +47,8 @@ parser worker. External writers require a reload after conflict.
 Limits are explicit: 10,000 indexed files, 8 MiB per source, 32 MiB helper frames,
 bounded helper stderr and timeout, and 128 MiB per backend journal. A limit
 failure preserves the committed state. Journal compaction, file watching,
-large-project streaming and a compiler-semantic backend remain unfinished.
+and large-project streaming remain unfinished. The compiler semantic backend
+and its narrower 24 MiB source-snapshot limit are described in `semantic.md`.
 Use a new explicitly selected state directory when a journal reaches capacity;
 the application does not automatically delete older user state.
 
@@ -61,7 +63,7 @@ authoritative. Source folders and whole project checkouts are never copied.
 depth, score and confidence. `TestSelectionAnalyzer` filters reachable or directly
 changed test-named symbols; it has no coverage proof. `ArchitectureAnalyzer`
 computes file dependency cycles and hubs with an iterative SCC traversal.
-The same ordinary Julia implementations operate on all three backends.
+The same ordinary Julia implementations operate on all four backends.
 The model and user retain decisions about which changes/tests are appropriate.
 
 ```sh

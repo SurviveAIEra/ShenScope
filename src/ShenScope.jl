@@ -27,9 +27,15 @@ include("Tools/Files.jl")
 include("Tools/Processes.jl")
 include("Memory/Store.jl")
 include("ProjectData/Types.jl")
+include("ProjectData/Locations.jl")
+include("ProjectData/JSONC.jl")
 include("ProjectData/State.jl")
+include("ProjectData/Inputs.jl")
 include("ProjectData/Backends.jl")
+include("ProjectData/CompilerConfig.jl")
+include("ProjectData/TypeScript.jl")
 include("ProjectData/Queries.jl")
+include("ProjectData/Navigation.jl")
 include("Analysis/Builtin.jl")
 include("Tools/Project.jl")
 include("Extensions/Contracts.jl")
@@ -101,9 +107,9 @@ export core_tools, execute_batch, AgentControl, steer!, run_agent!, load_config,
 export VersionedStore, version_get, version_put!, version_list, version_history,
     MemoryStore, memory_store, memory_put!, memory_get, memory_search, memory_delete!,
     memory_export, memory_import!, lexical_tokens, MemoryTool
-export SymbolId, SourceRange, CodeSymbol, Relation, FileFacts, CallReference,
+export SymbolId, SourceRange, SourceMap, CodeSymbol, Relation, FileFacts, CallReference, SymbolOccurrence,
     BackendCapabilities, ProjectState, ProjectDelta, TreeSitterBackend, CodeGraphBackend,
-    GoASTBackend, backend_capabilities, backend_close!, build!, update!, load_project,
+    GoASTBackend, TypeScriptSemanticBackend, backend_capabilities, backend_close!, build!, update!, load_project,
     graph_snapshot, graph_search, graph_traverse, ProjectTool, ImpactAnalyzer,
     TestSelectionAnalyzer, ArchitectureAnalyzer, analyze, analyzer_name, requirements
 
@@ -151,6 +157,7 @@ export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectData
     parsejson, canonical, digest, cliptext
 
 include("CLI/Main.jl")
+include("CLI/Project.jl")
 include("CLI/MCP.jl")
 include("CLI/Skills.jl")
 include("CLI/Hooks.jl")

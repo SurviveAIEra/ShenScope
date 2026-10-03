@@ -2,6 +2,9 @@ using ShenScope, Test
 include("helpers.jl")
 
 include("unit/foundation.jl")
+include("unit/source_locations.jl")
+include("unit/compiler_config.jl")
+include("unit/project_cli.jl")
 include("unit/durable_storage.jl")
 include("unit/config.jl")
 include("unit/memory.jl")

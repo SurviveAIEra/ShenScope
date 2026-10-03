@@ -32,8 +32,9 @@ end
 
 function parse_cli(args::Vector{String})
     flags=Dict{String,Any}();positionals=String[]
-    valued=Set(["--root","--state-dir","--config","--profile","--session","--script","--backend"])
-    switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp"])
+    valued=Set(["--root","--state-dir","--config","--profile","--session","--script","--backend",
+        "--symbol","--column-unit","--limit","--offset","--revision","--sha256"])
+    switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations"])
     i=1
     while i<=length(args)
         arg=args[i]
@@ -97,6 +98,8 @@ function cli_main(args=ARGS)
         println("Options: --root PATH --state-dir PATH --config PATH --profile NAME --session ID --json")
         println("Explicit permissions: --allow-edit --allow-process --allow-network --allow-persistence --allow-dynamic --allow-mcp")
         println("Offline protocol fixture: --script JSON_FILE")
+        println("Project navigation: project definitions|references|hover|incoming_calls|outgoing_calls|implementations FILE LINE COLUMN --backend typescript")
+        println("Project evidence: --symbol ID --column-unit utf8_byte|utf16 --revision N --sha256 HASH --limit N --offset N --exclude-declarations; project diagnostics [FILE]")
         return 0
     end
     try
@@ -164,18 +167,7 @@ function cli_main(args=ARGS)
             tool=DiagnosticsTool();validate_schema(args,tool_schema(tool));println(canonical(execute(tool,args,ctx)));return 0
         end
         if command=="project"
-            length(positional)>=2 || throw(ShenScopeError(:input,"Project action required"))
-            policy=permissions_from_config(config)
-            get(flags,"--allow-process",false) && (policy.rules[:process]=Allow)
-            get(flags,"--allow-persistence",false) && (policy.rules[:persistence]=Allow)
-            ctx=RuntimeContext(get(flags,"--root",pwd());state_dir,permissions=policy,approve=cli_approval)
-            action=positional[2];args=Dict{String,Any}("action"=>action,"backend"=>get(flags,"--backend","tree_sitter"))
-            action=="search" ? (args["query"]=join(positional[3:end]," ")) : (args["paths"]=positional[3:end])
-            tool=ProjectTool()
-            try
-                validate_schema(args,tool_schema(tool));println(canonical(execute(tool,args,ctx)))
-            finally;cleanup_projects!(tool.manager);end
-            return 0
+            return cli_project_command(positional,flags,config,state_dir)
         end
         if command=="serve"
             get(flags,"--stdio",false) || throw(ShenScopeError(:input,"Use serve --stdio"))

@@ -1,0 +1,2 @@
+Test Summary:                                                | Pass  Total   Time
+Project RPC lifecycle, approvals and responsive cancellation |   37     37  46.2s

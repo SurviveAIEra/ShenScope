@@ -59,6 +59,11 @@ function project_status(state::ProjectState)
         unresolved=count(ref->resolve_reference(state,ref)===nothing,(ref for facts in values(state.files) for ref in facts.references))
         Dict("backend"=>state.backend,"revision"=>state.revision,"files"=>length(state.files),"symbols"=>length(state.symbols),
             "relations"=>length(state.relations),"unresolved_syntax_calls"=>unresolved,
-            "capabilities"=>capability_dict(state.capabilities),"persistent_bytes"=>state.journal_bytes)
+            "capabilities"=>capability_dict(state.capabilities),"persistent_bytes"=>state.journal_bytes,
+            "diagnostics"=>sum(length(facts.diagnostics) for facts in values(state.files);init=0),
+            "semantic_occurrences"=>sum(length(facts.occurrences) for facts in values(state.files);init=0),
+            "unresolved_semantic_calls"=>sum(get(facts.metadata,"unresolved_calls",0) for facts in values(state.files);init=0),
+            "external_semantic_calls"=>sum(get(facts.metadata,"external_calls",0) for facts in values(state.files);init=0),
+            "compiler"=>deepcopy(get(state.metadata,"compiler",nothing)))
     end
 end

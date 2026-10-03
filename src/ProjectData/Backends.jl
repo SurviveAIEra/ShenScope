@@ -8,73 +8,147 @@ mutable struct BackendWorker
     diagnostics::OutputBuffer
     mutex::ReentrantLock
     sequence::Int
+    pid::Union{Nothing,Int}
+    started_argv::Union{Nothing,Vector{String}}
 end
-BackendWorker(argv::Vector{String})=BackendWorker(argv,nothing,nothing,nothing,nothing,nothing,OutputBuffer(64*1024),ReentrantLock(),0)
-function worker_close!(worker::BackendWorker)
-    process=worker.process;worker.process=nothing
-    if process!==nothing && !process_exited(process)
+BackendWorker(argv::Vector{String})=BackendWorker(argv,nothing,nothing,nothing,nothing,nothing,OutputBuffer(64*1024),ReentrantLock(),0,nothing,nothing)
+function worker_kill!(worker::BackendWorker)
+    if Sys.islinux() && worker.pid!==nothing
+        result=ccall(:kill,Cint,(Cint,Cint),-worker.pid,9)
+        result!=0 && worker.process!==nothing && !process_exited(worker.process) && kill(worker.process,Base.SIGKILL)
+    elseif worker.process!==nothing && !process_exited(worker.process)
+        kill(worker.process,Base.SIGKILL)
+    end
+end
+function worker_close!(worker::BackendWorker;force=false)
+    lock(worker.mutex) do
+        process=worker.process
+        force && worker_kill!(worker)
         worker.input!==nothing && isopen(worker.input) && close(worker.input)
-        deadline=time()+5
-        while !process_exited(process) && time()<deadline;sleep(0.01);end
-        if !process_exited(process)
-            if Sys.islinux();ccall(:kill,Cint,(Cint,Cint),-getpid(process),9)
-            else;kill(process,Base.SIGKILL);end
+        if process!==nothing && !process_exited(process)
+            deadline=time()+5
+            while !process_exited(process) && time()<deadline;sleep(0.01);end
+            process_exited(process) || worker_kill!(worker)
+            wait(process)
         end
-        wait(process)
+        # A helper may exit before children release inherited output pipes.
+        worker_kill!(worker)
+        for pipe in (worker.input,worker.output,worker.error)
+            pipe!==nothing && isopen(pipe) && close(pipe)
+        end
+        reader=worker.reader
+        reader!==nothing && reader!==current_task() && try wait(reader) catch end
+        worker.process=nothing;worker.pid=nothing;worker.reader=nothing;worker.started_argv=nothing
+        worker.input=nothing;worker.output=nothing;worker.error=nothing
     end
-    for pipe in (worker.input,worker.output,worker.error)
-        pipe!==nothing && isopen(pipe) && close(pipe)
-    end
-    worker.input=nothing;worker.output=nothing;worker.error=nothing
     nothing
 end
+function worker_validate_command(worker::BackendWorker)
+    1<=length(worker.argv)<=128 && all(value->!isempty(value) && ncodeunits(value)<=8192 &&
+        !occursin('\0',value),worker.argv) || throw(ShenScopeError(:backend,"Invalid parser command"))
+    copy(worker.argv)
+end
+function worker_executable(argv::Vector{String},root::String)
+    name=first(argv)
+    candidate=occursin('/',name) || occursin('\\',name) ? normpath(isabspath(name) ? name : joinpath(root,name)) : name
+    executable=Sys.which(candidate)
+    executable===nothing && throw(ShenScopeError(:backend,"Configured parser executable is unavailable"))
+    vcat([String(executable)],argv[2:end])
+end
 function worker_start!(worker::BackendWorker,ctx::RuntimeContext)
-    worker.process!==nothing && !process_exited(worker.process) && return
-    authorize!(ctx,:process,"project.backend",first(worker.argv);reason="Start the configured source parser helper")
+    argv=worker_validate_command(worker)
+    request=PermissionRequest("backend-current",:process,"project.backend",first(argv),"Start parser")
+    permission_decision(ctx.permissions,request)==Deny && throw(ShenScopeError(:permission,"Parser execution is denied"))
+    if worker.process!==nothing && !process_exited(worker.process)
+        argv==worker.started_argv || throw(ShenScopeError(:backend,"Parser command changed; close the resident helper before restarting"))
+        return
+    end
+    authorize!(ctx,:process,"project.backend",first(argv);reason="Start the configured source parser helper")
     lock(worker.mutex) do
-        worker.process!==nothing && !process_exited(worker.process) && return
+        argv==worker.argv && permission_decision(ctx.permissions,request)!=Deny ||
+            throw(ShenScopeError(:permission,"Parser command or permission changed after approval"))
+        check_cancelled(ctx.cancellation)
+        lock(ctx.budget.mutex) do;check_budget(ctx.budget);end
+        if worker.process!==nothing && !process_exited(worker.process)
+            argv==worker.started_argv || throw(ShenScopeError(:backend,"Resident parser command changed"))
+            return
+        end
         worker_close!(worker)
         input=Pipe();output=Pipe();err=Pipe()
-        command=Sys.islinux() ? vcat(["setsid"],worker.argv) : worker.argv
+        resolved=worker_executable(argv,ctx.root)
+        command=Sys.islinux() ? vcat(worker_executable(["setsid"],ctx.root),resolved) : resolved
         env=Dict(key=>ENV[key] for key in ("PATH","SYSTEMROOT","WINDIR","LD_LIBRARY_PATH","JULIA_DEPOT_PATH") if haskey(ENV,key))
         env["SHENSCOPE_PARSER_CACHE"]=get(ENV,"SHENSCOPE_PARSER_CACHE","/workspace/tool-cache")
         env["PYTHONNOUSERSITE"]="1";env["PYTHONUTF8"]="1";env["OMP_NUM_THREADS"]="2"
-        worker.process=run(pipeline(ignorestatus(setenv(Cmd(Cmd(command);dir=ctx.root),env));stdin=input,stdout=output,stderr=err);wait=false)
+        try
+            worker.process=run(pipeline(ignorestatus(setenv(Cmd(Cmd(command);dir=ctx.root),env));stdin=input,stdout=output,stderr=err);wait=false)
+            worker.pid=getpid(worker.process)
+            worker.started_argv=copy(argv)
+        catch
+            for pipe in (input,output,err);isopen(pipe) && close(pipe);end
+            worker.process=nothing;worker.pid=nothing;worker.started_argv=nothing
+            throw(ShenScopeError(:backend,"Unable to start the configured parser helper"))
+        end
         close(input.out);close(output.in);close(err.in)
         worker.input=input;worker.output=output;worker.error=err
         worker.reader=@async try
             while !eof(err);capture!(worker.diagnostics,readavailable(err));end
+        catch
+            # stderr is retained diagnostics, never a protocol response.
         finally
             isopen(err) && close(err)
         end
     end
 end
 function worker_request(worker::BackendWorker,operation::String,params::AbstractDict,ctx::RuntimeContext;timeout=120.0)
-    worker.process!==nothing || throw(ShenScopeError(:backend,"Parser helper has not been prepared"))
+    isfinite(timeout) && 0<timeout<=3600 || throw(ShenScopeError(:backend,"Invalid parser timeout"))
     lock(worker.mutex) do
+        worker.process!==nothing || throw(ShenScopeError(:backend,"Parser helper has not been prepared"))
+        worker_validate_command(worker)==worker.started_argv || throw(ShenScopeError(:backend,"Resident parser command changed"))
+        request=PermissionRequest("backend-request",:process,"project.backend",first(worker.argv),"Use parser")
+        permission_decision(ctx.permissions,request)!=Deny || throw(ShenScopeError(:permission,"Parser execution is now denied"))
         worker.sequence+=1;identifier=worker.sequence
         text=canonical(merge(Dict("id"=>identifier,"operation"=>operation),params))*"\n"
         ncodeunits(text)<=32*1024*1024 || throw(ShenScopeError(:backend,"Parser request exceeds limit"))
-        task=nothing
+        task=nothing;writer=nothing
         try
-            write(worker.input,text);flush(worker.input)
+            remaining=lock(ctx.budget.mutex) do
+                check_budget(ctx.budget)
+                ctx.budget.limits.max_seconds-(time_ns()-ctx.budget.started_ns)/1e9
+            end
+            deadline=time()+min(timeout,remaining)
+            writer=@async begin;write(worker.input,text);flush(worker.input);end
             task=@async bounded_record(worker.output,32*1024*1024)
-            deadline=time()+timeout
-            while !istaskdone(task)
+            while !istaskdone(task) || !istaskdone(writer)
                 check_cancelled(ctx.cancellation)
+                permission_decision(ctx.permissions,request)!=Deny || throw(ShenScopeError(:permission,"Parser execution was denied during extraction"))
+                lock(ctx.budget.mutex) do;check_budget(ctx.budget);end
+                istaskfailed(writer) && throw(ShenScopeError(:backend,"Parser request pipe failed"))
                 time()<deadline || throw(ShenScopeError(:timeout,"Source parser timed out"));sleep(0.01)
             end
-            raw=fetch(task);endswith(raw,"\n") || throw(ShenScopeError(:backend,"Parser disconnected during response"))
-            result=parsejson(raw);get(result,"id",nothing)==identifier || throw(ShenScopeError(:backend,"Parser response ID mismatch"))
+            fetch(writer)
+            raw=try fetch(task) catch;throw(ShenScopeError(:backend,"Parser response framing failed")) end
+            endswith(raw,"\n") || throw(ShenScopeError(:backend,"Parser disconnected during response"))
+            result=bounded_json_object(raw;maximum=32*1024*1024,max_depth=32,max_nodes=1_000_000,error_code=:backend)
+            check_cancelled(ctx.cancellation)
+            permission_decision(ctx.permissions,request)!=Deny || throw(ShenScopeError(:permission,"Parser execution was denied before publication"))
+            get(result,"id",nothing) isa Integer && !(result["id"] isa Bool) && result["id"]==identifier ||
+                throw(ShenScopeError(:backend,"Parser response ID mismatch"))
             if haskey(result,"error")
-                throw(ShenScopeError(:parse,"Parser rejected source: "*cliptext(get(result["error"],"message","Unknown error"),2000)))
+                fault=result["error"]
+                fault isa AbstractDict && !haskey(result,"result") && get(fault,"message",nothing) isa AbstractString ||
+                    throw(ShenScopeError(:backend,"Parser error frame is invalid"))
+                throw(ShenScopeError(:parse,"Parser rejected source: "*cliptext(fault["message"],2000)))
             end
+            haskey(result,"result") || throw(ShenScopeError(:backend,"Parser frame has no result"))
             get(result,"result",nothing)
         catch error
             # A valid rejection frame leaves framing and the prior graph usable.
             # Forcing a DB process to die on a syntax error can corrupt its WAL.
-            error isa ShenScopeError && error.code==:parse || worker_close!(worker)
-            task!==nothing && !istaskdone(task) && yield()
+            error isa ShenScopeError && error.code==:parse || worker_close!(worker;force=true)
+            for pending in (task,writer)
+                pending!==nothing && pending!==current_task() && try wait(pending) catch end
+            end
             rethrow()
         end
     end

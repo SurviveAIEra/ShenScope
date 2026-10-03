@@ -1,0 +1,1 @@
+PASS: VSIX webview, actual TypeScript checker indexing, permissions, type, definitions, references, calls, diagnostics and source navigation

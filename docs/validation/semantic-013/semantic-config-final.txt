@@ -1,0 +1,12 @@
+Precompiling ShenScope...
+    ShenScope Being precompiled by another process (pid: 50539, pidfile: /workspace/julia-depot/compiled/v1.11/ShenScope/aMBxt_0KQtR.ji.pidfile)
+    670.3 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 1 seconds. 39 already precompiled.
+Test Summary:                                                            | Pass  Total   Time
+Compiler configuration inheritance, source scope and post-read integrity |   17     17  11.9s
+Test Summary:                                               | Pass  Total  Time
+Compiler globs have bounded segment and recursive semantics |    6      6  0.0s
+Test Summary:                                                                                    | Pass  Total   Time
+Actual TypeScript checker resolves aliases, methods, overloads and diagnostics without execution |   53     53  36.3s
+Test Summary:                                                                    | Pass  Total  Time
+Inherited compiler aliases resolve against effective baseUrl or declaring config |    9      9  2.2s

@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 10,170 authored Julia Core code lines across 88 files;
-CLI/TUI add 582 lines and are counted separately. This is 4.068% of the
-minimum line target, leaving 239,830 lines. These are early implementations,
+Latest cloc 2.11 count: 11,184 authored Julia Core code lines across 94 files;
+CLI/TUI add 629 lines and are counted separately. This is 4.4736% of the
+minimum line target, leaving 238,816 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -54,7 +54,7 @@ characters/bigrams and atomic import/export. Nonblocking cross-process locks
 fix worker starvation under concurrent writes. Broad affected suite: 204 passing
 assertions (32 new memory assertions). `docs/core/memory.md` describes limits.
 
-Next: compiler-semantic project backend; durable tasks/MCP;
+Next: project watchers and journal/cache lifecycle; durable tasks/MCP;
 Julia extensions/diagnostics and isolated analyzers; measured release preparation.
 
 Editor UI checkpoint: compact primary navigation, anchored composer, starter
@@ -86,6 +86,39 @@ sandbox for generated analyzers or a completed extension package manager.
 
 Only tested runnable checkpoints will be labeled verified. Update this file
 after each checkpoint and push so another machine can resume without chat state.
+
+Compiler semantic checkpoint 013: real TypeScript 5.9.2 checker/language service,
+workspace-only source/configuration snapshots, inherited tsconfig paths,
+UTF-16/UTF-8 positions, types/signatures, aliases/overloads/implicit constructors,
+references/calls/implementations/diagnostics and stable body-edit identities.
+The actual 1/5/20-file oracle compares complete file facts, graph and metadata.
+An unedited dependent is rechecked after a public signature change. Syntax
+failure preserves the committed graph, revision and journal. Semantic checking
+is still global; Core persistence and adjacency apply file deltas. No speed
+advantage or runtime-call completeness is claimed.
+
+The Project tool, CLI and RPC expose the same bounded snapshot navigation.
+Project jobs require owning session IDs for poll/cancel, use child cancellation
+with shared budget/policy and cancel pending approvals independently. Process
+transport checks argv/executables and handles blocked input, strict JSON,
+timeouts, revocation, cancellation and Linux descendant cleanup. All-source,
+configuration and commit-permission checks protect publication. Shared Project
+UI shows compiler metadata and evidence in both actual clients; the VSIX list,
+inspection cards, links and scrollbars have been adjusted and visually checked.
+
+Validation: affected Core 13,340 passing assertions across 95 testsets, including
+12,050 coordinate property assertions (1,290 other assertions). Final semantic
+suite: 12,252 assertions (202 other assertions); final RPC: 37; CLI/compiler
+navigation rerun: 55. Existing nine graph oracles and protocol suite pass (141
+assertions before four additional approval-cancel assertions, verified separately).
+Editor checks/build, three Node transport tests, complete Workbench typecheck,
+native extensions-disabled GUI and standalone VSIX semantic GUI pass. VSIX:
+269,348 bytes; 108 Core/manifest/helper payload files match current authored files.
+Julia, Node, compiler and depot are still separate dependencies. See
+`docs/core/semantic.md`, `docs/validation/semantic-checkpoint-013.json` and raw logs.
+Source count, other-language/multi-project semantic support, watching, compaction,
+native Problems/Testing/Terminal, isolated analyzers and distribution remain
+unfinished. Development continues after this checkpoint.
 
 Durable-task checkpoint: immutable validated DAGs, session/workspace ownership,
 checksummed atomic updates, local dependency readiness, leased claims/start/

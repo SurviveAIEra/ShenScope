@@ -17,7 +17,7 @@ function icon(name: string): SVGSVGElement {
         chat: 'M4 4h16v12H9l-5 4z', history: 'M4 6v5h5M4 11a8 8 0 1 1 2 7M12 7v5l3 2',
         graph: 'M8 7l8 10M16 7 8 17M8 7h8M8 17h8M5 4h6v6H5zM13 14h6v6h-6z',
         shield: 'M12 3l8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6',
-        check: 'M5 12l4 4L19 6', arrow: 'M5 12h14M13 6l6 6-6 6', tool: 'M14 5a5 5 0 0 0-6 6L3 16l5 5 5-5a5 5 0 0 0 6-6l-4 3-4-4z',
+        check: 'M5 12l4 4L19 6', close: 'M6 6l12 12M18 6 6 18', arrow: 'M5 12h14M13 6l6 6-6 6', tool: 'M14 5a5 5 0 0 0-6 6L3 16l5 5 5-5a5 5 0 0 0 6-6l-4 3-4-4z',
     };
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     for (const [key, value] of Object.entries({viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.6', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true'})) { svg.setAttribute(key, value); }
@@ -607,14 +607,14 @@ export class ShenScopePanel {
     private async project(revision: number): Promise<void> {
         const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Project intelligence'));
         const backend = el('select', '', 'backend-select'); backend.setAttribute('aria-label', 'Project backend');
-        for (const [value, label] of [['tree_sitter', 'Tree-sitter'], ['go_ast', 'Go AST'], ['codegraph', 'CodeGraph']]) {
+        for (const [value, label] of [['tree_sitter', 'Tree-sitter'], ['go_ast', 'Go AST'], ['codegraph', 'CodeGraph'], ['typescript', 'TypeScript compiler']]) {
             const option = el('option', label); option.value = value; option.selected = value === this.projectBackend; backend.append(option);
         }
         backend.disabled = !!this.projectJob;
         backend.addEventListener('change', () => { this.projectBackend = backend.value; this.projectResult = undefined; void this.guard(() => this.renderTab()); });
         this.content.append(heading, el('p', 'Explore symbols and trace the evidence behind affected code and test candidates.', 'view-description'), backend);
         if (this.projectJob) {
-            this.content.append(el('p', 'Working on the project index…', 'empty-text'), this.button('Cancel indexing', async () => { await this.bridge.request('project/cancel', { job_id: this.projectJob }); })); return;
+            this.content.append(el('p', 'Working on the project index…', 'empty-text'), this.button('Cancel indexing', async () => { await this.bridge.request('project/cancel', { job_id: this.projectJob, session_id: this.sessionId }); })); return;
         }
         const index = this.button('Index project', () => this.startProject('build'), 'primary-button', 'graph'); this.content.append(index);
         const status = await this.bridge.request('project/query', { backend: this.projectBackend, action: 'status', ...(this.sessionId ? { session_id: this.sessionId } : {}) });
@@ -625,15 +625,69 @@ export class ShenScopePanel {
         for (const [label, value] of [['Files', status.files], ['Symbols', status.symbols], ['Relations', status.relations], ['Revision', status.revision]]) {
             const metric = el('div'); metric.append(el('strong', Number(value).toLocaleString()), el('small', String(label))); metrics.append(metric);
         }
-        this.content.append(metrics, el('p', 'Last indexed snapshot. Refresh after changes. Call links use syntax evidence and may miss dynamic or unresolved calls.', 'view-description'));
+        const semantic = status.capabilities?.calls === 'semantic';
+        this.content.append(metrics, el('p', semantic ? 'Compiler snapshot. Refresh after edits. Static resolution does not prove the target of every runtime call.' : 'Last indexed snapshot. Refresh after changes. Call links use syntax evidence and may miss dynamic or unresolved calls.', 'view-description'));
+        if (semantic) {
+            const quality = el('div', '', 'compiler-status'); quality.append(el('span', 'TypeScript 5.9.2', 'badge'),
+                el('span', String(status.diagnostics ?? 0) + ' diagnostics'), el('span', String(status.unresolved_semantic_calls ?? 0) + ' unresolved calls'));
+            this.content.append(quality);
+        }
         const query = el('input', '', 'history-search'); query.placeholder = 'Search a symbol…'; query.setAttribute('aria-label', 'Search project symbols');
-        const results = el('div', '', 'symbol-results'); this.content.append(query, results); let request = 0; let timer: ReturnType<typeof setTimeout> | undefined;
+        const results = el('div', '', 'symbol-results'); const inspection = el('section', '', 'project-inspection'); inspection.hidden = true;
+        this.content.append(query, results, inspection); let request = 0; let inspectionRequest = 0; let timer: ReturnType<typeof setTimeout> | undefined;
+        const inspect = async (symbol: any | undefined, action: string, offset = 0): Promise<void> => {
+            const current = ++inspectionRequest; const selectedBackend = this.projectBackend; inspection.hidden = false;
+            inspection.replaceChildren(el('p', 'Reading indexed evidence…', 'view-description'));
+            const result = await this.bridge.request('project/query', { backend: selectedBackend, action, revision: status.revision, offset, limit: 30,
+                ...(symbol ? { symbol_id: symbol.id } : {}), ...(this.sessionId ? { session_id: this.sessionId } : {}) });
+            if (current !== inspectionRequest || revision !== this.renderRevision || selectedBackend !== this.projectBackend) { return; }
+            const header = el('div', '', 'view-heading'); header.append(el('h3', symbol?.qualified_name ?? 'Compiler diagnostics'),
+                this.button('Close inspection', async () => { inspectionRequest++; inspection.hidden = true; inspection.replaceChildren(); }, 'icon-button', 'close'));
+            inspection.replaceChildren(header);
+            if (symbol) {
+                const source = el('div', '', 'inspection-source');
+                source.append(el('small', symbol.kind + ' · ' + symbol.location.file + ':' + symbol.location.start_line),
+                    this.button('Open declaration', () => this.bridge.openFile(symbol.location.file, symbol.location.start_line), 'source-link'));
+                inspection.append(source);
+                const actions = el('div', '', 'navigation-actions');
+                for (const [label, value, enabled] of [
+                    ['Type', 'hover', status.capabilities?.types], ['Definitions', 'definitions', status.capabilities?.definitions],
+                    ['References', 'references', status.capabilities?.references], ['Callers', 'incoming_calls', status.capabilities?.calls !== 'none'],
+                    ['Calls', 'outgoing_calls', status.capabilities?.calls !== 'none'], ['Implementations', 'implementations', status.capabilities?.implementations],
+                ] as const) {
+                    if (enabled) { actions.append(this.button(label, () => inspect(symbol, value), value === action ? 'primary-button' : 'secondary-button')); }
+                }
+                inspection.append(actions);
+            }
+            if (action === 'hover') {
+                inspection.append(el('pre', result.type || 'No inferred type is available.', 'semantic-type'));
+                for (const item of result.symbols ?? []) { if (item.metadata?.signature) { inspection.append(el('code', item.metadata.signature, 'semantic-signature')); } }
+                return;
+            }
+            for (const item of result.items ?? []) {
+                const target = item.symbol ?? (action === 'incoming_calls' ? item.source : item.target) ?? (item.name ? item : undefined);
+                const location = item.location ?? item.relation?.location ?? target?.location;
+                const row = el('div', '', 'navigation-entry');
+                if (location) { row.append(this.button(location.file + ':' + location.start_line, () => this.bridge.openFile(location.file, location.start_line), 'source-link')); }
+                if (target) { row.append(el('strong', target.qualified_name ?? target.name)); }
+                if (item.message) { row.append(el('span', item.category + ' · ' + item.code, 'badge'), el('p', item.message, 'diagnostic-message')); }
+                else { row.append(el('small', item.role ?? item.resolution ?? item.relation?.kind ?? item.kind ?? 'definition')); }
+                inspection.append(row);
+            }
+            if (!result.items?.length) { inspection.append(el('p', 'No entries in this indexed snapshot.', 'view-description')); }
+            if (result.next_offset !== null && result.next_offset !== undefined) {
+                inspection.append(this.button('Next evidence page', () => inspect(symbol, action, result.next_offset)));
+            }
+        };
+        if (status.capabilities?.diagnostics) { this.content.append(this.button('Show diagnostics', () => inspect(undefined, 'diagnostics'))); }
         const search = async () => {
             const current = ++request; const result = await this.bridge.request('project/query', { backend: this.projectBackend, action: 'search', query: query.value, limit: 30, ...(this.sessionId ? { session_id: this.sessionId } : {}) });
             if (current !== request || revision !== this.renderRevision) { return; } results.replaceChildren();
             for (const symbol of result.symbols) {
                 const row = el('div', '', 'symbol-row');
-                row.append(this.button(symbol.name, () => this.bridge.openFile(symbol.location.file, symbol.location.start_line), 'source-link'), el('small', `${symbol.kind} · ${symbol.location.file}:${symbol.location.start_line}`)); results.append(row);
+                row.append(this.button(symbol.name, () => this.bridge.openFile(symbol.location.file, symbol.location.start_line), 'source-link'), el('small', symbol.kind + ' · ' + symbol.location.file + ':' + symbol.location.start_line));
+                if (semantic) { const button = this.button('Inspect', () => inspect(symbol, 'hover'), 'secondary-button symbol-inspect'); button.setAttribute('aria-label', 'Inspect ' + symbol.qualified_name); row.append(button); }
+                results.append(row);
             }
             if (!result.symbols.length) { results.append(el('p', 'No matching symbols.', 'empty-text')); }
         };
