@@ -16,7 +16,9 @@ end
 
 struct HTTPProvider <: AbstractModelProvider
     config::ProviderConfig
+    credential_lookup::Function
 end
+HTTPProvider(config::ProviderConfig)=HTTPProvider(config,key->get(ENV,key,""))
 provider_name(p::HTTPProvider) = p.config.name
 capabilities(p::HTTPProvider) = p.config.capabilities
 

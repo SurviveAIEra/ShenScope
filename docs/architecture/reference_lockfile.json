@@ -171,5 +171,110 @@
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "cline",
+    "repository": "cline/cline",
+    "status": "cloned",
+    "commit": "39ff2359f7e08231281539696e48a166ce49270c",
+    "license": "Apache-2.0",
+    "inspected_paths": [
+      "README.md",
+      "sdk/packages/core/src/runtime/tools/tool-approval.ts",
+      "sdk/packages/core/src/hooks/checkpoint-hooks.ts"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "goose",
+    "repository": "block/goose",
+    "status": "cloned",
+    "commit": "591edd47cf2cfea4957d720c607cf2a4def8673d",
+    "license": "Apache-2.0",
+    "inspected_paths": [
+      "README.md",
+      "crates/goose/src/context_mgmt/mod.rs"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "OpenHands",
+    "repository": "All-Hands-AI/OpenHands",
+    "status": "cloned",
+    "commit": "8b0be7d5181db68be05261dbeafb580f7a5a4140",
+    "license": "MIT",
+    "inspected_paths": [
+      "README.md"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "JuliaMCP.jl",
+    "repository": "julia-vscode/JuliaMCP.jl",
+    "status": "cloned",
+    "commit": "6ffa4a6ece9323581c24749d693de476aa62e6f2",
+    "license": "MIT",
+    "inspected_paths": [
+      "README.md",
+      "src/mcp_protocol.jl"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "Kaimon.jl",
+    "repository": "kahliburke/Kaimon.jl",
+    "status": "cloned",
+    "commit": "7c81763421fd3a4b099a21d9fb12c618e1baa3c0",
+    "license": "MIT",
+    "inspected_paths": [
+      "README.md",
+      "src/security.jl"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "AgentREPL.jl",
+    "repository": "samtalki/AgentREPL.jl",
+    "status": "cloned",
+    "commit": "dfa934e4d70f97df26dbda43f5f502ec6f889d74",
+    "license": "Apache-2.0",
+    "inspected_paths": [
+      "README.md",
+      "src/worker.jl"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "PromptingTools.jl",
+    "repository": "svilupp/PromptingTools.jl",
+    "status": "cloned",
+    "commit": "86fbfd504f914821ffae9b91261464261ca12901",
+    "license": "MIT",
+    "inspected_paths": [
+      "README.md",
+      "src/retry_layer.jl",
+      "src/Experimental/AgentTools/retry.jl"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
+  },
+  {
+    "name": "software-agent-sdk",
+    "repository": "OpenHands/software-agent-sdk",
+    "status": "cloned",
+    "commit": "84d4470acd85688b52c510532ffc83b234ebf453",
+    "license": "MIT",
+    "inspected_paths": [
+      "openhands-sdk/openhands/sdk/agent/agent.py",
+      "openhands-sdk/openhands/sdk/conversation/stuck_detector.py"
+    ],
+    "code_reuse": false,
+    "cloned_date": "2026-10-03"
   }
 ]

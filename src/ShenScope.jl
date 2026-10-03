@@ -1,6 +1,6 @@
 module ShenScope
 
-using Dates, SHA, TOML, UUIDs, JSON3, HTTP
+using Dates, SHA, TOML, UUIDs, JSON3, HTTP, REPL
 using Base.ScopedValues: ScopedValue, with
 
 const VERSION = v"0.1.0"
@@ -23,6 +23,11 @@ include("Runtime/ToolScheduler.jl")
 include("Context/Preparation.jl")
 include("Core/AgentLoop.jl")
 include("Core/Config.jl")
+include("Protocol/Framing.jl")
+include("Protocol/Server.jl")
+
+export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
+    dispatch_rpc, serve_stdio, stop_server!, capability_manifest
 
 export core_tools, execute_batch, AgentControl, steer!, run_agent!, load_config,
     save_config!, provider_from_config, limits_from_config, permissions_from_config
@@ -46,6 +51,7 @@ export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectData
     parsejson, canonical, digest, cliptext
 
 include("CLI/Main.jl")
+include("CLI/TUI.jl")
 main(args=ARGS)=cli_main(args)
 
 end

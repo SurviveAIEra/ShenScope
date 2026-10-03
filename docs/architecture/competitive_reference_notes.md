@@ -19,5 +19,8 @@ All behavior below informs independent Julia APIs; no line-by-line translation.
 | Process lifetime | Hermes tracks scoped environments/idle reaping and caches disk warnings | Session-owned handles, explicit cleanup and bounded logs; storage guard before heavy builds; no directory replication |
 | IDE | Code-OSS SidebarPart uses native view/service registries; VSCodium has staged platform packing | Native Workbench contribution and separately packaged VSIX share transport/UI models; minimal pinned overlay without copying the whole tree |
 
-Research continues per actual feature gap (2–4 relevant sources at a time).
+Research uses the full project × capability inventory in `capability_matrix.md`.
+Cross-check the relevant source/test implementations from every applicable
+project before closing a capability domain; a few selected modules are not a
+substitute for the complete inventory.
 No claim of superiority follows from language features or line counts.

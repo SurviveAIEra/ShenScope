@@ -14,6 +14,11 @@ Julia owns agent, model, tool, security, session, project data and analysis logi
 Both native Code-OSS Workbench and a standalone VSIX are required clients.
 Reference checkouts under `/workspace/references` are research dependencies,
 read only, not source material to copy or translate into Core.
+The single pinned Code-OSS checkout is the designated desktop build tree:
+`scripts/apply_codeoss_overlay.py` may install the small authored overlay there.
+Do not make another copy of that checkout. Keep all overlay source in this repo.
+Research covers every named project across capabilities; maintain the capability
+matrix and source evidence. Commit messages describe the current change only.
 
 Keep each checkpoint runnable. Test changed behavior and affected interfaces;
 do not repeatedly run unrelated tests or rebuild desktop distribution bundles.

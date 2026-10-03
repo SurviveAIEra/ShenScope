@@ -100,7 +100,7 @@ end
 function prepare_request(p::HTTPProvider,request::ModelRequest)
     validate_config(p.config);validate_request(p,request)
     c=p.config
-    key=CredentialSnapshot(get(ENV,c.key_env,""))
+    key=CredentialSnapshot(p.credential_lookup(c.key_env))
     identity=string(c.protocol,":",c.name,":",c.model,":",digest(c.endpoint))
     endpoint=rstrip(c.endpoint,'/')
     headers=Pair{String,String}["Content-Type"=>"application/json"]

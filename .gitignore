@@ -13,3 +13,5 @@ __pycache__/
 !.env.example
 *.log
 coverage/
+editors/vscode/core/
+editors/vscode/LICENSE

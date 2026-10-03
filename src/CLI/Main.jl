@@ -29,7 +29,7 @@ end
 function parse_cli(args::Vector{String})
     flags=Dict{String,Any}();positionals=String[]
     valued=Set(["--root","--state-dir","--config","--profile","--session","--script"])
-    switches=Set(["--json","--allow-edit","--allow-process","--allow-network"])
+    switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network"])
     i=1
     while i<=length(args)
         arg=args[i]
@@ -104,6 +104,12 @@ function cli_main(args=ARGS)
             return cli_session_command(positional[2:end],state_dir)
         end
         config=load_config(;path=get(flags,"--config",config_path()),profile=get(flags,"--profile",nothing))
+        if command=="serve"
+            get(flags,"--stdio",false) || throw(ShenScopeError(:input,"Use serve --stdio"))
+            factory=haskey(flags,"--script") ? s->scripted_provider(flags["--script"]) : nothing
+            return serve_stdio(CoreServer(get(flags,"--root",pwd());state_dir,
+                config_file=get(flags,"--config",config_path()),provider_factory=factory))
+        end
         if command=="doctor"
             p=provider_from_config(config)
             println(canonical(Dict("version"=>string(VERSION),"julia"=>string(Base.VERSION),
@@ -132,16 +138,7 @@ function cli_main(args=ARGS)
             run_agent!(provider,join(positional[2:end]," "),ctx;session)
             println(stderr,"Session: ",session.id)
         else
-            println("ShenScope interactive terminal. /quit exits; /usage shows budget.")
-            while true
-                print("\nshenscope> ");flush(stdout)
-                eof(stdin) && break
-                prompt=readline(stdin)
-                prompt=="/quit" && break
-                prompt=="/usage" && (println(canonical(budget_status(ctx.budget)));continue)
-                isempty(strip(prompt)) && continue
-                run_agent!(provider,prompt,ctx;session)
-            end
+            return run_tui(provider,ctx,session)
         end
         return 0
     catch e

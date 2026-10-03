@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-03",
+  "platform": "Linux x86_64",
+  "protocol": "1.0",
+  "julia": "1.11.7",
+  "protocol_assertions_passed": 30,
+  "terminal_assertions_passed": 16,
+  "pty_test": "PASS: real TUI task, scoped approval, Unicode edit, clean exit",
+  "node_transport_tests_passed": 2,
+  "vsix_package": "PASS; approximately 62 KiB; authored Core source, external Julia dependencies",
+  "native_codeoss_typecheck": "PASS; full src/tsconfig.json after verified Electron declarations",
+  "native_gui_test": "PASS; extensions disabled, real Julia HTTP model fixture, permission, file write",
+  "native_codeoss_commit": "7f20cdad4f4ab923272e91e330a7701c52706fc7",
+  "electron": "43.7.5",
+  "classification": "IMPLEMENTED_MOCK_VERIFIED",
+  "limits": ["Development clients, incomplete feature parity", "Full built-in extension packaging pending", "Windows runtime and installers unverified", "No live-model quality benchmark", "Core size target unmet"]
+}

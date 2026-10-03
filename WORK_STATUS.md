@@ -18,9 +18,23 @@ not a live model; no live-model or multilingual benchmark claim is made.
 
 `test/runtests.jl`: 119 assertions passed on Linux, Julia 1.11.7, four threads,
 2026-10-03. Evidence: `docs/validation/core-checkpoint-001.json`.
-Interactive terminal is currently a line-oriented chat loop, not a finished TUI.
-No VSIX/native IDE release, MCP integration, graph backend or real OS isolation
-is verified yet. Core remains far below the 250,000-line delivery target.
+Interface checkpoint: versioned framed stdio RPC, scoped approval responses,
+asynchronous start/steer/cancel, config CAS and in-memory credential snapshots;
+30 protocol assertions and 16 terminal assertions passed. Actual PTY validation
+verifies TUI task/approval/Unicode write/exit. Node transport talks to the real
+Julia Core and rejects malformed child framing (two passing tests).
+Standalone VSIX packages successfully (~62 KiB; authored Core source included,
+Julia runtime/dependencies must be installed separately). Native Code-OSS
+Workbench/shared-process overlay passes the complete upstream client typecheck
+and a real GUI HTTP/tool/approval/file-write test with extensions disabled.
+This is a development desktop runtime, not a completed desktop distribution.
+Full built-in-extension packaging and Windows installer validation are pending.
+MCP integration, graph backend and real OS isolation remain unfinished.
+Core remains far below the 250,000-line delivery target.
+
+Full-project research inventory: `docs/architecture/capability_matrix.md` covers
+all 22 pinned checkouts. Rows distinguish research directions from verified
+implementations; no complete-synthesis or model-quality claim is made.
 
 Next: shared versioned protocol and editor clients; durable runtime/context/MCP;
 incremental data/backends/analysis; full terminal UI; measured release preparation.
