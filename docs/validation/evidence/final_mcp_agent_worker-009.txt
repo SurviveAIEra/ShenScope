@@ -1,0 +1,12 @@
+Precompiling ShenScope...
+   4343.1 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 4 seconds. 36 already precompiled.
+permission: Operation not approved
+Test Summary:                            | Pass  Total   Time
+Actual MCP stdio lifecycle and discovery |   34     34  18.2s
+Test Summary:                                             | Pass  Total   Time
+Agent advertises discovered MCP tools on the next request |   12     12  14.2s
+[{"enabled":true,"generation":0,"name":"fixture","state":"disconnected","transport":"stdio"}]
+{"content":[{"text":"\"CLI 中文\"","type":"text"}],"structuredContent":{"echo":"CLI 中文"}}
+Test Summary:                                                      | Pass  Total   Time
+MCP CLI executes the same permissioned Core and closes its process |    6      6  16.4s

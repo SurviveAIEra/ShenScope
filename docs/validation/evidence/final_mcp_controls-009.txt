@@ -1,0 +1,17 @@
+Precompiling ShenScope...
+   5169.5 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 5 seconds. 36 already precompiled.
+Test Summary:                                                           | Pass  Total   Time
+MCP async protocol keeps approvals, jobs and connections session scoped |   33     33  39.2s
+Test Summary:                            | Pass  Total  Time
+Actual MCP stdio lifecycle and discovery |   34     34  7.6s
+Test Summary:                                            | Pass  Total  Time
+MCP rejects invalid servers and preserves dirty catalogs |   26     26  1.2s
+Test Summary:                                              | Pass  Total  Time
+MCP environment, permission, ownership and error isolation |   11     11  1.9s
+Test Summary:                                          | Pass  Total  Time
+MCP timeouts, cancellation, fencing and no tool replay |   17     17  2.4s
+Test Summary:                                       | Pass  Total  Time
+MCP flapping connection exhausts one bounded outage |    4      4  1.1s
+Test Summary:                                                             | Pass  Total  Time
+MCP parent cancellation closes its owned process without cancelling peers |    4      4  0.4s

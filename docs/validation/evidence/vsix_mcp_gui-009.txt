@@ -1,0 +1,1 @@
+PASS: VSIX webview, actual MCP configuration/permissions/tool/resource/subscription/prompt/ping/restart/diagnostics/disable flow

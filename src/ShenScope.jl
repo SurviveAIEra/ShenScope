@@ -30,6 +30,17 @@ include("Tools/Project.jl")
 include("Extensions/Contracts.jl")
 include("Extensions/CompilerDiagnostics.jl")
 include("Tools/Diagnostics.jl")
+include("MCP/Types.jl")
+include("MCP/Schema.jl")
+include("MCP/JSONRPC.jl")
+include("MCP/Stdio.jl")
+include("MCP/SSE.jl")
+include("MCP/HTTP.jl")
+include("MCP/Client.jl")
+include("MCP/Discovery.jl")
+include("MCP/Content.jl")
+include("MCP/Manager.jl")
+include("Tools/MCP.jl")
 include("Tasks/Types.jl")
 include("Tasks/Graph.jl")
 include("Tasks/Serialization.jl")
@@ -48,6 +59,7 @@ include("Protocol/Framing.jl")
 include("Protocol/Server.jl")
 include("Protocol/Project.jl")
 include("Protocol/Tasks.jl")
+include("Protocol/MCP.jl")
 
 export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
     dispatch_rpc, serve_stdio, stop_server!, capability_manifest
@@ -76,6 +88,11 @@ export WorkStatus, WorkSpec, WorkRetryPolicy, WorkLease, WorkFailure, WorkReceip
     workflow_status, workflow_tasks, workflow_task, list_workflows, materialize_work_result,
     WorkExecutor, execute_work, run_workflow!, TaskTool
 
+export MCPServerSpec, MCPClient, MCPManager, MCPRemoteError, MCPControlTool, MCPRemoteTool,
+    mcp_connect!, mcp_disconnect!, mcp_reconnect!, mcp_request!, mcp_status, mcp_test_connection!, mcp_catalog,
+    mcp_call_tool!, mcp_read_resource!, mcp_get_prompt!, mcp_subscribe!, mcp_complete!,
+    mcp_servers, mcp_client!, cleanup_mcp!, mcp_tool_alias, validate_mcp_schema
+
 export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectDataBackend,
     AbstractAnalyzer, AbstractContextStrategy, AbstractScheduler, ShenScopeError,
     ToolCall, ToolResult, Message, ModelCapabilities, Usage, ModelResponse, ModelRequest,
@@ -89,6 +106,7 @@ export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectData
     parsejson, canonical, digest, cliptext
 
 include("CLI/Main.jl")
+include("CLI/MCP.jl")
 include("CLI/TUI.jl")
 main(args=ARGS)=cli_main(args)
 

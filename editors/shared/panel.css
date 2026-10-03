@@ -18,10 +18,10 @@
 .shenscope-panel .brand-mark { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 9px; color: var(--vscode-textLink-foreground, #73c9b9); background: color-mix(in srgb, currentColor 10%, transparent); }
 .shenscope-panel .icon-button { padding: 6px; color: var(--muted); }
 .shenscope-panel .primary-nav { display: flex; gap: 3px; margin: 0 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.shenscope-panel .nav-button { padding: 7px 9px; color: var(--muted); font-size: 12px; flex: 1; }
+.shenscope-panel .nav-button { padding: 7px 6px; gap: 4px; min-width: 0; color: var(--muted); font-size: 12px; flex: 1; }
 .shenscope-panel .nav-button svg { width: 15px; height: 15px; }
 .shenscope-panel .nav-button.selected { color: var(--text); background: var(--raised); }
-.shenscope-panel .more-views { width: 55px; padding: 3px; border: none; color: var(--muted); background: var(--surface); font-size: 11px; cursor: pointer; }
+.shenscope-panel .more-views { width: 55px; flex-shrink: 0; padding: 3px; border: none; color: var(--muted); background: var(--surface); font-size: 11px; cursor: pointer; }
 .shenscope-panel .panel-content { flex: 1; overflow-y: auto; min-height: 0; padding: 16px; }
 .shenscope-panel .chat-view { padding: 0 12px; display: flex; flex-direction: column; overflow: hidden; }
 .shenscope-panel .conversation { flex: 1; min-height: 0; position: relative; display: flex; flex-direction: column; }
@@ -98,7 +98,7 @@
 .shenscope-panel .view-title, .shenscope-panel .view-heading h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.3px; }
 .shenscope-panel .view-description { color: var(--muted); font-size: 12px; margin: 8px 0 22px; }
 .shenscope-panel .view-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.shenscope-panel .history-search, .shenscope-panel .field input, .shenscope-panel .field select, .shenscope-panel .session-controls input { width: 100%; color: var(--vscode-input-foreground, var(--text)); background: var(--vscode-input-background, var(--raised)); border: 1px solid var(--vscode-input-border, var(--border)); border-radius: 6px; padding: 7px 9px; }
+.shenscope-panel .history-search, .shenscope-panel .field input, .shenscope-panel .field select, .shenscope-panel .field textarea, .shenscope-panel .session-controls input { width: 100%; color: var(--vscode-input-foreground, var(--text)); background: var(--vscode-input-background, var(--raised)); border: 1px solid var(--vscode-input-border, var(--border)); border-radius: 6px; padding: 7px 9px; }
 .shenscope-panel .session-card { padding: 12px 0; border-bottom: 1px solid var(--border); }
 .shenscope-panel .session-open { display: block; width: 100%; text-align: left; padding: 0; font-size: 13px; }
 .shenscope-panel .session-meta { display: block; color: var(--muted); font-size: 10px; margin: 5px 0; overflow-wrap: anywhere; }
@@ -109,7 +109,8 @@
 .shenscope-panel fieldset { border: 1px solid var(--border); border-radius: 9px; padding: 13px; margin: 0 0 18px; min-width: 0; }
 .shenscope-panel legend { font-size: 12px; font-weight: 600; padding: 0 6px; }
 .shenscope-panel .field { display: block; color: var(--muted); font-size: 11px; margin-bottom: 13px; }
-.shenscope-panel .field input, .shenscope-panel .field select { display: block; margin-top: 5px; font-size: 12px; }
+.shenscope-panel .field input, .shenscope-panel .field select, .shenscope-panel .field textarea { display: block; margin-top: 5px; font-size: 12px; }
+.shenscope-panel .field input[type="checkbox"] { width: auto; }
 .shenscope-panel .advanced-settings, .shenscope-panel .settings-group { font-size: 12px; margin: 10px 0 16px; }
 .shenscope-panel .settings-group { padding: 11px 13px; border: 1px solid var(--border); border-radius: 8px; }
 .shenscope-panel .settings-group summary, .shenscope-panel .advanced-settings summary { margin-bottom: 9px; }
@@ -142,3 +143,11 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .shenscope-panel .analysis-actions button { font-size: 11px; }
 .shenscope-panel .analysis-title { text-transform: capitalize; font-size: 13px; margin: 20px 0 10px; }
 .shenscope-panel .info-card small { display: block; font-size: 10px; margin-top: 7px; color: var(--muted); }
+.mcp-entry { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--vscode-panel-border, #34363b); }
+.mcp-entry > summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
+.mcp-entry h4, .mcp-result h4 { margin: 12px 0 8px; }
+.mcp-entry small { display: block; overflow-wrap: anywhere; margin-bottom: 8px; }
+.mcp-entry .secondary-button { margin: 6px 6px 0 0; }
+.mcp-result .tool-output { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 320px; overflow: auto; }
+.mcp-server .badge { flex-shrink: 0; }
+.mcp-server details textarea, .settings-group textarea { box-sizing: border-box; width: 100%; min-height: 68px; resize: vertical; }

@@ -52,9 +52,10 @@ function execute_batch(tools::Dict{String,AbstractTool},calls::Vector{ToolCall},
     return results
 end
 
-function core_tools(; tasks = true)
+function core_tools(; tasks = true, mcp = true, config = Dict(), credential_lookup = key -> get(ENV, key, ""))
     process=ProcessTool()
     tools = AbstractTool[ReadTool(),SearchTool(),EditTool(),WriteTool(),PatchTool(),process,GitTool(process),MemoryTool(),ProjectTool(),DiagnosticsTool()]
+    mcp && push!(tools, MCPControlTool(MCPManager(config; credential_lookup)))
     tasks && push!(tools, TaskTool(WorkExecutor(; tools)))
     tools
 end

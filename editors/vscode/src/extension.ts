@@ -6,7 +6,8 @@ import { CoreClient } from '../../shared/src/rpcClient.js';
 const methods = new Set(['health', 'config/get', 'config/set', 'credentials/status', 'sessions/list', 'sessions/create',
     'sessions/get', 'sessions/export', 'sessions/rename', 'sessions/archive', 'sessions/pin', 'sessions/branch',
     'agent/start', 'agent/cancel', 'agent/steer', 'permissions/respond', 'tools/list', 'runtime/status',
-    'project/backends', 'project/start', 'project/job', 'project/cancel', 'project/query']);
+    'project/backends', 'project/start', 'project/job', 'project/cancel', 'project/query',
+    'tasks/start', 'tasks/query', 'tasks/job', 'tasks/cancel_job', 'mcp/start', 'mcp/query', 'mcp/job', 'mcp/cancel_job']);
 
 class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
     private client?: CoreClient;
@@ -36,9 +37,14 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
         this.starting = (async () => {
             this.hello = await this.client!.start();
             const config = await this.client!.request('config/get');
-            const variable = config.value.provider.key_env;
-            const secret = await this.context.secrets.get(`model:${variable}`);
-            if (secret) { await this.client!.request('credentials/set', { variable, value: secret }); }
+            const variables = new Set<string>([config.value.provider.key_env]);
+            for (const server of Object.values(config.value.mcp?.servers ?? {}) as any[]) {
+                for (const binding of [...(server.environment_env ?? []), ...(server.header_env ?? [])]) { variables.add(binding.env); }
+            }
+            for (const variable of variables) {
+                const secret = await this.context.secrets.get(`model:${variable}`);
+                if (secret) { await this.client!.request('credentials/set', { variable, value: secret }); }
+            }
             return this.hello;
         })();
         try { return await this.starting; }

@@ -49,6 +49,9 @@ export class ShenScopePanel {
     private projectJob?: string;
     private projectResult: any;
     private completedProjectJobs = new Set<string>();
+    private mcpJob?: string;
+    private mcpResult?: { server: string; action: string; result: any };
+    private completedMCPJobs = new Set<string>();
     constructor(private readonly root: HTMLElement, private readonly bridge: PanelBridge) {
         root.classList.add('shenscope-panel');
         const header = el('header', '', 'panel-header'); const brand = el('div', '', 'brand'); const mark = el('span', '', 'brand-mark'); mark.append(icon('scope')); brand.append(mark, el('strong', 'ShenScope'));
@@ -94,7 +97,7 @@ export class ShenScopePanel {
     private setStatus(text: string): void { this.status.textContent = text; this.status.classList.toggle('running', this.active); }
     private async selectTab(name: string): Promise<void> { this.tab = name; await this.renderTab(); }
     private async newConversation(): Promise<void> {
-        if (this.active || this.projectJob) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
+        if (this.active || this.projectJob || this.mcpJob) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
         this.sessionId = undefined; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
@@ -146,6 +149,7 @@ export class ShenScopePanel {
         if (this.tab === 'History') { await this.history(revision); return; }
         if (this.tab === 'Settings') { await this.settings(revision); return; }
         if (this.tab === 'Intelligence' && this.capabilities.project_intelligence) { await this.project(revision); return; }
+        if (this.tab === 'MCP' && this.capabilities.mcp) { await this.mcp(revision); return; }
         this.content.append(el('h2', this.tab === 'Intelligence' ? 'Project intelligence' : this.tab, 'view-title'));
         if (this.tab === 'Tools') {
             const tools = await this.bridge.request('tools/list'); if (revision !== this.renderRevision) { return; }
@@ -172,7 +176,7 @@ export class ShenScopePanel {
             if (!sessions.length) { list.append(el('p', 'Your conversations will appear here.', 'empty-text')); }
             for (const session of sessions) {
                 const row = el('article', '', 'session-card'); const open = this.button(session.title, async () => {
-                    if (this.active || this.projectJob) { throw new Error('Finish the current task before switching conversations.'); }
+                    if (this.active || this.projectJob || this.mcpJob) { throw new Error('Finish the current task before switching conversations.'); }
                     const full = await this.bridge.request('sessions/get', { session_id: session.id }); this.sessionId = full.id; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren();
                     for (const message of full.messages) { this.addMessage(message.role, message.text); } await this.selectTab('Chat'); this.scrollToEnd(true); this.composer.focus();
                 }, 'session-open');
@@ -185,6 +189,157 @@ export class ShenScopePanel {
     }
     private field(label: string, value: string, parent: HTMLElement, type = 'text'): HTMLInputElement {
         const wrapper = el('label', '', 'field'); wrapper.append(el('span', label)); const input = el('input'); input.value = value; input.type = type; wrapper.append(input); parent.append(wrapper); return input;
+    }
+    private async ensureSession(title: string): Promise<string> {
+        if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title }); this.sessionId = session.id; }
+        return this.sessionId!;
+    }
+    private async startMCP(server: string, action: string, args: Record<string, unknown> = {}): Promise<void> {
+        if (this.mcpJob) { throw new Error('Finish or cancel the current MCP operation.'); }
+        const session_id = await this.ensureSession('Workspace tools');
+        this.mcpResult = undefined;
+        const result = await this.bridge.request('mcp/start', { ...args, session_id, server, action });
+        if (!this.completedMCPJobs.has(result.job_id)) { this.mcpJob = result.job_id; this.setStatus('Working with MCP…'); }
+        if (this.tab === 'MCP') { await this.renderTab(); }
+    }
+    private referenceBindings(text: string): Array<{ name: string; env: string }> {
+        return text.split('\n').map(line => line.trim()).filter(Boolean).map(line => {
+            const at = line.indexOf('=');
+            if (at < 1 || !/^[A-Za-z_][A-Za-z0-9_]*$/.test(line.slice(at + 1).trim())) { throw new Error('Use NAME=ENVIRONMENT_VARIABLE for each binding.'); }
+            return { name: line.slice(0, at).trim(), env: line.slice(at + 1).trim() };
+        });
+    }
+    private async mcp(revision: number): Promise<void> {
+        const snapshot = await this.bridge.request('config/get');
+        if (revision !== this.renderRevision) { return; }
+        this.config = snapshot.value; this.configRevision = snapshot.sha256;
+        const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'MCP connections'));
+        this.content.append(heading, el('p', 'Connect tools, resources and prompts to this conversation. Each operation follows your permission settings.', 'view-description'));
+        if (this.mcpJob) {
+            this.content.append(el('p', 'Waiting for the server or your approval…', 'empty-text'), this.button('Cancel operation', async () => {
+                await this.bridge.request('mcp/cancel_job', { session_id: this.sessionId, job_id: this.mcpJob });
+            }));
+        }
+        const session_id = await this.ensureSession('Workspace tools');
+        const servers = await this.bridge.request('mcp/query', { session_id, action: 'servers' });
+        if (revision !== this.renderRevision) { return; }
+        if (!servers.length) { this.content.append(el('p', 'Add a connection to bring external tools into your workspace.', 'empty-text')); }
+        for (const server of servers) {
+            const card = el('section', '', 'info-card mcp-server'); const title = el('div', '', 'view-heading');
+            title.append(el('h3', server.name), el('span', server.state, `badge badge-${server.state === 'ready' ? 'allow' : 'ask'}`));
+            card.append(title, el('small', `${server.transport === 'stdio' ? 'Local process' : 'HTTP endpoint'}${server.server_info?.name ? ' · ' + server.server_info.name : ''}`, 'session-meta'));
+            const enabledLabel = el('label', '', 'checkbox-field'); const enabled = el('input'); enabled.type = 'checkbox'; enabled.checked = server.enabled;
+            enabled.setAttribute('aria-label', `Enabled ${server.name}`); enabled.disabled = !!this.mcpJob || this.active || !!this.projectJob;
+            enabledLabel.append(enabled, el('span', 'Enabled')); card.append(enabledLabel);
+            enabled.addEventListener('change', () => { enabled.disabled = true; void this.guard(async () => {
+                const next = structuredClone(this.config); next.mcp.servers[server.name].enabled = enabled.checked;
+                const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision });
+                this.config = next; this.configRevision = result.sha256; this.mcpResult = undefined; await this.renderTab();
+            }); });
+            const actions = el('div', '', 'analysis-actions');
+            if (server.state === 'ready') {
+                actions.append(this.button('Disconnect', () => this.startMCP(server.name, 'disconnect')),
+                    this.button('Restart', () => this.startMCP(server.name, 'reconnect')), this.button('Test connection', () => this.startMCP(server.name, 'ping')),
+                    this.button('Tools', () => this.startMCP(server.name, 'tools')), this.button('Resources', () => this.startMCP(server.name, 'resources')),
+                    this.button('Templates', () => this.startMCP(server.name, 'templates')), this.button('Prompts', () => this.startMCP(server.name, 'prompts')));
+            } else if (server.enabled) { actions.append(this.button('Connect', () => this.startMCP(server.name, 'connect'), 'primary-button')); }
+            for (const button of Array.from(actions.querySelectorAll('button'))) { button.disabled = !!this.mcpJob; }
+            card.append(actions); this.content.append(card);
+            if (server.last_error) { card.append(el('p', `${server.last_error.operation}: ${server.last_error.code}`, 'error-text')); }
+            const diagnostics = el('details', '', 'advanced-settings'); diagnostics.append(el('summary', 'Connection diagnostics'));
+            diagnostics.append(el('p', `Protocol ${server.protocol_version || 'pending'} · generation ${server.generation} · pending ${server.pending_requests ?? 0} · reconnect failures ${server.reconnect_failures ?? 0}`, 'session-meta'));
+            for (const notification of (server.notifications ?? []).slice(-10)) { diagnostics.append(el('p', `${notification.timestamp} · ${notification.method}`, 'session-meta')); }
+            card.append(diagnostics);
+            for (const uri of server.subscriptions ?? []) {
+                const subscription = el('div', '', 'mcp-entry'); subscription.append(el('small', uri), this.button('Unsubscribe', () => this.startMCP(server.name, 'unsubscribe', { uri }))); card.append(subscription);
+            }
+            const output = this.mcpResult;
+            if (output && output.server === server.name) { this.renderMCPResult(card, output); }
+            const edit = el('details', '', 'advanced-settings'); edit.append(el('summary', 'Connection settings'));
+            this.mcpConnectionForm(edit, server.name, this.config.mcp?.servers?.[server.name]); card.append(edit);
+        }
+        const add = el('details', '', 'settings-group'); add.append(el('summary', 'Add connection')); this.mcpConnectionForm(add); this.content.append(add);
+    }
+    private mcpConnectionForm(parent: HTMLElement, existingName = '', existing: any = {}): void {
+        const name = this.field('Connection name', existingName, parent); name.disabled = !!existingName;
+        const transport = el('select'); transport.setAttribute('aria-label', 'MCP transport');
+        for (const [value, label] of [['stdio', 'Local process'], ['http', 'HTTP endpoint']]) { const option = el('option', label); option.value = value; option.selected = (existing.transport ?? 'stdio') === value; transport.append(option); }
+        const transportLabel = el('label', 'Connection type', 'field'); transportLabel.append(transport); parent.append(transportLabel);
+        const local = el('div'); const executable = this.field('Executable', existing.argv?.[0] ?? '', local);
+        const argumentLabel = el('label', 'Arguments · one per line', 'field'); const argumentsInput = el('textarea'); argumentsInput.rows = 3; argumentsInput.value = (existing.argv ?? []).slice(1).join('\n'); argumentLabel.append(argumentsInput); local.append(argumentLabel);
+        const directory = this.field('Workspace directory', existing.cwd ?? '.', local);
+        const remote = el('div'); const endpoint = this.field('HTTP endpoint', existing.endpoint ?? '', remote, 'url');
+        const advanced = el('details', '', 'advanced-settings'); advanced.append(el('summary', 'Credentials & environment'));
+        const bindingLabel = el('label', 'Variable references · NAME=ENVIRONMENT_VARIABLE', 'field'); const bindings = el('textarea'); bindings.rows = 3;
+        const selectedBindings = existing.transport === 'http' ? existing.header_env : existing.environment_env;
+        bindings.value = (selectedBindings ?? []).map((binding: any) => `${binding.name}=${binding.env}`).join('\n'); bindingLabel.append(bindings);
+        advanced.append(el('p', 'Use environment variables for values. HTTP bindings set headers; local bindings set child process variables.', 'view-description'), bindingLabel);
+        for (const binding of selectedBindings ?? []) { advanced.append(this.button(`Set ${binding.env}`, () => this.bridge.setCredential(binding.env))); }
+        parent.append(local, remote, advanced); const update = () => { local.hidden = transport.value !== 'stdio'; remote.hidden = transport.value !== 'http'; }; transport.addEventListener('change', update); update();
+        const save = this.button('Save connection', async () => {
+            if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(name.value.trim())) { throw new Error('Use letters, numbers, dots, underscores or dashes for the connection name.'); }
+            const next = structuredClone(this.config); next.mcp ??= { servers: {} }; next.mcp.servers ??= {};
+            const spec = { ...existing, transport: transport.value, enabled: existing.enabled ?? true, cwd: directory.value || '.', argv: [], endpoint: '', environment_env: [], header_env: [] } as any;
+            if (transport.value === 'stdio') {
+                if (!executable.value.trim()) { throw new Error('Enter an executable.'); }
+                spec.argv = [executable.value.trim(), ...(argumentsInput.value ? argumentsInput.value.split('\n') : [])]; spec.environment_env = this.referenceBindings(bindings.value);
+            } else { spec.endpoint = endpoint.value.trim(); spec.header_env = this.referenceBindings(bindings.value); }
+            next.mcp.servers[name.value.trim()] = spec;
+            const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision });
+            this.config = next; this.configRevision = result.sha256; this.notice.hidden = true; this.setStatus('Connection saved'); await this.renderTab();
+        }, 'primary-button'); save.disabled = !!this.mcpJob || this.active || !!this.projectJob; parent.append(save);
+        if (existingName) {
+            const remove = this.button('Remove connection', async () => {
+                const next = structuredClone(this.config); delete next.mcp.servers[existingName];
+                const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.mcpResult = undefined; await this.renderTab();
+            }, 'deny-button'); remove.disabled = save.disabled; parent.append(remove);
+        }
+    }
+    private mcpArgumentForm(parent: HTMLElement, definitions: any[], schema?: any): () => Record<string, unknown> {
+        const inputs = new Map<string, { input: HTMLInputElement | HTMLTextAreaElement; type: string; required: boolean }>();
+        for (const definition of definitions) {
+            const property = schema?.properties?.[definition.name] ?? { type: 'string' };
+            const type = typeof property.type === 'string' ? property.type : 'json';
+            const label = el('label', definition.name + (definition.required ? ' *' : ''), 'field');
+            const input = type === 'object' || type === 'array' || type === 'json' ? el('textarea') : el('input');
+            if (input instanceof HTMLInputElement) { input.type = type === 'boolean' ? 'checkbox' : ['number', 'integer'].includes(type) ? 'number' : 'text'; }
+            input.setAttribute('aria-label', definition.name); if (definition.description) { label.title = definition.description; }
+            label.append(input); parent.append(label); inputs.set(definition.name, { input, type, required: !!definition.required });
+        }
+        return () => {
+            const result: Record<string, unknown> = {};
+            for (const [name, field] of inputs) {
+                if (field.type === 'boolean') { result[name] = (field.input as HTMLInputElement).checked; }
+                else if (!field.input.value && !field.required) { continue; }
+                else if (['number', 'integer'].includes(field.type)) { if (!field.input.value || !Number.isFinite(Number(field.input.value))) { throw new Error(`Enter a number for ${name}.`); } result[name] = Number(field.input.value); }
+                else if (['object', 'array', 'json'].includes(field.type)) { result[name] = JSON.parse(field.input.value); }
+                else { result[name] = field.input.value; }
+            }
+            return result;
+        };
+    }
+    private renderMCPResult(parent: HTMLElement, result: { server: string; action: string; result: any }): void {
+        const values = result.result;
+        if (result.action === 'tools' && Array.isArray(values)) {
+            for (const tool of values) {
+                const details = el('details', '', 'mcp-entry'); details.append(el('summary', tool.name), el('p', tool.description ?? '', 'view-description'));
+                const definitions = Object.entries(tool.inputSchema?.properties ?? {}).map(([name, property]: [string, any]) => ({ name, description: property.description, required: tool.inputSchema?.required?.includes(name) }));
+                const argumentsValue = this.mcpArgumentForm(details, definitions, tool.inputSchema);
+                details.append(this.button('Run tool', () => this.startMCP(result.server, 'call', { name: tool.name, arguments: argumentsValue() }))); parent.append(details);
+            }
+        } else if (result.action === 'resources' && Array.isArray(values)) {
+            for (const resource of values) { const row = el('section', '', 'mcp-entry'); row.append(el('h4', resource.name), el('small', resource.uri), this.button('Read resource', () => this.startMCP(result.server, 'read', { uri: resource.uri })), this.button('Subscribe', () => this.startMCP(result.server, 'subscribe', { uri: resource.uri }))); parent.append(row); }
+        } else if (result.action === 'templates' && Array.isArray(values)) {
+            for (const template of values) { const row = el('section', '', 'mcp-entry'); row.append(el('h4', template.name), el('small', template.uriTemplate)); const uri = this.field('Resource URI', '', row); row.append(this.button('Read resource', () => this.startMCP(result.server, 'read', { uri: uri.value }))); parent.append(row); }
+        } else if (result.action === 'prompts' && Array.isArray(values)) {
+            for (const prompt of values) { const row = el('details', '', 'mcp-entry'); row.append(el('summary', prompt.name), el('p', prompt.description ?? '', 'view-description')); const argumentsValue = this.mcpArgumentForm(row, prompt.arguments ?? []); row.append(this.button('Get prompt', () => this.startMCP(result.server, 'prompt', { name: prompt.name, arguments: argumentsValue() }))); parent.append(row); }
+        } else {
+            const output = el('section', '', 'mcp-result'); output.append(el('h4', 'Result'));
+            if (result.action === 'ping' && values?.ok) { output.append(el('p', `Connected · ${Math.round(values.latency_ms)} ms`, 'mcp-connection-test')); }
+            const blocks = values?.content ?? values?.contents ?? values?.messages?.map((message: any) => message.content) ?? [];
+            for (const block of blocks) { if (typeof block.text === 'string') { output.append(el('pre', block.text.slice(0, 64000), 'tool-output')); } else if (block.type === 'resource_link') { output.append(el('p', `${block.name} · ${block.uri}`)); } else { output.append(el('small', block.mimeType ?? block.type ?? 'Resource')); } }
+            const details = el('details', '', 'diagnostics'); details.append(el('summary', 'Structured result'), el('pre', JSON.stringify(values, null, 2).slice(0, 128000))); output.append(details); parent.append(output);
+        }
     }
     private async project(revision: number): Promise<void> {
         const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Project intelligence'));
@@ -278,6 +433,16 @@ export class ShenScopePanel {
         if (this.disposed) { return; }
         if (method === 'transport/closed') { this.active = false; this.setStatus('Disconnected'); this.notice.textContent = params.message; this.notice.hidden = false; this.approvals.replaceChildren(); this.updateActions(); return; }
         if (method !== 'agent/event' || params.session_id !== this.sessionId) { return; } const payload = params.payload;
+        if (params.kind === 'mcp_job_completed' || params.kind === 'mcp_job_failed') {
+            this.completedMCPJobs.add(payload.job_id); while (this.completedMCPJobs.size > 64) { this.completedMCPJobs.delete(this.completedMCPJobs.values().next().value!); }
+            if (this.mcpJob === payload.job_id) { this.mcpJob = undefined; }
+            for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }
+            if (params.kind === 'mcp_job_completed') { this.mcpResult = { server: payload.server, action: payload.action, result: payload.result }; this.setStatus('MCP operation complete'); }
+            else { this.notice.textContent = payload.error; this.notice.hidden = false; this.setStatus('MCP operation stopped'); }
+            if (this.tab === 'MCP') { void this.guard(() => this.renderTab()); } return;
+        }
+        if (params.kind === 'mcp_connected' || params.kind === 'mcp_disconnected') { if (this.tab === 'MCP' && !this.mcpJob) { void this.guard(() => this.renderTab()); } return; }
+        if (params.kind === 'mcp_resource_updated') { this.setStatus('MCP resource updated'); return; }
         if (params.kind === 'project_completed' || params.kind === 'project_failed') {
             this.completedProjectJobs.add(payload.job_id);
             while (this.completedProjectJobs.size > 64) { this.completedProjectJobs.delete(this.completedProjectJobs.values().next().value!); }
@@ -296,7 +461,13 @@ export class ShenScopePanel {
         else if (params.kind === 'permission_request') {
             const card = el('section', '', 'permission-card'); card.dataset.traceId = params.trace_id; const heading = el('div', '', 'permission-heading'); heading.append(icon('shield'), el('strong', 'Approval needed'));
             card.append(heading, el('p', `${payload.tool} · ${payload.category}`, 'permission-action'), el('code', payload.target, 'permission-target'), el('p', payload.reason, 'permission-reason')); const actions = el('div', '', 'permission-actions');
-            for (const [label, decision, style] of [['Allow once', 'once', 'primary-button'], ['Allow session', 'session', 'secondary-button'], ['Deny', 'deny', 'deny-button']]) { actions.append(this.button(label, async () => { await this.bridge.request('permissions/respond', { session_id: params.session_id, request_id: payload.id, decision }); card.remove(); }, style)); } card.append(actions); this.approvals.append(card);
+            for (const [label, decision, style] of [['Allow once', 'once', 'primary-button'], ['Allow session', 'session', 'secondary-button'], ['Deny', 'deny', 'deny-button']]) {
+                actions.append(this.button(label, async () => {
+                    for (const button of Array.from(actions.querySelectorAll('button'))) { button.disabled = true; }
+                    try { await this.bridge.request('permissions/respond', { session_id: params.session_id, request_id: payload.id, decision }); card.remove(); }
+                    catch (error) { for (const button of Array.from(actions.querySelectorAll('button'))) { button.disabled = false; } throw error; }
+                }, style));
+            } card.append(actions); this.approvals.append(card);
         } else if (params.kind === 'session_completed' || params.kind === 'session_error') {
             this.flushAssistant(); this.active = false; this.assistant = undefined;
             for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }

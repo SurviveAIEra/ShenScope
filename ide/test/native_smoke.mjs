@@ -11,6 +11,7 @@ const root = await mkdtemp(join(tmpdir(), 'shenscope-native-'));
 const checkout = '/workspace/references/vscode';
 const project = resolve(new URL('../../', import.meta.url).pathname);
 const vsix = process.argv.includes('--vsix');
+const mcpOnly = process.argv.includes('--mcp-only');
 const display = vsix ? ':102' : ':101';
 const xvfb = spawn('/workspace/toolchains/xvfb/usr/bin/Xvfb', [display, '-screen', '0', '1280x900x24', '-nolisten', 'tcp'], { stdio: 'ignore' });
 const requests = [];
@@ -48,20 +49,27 @@ try {
     const page = await application.firstWindow();
     page.on('pageerror', error => console.error('Workbench error:', error.message));
     await page.locator('.monaco-workbench').waitFor({ timeout: 120_000 });
-    const icon = page.getByRole('tab', { name: 'ShenScope', exact: true });
-    await (vsix ? icon.last() : icon.first()).click({ timeout: 60_000 });
+    const icons = page.getByRole('tab', { name: 'ShenScope', exact: true });
+    const nativeGlyph = page.locator('.codicon-code');
+    const icon = vsix ? icons.filter({ hasNot: nativeGlyph }) : icons.filter({ has: nativeGlyph });
+    await icon.click({ timeout: 60_000 });
     panel = page.locator('.shenscope-panel');
     if (vsix) {
         const deadline = Date.now() + 120_000;
         let frame;
         while (!frame && Date.now() < deadline) {
-            for (const candidate of page.frames()) { if (await candidate.locator('.shenscope-panel').count()) { frame = candidate; break; } }
+            for (const candidate of page.frames()) {
+                if (candidate === page.mainFrame()) { continue; }
+                if (await candidate.locator('.shenscope-panel').count()) { frame = candidate; break; }
+            }
             if (!frame) { await new Promise(resolve => setTimeout(resolve, 200)); }
         }
-        assert.ok(frame, 'Extension webview must start'); panel = frame.locator('.shenscope-panel');
+        assert.ok(frame, 'Extension webview must start independently of the native panel');
+        assert.notEqual(frame, page.mainFrame()); panel = frame.locator('.shenscope-panel');
     }
     await panel.getByText('Ready · native-fixture', { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
+    if (!mcpOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -89,6 +97,55 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (mcpOnly) {
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('MCP');
+        await panel.getByText('Add connection', { exact: true }).click();
+        await panel.getByRole('textbox', { name: 'Connection name', exact: true }).fill('fixture');
+        await panel.getByRole('textbox', { name: 'Executable', exact: true }).fill('python3');
+        await panel.getByRole('textbox', { name: 'Arguments · one per line', exact: true }).fill(join(project, 'test/fixtures/mcp_server.py'));
+        await panel.getByRole('button', { name: 'Save connection', exact: true }).click();
+        const server = panel.locator('.mcp-server').filter({ hasText: 'fixture' });
+        await server.getByRole('button', { name: 'Connect', exact: true }).click();
+        for (const action of ['mcp.connect', 'mcp.process']) {
+            const card = panel.locator('.permission-card').filter({ hasText: `${action} ·` });
+            await card.getByRole('button', { name: 'Allow session', exact: true }).click({ timeout: 60_000 });
+            await card.waitFor({ state: 'detached' });
+        }
+        await server.getByRole('button', { name: 'Tools', exact: true }).click({ timeout: 60_000 });
+        await server.getByText('echo/input', { exact: true }).click();
+        await server.getByRole('textbox', { name: 'value', exact: true }).fill('"GUI 中文"');
+        await server.getByRole('button', { name: 'Run tool', exact: true }).first().click();
+        await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 30_000 });
+        await server.locator('.mcp-result .tool-output').filter({ hasText: 'GUI 中文' }).waitFor({ timeout: 60_000 });
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-mcp.png`) });
+        await server.getByRole('button', { name: 'Resources', exact: true }).click();
+        await server.getByRole('button', { name: 'Read resource', exact: true }).click({ timeout: 30_000 });
+        await server.locator('.tool-output').filter({ hasText: '资源内容' }).waitFor({ timeout: 30_000 });
+        await server.getByRole('button', { name: 'Resources', exact: true }).click();
+        await server.getByRole('button', { name: 'Subscribe', exact: true }).click({ timeout: 30_000 });
+        await server.getByRole('button', { name: 'Unsubscribe', exact: true }).click({ timeout: 30_000 });
+        await server.getByRole('button', { name: 'Unsubscribe', exact: true }).waitFor({ state: 'detached' });
+        await server.getByRole('button', { name: 'Prompts', exact: true }).click();
+        await server.getByText('review', { exact: true }).click();
+        await server.getByRole('textbox', { name: 'file', exact: true }).fill('app.jl');
+        await server.getByRole('button', { name: 'Get prompt', exact: true }).click();
+        await server.locator('.tool-output').filter({ hasText: 'Review app.jl' }).waitFor({ timeout: 30_000 });
+        await server.getByRole('button', { name: 'Test connection', exact: true }).click();
+        await server.locator('.mcp-connection-test').filter({ hasText: 'Connected ·' }).waitFor({ timeout: 30_000 });
+        await server.getByRole('button', { name: 'Restart', exact: true }).click();
+        await server.locator('.mcp-result pre').filter({ hasText: '"generation": 2' }).waitFor({ state: 'attached', timeout: 30_000 });
+        await server.getByText('Connection diagnostics', { exact: true }).click();
+        await server.getByText(/Protocol 2025-11-25 · generation 2/).waitFor();
+        await server.getByRole('button', { name: 'Disconnect', exact: true }).click();
+        await server.getByRole('button', { name: 'Connect', exact: true }).waitFor({ timeout: 30_000 });
+        await server.getByRole('checkbox', { name: 'Enabled fixture', exact: true }).uncheck();
+        await server.getByText('disabled', { exact: true }).waitFor({ timeout: 30_000 });
+        assert.equal(await server.getByRole('button', { name: 'Connect', exact: true }).count(), 0);
+        await server.getByRole('checkbox', { name: 'Enabled fixture', exact: true }).check();
+        await server.getByRole('button', { name: 'Connect', exact: true }).waitFor({ timeout: 30_000 });
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual MCP configuration/permissions/tool/resource/subscription/prompt/ping/restart/diagnostics/disable flow`);
+    }
 } catch (error) {
     if (panel) {
         console.error('Panel failure state:', await panel.innerText().catch(() => 'Unavailable'));

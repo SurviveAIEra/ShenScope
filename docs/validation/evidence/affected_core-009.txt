@@ -1,0 +1,160 @@
+Test Summary:                         | Pass  Total  Time
+Cancellation tree and dynamic context |    7      7  0.9s
+Test Summary:                                | Pass  Total  Time
+Concurrent budget reservation and accounting |    9      9  1.5s
+Test Summary:                             | Pass  Total  Time
+Permission decisions and path containment |    7      7  0.7s
+Test Summary:                                      | Pass  Total  Time
+Durable journal, torn tails and revision conflicts |    6      6  3.1s
+Test Summary:                                   | Pass  Total  Time
+Session reconstruction and unknown side effects |   11     11  4.8s
+Test Summary:                                             | Pass  Total  Time
+Atomic replacement remains complete to concurrent readers |    3      3  0.5s
+Test Summary:                                   | Pass  Total  Time
+Oversized unterminated journal input is bounded |    2      2  0.1s
+Test Summary:                                        | Pass  Total  Time
+Configuration profiles, credential rejection and CAS |   10     10  4.4s
+Test Summary:                         | Pass  Total  Time
+Canonical numeric journal round trips |    3      3  1.2s
+Test Summary:                                         | Pass  Total  Time
+Scoped memory, lexical retrieval and durable versions |   25     25  5.5s
+Test Summary:                                           | Pass  Total  Time
+Memory import validates every item before atomic commit |    7      7  0.8s
+Test Summary:                                                       | Pass  Total   Time
+Agent tool calling preserves contract evidence without loading code |    4      4  16.5s
+Test Summary:                                                        | Pass  Total  Time
+Julia interface contracts, ambiguity evidence and world-age boundary |   19     19  2.2s
+Test Summary:                                                                     | Pass  Total   Time
+Compiler diagnostics use listed targets, bounded output and independent processes |   23     23  24.1s
+Test Summary:                                           | Pass  Total  Time
+Task definition validation and independent graph checks |   15     15  3.8s
+Test Summary:                                                   | Pass  Total  Time
+Claims, dependency release, priority, fences and detached views |   13     13  5.7s
+Test Summary:                                               | Pass  Total  Time
+Safe retries, uncertain effects and explicit reconciliation |   16     16  1.5s
+Test Summary:                                                      | Pass  Total  Time
+Exclusive effects, cancellation propagation and read-only recovery |   16     16  0.8s
+Test Summary:                                                         | Pass  Total  Time
+Large result artifacts, digest verification and descriptor collisions |    6      6  0.5s
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.5s
+Test Summary:                                                    | Pass  Total  Time
+Protocol version, config ownership, secrets and session commands |   15     15  8.9s
+Test Summary:                                        | Pass  Total  Time
+Agent protocol permission ownership and cancellation |    7      7  1.6s
+Test Summary:                                               | Pass  Total  Time
+Asynchronous task protocol, approvals and session ownership |   13     13  4.6s
+Test Summary:                                                | Pass  Total  Time
+Task jobs block config replacement and drain owned processes |    5      5  1.0s
+Test Summary:                                | Pass  Total   Time
+MCP bounded schema assertions and references |   40     40  26.5s
+Test Summary:                                 | Pass  Total  Time
+MCP framing, content and configuration bounds |   25     25  1.7s
+Test Summary:                                                           | Pass  Total  Time
+MCP async protocol keeps approvals, jobs and connections session scoped |   28     28  8.5s
+Test Summary:                                                        | Pass  Total  Time
+Terminal rendering sanitizes control sequences and handles wide text |   16     16  1.0s
+Test Summary:                                   | Pass  Total  Time
+SSE Unicode fragmentation, multiline and limits |    3      3  0.6s
+Test Summary:                                             | Pass  Total   Time
+OpenAI-compatible real HTTP tool stream and native replay |    7      7  12.0s
+Test Summary:                             | Pass  Total  Time
+Anthropic signature and tool continuation |    5      5  4.1s
+Test Summary:                                        | Pass  Total  Time
+OpenAI Responses encrypted reasoning and call stream |    3      3  3.2s
+Test Summary:                      | Pass  Total  Time
+Gemini and Ollama native protocols |    5      5  7.3s
+Test Summary:                                                    | Pass  Total  Time
+Retry before delivery, no replay after delivery, malformed calls |    5      5  7.7s
+Test Summary:                                                       | Pass  Total  Time
+Workspace tools conflict guard, schema and transactional validation |    9      9  1.2s
+Test Summary:                                                 | Pass  Total  Time
+Process execution, bounded logs, ownership, input and timeout |   12     12  1.0s
+Test Summary:                                                | Pass  Total  Time
+Agent repairs a failing Python test with real tool execution |   10     10  1.6s
+Test Summary:                                       | Pass  Total  Time
+Actual worker DAG binds verified dependency results |    5      5  0.6s
+Test Summary:                                                   | Pass  Total  Time
+Test processes, timeout uncertainty and separate model sessions |   16     16  1.4s
+Test Summary:                                       | Pass  Total   Time
+Two real Julia processes cannot claim the same task |    3      3  17.3s
+{"counts":{"blocked":0,"cancelled":0,"failed":0,"pending":0,"ready":1,"retry_waiting":0,"running":0,"succeeded":0,"uncertain":0},"created_at":"2026-10-03T18:48:45.940Z","id":"cli-tool","journal_bytes":597,"revision":1,"scope":"session","session_id":"cli-owner","status":"ready","task_count":1,"title":"Workflow"}
+{"counts":{"blocked":0,"cancelled":0,"failed":0,"pending":0,"ready":0,"retry_waiting":0,"running":0,"succeeded":1,"uncertain":0},"created_at":"2026-10-03T18:48:45.940Z","id":"cli-tool","journal_bytes":2967,"revision":4,"scope":"session","session_id":"cli-owner","status":"succeeded","task_count":1,"title":"Workflow"}
+{"attempts":1,"cancel_requested":false,"definition":{"arguments":{"path":"source.txt"},"deduplication_key":"","dependencies":[],"id":"read","kind":"tool","operation":"read","priority":0,"retry":{"initial_delay":1,"jitter_fraction":0.1,"max_attempts":1,"maximum_delay":60,"multiplier":2},"safe_retry":false,"timeout":300,"title":"read"},"failure":null,"id":"read","lease":null,"not_before":0,"receipts":[{"attempt":1,"evidence":"Completion acknowledged by execution owner","execution_id":"5675dbd0-b287-4a2a-998a-8179aa5adfc5","finished_at":1.791053325995603e9,"phase":"succeeded","result_sha256":"ca555ce2b0f7556aaf7d17080f939372b6527e7e015b4dec0aeb728ed0caef0f","started_at":1.791053325954562e9}],"result":{"end_line":2,"path":"source.txt","sha256":"4b6a0df8336e6c161d6bd201436a455396d834fdaccdb83a89063a6073e1c6cd","start_line":1,"text":"1: shared Core\n2: ","total_lines":2},"status":"succeeded","version":4}
+Test Summary:                                            | Pass  Total  Time
+Agent and headless CLI invoke the same durable task tool |    6      6  5.5s
+Test Summary:                            | Pass  Total  Time
+Actual MCP stdio lifecycle and discovery |   28     28  4.3s
+Test Summary:                                          | Pass  Total  Time
+Actual Streamable HTTP JSON, SSE and session ownership |   10     10  6.0s
+Test Summary:                                            | Pass  Total  Time
+HTTP MCP does not replay failed POST or follow redirects |   24     24  2.0s
+Test Summary:                                                           | Pass  Total  Time
+SSE HTTP response ends a request while the server keeps the stream open |    3      3  1.7s
+Test Summary:                                                  | Pass  Total  Time
+Actual HTTP GET notification resumption keeps the same session |    7      7  0.8s
+Test Summary:                                            | Pass  Total  Time
+MCP rejects invalid servers and preserves dirty catalogs |   26     26  0.7s
+Test Summary:                                              | Pass  Total  Time
+MCP environment, permission, ownership and error isolation |   11     11  0.7s
+Test Summary:                                          | Pass  Total  Time
+MCP timeouts, cancellation, fencing and no tool replay |   17     17  1.6s
+Test Summary:                                       | Pass  Total  Time
+MCP flapping connection exhausts one bounded outage |    4      4  0.8s
+Test Summary:                                                             | Pass  Total  Time
+MCP parent cancellation closes its owned process without cancelling peers |    4      4  0.4s
+Test Summary:                                             | Pass  Total  Time
+Agent advertises discovered MCP tools on the next request |    9      9  1.2s
+[{"enabled":true,"generation":0,"name":"fixture","state":"disconnected","transport":"stdio"}]
+{"content":[{"text":"\"CLI 中文\"","type":"text"}],"structuredContent":{"echo":"CLI 中文"}}
+Test Summary:                                                      | Pass  Total  Time
+MCP CLI executes the same permissioned Core and closes its process |    6      6  1.0s
+{"kind":"session_started","payload":{"id":"1791fa07-75df-4ee9-866f-a198a389fa03","provider":"mock"},"sequence":1,"session_id":"1791fa07-75df-4ee9-866f-a198a389fa03","timestamp":"2026-10-03T18:49:07.721Z","trace_id":"cc38912f-9119-4e91-983a-00103c29ab5d"}
+{"kind":"model_request","payload":{"estimated_input_tokens":2522,"provider":"mock"},"sequence":2,"session_id":"1791fa07-75df-4ee9-866f-a198a389fa03","timestamp":"2026-10-03T18:49:07.781Z","trace_id":"cc38912f-9119-4e91-983a-00103c29ab5d"}
+{"kind":"text_delta","payload":{"text":"离"},"sequence":3,"session_id":"1791fa07-75df-4ee9-866f-a198a389fa03","timestamp":"2026-10-03T18:49:07.781Z","trace_id":"cc38912f-9119-4e91-983a-00103c29ab5d"}
+{"kind":"text_delta","payload":{"text":"线"},"sequence":4,"session_id":"1791fa07-75df-4ee9-866f-a198a389fa03","timestamp":"2026-10-03T18:49:07.781Z","trace_id":"cc38912f-9119-4e91-983a-00103c29ab5d"}
+{"kind":"text_delta","payload":{"text":"任"},"sequence":5,"session_id":"1791fa07-75df-4ee9-866f-a198a389fa03","timestamp":"2026-10-03T18:49:07.781Z","trace_id":"cc38912f-9119-4e91-983a-00103c29ab5d"}
+{"kind":"text_delta","payload":{"text":"务"},"sequence":6,"session_id":"1791fa07-75df-4ee9-866f-a198a389fa03","timestamp":"2026-10-03T18:49:07.781Z","trace_id":"cc38912f-9119-4e91-983a-00103c29ab5d"}
+{"kind":"text_delta","payload":{"text":"完"},"sequence":7,"session_id":"1791fa07-75df-4ee9-866f-a198a389fa03","timestamp":"2026-10-03T18:49:07.781Z","trace_id":"cc38912f-9119-4e91-983a-00103c29ab5d"}
+{"kind":"text_delta","payload":{"text":"成"},"sequence":8,"session_id":"1791fa07-75df-4ee9-866f-a198a389fa03","timestamp":"2026-10-03T18:49:07.782Z","trace_id":"cc38912f-9119-4e91-983a-00103c29ab5d"}
+{"kind":"usage","payload":{"input_tokens":0,"output_tokens":0},"sequence":9,"session_id":"1791fa07-75df-4ee9-866f-a198a389fa03","timestamp":"2026-10-03T18:49:07.782Z","trace_id":"cc38912f-9119-4e91-983a-00103c29ab5d"}
+{"kind":"session_completed","payload":{"budget":{"cost":0,"elapsed_seconds":0.073623039,"limits":{"max_cost":10,"max_seconds":3600,"max_steps":100,"max_tokens":1000000},"reported_cost":0,"reserved_cost":0,"reserved_tokens":0,"steps":1,"tokens":0},"text":"离线任务完成"},"sequence":10,"session_id":"1791fa07-75df-4ee9-866f-a198a389fa03","timestamp":"2026-10-03T18:49:07.783Z","trace_id":"cc38912f-9119-4e91-983a-00103c29ab5d"}
+[ Info: Listening on: 127.0.0.1:39395, thread id: 2
+[ Info: Server on 127.0.0.1:39395 closing
+[ Info: Listening on: 127.0.0.1:33575, thread id: 1
+[ Info: Server on 127.0.0.1:33575 closing
+[ Info: Listening on: 127.0.0.1:40565, thread id: 2
+[ Info: Server on 127.0.0.1:40565 closing
+[ Info: Listening on: 127.0.0.1:36747, thread id: 1
+[ Info: Server on 127.0.0.1:36747 closing
+[ Info: Listening on: 127.0.0.1:46019, thread id: 1
+[ Info: Server on 127.0.0.1:46019 closing
+[ Info: Listening on: 127.0.0.1:36333, thread id: 1
+[ Info: Server on 127.0.0.1:36333 closing
+[ Info: Listening on: 127.0.0.1:39711, thread id: 1
+[ Info: Server on 127.0.0.1:39711 closing
+[ Info: Listening on: 127.0.0.1:38089, thread id: 1
+[ Info: Server on 127.0.0.1:38089 closing
+[ Info: Listening on: 127.0.0.1:35955, thread id: 1
+[ Info: Server on 127.0.0.1:35955 closing
+[ Info: Listening on: 127.0.0.1:44913, thread id: 1
+[ Info: Server on 127.0.0.1:44913 closing
+[ Info: Listening on: 127.0.0.1:40773, thread id: 1
+[ Info: Server on 127.0.0.1:40773 closing
+[ Info: Listening on: 127.0.0.1:39267, thread id: 1
+[ Info: Server on 127.0.0.1:39267 closing
+[ Info: Listening on: 127.0.0.1:37903, thread id: 2
+[ Info: Server on 127.0.0.1:37903 closing
+[ Info: Listening on: 127.0.0.1:40217, thread id: 2
+[ Info: Server on 127.0.0.1:40217 closing
+[ Info: Listening on: 127.0.0.1:43197, thread id: 1
+[ Info: Server on 127.0.0.1:43197 closing
+[ Info: Listening on: 127.0.0.1:40645, thread id: 1
+[ Info: Server on 127.0.0.1:40645 closing
+[ Info: Listening on: 127.0.0.1:45463, thread id: 1
+[ Info: Server on 127.0.0.1:45463 closing
+permission: Operation not approved
+Session: 1791fa07-75df-4ee9-866f-a198a389fa03
+input: Unknown option --unknown
+Test Summary:                                    | Pass  Total  Time
+Headless CLI, offline task and session lifecycle |    9      9  0.4s

@@ -9,7 +9,9 @@
       "codex-rs/core/src/guardian/request_budget.rs",
       "codex-rs/ext/agent-message-board/src/api.rs",
       "codex-rs/ext/agent-message-board/src/local/queries.rs",
-      "codex-rs/ext/agent-message-board/src/local/lifecycle.rs"
+      "codex-rs/ext/agent-message-board/src/local/lifecycle.rs",
+      "codex-rs/rmcp-client/src/bounded_stdio_transport.rs",
+      "codex-rs/rmcp-client/src/streamable_http_retry.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -24,7 +26,9 @@
     "license": "MIT",
     "inspected_paths": [
       "packages/opencode/src/session/llm/native-request.ts",
-      "packages/opencode/src/tool/task.ts"
+      "packages/opencode/src/tool/task.ts",
+      "packages/opencode/src/mcp/catalog.ts",
+      "packages/opencode/src/mcp/index.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -44,7 +48,9 @@
       "packages/experimental/agent-team/src/task-view.ts",
       "packages/experimental/agent-team/src/mailbox.ts",
       "packages/session/session-persistence-jsonl/src/lease.ts",
-      "docs/subsystems/agent-team.md"
+      "docs/subsystems/agent-team.md",
+      "packages/mcp/mcp-client/src/connection.ts",
+      "packages/mcp/mcp-client/src/tools.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -61,7 +67,10 @@
       "packages/agent/src/agent-loop.ts",
       "packages/coding-agent/src/core/session-manager.ts",
       "packages/durable/src/tasks.ts",
-      "packages/durable/src/harness/output.ts"
+      "packages/durable/src/harness/output.ts",
+      "packages/mcp/src/protocol/jsonrpc.ts",
+      "packages/mcp/src/transports/streamable-http.ts",
+      "packages/mcp/src/client.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -75,7 +84,11 @@
     "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
     "license": "MIT",
     "inspected_paths": [
-      "packages/agent-core-v2/src/agent/loop/machine/requester.ts"
+      "packages/agent-core-v2/src/agent/loop/machine/requester.ts",
+      "packages/agent-core-v2/src/session/mcp/sessionMcpHandle.ts",
+      "packages/agent-core-v2/src/mcpCore/connection-manager.ts",
+      "packages/agent-core-v2/src/agent/mcp/mcpDiscoveryOps.ts",
+      "packages/agent-core-v2/src/agent/mcp/output.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -89,7 +102,8 @@
     "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
     "license": "Apache-2.0",
     "inspected_paths": [
-      "apps/zcode-cli/packages/core/src/runtime/methods/turn-loop.ts"
+      "apps/zcode-cli/packages/core/src/runtime/methods/turn-loop.ts",
+      "apps/zcode-cli/packages/adapters/src/mcp/stdio-transport.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -103,7 +117,9 @@
     "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
     "license": "Apache-2.0",
     "inspected_paths": [
-      "packages/core/src/providers/provider-config.ts"
+      "packages/core/src/providers/provider-config.ts",
+      "packages/core/src/tools/mcp-pool-entry.ts",
+      "packages/core/src/tools/mcp-retry.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -192,7 +208,8 @@
     "license": "MIT",
     "inspected_paths": [
       "src/vs/workbench/browser/parts/sidebar/sidebarPart.ts",
-      ".nvmrc"
+      ".nvmrc",
+      "src/vs/workbench/browser/parts/compositeBarActions.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

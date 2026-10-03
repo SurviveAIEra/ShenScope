@@ -45,7 +45,6 @@ function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::
     !isempty(prompt) && add_message!(s,Message(:user,prompt))
     registry=Dict{String,AbstractTool}(tool_name(t)=>t for t in tools)
     length(registry)==length(tools) || throw(ShenScopeError(:extension,"Duplicate tool names"))
-    schemas=[declaration(t) for t in tools]
     set_status!(s,:running)
     emit!(ctx,:session_started,Dict("id"=>s.id,"provider"=>provider_name(provider)))
     last_signature="";repeats=0
@@ -57,6 +56,9 @@ function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::
                     text=take!(control.steering)
                     add_message!(s,Message(:user,text));emit!(ctx,:steering_applied,Dict("text"=>text))
                 end
+                available=active_tools(tools,ctx)
+                registry=Dict{String,AbstractTool}(tool_name(t)=>t for t in available)
+                schemas=declaration.(available)
                 messages=request_messages(s,ctx;context_bytes)
                 request=ModelRequest(messages,deepcopy(schemas),max_output,deepcopy(options))
                 validate_request(provider,request)

@@ -14,6 +14,8 @@ export class CoreClient {
     private listeners = new Set<(event: Notification) => void>();
     private closed = false;
     private stderrTail = '';
+    private termination?: Promise<void>;
+    private killTimer?: ReturnType<typeof setTimeout>;
 
     constructor(private readonly launch: CoreLaunch) {}
 
@@ -23,6 +25,10 @@ export class CoreClient {
             cwd: this.launch.cwd, env: this.launch.env ?? process.env, shell: false,
             stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true,
         });
+        this.termination = new Promise(resolve => this.child!.once('close', () => {
+            if (this.killTimer) { clearTimeout(this.killTimer); this.killTimer = undefined; }
+            resolve();
+        }));
         this.child.stdout.on('data', (chunk: Buffer) => {
             try { this.accept(chunk); } catch (error) { this.fail(error instanceof Error ? error : new Error('Invalid Core frame')); }
         });
@@ -100,7 +106,12 @@ export class CoreClient {
         this.closed = true;
         for (const pending of this.pending.values()) { clearTimeout(pending.timer); pending.reject(error); }
         this.pending.clear(); this.bytes = Buffer.alloc(0);
-        this.child?.kill();
+        const child = this.child;
+        if (child && child.exitCode === null && child.signalCode === null) {
+            child.stdin.destroy(); child.kill();
+            this.killTimer = setTimeout(() => { child.kill('SIGKILL'); }, 2000);
+            this.killTimer.unref();
+        }
         for (const listener of this.listeners) { listener({ method: 'transport/closed', params: { message: error.message } }); }
     }
 
@@ -109,6 +120,7 @@ export class CoreClient {
             try { await this.request('shutdown', {}, 2000); } catch { /* child may already have exited */ }
         }
         this.fail(new Error('Core client closed'));
+        await this.termination;
         this.listeners.clear(); this.stderrTail = '';
     }
 }

@@ -1,0 +1,359 @@
+{
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "platform": "Linux, Julia 1.11.7, Electron 43.7.5",
+  "verification": {
+    "affected_core": {
+      "passing_assertions": 606,
+      "testsets": [
+        {
+          "name": "Cancellation tree and dynamic context",
+          "passed": 7
+        },
+        {
+          "name": "Concurrent budget reservation and accounting",
+          "passed": 9
+        },
+        {
+          "name": "Permission decisions and path containment",
+          "passed": 7
+        },
+        {
+          "name": "Durable journal, torn tails and revision conflicts",
+          "passed": 6
+        },
+        {
+          "name": "Session reconstruction and unknown side effects",
+          "passed": 11
+        },
+        {
+          "name": "Atomic replacement remains complete to concurrent readers",
+          "passed": 3
+        },
+        {
+          "name": "Oversized unterminated journal input is bounded",
+          "passed": 2
+        },
+        {
+          "name": "Configuration profiles, credential rejection and CAS",
+          "passed": 10
+        },
+        {
+          "name": "Canonical numeric journal round trips",
+          "passed": 3
+        },
+        {
+          "name": "Scoped memory, lexical retrieval and durable versions",
+          "passed": 25
+        },
+        {
+          "name": "Memory import validates every item before atomic commit",
+          "passed": 7
+        },
+        {
+          "name": "Agent tool calling preserves contract evidence without loading code",
+          "passed": 4
+        },
+        {
+          "name": "Julia interface contracts, ambiguity evidence and world-age boundary",
+          "passed": 19
+        },
+        {
+          "name": "Compiler diagnostics use listed targets, bounded output and independent processes",
+          "passed": 23
+        },
+        {
+          "name": "Task definition validation and independent graph checks",
+          "passed": 15
+        },
+        {
+          "name": "Claims, dependency release, priority, fences and detached views",
+          "passed": 13
+        },
+        {
+          "name": "Safe retries, uncertain effects and explicit reconciliation",
+          "passed": 16
+        },
+        {
+          "name": "Exclusive effects, cancellation propagation and read-only recovery",
+          "passed": 16
+        },
+        {
+          "name": "Large result artifacts, digest verification and descriptor collisions",
+          "passed": 6
+        },
+        {
+          "name": "Bounded JSON-RPC framing and UTF-8 lengths",
+          "passed": 8
+        },
+        {
+          "name": "Protocol version, config ownership, secrets and session commands",
+          "passed": 15
+        },
+        {
+          "name": "Agent protocol permission ownership and cancellation",
+          "passed": 7
+        },
+        {
+          "name": "Asynchronous task protocol, approvals and session ownership",
+          "passed": 13
+        },
+        {
+          "name": "Task jobs block config replacement and drain owned processes",
+          "passed": 5
+        },
+        {
+          "name": "MCP bounded schema assertions and references",
+          "passed": 40
+        },
+        {
+          "name": "MCP framing, content and configuration bounds",
+          "passed": 25
+        },
+        {
+          "name": "MCP async protocol keeps approvals, jobs and connections session scoped",
+          "passed": 28
+        },
+        {
+          "name": "Terminal rendering sanitizes control sequences and handles wide text",
+          "passed": 16
+        },
+        {
+          "name": "SSE Unicode fragmentation, multiline and limits",
+          "passed": 3
+        },
+        {
+          "name": "OpenAI-compatible real HTTP tool stream and native replay",
+          "passed": 7
+        },
+        {
+          "name": "Anthropic signature and tool continuation",
+          "passed": 5
+        },
+        {
+          "name": "OpenAI Responses encrypted reasoning and call stream",
+          "passed": 3
+        },
+        {
+          "name": "Gemini and Ollama native protocols",
+          "passed": 5
+        },
+        {
+          "name": "Retry before delivery, no replay after delivery, malformed calls",
+          "passed": 5
+        },
+        {
+          "name": "Workspace tools conflict guard, schema and transactional validation",
+          "passed": 9
+        },
+        {
+          "name": "Process execution, bounded logs, ownership, input and timeout",
+          "passed": 12
+        },
+        {
+          "name": "Agent repairs a failing Python test with real tool execution",
+          "passed": 10
+        },
+        {
+          "name": "Actual worker DAG binds verified dependency results",
+          "passed": 5
+        },
+        {
+          "name": "Test processes, timeout uncertainty and separate model sessions",
+          "passed": 16
+        },
+        {
+          "name": "Two real Julia processes cannot claim the same task",
+          "passed": 3
+        },
+        {
+          "name": "Agent and headless CLI invoke the same durable task tool",
+          "passed": 6
+        },
+        {
+          "name": "Actual MCP stdio lifecycle and discovery",
+          "passed": 28
+        },
+        {
+          "name": "Actual Streamable HTTP JSON, SSE and session ownership",
+          "passed": 10
+        },
+        {
+          "name": "HTTP MCP does not replay failed POST or follow redirects",
+          "passed": 24
+        },
+        {
+          "name": "SSE HTTP response ends a request while the server keeps the stream open",
+          "passed": 3
+        },
+        {
+          "name": "Actual HTTP GET notification resumption keeps the same session",
+          "passed": 7
+        },
+        {
+          "name": "MCP rejects invalid servers and preserves dirty catalogs",
+          "passed": 26
+        },
+        {
+          "name": "MCP environment, permission, ownership and error isolation",
+          "passed": 11
+        },
+        {
+          "name": "MCP timeouts, cancellation, fencing and no tool replay",
+          "passed": 17
+        },
+        {
+          "name": "MCP flapping connection exhausts one bounded outage",
+          "passed": 4
+        },
+        {
+          "name": "MCP parent cancellation closes its owned process without cancelling peers",
+          "passed": 4
+        },
+        {
+          "name": "Agent advertises discovered MCP tools on the next request",
+          "passed": 9
+        },
+        {
+          "name": "MCP CLI executes the same permissioned Core and closes its process",
+          "passed": 6
+        },
+        {
+          "name": "Headless CLI, offline task and session lifecycle",
+          "passed": 9
+        }
+      ]
+    },
+    "final_mcp_controls": {
+      "passing_assertions": 129,
+      "testsets": [
+        {
+          "name": "MCP async protocol keeps approvals, jobs and connections session scoped",
+          "passed": 33
+        },
+        {
+          "name": "Actual MCP stdio lifecycle and discovery",
+          "passed": 34
+        },
+        {
+          "name": "MCP rejects invalid servers and preserves dirty catalogs",
+          "passed": 26
+        },
+        {
+          "name": "MCP environment, permission, ownership and error isolation",
+          "passed": 11
+        },
+        {
+          "name": "MCP timeouts, cancellation, fencing and no tool replay",
+          "passed": 17
+        },
+        {
+          "name": "MCP flapping connection exhausts one bounded outage",
+          "passed": 4
+        },
+        {
+          "name": "MCP parent cancellation closes its owned process without cancelling peers",
+          "passed": 4
+        }
+      ]
+    },
+    "final_mcp_agent_worker": {
+      "passing_assertions": 52,
+      "testsets": [
+        {
+          "name": "Actual MCP stdio lifecycle and discovery",
+          "passed": 34
+        },
+        {
+          "name": "Agent advertises discovered MCP tools on the next request",
+          "passed": 12
+        },
+        {
+          "name": "MCP CLI executes the same permissioned Core and closes its process",
+          "passed": 6
+        }
+      ]
+    },
+    "vsix_gui": {
+      "status": "passed",
+      "actual_runtime": "Extension development Webview",
+      "flow": "PASS: VSIX webview, actual MCP configuration/permissions/tool/resource/subscription/prompt/ping/restart/diagnostics/disable flow"
+    },
+    "native_gui": {
+      "status": "passed",
+      "actual_runtime": "Native Workbench with extensions disabled",
+      "flow": "PASS: native Workbench with extensions disabled, actual MCP configuration/permissions/tool/resource/subscription/prompt/ping/restart/diagnostics/disable flow"
+    },
+    "editor_transport_tests": 3,
+    "editor_typecheck": "passed",
+    "full_workbench_typecheck": "passed",
+    "commands": [
+      "julia --threads=4 --project=. test/runtests.jl",
+      "julia --threads=4 --project=. -e include(unit/mcp_protocol;integration/mcp_stdio;integration/mcp_failures)",
+      "julia --threads=4 --project=. -e include(integration/mcp_stdio;integration/mcp_agent)",
+      "npm run check; npm run build; npm run test (editors)",
+      "npm run typecheck-client (pinned Code-OSS)",
+      "node ide/test/native_smoke.mjs --mcp-only [--vsix]",
+      "python3 scripts/package_vsix.py",
+      "python3 scripts/core_size.py"
+    ]
+  },
+  "core_size": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 56,
+      "blank": 379,
+      "comment": 59,
+      "code": 7058
+    },
+    "cli_tui": {
+      "nFiles": 3,
+      "blank": 14,
+      "comment": 6,
+      "code": 466
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 242942,
+    "line_target_percent": 2.8232,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "total_gib": 31.451,
+    "free_gib": 17.713,
+    "large_build_allowed": true,
+    "safe_scratch_paths": [
+      "/workspace/ShenScope/.local/tmp",
+      "/workspace/ShenScope/.local/build-scratch"
+    ]
+  },
+  "source_synthesis": "docs/architecture/reference_synthesis.md",
+  "failure_history": [
+    "An initial full-suite run had a parse error in a new test function; it was corrected and the complete suite passed.",
+    "A cold focused functional fixture timed out during first-use compilation; ordinary functional fixtures now allow compilation time while explicit deadline tests retain short limits.",
+    "GUI probes initially searched hidden structured data as visible text; connection testing now displays latency and restart checks wait for the completed generation before opening diagnostics.",
+    "Earlier editor transport tests left a Julia child after disposal; bounded termination and a non-cooperative real-child test now verify closure."
+  ],
+  "limits": [
+    "Core size target and complete upstream synthesis remain unfinished.",
+    "No OS sandbox or Windows descendant-process verification.",
+    "OAuth, server sampling/elicitation, native multimedia model projection and real JuliaMCP interoperability remain pending.",
+    "Actual GUI verification uses extension development Webview and a native development Workbench; a complete desktop installer is not produced.",
+    "Custom bounded schema support is not full JSON Schema dialect certification.",
+    "Live external model/server credentials are not used in offline fixtures."
+  ],
+  "vsix": {
+    "bytes": 171423,
+    "sha256": "2b45c19e0cad91a96b75b68e60fe26dfe2478054d78e7f03c44347d7ae892875",
+    "packaged_core_source_match": true,
+    "matched_core_files": 61
+  }
+}

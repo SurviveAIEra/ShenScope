@@ -57,3 +57,23 @@ effects, OS isolation, or complete upstream synthesis.
 Future checkpoints must extend the primary rows with actual source observations,
 behavior and tests, and close the remaining capabilities across applicable
 projects in `capability_matrix.md`. Listing more projects alone is not progress.
+
+## MCP source observations and independent behavior
+
+All paths below were read from the pinned checkouts. This checkpoint extends
+the primary reviews; it does not claim a full review of any repository.
+
+| Source | Observation | Independent Julia behavior / verification | Remaining gap |
+|---|---|---|---|
+| Codex `rmcp-client/src/bounded_stdio_transport.rs`, `streamable_http_retry.rs` | Bound each stdio message and serialize writes; startup retry is distinct from arbitrary call replay | `MCP/Stdio.jl` strictly bounds line accumulation and serializes writes; `mcp_failures.jl` sends actual oversize/malformed output; HTTP failing calls issue one POST | OAuth refresh and interoperability behavior; ShenScope intentionally fails malformed stdout instead of skipping it |
+| OpenCode `mcp/catalog.ts`, `mcp/index.ts` | Paged discovery checks cursor cycles; catalog refresh and notifications guard connection generations | Atomic catalog publication, repeated cursor rejection and generation/revision fencing; actual paged fixture, catalog-race and old-callback tests | ACP/MCP transport parity and discovery density policies |
+| DeepSeek `mcp-client/src/connection.ts`, `tools.ts` | Confirm old transport closure; share an outage limit through flapping; retain server/raw-name identity while registering bounded aliases | Owned close barrier, stable-interval supervisor and hashed raw-name aliases; actual flapping process reaches its attempt limit without call replay | Registry rollback and server package/plugin lifecycle |
+| Pi `mcp/src/protocol/jsonrpc.ts`, `transports/streamable-http.ts`, `client.ts` | Separate request/notification/response envelopes; SSE event IDs include priming events; gate discovery by capabilities | Strict bounded envelopes, JSON/SSE responses, optional GET listener and event-ID tracking; fragmented decoder tests and actual HTTP sessions | Request replay/resumption is deliberately absent; broader server-initiated capabilities remain pending |
+| Kimi `sessionMcpHandle.ts`, `connection-manager.ts`, `mcpDiscoveryOps.ts`, `agent/mcp/output.ts` | Session connection views differ from global registry; discovery tracks full definitions/collisions; structured metadata and media need explicit preservation | Session-scoped resident managers and hashed declaration identity; structured content/metadata preserved and validated; agent and ownership tests | OAuth, deferred selection, native multimodal model delivery and durable discovery events remain absent |
+| ZCode `adapters/src/mcp/stdio-transport.ts` | Process-tree cleanup and session identity belong to the transport's lifetime | Independent Linux owned process groups, startup PID capture, owned cancellation and scoped connection cleanup | Windows Job Objects are not implemented; no Windows verification claim |
+| Qwen `tools/mcp-pool-entry.ts`, `mcp-retry.ts` | Pool seats and draining matter; typed cancellation/permanent errors should bound retries. Current pool file explicitly says some reconnect options are not consumed | Bounded session clients/jobs and drainage; no POST/tool replay; concrete implemented supervisor with outage tests | Full pooling/idle selection and OAuth. Configuration fields in a reference are not counted as working upstream behavior |
+| JuliaMCP `src/mcp_protocol.jl` | Startup and tool timeouts differ; roots/progress/subscriptions support a persistent Julia server | Separate connect/request limits, permissioned roots, request-token progress and subscriptions; actual child fixture tests | Running a real JuliaMCP kernel and native IDE Julia debugger integration remain pending |
+
+Implementation and limits: `docs/core/mcp.md`. The custom Julia schema checker,
+state machine and transports follow independent Core types and permissions;
+no SDK source or upstream algorithms are copied or translated.

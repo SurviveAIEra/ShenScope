@@ -57,3 +57,12 @@ test('Malformed child framing closes transport and rejects pending requests', as
         await assert.rejects(client.request('health'), /unavailable/);
     } finally { await client.dispose(); }
 });
+
+test('Disposal terminates an owned child that ignores shutdown and SIGTERM', { timeout: 10_000 }, async () => {
+    const source = `process.on('SIGTERM', () => {}); process.stdin.once('data', () => { const body=JSON.stringify({jsonrpc:'2.0',id:1,result:{protocol_version:'1.0'}}); process.stdout.write('Content-Length: '+Buffer.byteLength(body)+'\\r\\n\\r\\n'+body); }); setInterval(() => {}, 1000);`;
+    const client = new CoreClient({ executable: process.execPath, args: ['-e', source], cwd: process.cwd() });
+    await client.start();
+    const started = Date.now(); await client.dispose();
+    assert.ok(Date.now() - started < 7000, 'Owned process and pipes must be drained within the escalation bound');
+    await assert.rejects(client.request('health'), /unavailable/);
+});

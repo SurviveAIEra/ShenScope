@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 5,022 authored Julia Core code lines across 44 files;
-CLI/TUI add 407 lines and are counted separately. This is 2.0088% of the
-minimum line target, leaving 244,978 lines. These are early implementations,
+Latest cloc 2.11 count: 7,058 authored Julia Core code lines across 56 files;
+CLI/TUI add 466 lines and are counted separately. This is 2.8232% of the
+minimum line target, leaving 242,942 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -34,7 +34,7 @@ Workbench/shared-process overlay passes the complete upstream client typecheck
 and a real GUI HTTP/tool/approval/file-write test with extensions disabled.
 This is a development desktop runtime, not a completed desktop distribution.
 Full built-in-extension packaging and Windows installer validation are pending.
-MCP integration and real OS isolation remain unfinished.
+MCP integration is now verified below; real OS isolation remains unfinished.
 Core remains far below the 250,000-line delivery target.
 
 Storage hardening: atomic replacement now uses OS replacement primitives;
@@ -105,5 +105,27 @@ Primary-agent priority is explicit in docs/architecture/reference_synthesis.md:
 Codex/OpenCode/DeepSeek Harness/Pi/Kimi/ZCode/Qwen remain the main research line.
 All reference reviews are marked partial; specialist Hermes/Goose/SDK examples
 do not replace the primary projects. Further references named in the history
-remain to be evaluated. Next: MCP transport/discovery/lifecycle, followed by
-remaining primary-agent and Julia-specific Core requirements.
+remain to be evaluated. Next: Skills and Hooks, context recovery and further
+primary-agent and Julia-specific Core requirements.
+
+MCP checkpoint: independently authored stdio/Streamable HTTP clients, protocol
+negotiation, bounded JSON/SSE framing and catalogs, request/progress/generation
+fencing, stable-interval reconnect supervision and conservative no-replay tool
+errors. Scoped permissions, environment/secure-storage bindings, local bounded
+schema assertions, dynamic remote tool declarations, resources/templates/prompts
+and subscriptions integrate with agent, task, CLI and asynchronous Core RPC.
+Full affected Core suite: 606 assertions passed; final connection-controls suite:
+129 assertions passed. Real VSIX Webview and native Workbench with extensions
+disabled pass configuration, approvals, tool/resource/subscription/prompt, ping,
+restart, diagnostics and enabled-state flows. Editor transport now verifies
+bounded termination of an unresponsive child (three passing Node tests).
+Final agent/worker integration adds 52 passing assertions; failed MCP worker calls
+emit one completion event and preserve result evidence. Workbench/editor typechecks
+pass. See docs/core/mcp.md and docs/validation/mcp-checkpoint-009.json.
+OAuth, server sampling/elicitation, native multimedia projection and real JuliaMCP
+interop are pending; Windows descendant cleanup is neither implemented nor
+verified. A development desktop runtime is still not a desktop distribution.
+
+Continuous development is authorized and required: a tested checkpoint is a
+commit/push boundary, not permission to stop before the Core target and product
+gates. Continue from the next unfinished module without claiming completion.

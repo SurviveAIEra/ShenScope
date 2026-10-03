@@ -1,0 +1,1 @@
+PASS: native Workbench with extensions disabled, actual MCP configuration/permissions/tool/resource/subscription/prompt/ping/restart/diagnostics/disable flow

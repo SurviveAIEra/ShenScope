@@ -4,7 +4,8 @@ const DEFAULT_CONFIG=Dict{String,Any}(
         "timeout"=>120.0,"retries"=>2,"input_price"=>0.0,"output_price"=>0.0),
     "budget"=>Dict{String,Any}("max_steps"=>100,"max_tokens"=>1_000_000,"max_cost"=>10.0,"max_seconds"=>3600.0),
     "permissions"=>Dict{String,Any}("read"=>"allow","edit"=>"ask","process"=>"ask",
-        "network"=>"ask","mcp"=>"ask","dynamic"=>"ask","persistence"=>"ask"))
+        "network"=>"ask","mcp"=>"ask","dynamic"=>"ask","persistence"=>"ask"),
+    "mcp"=>Dict{String,Any}("servers"=>Dict{String,Any}()))
 
 function merge_config!(target::Dict,source::AbstractDict)
     for (k,v) in source
@@ -41,6 +42,7 @@ function load_config(;path=config_path(),profile=nothing)
     provider_from_config(config)
     BudgetLedger(limits_from_config(config))
     permissions_from_config(config)
+    mcp_specs_from_config(config)
     return config
 end
 
@@ -63,16 +65,16 @@ function permissions_from_config(config::AbstractDict)
     return PermissionPolicy(;rules)
 end
 
-function save_config!(config::Dict;path=config_path(),expected_sha256=nothing)
+function save_config!(config::Dict;path=config_path(),expected_sha256=nothing,before_write=()->nothing)
     return store_lock(path) do
         if expected_sha256!==nothing
             observed=isfile(path) ? digest(read(path,String)) : digest("")
             observed==expected_sha256 || throw(ShenScopeError(:conflict,"Configuration changed"))
         end
         sanitized=merge_config!(Dict{String,Any}(),config)
-        provider_from_config(sanitized);BudgetLedger(limits_from_config(sanitized));permissions_from_config(sanitized)
+        provider_from_config(sanitized);BudgetLedger(limits_from_config(sanitized));permissions_from_config(sanitized);mcp_specs_from_config(sanitized)
         io=IOBuffer();TOML.print(io,sanitized;sorted=true)
-        text=String(take!(io));atomic_write(path,text)
+        text=String(take!(io));before_write();atomic_write(path,text)
         return digest(text)
     end
 end

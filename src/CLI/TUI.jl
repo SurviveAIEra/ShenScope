@@ -131,9 +131,9 @@ function terminal_decode!(pending::Vector{UInt8},bytes::Vector{UInt8})
     return characters
 end
 
-function run_tui(provider::AbstractModelProvider,ctx::RuntimeContext,session::Session;input=stdin,output=stdout)
+function run_tui(provider::AbstractModelProvider,ctx::RuntimeContext,session::Session;input=stdin,output=stdout,tools=core_tools())
     input isa Base.TTY && output isa Base.TTY || throw(ShenScopeError(:terminal,"TUI requires an interactive terminal"))
-    state=TerminalState();control=AgentControl();tools=core_tools();job=nothing
+    state=TerminalState();control=AgentControl();job=nothing
     old_sink=ctx.sink;old_approval=ctx.approve
     ctx.sink=e->terminal_event!(state,e)
     ctx.approve=r->begin
@@ -201,6 +201,7 @@ function run_tui(provider::AbstractModelProvider,ctx::RuntimeContext,session::Se
         state.quitting=true;cancel!(ctx.cancellation)
         job!==nothing && wait(job)
         for tool in tools;tool isa ProcessTool && cleanup_processes!(tool.manager,ctx.session_id);end
+        for tool in tools;tool isa MCPControlTool && cleanup_mcp!(tool.manager);end
         REPL.Terminals.raw!(terminal,false)
         write(output,"\e[?25h\e[?1049l");flush(output)
         ctx.sink=old_sink;ctx.approve=old_approval

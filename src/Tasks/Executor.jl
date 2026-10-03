@@ -28,18 +28,21 @@ function execute_worker_tool(executor::WorkExecutor, operation::String, argument
     tool = worker_tool(executor, operation)
     operation == "process" && get(arguments, "action", "") != "run" &&
         throw(ShenScopeError(:arguments, "Durable workers require foreground process completion"))
-    validate_schema(arguments, tool_schema(tool))
+    validate_tool_arguments(tool, arguments)
     check_cancelled(ctx.cancellation)
     id = string(uuid4())
     emit!(ctx, :tool_started, Dict("id" => id, "name" => operation, "worker" => true))
+    result = nothing
     try
         result = with_context(() -> execute(tool, arguments, ctx), ctx)
-        emit!(ctx, :tool_completed, Dict("id" => id, "name" => operation, "ok" => true,
+        success = is_successful_tool_result(tool, result)
+        success || throw(ShenScopeError(:tool_failed, "Worker tool reported a failure"))
+        emit!(ctx, :tool_completed, Dict("id" => id, "name" => operation, "ok" => success,
             "worker" => true, "value" => result))
         result
     catch error
         emit!(ctx, :tool_completed, Dict("id" => id, "name" => operation, "ok" => false,
-            "worker" => true, "error" => error isa ShenScopeError ? sprint(showerror, error) : "Worker tool failed"))
+            "worker" => true, "value" => result, "error" => error isa ShenScopeError ? sprint(showerror, error) : "Worker tool failed"))
         rethrow()
     end
 end
@@ -94,13 +97,14 @@ function worker_failure(error, spec::WorkSpec; interrupted = false)
     message = error isa ShenScopeError ? cliptext(error.message, 4096) : "Task execution failed: " * string(nameof(typeof(error)))
     retryable = error isa ShenScopeError && error.retryable || code in (:network, :timeout, :rate_limit, :provider_unavailable, :process)
     # External effects cannot be rolled back by changing a journal record.
-    uncertain = !spec.safe_retry && (interrupted || code in (:cancelled, :timeout, :lease_lost))
+    uncertain = code == :mcp_outcome_uncertain || !spec.safe_retry && (interrupted || code in (:cancelled, :timeout, :lease_lost))
     WorkFailure(code, message, retryable, uncertain)
 end
 
 function cleanup_executor!(executor::WorkExecutor, session_id::String)
     for tool in values(executor.tools)
         tool isa ProcessTool && cleanup_processes!(tool.manager, session_id)
+        tool isa MCPControlTool && cleanup_mcp!(tool.manager; session_id)
     end
     nothing
 end

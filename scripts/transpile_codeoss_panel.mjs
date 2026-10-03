@@ -12,9 +12,20 @@ for (const name of ['panel', 'markdown']) {
     const output = await transform(source, { loader: 'ts', target: 'es2022', format: 'esm', sourcemap: false });
     await writeFile(resolve(checkout, `out/vs/workbench/contrib/shenscope/browser/${name}.js`), output.code);
 }
-const channel = 'vs/platform/shenscope/node/shenscopeChannel';
-const source = await readFile(resolve(project, `ide/overlay/src/${channel}.ts`), 'utf8');
-const output = await transform(source, { loader: 'ts', target: 'es2022', format: 'esm', sourcemap: false });
-await writeFile(resolve(checkout, `out/${channel}.js`), output.code);
+for (const [input, module] of [
+    ['ide/overlay/src/vs/platform/shenscope/node/shenscopeChannel.ts', 'vs/platform/shenscope/node/shenscopeChannel'],
+    ['editors/shared/src/rpcClient.ts', 'vs/platform/shenscope/common/rpcClient'],
+]) {
+    const source = await readFile(resolve(project, input), 'utf8');
+    const output = await transform(source, { loader: 'ts', target: 'es2022', format: 'esm', sourcemap: false });
+    await writeFile(resolve(checkout, `out/${module}.js`), output.code);
+}
+const contribution = 'vs/workbench/contrib/shenscope/electron-browser/shenscope.contribution';
+const contributionSource = await readFile(resolve(project, `ide/overlay/src/${contribution}.ts`), 'utf8');
+const ts = require('typescript');
+const contributionOutput = ts.transpileModule(contributionSource, { compilerOptions: {
+    target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022, experimentalDecorators: true, useDefineForClassFields: false,
+} });
+await writeFile(resolve(checkout, `out/${contribution}.js`), contributionOutput.outputText);
 await copyFile(resolve(project, 'editors/shared/panel.css'), resolve(checkout, 'out/vs/workbench/contrib/shenscope/electron-browser/shenscope.css'));
 console.log('Updated authored panel, channel and CSS modules; no full client rebuild.');

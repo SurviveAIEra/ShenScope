@@ -63,9 +63,14 @@ class ShenScopeViewPane extends ViewPane {
                     project: this.configurationService.getValue<string>('shenscope.launcher.corePath'),
                     executable: this.configurationService.getValue<string>('shenscope.launcher.juliaPath') });
                 const config: any = await channel.call('request', { method: 'config/get', params: {} });
-                const variable = config.value.provider.key_env;
-                const secret = await this.secrets.get(`shenscope:model:${variable}`);
-                if (secret) { await channel.call('request', { method: 'credentials/set', params: { variable, value: secret } }); }
+                const variables = new Set<string>([config.value.provider.key_env]);
+                for (const server of Object.values(config.value.mcp?.servers ?? {}) as any[]) {
+                    for (const binding of [...(server.environment_env ?? []), ...(server.header_env ?? [])]) { variables.add(binding.env); }
+                }
+                for (const variable of variables) {
+                    const secret = await this.secrets.get(`shenscope:model:${variable}`);
+                    if (secret) { await channel.call('request', { method: 'credentials/set', params: { variable, value: secret } }); }
+                }
                 return hello;
             })();
             try { return await starting; } catch (error) { starting = undefined; throw error; }
@@ -81,6 +86,7 @@ class ShenScopeViewPane extends ViewPane {
                 return () => subscription.dispose();
             },
             setCredential: async variable => {
+                if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(variable)) { throw new Error('Invalid credential variable'); }
                 const value = await this.quickInput.input({ title: 'ShenScope API key', password: true, prompt: 'Stored securely by the IDE. Leave empty to remove.' });
                 if (value === undefined) { return; }
                 if (value) { await this.secrets.set(`shenscope:model:${variable}`, value); }

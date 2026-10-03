@@ -29,7 +29,7 @@ end
 function parse_cli(args::Vector{String})
     flags=Dict{String,Any}();positionals=String[]
     valued=Set(["--root","--state-dir","--config","--profile","--session","--script","--backend"])
-    switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic"])
+    switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp"])
     i=1
     while i<=length(args)
         arg=args[i]
@@ -89,9 +89,9 @@ function cli_main(args=ARGS)
     end
     if isempty(args) || args==["--help"]
         println("ShenScope — Open coding intelligence for serious codebases.")
-        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | tasks ACTION | diagnostics ACTION | doctor | serve --stdio")
+        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | tasks ACTION | mcp ACTION | diagnostics ACTION | doctor | serve --stdio")
         println("Options: --root PATH --state-dir PATH --config PATH --profile NAME --session ID --json")
-        println("Explicit permissions: --allow-edit --allow-process --allow-network --allow-persistence --allow-dynamic")
+        println("Explicit permissions: --allow-edit --allow-process --allow-network --allow-persistence --allow-dynamic --allow-mcp")
         println("Offline protocol fixture: --script JSON_FILE")
         return 0
     end
@@ -104,10 +104,11 @@ function cli_main(args=ARGS)
             return cli_session_command(positional[2:end],state_dir)
         end
         config=load_config(;path=get(flags,"--config",config_path()),profile=get(flags,"--profile",nothing))
+        command=="mcp" && return cli_mcp_command(positional,flags,config,state_dir)
         if command=="tasks"
             length(positional)>=2 || throw(ShenScopeError(:input,"Task action required"))
             policy=permissions_from_config(config)
-            for (flag,category) in (("--allow-edit",:edit),("--allow-process",:process),("--allow-network",:network),("--allow-persistence",:persistence),("--allow-dynamic",:dynamic))
+            for (flag,category) in (("--allow-edit",:edit),("--allow-process",:process),("--allow-network",:network),("--allow-persistence",:persistence),("--allow-dynamic",:dynamic),("--allow-mcp",:mcp))
                 get(flags,flag,false) && (policy.rules[category]=Allow)
             end
             ctx=RuntimeContext(get(flags,"--root",pwd());state_dir,session_id=get(flags,"--session","cli-tasks"),
@@ -137,7 +138,7 @@ function cli_main(args=ARGS)
                 end
             end
             factory=haskey(flags,"--script") ? ctx->scripted_provider(flags["--script"]) : ctx->provider_from_config(config)
-            tool=TaskTool(WorkExecutor(;provider_factory=factory))
+            tool=TaskTool(WorkExecutor(;tools=core_tools(;tasks=false,config),provider_factory=factory))
             try
                 validate_schema(args,tool_schema(tool));println(canonical(execute(tool,args,ctx)))
             finally
@@ -187,7 +188,7 @@ function cli_main(args=ARGS)
         command in ("chat","tui") || throw(ShenScopeError(:input,"Unknown command"))
         root=get(flags,"--root",pwd())
         policy=permissions_from_config(config)
-        for (flag,category) in (("--allow-edit",:edit),("--allow-process",:process),("--allow-network",:network),("--allow-persistence",:persistence),("--allow-dynamic",:dynamic))
+        for (flag,category) in (("--allow-edit",:edit),("--allow-process",:process),("--allow-network",:network),("--allow-persistence",:persistence),("--allow-dynamic",:dynamic),("--allow-mcp",:mcp))
             get(flags,flag,false) && (policy.rules[category]=Allow)
         end
         provider=haskey(flags,"--script") ? scripted_provider(flags["--script"]) : provider_from_config(config)
@@ -198,12 +199,21 @@ function cli_main(args=ARGS)
         ctx=RuntimeContext(root;session_id=id,state_dir,budget=BudgetLedger(limits_from_config(config)),
             permissions=policy,approve=cli_approval,sink=e->render_event(stdout,e;json=get(flags,"--json",false)))
         session=haskey(flags,"--session") ? load_session(state_dir,id) : new_session(ctx)
+        tools=core_tools(;config)
         if command=="chat"
             length(positional)>=2 || throw(ShenScopeError(:input,"Task text required"))
-            run_agent!(provider,join(positional[2:end]," "),ctx;session)
+            try
+                run_agent!(provider,join(positional[2:end]," "),ctx;session,tools)
+            finally
+                for tool in tools
+                    tool isa MCPControlTool && cleanup_mcp!(tool.manager)
+                    tool isa ProcessTool && cleanup_processes!(tool.manager,id)
+                    tool isa TaskTool && cleanup_tasks!(tool.manager)
+                end
+            end
             println(stderr,"Session: ",session.id)
         else
-            return run_tui(provider,ctx,session)
+            return run_tui(provider,ctx,session;tools)
         end
         return 0
     catch e
