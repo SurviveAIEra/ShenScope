@@ -51,6 +51,8 @@ validate_tool_arguments(tool::AbstractTool, arguments) = validate_schema(argumen
 is_successful_tool_result(::AbstractTool, value) = true
 tool_failure_message(::AbstractTool, value) = nothing
 additional_tools(::AbstractTool, ::RuntimeContext) = AbstractTool[]
+extra_context(::AbstractTool, ::Session, ::RuntimeContext) = ""
+filter_tools(::AbstractTool, tools::AbstractVector{<:AbstractTool}, ::RuntimeContext) = tools
 
 function active_tools(tools::AbstractVector{<:AbstractTool}, ctx::RuntimeContext)
     result = AbstractTool[]
@@ -67,6 +69,7 @@ function active_tools(tools::AbstractVector{<:AbstractTool}, ctx::RuntimeContext
         push!(names, name)
         push!(result, extra)
     end
+    for tool in tools; result = filter_tools(tool, result, ctx); end
     result
 end
 

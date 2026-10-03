@@ -56,10 +56,10 @@ function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::
                     text=take!(control.steering)
                     add_message!(s,Message(:user,text));emit!(ctx,:steering_applied,Dict("text"=>text))
                 end
+                messages=request_messages(s,ctx;context_bytes,tools)
                 available=active_tools(tools,ctx)
                 registry=Dict{String,AbstractTool}(tool_name(t)=>t for t in available)
                 schemas=declaration.(available)
-                messages=request_messages(s,ctx;context_bytes)
                 request=ModelRequest(messages,deepcopy(schemas),max_output,deepcopy(options))
                 validate_request(provider,request)
                 estimated=estimate_request_tokens(request)

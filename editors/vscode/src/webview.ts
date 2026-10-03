@@ -16,6 +16,7 @@ const bridge: PanelBridge = {
     onEvent(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     async setCredential(variable) { await bridge.request('editor/setCredential', { variable }); },
     async openFile(path, line) { await bridge.request('editor/openFile', { path, line }); },
+    async openSkillSource(job_id, session_id) { await bridge.request('editor/openSkillSource', { job_id, session_id }); },
 };
 window.addEventListener('message', event => {
     const message = event.data;

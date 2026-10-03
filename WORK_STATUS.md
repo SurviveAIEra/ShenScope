@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 7,058 authored Julia Core code lines across 56 files;
-CLI/TUI add 466 lines and are counted separately. This is 2.8232% of the
-minimum line target, leaving 242,942 lines. These are early implementations,
+Latest cloc 2.11 count: 7,837 authored Julia Core code lines across 63 files;
+CLI/TUI add 501 lines and are counted separately. This is 3.1348% of the
+minimum line target, leaving 242,163 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -121,10 +121,25 @@ restart, diagnostics and enabled-state flows. Editor transport now verifies
 bounded termination of an unresponsive child (three passing Node tests).
 Final agent/worker integration adds 52 passing assertions; failed MCP worker calls
 emit one completion event and preserve result evidence. Workbench/editor typechecks
-pass. See docs/core/mcp.md and docs/validation/mcp-checkpoint-009.json.
+pass for the earlier MCP version. The Workbench check preceded the final shared
+transport timer edit; the following Skills checkpoint detected and corrects its
+type incompatibility. See docs/core/mcp.md and docs/validation/mcp-checkpoint-009.json.
 OAuth, server sampling/elicitation, native multimedia projection and real JuliaMCP
 interop are pending; Windows descendant cleanup is neither implemented nor
 verified. A development desktop runtime is still not a desktop distribution.
+
+Skills checkpoint: project/user SKILL.md catalogs with strict bounded YAML
+metadata, source identities and collision precedence; explicit lazy activation
+and resources; hash checks after approval and on context reuse; durable session
+references, narrowed tool declarations and permissioned one-time source opening.
+Agent, CLI and asynchronous RPC share Core ownership. Both actual editor GUIs
+verify grouping, activation/approval/deactivation, enable/reload and source files
+inside/outside the workspace. Full affected Core suite: 722 passing assertions
+(102 Skills assertions); full Workbench/editor checks and three Node transport
+tests pass. Six Pi fixtures are accepted and eight rejected; strict compatibility
+limits remain documented. See docs/core/skills.md and
+docs/validation/skills-checkpoint-010.json. Next: configurable observable Hooks,
+context recovery and Julia-specific project/runtime requirements.
 
 Continuous development is authorized and required: a tested checkpoint is a
 commit/push boundary, not permission to stop before the Core target and product

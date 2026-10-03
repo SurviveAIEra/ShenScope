@@ -1,0 +1,1 @@
+PASS: native Workbench with extensions disabled, actual project/user Skills discovery/activation/approval/deactivation/disable/reload and approved source files inside and outside the workspace

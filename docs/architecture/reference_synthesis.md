@@ -77,3 +77,23 @@ the primary reviews; it does not claim a full review of any repository.
 Implementation and limits: `docs/core/mcp.md`. The custom Julia schema checker,
 state machine and transports follow independent Core types and permissions;
 no SDK source or upstream algorithms are copied or translated.
+
+## Skills source observations
+
+The pinned primary sources were read before the independent Skills implementation.
+These remain partial reviews, not claims that every upstream feature is included.
+
+| Primary source | Observation | Independent Core behavior | Remaining gap |
+|---|---|---|---|
+| Codex `ext/skills/src/loader/discovery.rs` | Traversal/inventory limits and metadata discovery distinguish complete from truncated results | Explicit entry/depth/catalog caps and visible truncation; metadata and bodies remain separate | Streaming directory enumeration, plugin namespaces and concurrent inventory |
+| Pi `coding-agent/src/core/skills.ts`, `utils/frontmatter.ts` | SKILL.md roots stop recursion; diagnostics accompany metadata; invocation flags control listings | Deterministic root precedence, root recursion stop, strict bounded YAML metadata, lazy model listing | Ignore-file syntax and symlink imports; strict names differ from Pi's warning-tolerant behavior |
+| OpenCode `skill/index.ts`, both `skill/discovery.ts` files | Multiple user/project sources; remote catalogs validate names/relative paths and source identity | User/project configured roots, protected confined resource paths and full source hashes | Remote catalog download/version activation is not implemented; no directory backups are introduced |
+| DeepSeek `api/session-controller/src/skill-catalog.ts` | Metadata is cold-readable by session identity without activating an agent | Session-owned async metadata jobs and cached query; no model run needed for editor discovery | Preset/plugin composition and remote catalog transports |
+| Kimi `features/skill/catalog/registry.ts` | Catalog identity/source grouping, model visibility and argument expansion are distinct concerns | Stable source IDs, explicit source selection, model/user invocation flags and bounded literal arguments | Plugin qualification, positional parameters and dialect-specific expansion |
+| ZCode `shared/src/skills-types.ts` | Source paths, scopes, enabled state and diagnostics are part of client parity | Shared Core-backed user/project editor cards and permissioned source-opening proof | Symlink import/delete semantics and extension marketplace |
+| Qwen `skills/skill-manager.ts`, `skills/types.ts` | Refresh completion ordering, invocation visibility and allowed-tools effects require explicit semantics | Atomic refresh publication, post-approval hash recheck, session restoration, declaration narrowing without permission grants | Watchers, implicit hook registration, richer matching and skill-directed routing |
+
+Executable verification lives in unit/skills.jl, unit/skills_protocol.jl and
+integration/skills.jl. Source hashes, schema restrictions and ownership are
+implemented using ShenScope's own types and policies. YAML.jl is a general parser
+dependency, excluded from authored Core counts. See docs/core/skills.md.

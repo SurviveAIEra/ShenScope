@@ -89,7 +89,7 @@ function cli_main(args=ARGS)
     end
     if isempty(args) || args==["--help"]
         println("ShenScope — Open coding intelligence for serious codebases.")
-        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | tasks ACTION | mcp ACTION | diagnostics ACTION | doctor | serve --stdio")
+        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | tasks ACTION | mcp ACTION | skills ACTION | diagnostics ACTION | doctor | serve --stdio")
         println("Options: --root PATH --state-dir PATH --config PATH --profile NAME --session ID --json")
         println("Explicit permissions: --allow-edit --allow-process --allow-network --allow-persistence --allow-dynamic --allow-mcp")
         println("Offline protocol fixture: --script JSON_FILE")
@@ -105,6 +105,7 @@ function cli_main(args=ARGS)
         end
         config=load_config(;path=get(flags,"--config",config_path()),profile=get(flags,"--profile",nothing))
         command=="mcp" && return cli_mcp_command(positional,flags,config,state_dir)
+        command=="skills" && return cli_skills_command(positional,flags,config,state_dir)
         if command=="tasks"
             length(positional)>=2 || throw(ShenScopeError(:input,"Task action required"))
             policy=permissions_from_config(config)
@@ -207,6 +208,7 @@ function cli_main(args=ARGS)
             finally
                 for tool in tools
                     tool isa MCPControlTool && cleanup_mcp!(tool.manager)
+                    tool isa SkillsTool && cleanup_skills!(tool.manager)
                     tool isa ProcessTool && cleanup_processes!(tool.manager,id)
                     tool isa TaskTool && cleanup_tasks!(tool.manager)
                 end

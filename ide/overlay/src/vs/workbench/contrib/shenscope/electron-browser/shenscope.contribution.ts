@@ -97,6 +97,10 @@ class ShenScopeViewPane extends ViewPane {
                 const root = this.workspace.getWorkspace().folders[0]?.uri;
                 if (!root || path.split(/[\\/]/).includes('..') || /^[/\\]/.test(path)) { throw new Error('Invalid workspace file'); }
                 await this.editors.openEditor({ resource: URI.joinPath(root, path), options: { selection: { startLineNumber: line, startColumn: 1 } } });
+            },
+            openSkillSource: async (job_id, session_id) => {
+                const source: any = await channel.call('request', { method: 'skills/source_path', params: { job_id, session_id } });
+                await this.editors.openEditor({ resource: URI.file(source.path) });
             }
         });
         void this.panel.initialize();

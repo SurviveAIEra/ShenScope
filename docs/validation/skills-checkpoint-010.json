@@ -3,7 +3,7 @@
   "platform": "Linux, Julia 1.11.7, Electron 43.7.5",
   "verification": {
     "affected_core": {
-      "passing_assertions": 606,
+      "passing_assertions": 722,
       "testsets": [
         {
           "name": "Cancellation tree and dynamic context",
@@ -111,7 +111,31 @@
         },
         {
           "name": "MCP async protocol keeps approvals, jobs and connections session scoped",
-          "passed": 28
+          "passed": 33
+        },
+        {
+          "name": "Skills YAML metadata is bounded, typed and independently validated",
+          "passed": 21
+        },
+        {
+          "name": "Skills discovery preserves sources, precedence, diagnostics and lazy bodies",
+          "passed": 12
+        },
+        {
+          "name": "Skills activation, resource confinement, replay and permission boundaries",
+          "passed": 22
+        },
+        {
+          "name": "Skills source revisions are rechecked after approval",
+          "passed": 3
+        },
+        {
+          "name": "Skills RPC scopes approvals, durable activation and source-opening proof",
+          "passed": 23
+        },
+        {
+          "name": "Skills job cancellation drains approval and retains peer policy",
+          "passed": 6
         },
         {
           "name": "Terminal rendering sanitizes control sequences and handles wide text",
@@ -171,7 +195,7 @@
         },
         {
           "name": "Actual MCP stdio lifecycle and discovery",
-          "passed": 28
+          "passed": 34
         },
         {
           "name": "Actual Streamable HTTP JSON, SSE and session ownership",
@@ -211,10 +235,18 @@
         },
         {
           "name": "Agent advertises discovered MCP tools on the next request",
-          "passed": 9
+          "passed": 12
         },
         {
           "name": "MCP CLI executes the same permissioned Core and closes its process",
+          "passed": 6
+        },
+        {
+          "name": "Actual agent lazily activates a Skill and narrows its next declarations",
+          "passed": 9
+        },
+        {
+          "name": "Headless Skills CLI reads shared references and preserves session state",
           "passed": 6
         },
         {
@@ -223,76 +255,28 @@
         }
       ]
     },
-    "final_mcp_controls": {
-      "passing_assertions": 129,
-      "testsets": [
-        {
-          "name": "MCP async protocol keeps approvals, jobs and connections session scoped",
-          "passed": 33
-        },
-        {
-          "name": "Actual MCP stdio lifecycle and discovery",
-          "passed": 34
-        },
-        {
-          "name": "MCP rejects invalid servers and preserves dirty catalogs",
-          "passed": 26
-        },
-        {
-          "name": "MCP environment, permission, ownership and error isolation",
-          "passed": 11
-        },
-        {
-          "name": "MCP timeouts, cancellation, fencing and no tool replay",
-          "passed": 17
-        },
-        {
-          "name": "MCP flapping connection exhausts one bounded outage",
-          "passed": 4
-        },
-        {
-          "name": "MCP parent cancellation closes its owned process without cancelling peers",
-          "passed": 4
-        }
-      ]
-    },
-    "final_mcp_agent_worker": {
-      "passing_assertions": 52,
-      "testsets": [
-        {
-          "name": "Actual MCP stdio lifecycle and discovery",
-          "passed": 34
-        },
-        {
-          "name": "Agent advertises discovered MCP tools on the next request",
-          "passed": 12
-        },
-        {
-          "name": "MCP CLI executes the same permissioned Core and closes its process",
-          "passed": 6
-        }
-      ]
-    },
+    "skills_assertions": 102,
+    "editor_transport_tests": 3,
+    "editor_typecheck": "passed",
+    "full_workbench_typecheck": "passed after explicit Node timer import and removal of incompatible unref call",
     "vsix_gui": {
       "status": "passed",
-      "actual_runtime": "Extension development Webview",
-      "flow": "PASS: VSIX webview, actual MCP configuration/permissions/tool/resource/subscription/prompt/ping/restart/diagnostics/disable flow"
+      "flow": "PASS: VSIX webview, actual project/user Skills discovery/activation/approval/deactivation/disable/reload and approved source files inside and outside the workspace"
     },
     "native_gui": {
       "status": "passed",
-      "actual_runtime": "Native Workbench with extensions disabled",
-      "flow": "PASS: native Workbench with extensions disabled, actual MCP configuration/permissions/tool/resource/subscription/prompt/ping/restart/diagnostics/disable flow"
+      "flow": "PASS: native Workbench with extensions disabled, actual project/user Skills discovery/activation/approval/deactivation/disable/reload and approved source files inside and outside the workspace"
     },
-    "editor_transport_tests": 3,
-    "editor_typecheck": "passed",
-    "full_workbench_typecheck": "Passed before the final child-termination edit; this did not cover that later shared transport change. The Skills checkpoint subsequently detected and corrects the timer type incompatibility.",
+    "pi_fixture_read": {
+      "accepted": 6,
+      "rejected": 8,
+      "meaning": "Strict naming/frontmatter differs from some Pi warning and fallback fixtures; this is not broad dialect certification."
+    },
     "commands": [
       "julia --threads=4 --project=. test/runtests.jl",
-      "julia --threads=4 --project=. -e include(unit/mcp_protocol;integration/mcp_stdio;integration/mcp_failures)",
-      "julia --threads=4 --project=. -e include(integration/mcp_stdio;integration/mcp_agent)",
       "npm run check; npm run build; npm run test (editors)",
       "npm run typecheck-client (pinned Code-OSS)",
-      "node ide/test/native_smoke.mjs --mcp-only [--vsix]",
+      "node ide/test/native_smoke.mjs --skills-only [--vsix]",
       "python3 scripts/package_vsix.py",
       "python3 scripts/core_size.py"
     ]
@@ -301,20 +285,20 @@
     "tool": "cloc",
     "version": "2.11",
     "core": {
-      "nFiles": 56,
-      "blank": 379,
-      "comment": 59,
-      "code": 7058
+      "nFiles": 63,
+      "blank": 417,
+      "comment": 60,
+      "code": 7837
     },
     "cli_tui": {
-      "nFiles": 3,
+      "nFiles": 4,
       "blank": 14,
       "comment": 6,
-      "code": 466
+      "code": 501
     },
     "minimum_core_target": 250000,
-    "remaining_lines": 242942,
-    "line_target_percent": 2.8232,
+    "remaining_lines": 242163,
+    "line_target_percent": 3.1348,
     "excludes": [
       "CLI/TUI",
       "tests",
@@ -328,32 +312,31 @@
   },
   "storage": {
     "total_gib": 31.451,
-    "free_gib": 17.713,
+    "free_gib": 17.702,
     "large_build_allowed": true,
     "safe_scratch_paths": [
       "/workspace/ShenScope/.local/tmp",
       "/workspace/ShenScope/.local/build-scratch"
     ]
   },
+  "vsix": {
+    "bytes": 189035,
+    "sha256": "acabd4f7cc0f1ee0467c4611741f7a57775f704b057bb81690c87ed0551ec79a",
+    "packaged_core_source_match": true,
+    "matched_core_and_manifest_files": 69,
+    "frontend_asset_match": true
+  },
   "source_synthesis": "docs/architecture/reference_synthesis.md",
   "failure_history": [
-    "An initial full-suite run had a parse error in a new test function; it was corrected and the complete suite passed.",
-    "A cold focused functional fixture timed out during first-use compilation; ordinary functional fixtures now allow compilation time while explicit deadline tests retain short limits.",
-    "GUI probes initially searched hidden structured data as visible text; connection testing now displays latency and restart checks wait for the completed generation before opening diagnostics.",
-    "Earlier editor transport tests left a Julia child after disposal; bounded termination and a non-cooperative real-child test now verify closure."
+    "The full Workbench typecheck detected a timer type incompatibility in the earlier shared transport edit. An explicit Node timer import alone remained insufficient; removal of unref corrected it. The final complete Workbench typecheck and actual child-termination transport test passed.",
+    "Pi fixture reads accept six sources and reject eight; several rejected fixtures are intentionally invalid and others rely on naming/fallback behavior that Core does not implement."
   ],
   "limits": [
     "Core size target and complete upstream synthesis remain unfinished.",
-    "No OS sandbox or Windows descendant-process verification.",
-    "OAuth, server sampling/elicitation, native multimedia model projection and real JuliaMCP interoperability remain pending.",
-    "Actual GUI verification uses extension development Webview and a native development Workbench; a complete desktop installer is not produced.",
-    "Custom bounded schema support is not full JSON Schema dialect certification.",
-    "Live external model/server credentials are not used in offline fixtures."
-  ],
-  "vsix": {
-    "bytes": 171423,
-    "sha256": "2b45c19e0cad91a96b75b68e60fe26dfe2478054d78e7f03c44347d7ae892875",
-    "packaged_core_source_match": true,
-    "matched_core_files": 61
-  }
+    "Directory traversal caps processed entries but readdir allocates one directory name vector before that cap. A streaming directory iterator remains pending.",
+    "No OS sandbox or elimination of local-process filesystem races.",
+    "Remote skill installation, watchers, broad dialect compatibility and automatic plugin loading remain pending.",
+    "Actual GUI evidence covers development VSIX Webview and native Workbench, not a packaged desktop installer.",
+    "No live-model or Windows runtime verification."
+  ]
 }

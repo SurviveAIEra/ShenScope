@@ -151,3 +151,7 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .mcp-result .tool-output { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 320px; overflow: auto; }
 .mcp-server .badge { flex-shrink: 0; }
 .mcp-server details textarea, .settings-group textarea { box-sizing: border-box; width: 100%; min-height: 68px; resize: vertical; }
+.skill-card h4 { margin: 0; font-size: 13px; }
+.skill-source, .skill-diagnostic { overflow-wrap: anywhere; font-size: 10px; color: var(--vscode-descriptionForeground, #a0a0a0); }
+.skill-card .analysis-actions { margin-top: 10px; }
+.skill-card pre, .skill-result pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 260px; overflow: auto; font-size: 11px; }

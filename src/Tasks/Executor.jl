@@ -105,6 +105,7 @@ function cleanup_executor!(executor::WorkExecutor, session_id::String)
     for tool in values(executor.tools)
         tool isa ProcessTool && cleanup_processes!(tool.manager, session_id)
         tool isa MCPControlTool && cleanup_mcp!(tool.manager; session_id)
+        tool isa SkillsTool && cleanup_skills!(tool.manager; session_id)
     end
     nothing
 end

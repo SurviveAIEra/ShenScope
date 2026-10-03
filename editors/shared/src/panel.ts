@@ -4,6 +4,7 @@ export interface PanelBridge {
     onEvent(listener: (method: string, params: any) => void): () => void;
     setCredential(variable: string): Promise<void>;
     openFile(path: string, line?: number): Promise<void>;
+    openSkillSource(jobId: string, sessionId: string): Promise<void>;
 }
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, text = '', className = ''): HTMLElementTagNameMap[K] {
     const node = document.createElement(tag); node.textContent = text; node.className = className; return node;
@@ -52,6 +53,10 @@ export class ShenScopePanel {
     private mcpJob?: string;
     private mcpResult?: { server: string; action: string; result: any };
     private completedMCPJobs = new Set<string>();
+    private skillsJob?: string;
+    private skillsStarting = false;
+    private skillsResult?: { action: string; result: any };
+    private completedSkillsJobs = new Set<string>();
     constructor(private readonly root: HTMLElement, private readonly bridge: PanelBridge) {
         root.classList.add('shenscope-panel');
         const header = el('header', '', 'panel-header'); const brand = el('div', '', 'brand'); const mark = el('span', '', 'brand-mark'); mark.append(icon('scope')); brand.append(mark, el('strong', 'ShenScope'));
@@ -97,7 +102,7 @@ export class ShenScopePanel {
     private setStatus(text: string): void { this.status.textContent = text; this.status.classList.toggle('running', this.active); }
     private async selectTab(name: string): Promise<void> { this.tab = name; await this.renderTab(); }
     private async newConversation(): Promise<void> {
-        if (this.active || this.projectJob || this.mcpJob) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
+        if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
         this.sessionId = undefined; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
@@ -150,6 +155,7 @@ export class ShenScopePanel {
         if (this.tab === 'Settings') { await this.settings(revision); return; }
         if (this.tab === 'Intelligence' && this.capabilities.project_intelligence) { await this.project(revision); return; }
         if (this.tab === 'MCP' && this.capabilities.mcp) { await this.mcp(revision); return; }
+        if (this.tab === 'Skills' && this.capabilities.skills) { await this.skills(revision); return; }
         this.content.append(el('h2', this.tab === 'Intelligence' ? 'Project intelligence' : this.tab, 'view-title'));
         if (this.tab === 'Tools') {
             const tools = await this.bridge.request('tools/list'); if (revision !== this.renderRevision) { return; }
@@ -176,7 +182,7 @@ export class ShenScopePanel {
             if (!sessions.length) { list.append(el('p', 'Your conversations will appear here.', 'empty-text')); }
             for (const session of sessions) {
                 const row = el('article', '', 'session-card'); const open = this.button(session.title, async () => {
-                    if (this.active || this.projectJob || this.mcpJob) { throw new Error('Finish the current task before switching conversations.'); }
+                    if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting) { throw new Error('Finish the current task before switching conversations.'); }
                     const full = await this.bridge.request('sessions/get', { session_id: session.id }); this.sessionId = full.id; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren();
                     for (const message of full.messages) { this.addMessage(message.role, message.text); } await this.selectTab('Chat'); this.scrollToEnd(true); this.composer.focus();
                 }, 'session-open');
@@ -193,6 +199,83 @@ export class ShenScopePanel {
     private async ensureSession(title: string): Promise<string> {
         if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title }); this.sessionId = session.id; }
         return this.sessionId!;
+    }
+    private async startSkills(action: string, args: Record<string, unknown> = {}): Promise<void> {
+        if (this.skillsJob || this.skillsStarting) { throw new Error('Finish or cancel the current Skills operation.'); }
+        this.skillsStarting = true;
+        try {
+            const session_id = await this.ensureSession('Workspace skills'); this.skillsResult = undefined;
+            const result = await this.bridge.request('skills/start', { session_id, action, ...args });
+            if (!this.completedSkillsJobs.has(result.job_id)) { this.skillsJob = result.job_id; this.setStatus('Loading skills…'); }
+        } finally { this.skillsStarting = false; }
+        if (this.tab === 'Skills') { await this.renderTab(); }
+    }
+    private async skills(revision: number): Promise<void> {
+        const configuration = await this.bridge.request('config/get');
+        if (revision !== this.renderRevision) { return; }
+        this.config = configuration.value; this.configRevision = configuration.sha256;
+        const session_id = await this.ensureSession('Workspace skills');
+        const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Skills'));
+        const reload = this.button('Reload skills', () => this.startSkills('reload')); reload.disabled = !!this.skillsJob; heading.append(reload);
+        this.content.append(heading, el('p', 'Load reusable instructions for this conversation. Review the source and choose which skills to activate.', 'view-description'));
+        if (this.skillsJob) { this.content.append(el('p', 'Waiting for the source or your approval…', 'empty-text'), this.button('Cancel operation', async () => {
+            await this.bridge.request('skills/cancel_job', { session_id, job_id: this.skillsJob });
+        })); }
+        let snapshot: any;
+        try { snapshot = await this.bridge.request('skills/query', { session_id }); }
+        catch { snapshot = ['list', 'reload'].includes(this.skillsResult?.action ?? '') ? this.skillsResult?.result : undefined; }
+        if (revision !== this.renderRevision) { return; }
+        if (snapshot && !snapshot.indexed && !snapshot.skills && !this.skillsJob && !this.skillsStarting) { await this.startSkills('list'); return; }
+        if (!snapshot?.skills) { this.content.append(el('p', 'Load the catalog to inspect available skills.', 'empty-text')); }
+        else {
+            for (const [scope, label] of [['project', 'Project skills'], ['user', 'User skills']]) {
+                const section = el('section', '', 'skills-group'); section.append(el('h3', label));
+                const rows = snapshot.skills.filter((skill: any) => skill.scope === scope);
+                if (!rows.length) { section.append(el('p', 'No skills found in this source.', 'empty-text')); }
+                for (const skill of rows) {
+                    const card = el('article', '', 'info-card skill-card'); card.dataset.skillId = skill.id;
+                    const title = el('div', '', 'view-heading'); title.append(el('h4', skill.name), el('span', skill.loaded ? 'Active' : skill.enabled ? 'Available' : 'Disabled', `badge badge-${skill.loaded ? 'allow' : 'ask'}`));
+                    card.append(title, el('p', skill.description), el('small', skill.path, 'skill-source'));
+                    if (!skill.selected) { card.append(el('small', 'Another source has priority for this name. You can choose this source explicitly.')); }
+                    const enabled = el('input'); enabled.type = 'checkbox'; enabled.checked = skill.enabled; enabled.setAttribute('aria-label', `Enabled ${skill.name}`);
+                    enabled.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob;
+                    const label = el('label', '', 'checkbox-field'); label.append(enabled, el('span', 'Enabled')); card.append(label);
+                    enabled.addEventListener('change', () => { enabled.disabled = true; void this.guard(async () => {
+                        const next = structuredClone(this.config); next.skills ??= {};
+                        next.skills.disabled = (next.skills.disabled ?? []).filter((id: string) => id !== skill.id && (enabled.checked ? id !== skill.name : true));
+                        if (!enabled.checked) { next.skills.disabled.push(skill.id); }
+                        const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision });
+                        this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
+                    }); });
+                    const actions = el('div', '', 'analysis-actions');
+                    if (skill.loaded) { actions.append(this.button('Deactivate', () => this.startSkills('deactivate', { name: skill.id }))); }
+                    else if (skill.enabled && skill.user_invocable) {
+                        const argumentsInput = this.field('Skill arguments', '', card);
+                        actions.append(this.button('Activate', () => this.startSkills('activate', { name: skill.id, arguments: argumentsInput.value, expected_sha256: skill.sha256 }), 'primary-button'));
+                    }
+                    actions.append(this.button('Open source', () => this.startSkills('source', { name: skill.id })));
+                    for (const button of Array.from(actions.querySelectorAll('button'))) { button.disabled = !!this.skillsJob || this.active; }
+                    card.append(actions);
+                    const details = el('details', '', 'advanced-settings'); details.append(el('summary', 'Metadata'), el('pre', JSON.stringify(skill.metadata, null, 2))); card.append(details); section.append(card);
+                }
+                this.content.append(section);
+            }
+            if (snapshot.truncated) { this.content.append(el('p', 'The catalog reached its configured capacity. Review source roots and limits.', 'error-text')); }
+            for (const diagnostic of snapshot.diagnostics ?? []) { this.content.append(el('p', `${diagnostic.code} · ${diagnostic.path}`, 'skill-diagnostic')); }
+        }
+        if (this.skillsResult && !['list', 'reload'].includes(this.skillsResult.action)) {
+            const result = el('details', '', 'skill-result'); result.append(el('summary', 'Operation result'), el('pre', JSON.stringify(this.skillsResult.result, null, 2).slice(0, 128000))); this.content.append(result);
+        }
+        const roots = el('details', '', 'settings-group'); roots.append(el('summary', 'Skill sources'));
+        const inputs = new Map<string, HTMLTextAreaElement>();
+        for (const [key, label, defaults] of [['project_roots', 'Project roots · one per line', ['.shenscope/skills', '.agents/skills', '.claude/skills']], ['user_roots', 'User roots · absolute paths, one per line', []]] as const) {
+            const field = el('label', label, 'field'); const input = el('textarea'); input.rows = 3; input.value = (this.config.skills?.[key] ?? snapshot?.roots?.[key === 'project_roots' ? 'project' : 'user'] ?? defaults).join('\n'); field.append(input); roots.append(field); inputs.set(key, input);
+        }
+        const save = this.button('Save skill sources', async () => {
+            const next = structuredClone(this.config); next.skills ??= {};
+            for (const [key, input] of inputs) { next.skills[key] = input.value.split('\n').map(line => line.trim()).filter(Boolean); }
+            const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
+        }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob; roots.append(save); this.content.append(roots);
     }
     private async startMCP(server: string, action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.mcpJob) { throw new Error('Finish or cancel the current MCP operation.'); }
@@ -433,6 +516,16 @@ export class ShenScopePanel {
         if (this.disposed) { return; }
         if (method === 'transport/closed') { this.active = false; this.setStatus('Disconnected'); this.notice.textContent = params.message; this.notice.hidden = false; this.approvals.replaceChildren(); this.updateActions(); return; }
         if (method !== 'agent/event' || params.session_id !== this.sessionId) { return; } const payload = params.payload;
+        if (params.kind === 'skills_job_completed' || params.kind === 'skills_job_failed') {
+            this.completedSkillsJobs.add(payload.job_id); while (this.completedSkillsJobs.size > 64) { this.completedSkillsJobs.delete(this.completedSkillsJobs.values().next().value!); }
+            if (this.skillsJob === payload.job_id) { this.skillsJob = undefined; }
+            for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }
+            if (params.kind === 'skills_job_completed') {
+                this.skillsResult = { action: payload.action, result: payload.result }; this.setStatus('Skills operation complete');
+                if (payload.action === 'source') { void this.guard(() => this.bridge.openSkillSource(payload.job_id, params.session_id)); }
+            } else { this.notice.textContent = payload.error; this.notice.hidden = false; this.setStatus('Skills operation stopped'); }
+            if (this.tab === 'Skills') { void this.guard(() => this.renderTab()); } return;
+        }
         if (params.kind === 'mcp_job_completed' || params.kind === 'mcp_job_failed') {
             this.completedMCPJobs.add(payload.job_id); while (this.completedMCPJobs.size > 64) { this.completedMCPJobs.delete(this.completedMCPJobs.values().next().value!); }
             if (this.mcpJob === payload.job_id) { this.mcpJob = undefined; }

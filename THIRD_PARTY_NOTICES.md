@@ -11,3 +11,10 @@ distributed. Do not distribute Microsoft's proprietary product branding.
 
 Julia and direct/transitive runtime dependencies retain their upstream license
 obligations. A distribution must include the corresponding license inventory.
+# Skills parsing dependency
+
+YAML.jl 0.4.17 (JuliaData/YAML.jl, MIT) is a general YAML parser dependency,
+not an embedded agent implementation. Its transitive StringEncodings.jl and
+Libiconv_jll dependencies are pinned in Manifest.toml. Native libiconv packaging
+and its LGPL notices must accompany any future distribution that bundles it;
+the current VSIX includes authored Core source and the manifest, not those binaries.

@@ -12,6 +12,8 @@ const checkout = '/workspace/references/vscode';
 const project = resolve(new URL('../../', import.meta.url).pathname);
 const vsix = process.argv.includes('--vsix');
 const mcpOnly = process.argv.includes('--mcp-only');
+const skillsOnly = process.argv.includes('--skills-only');
+const userSkillRoot = skillsOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-skills-')) : undefined;
 const display = vsix ? ':102' : ':101';
 const xvfb = spawn('/workspace/toolchains/xvfb/usr/bin/Xvfb', [display, '-screen', '0', '1280x900x24', '-nolisten', 'tcp'], { stdio: 'ignore' });
 const requests = [];
@@ -28,7 +30,13 @@ const fixture = createServer(async (request, response) => {
 await new Promise(resolve => fixture.listen(0, '127.0.0.1', resolve));
 const port = fixture.address().port;
 const config = join(root, 'config.toml');
-await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[permissions]\nnetwork = 'allow'\nedit = 'ask'\n`);
+await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[permissions]\nnetwork = 'allow'\nedit = 'ask'\n${skillsOnly ? `[skills]\nproject_roots = ['.shenscope/skills']\nuser_roots = ['${userSkillRoot}']\n` : ''}`);
+if (skillsOnly) {
+    const projectSkill = join(root, '.shenscope', 'skills', 'review-code'); const userSkill = join(userSkillRoot, 'manual-review');
+    await mkdir(projectSkill, { recursive: true }); await mkdir(userSkill, { recursive: true });
+    await writeFile(join(projectSkill, 'SKILL.md'), '---\nname: review-code\ndescription: Review changes with inspected evidence\nallowed-tools: [Read]\n---\nProject instructions: $ARGUMENTS\n');
+    await writeFile(join(userSkill, 'SKILL.md'), '---\nname: manual-review\ndescription: Explicit user review instructions\ndisable-model-invocation: true\n---\nUSER SOURCE SENTINEL\n');
+}
 await writeFile(join(root, 'README.md'), 'Native sidebar test workspace\n');
 await writeFile(join(root, 'sample.go'), 'package fixture\nfunc Greet() int { return 1 }\nfunc TestGreet() int { return Greet() }\n');
 await mkdir(join(root, 'user-data', 'User'), { recursive: true });
@@ -69,7 +77,7 @@ try {
     }
     await panel.getByText('Ready · native-fixture', { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly) {
+    if (!mcpOnly && !skillsOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -146,6 +154,32 @@ try {
         await server.getByRole('button', { name: 'Connect', exact: true }).waitFor({ timeout: 30_000 });
         console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual MCP configuration/permissions/tool/resource/subscription/prompt/ping/restart/diagnostics/disable flow`);
     }
+    if (skillsOnly) {
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Skills');
+        // Locate within each card: project/user sources must not share selection state.
+        const projectCard = panel.locator('.skills-group').filter({ hasText: 'Project skills' }).locator('.skill-card').first();
+        const userCard = panel.locator('.skills-group').filter({ hasText: 'User skills' }).locator('.skill-card').first();
+        await projectCard.getByRole('textbox', { name: 'Skill arguments', exact: true }).fill('GUI 中文');
+        await projectCard.getByRole('button', { name: 'Activate', exact: true }).click();
+        await panel.getByRole('button', { name: 'Allow session', exact: true }).click({ timeout: 60_000 });
+        await projectCard.getByText('Active', { exact: true }).waitFor({ timeout: 60_000 });
+        assert.equal(await userCard.getByText('Active', { exact: true }).count(), 0);
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-skills.png`) });
+        await projectCard.getByRole('button', { name: 'Open source', exact: true }).click();
+        await page.locator('.tabs-container .tab').filter({ hasText: 'SKILL.md' }).waitFor({ timeout: 60_000 });
+        await projectCard.getByRole('button', { name: 'Deactivate', exact: true }).click();
+        await projectCard.getByRole('button', { name: 'Activate', exact: true }).waitFor({ timeout: 60_000 });
+        await projectCard.getByRole('checkbox', { name: 'Enabled review-code', exact: true }).uncheck();
+        await projectCard.getByText('Disabled', { exact: true }).waitFor({ timeout: 60_000 });
+        assert.equal(await projectCard.getByRole('button', { name: 'Activate', exact: true }).count(), 0);
+        await projectCard.getByRole('checkbox', { name: 'Enabled review-code', exact: true }).check();
+        await projectCard.getByRole('button', { name: 'Activate', exact: true }).waitFor({ timeout: 60_000 });
+        await panel.getByRole('button', { name: 'Reload skills', exact: true }).click();
+        await projectCard.getByRole('button', { name: 'Activate', exact: true }).waitFor({ timeout: 60_000 });
+        await userCard.getByRole('button', { name: 'Open source', exact: true }).click();
+        await page.locator('.monaco-editor .view-lines').filter({ hasText: 'USER SOURCE SENTINEL' }).waitFor({ timeout: 60_000 });
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual project/user Skills discovery/activation/approval/deactivation/disable/reload and approved source files inside and outside the workspace`);
+    }
 } catch (error) {
     if (panel) {
         console.error('Panel failure state:', await panel.innerText().catch(() => 'Unavailable'));
@@ -154,4 +188,5 @@ try {
     throw error;
 } finally {
     await application?.close(); xvfb.kill(); fixture.close(); await rm(root, { recursive: true, force: true });
+    if (userSkillRoot) { await rm(userSkillRoot, { recursive: true, force: true }); }
 }

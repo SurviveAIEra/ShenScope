@@ -1,6 +1,6 @@
 module ShenScope
 
-using Dates, SHA, TOML, UUIDs, JSON3, HTTP, REPL
+using Dates, SHA, TOML, UUIDs, JSON3, HTTP, REPL, YAML
 using Base.ScopedValues: ScopedValue, with
 
 const VERSION = v"0.1.0"
@@ -41,6 +41,12 @@ include("MCP/Discovery.jl")
 include("MCP/Content.jl")
 include("MCP/Manager.jl")
 include("Tools/MCP.jl")
+include("Skills/Types.jl")
+include("Skills/Metadata.jl")
+include("Skills/Discovery.jl")
+include("Skills/Activation.jl")
+include("Skills/Projection.jl")
+include("Tools/Skills.jl")
 include("Tasks/Types.jl")
 include("Tasks/Graph.jl")
 include("Tasks/Serialization.jl")
@@ -60,6 +66,7 @@ include("Protocol/Server.jl")
 include("Protocol/Project.jl")
 include("Protocol/Tasks.jl")
 include("Protocol/MCP.jl")
+include("Protocol/Skills.jl")
 
 export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
     dispatch_rpc, serve_stdio, stop_server!, capability_manifest
@@ -93,6 +100,10 @@ export MCPServerSpec, MCPClient, MCPManager, MCPRemoteError, MCPControlTool, MCP
     mcp_call_tool!, mcp_read_resource!, mcp_get_prompt!, mcp_subscribe!, mcp_complete!,
     mcp_servers, mcp_client!, cleanup_mcp!, mcp_tool_alias, validate_mcp_schema
 
+export SkillConfig, SkillManifest, SkillCatalog, SkillActivation, SkillManager, SkillsTool,
+    skill_config, skills_list, discover_skills, activate_skill!, deactivate_skill!,
+    skill_read_source, skill_read_resource, bind_skills_session!, restore_skills!, cleanup_skills!
+
 export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectDataBackend,
     AbstractAnalyzer, AbstractContextStrategy, AbstractScheduler, ShenScopeError,
     ToolCall, ToolResult, Message, ModelCapabilities, Usage, ModelResponse, ModelRequest,
@@ -107,6 +118,7 @@ export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectData
 
 include("CLI/Main.jl")
 include("CLI/MCP.jl")
+include("CLI/Skills.jl")
 include("CLI/TUI.jl")
 main(args=ARGS)=cli_main(args)
 

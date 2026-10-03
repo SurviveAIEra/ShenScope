@@ -1,0 +1,75 @@
+{
+  "results": [
+    {
+      "code": "skill_name",
+      "path": "consecutive-hyphens/SKILL.md",
+      "status": "rejected"
+    },
+    {
+      "name": "disable-model-invocation",
+      "path": "disable-model-invocation/SKILL.md",
+      "status": "accepted"
+    },
+    {
+      "code": "skill_name",
+      "path": "invalid-name-chars/SKILL.md",
+      "status": "rejected"
+    },
+    {
+      "code": "skill_metadata",
+      "path": "invalid-yaml/SKILL.md",
+      "status": "rejected"
+    },
+    {
+      "code": "skill_name",
+      "path": "long-name/SKILL.md",
+      "status": "rejected"
+    },
+    {
+      "code": "skill_description",
+      "path": "missing-description/SKILL.md",
+      "status": "rejected"
+    },
+    {
+      "name": "multiline-description",
+      "path": "multiline-description/SKILL.md",
+      "status": "accepted"
+    },
+    {
+      "name": "different-name",
+      "path": "name-mismatch/SKILL.md",
+      "status": "accepted"
+    },
+    {
+      "name": "child-skill",
+      "path": "nested/child-skill/SKILL.md",
+      "status": "accepted"
+    },
+    {
+      "code": "skill_frontmatter",
+      "path": "no-frontmatter/SKILL.md",
+      "status": "rejected"
+    },
+    {
+      "code": "skill_name",
+      "path": "root-skill-preferred/SKILL.md",
+      "status": "rejected"
+    },
+    {
+      "code": "skill_name",
+      "path": "root-skill-preferred/nested-child/SKILL.md",
+      "status": "rejected"
+    },
+    {
+      "name": "unknown-field",
+      "path": "unknown-field/SKILL.md",
+      "status": "accepted"
+    },
+    {
+      "name": "valid-skill",
+      "path": "valid-skill/SKILL.md",
+      "status": "accepted"
+    }
+  ],
+  "source": "/workspace/references/pi-mono/packages/coding-agent/test/fixtures/skills"
+}

@@ -1,4 +1,5 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
+import { setTimeout, clearTimeout } from 'node:timers';
 
 export type RPCValue = null | boolean | number | string | RPCValue[] | { [key: string]: RPCValue };
 export type Notification = { method: string; params: any };
@@ -110,7 +111,6 @@ export class CoreClient {
         if (child && child.exitCode === null && child.signalCode === null) {
             child.stdin.destroy(); child.kill();
             this.killTimer = setTimeout(() => { child.kill('SIGKILL'); }, 2000);
-            this.killTimer.unref();
         }
         for (const listener of this.listeners) { listener({ method: 'transport/closed', params: { message: error.message } }); }
     }

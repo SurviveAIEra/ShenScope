@@ -11,7 +11,8 @@
       "codex-rs/ext/agent-message-board/src/local/queries.rs",
       "codex-rs/ext/agent-message-board/src/local/lifecycle.rs",
       "codex-rs/rmcp-client/src/bounded_stdio_transport.rs",
-      "codex-rs/rmcp-client/src/streamable_http_retry.rs"
+      "codex-rs/rmcp-client/src/streamable_http_retry.rs",
+      "codex-rs/ext/skills/src/loader/discovery.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -28,7 +29,10 @@
       "packages/opencode/src/session/llm/native-request.ts",
       "packages/opencode/src/tool/task.ts",
       "packages/opencode/src/mcp/catalog.ts",
-      "packages/opencode/src/mcp/index.ts"
+      "packages/opencode/src/mcp/index.ts",
+      "packages/opencode/src/skill/index.ts",
+      "packages/opencode/src/skill/discovery.ts",
+      "packages/core/src/skill/discovery.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -50,7 +54,8 @@
       "packages/session/session-persistence-jsonl/src/lease.ts",
       "docs/subsystems/agent-team.md",
       "packages/mcp/mcp-client/src/connection.ts",
-      "packages/mcp/mcp-client/src/tools.ts"
+      "packages/mcp/mcp-client/src/tools.ts",
+      "packages/api/session-controller/src/skill-catalog.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -70,7 +75,9 @@
       "packages/durable/src/harness/output.ts",
       "packages/mcp/src/protocol/jsonrpc.ts",
       "packages/mcp/src/transports/streamable-http.ts",
-      "packages/mcp/src/client.ts"
+      "packages/mcp/src/client.ts",
+      "packages/coding-agent/src/core/skills.ts",
+      "packages/coding-agent/src/utils/frontmatter.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -88,7 +95,8 @@
       "packages/agent-core-v2/src/session/mcp/sessionMcpHandle.ts",
       "packages/agent-core-v2/src/mcpCore/connection-manager.ts",
       "packages/agent-core-v2/src/agent/mcp/mcpDiscoveryOps.ts",
-      "packages/agent-core-v2/src/agent/mcp/output.ts"
+      "packages/agent-core-v2/src/agent/mcp/output.ts",
+      "packages/agent-core-v2/src/features/skill/catalog/registry.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -103,7 +111,8 @@
     "license": "Apache-2.0",
     "inspected_paths": [
       "apps/zcode-cli/packages/core/src/runtime/methods/turn-loop.ts",
-      "apps/zcode-cli/packages/adapters/src/mcp/stdio-transport.ts"
+      "apps/zcode-cli/packages/adapters/src/mcp/stdio-transport.ts",
+      "packages/shared/src/skills-types.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -119,7 +128,9 @@
     "inspected_paths": [
       "packages/core/src/providers/provider-config.ts",
       "packages/core/src/tools/mcp-pool-entry.ts",
-      "packages/core/src/tools/mcp-retry.ts"
+      "packages/core/src/tools/mcp-retry.ts",
+      "packages/core/src/skills/skill-manager.ts",
+      "packages/core/src/skills/types.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
