@@ -93,6 +93,11 @@ function canonical(x)
             for k in sort!(collect(keys(x)); by=string)), ",") * "}"
     elseif x isa AbstractVector || x isa Tuple
         return "[" * join(canonical.(x), ",") * "]"
+    elseif x isa AbstractFloat
+        isfinite(x) || throw(ShenScopeError(:protocol,"Non-finite JSON number"))
+        # JSON parsers may read 0.0 as integer 0. The checksum representation
+        # must survive that round trip, including negative zero.
+        isinteger(x) && -2.0^63<=x<2.0^63 && return string(Int64(x))
     end
     return JSON3.write(x)
 end

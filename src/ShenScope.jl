@@ -12,6 +12,26 @@ include("Security/Permissions.jl")
 include("Runtime/Context.jl")
 include("Storage/Journal.jl")
 include("Context/Sessions.jl")
+include("Models/Provider.jl")
+include("Models/Requests.jl")
+include("Models/Streaming.jl")
+include("Models/HTTP.jl")
+include("Tools/Schema.jl")
+include("Tools/Files.jl")
+include("Tools/Processes.jl")
+include("Runtime/ToolScheduler.jl")
+include("Context/Preparation.jl")
+include("Core/AgentLoop.jl")
+include("Core/Config.jl")
+
+export core_tools, execute_batch, AgentControl, steer!, run_agent!, load_config,
+    save_config!, provider_from_config, limits_from_config, permissions_from_config
+
+export ProviderConfig, HTTPProvider, MockProvider, provider_name, capabilities,
+    response, prepare_request, stream_chat, estimate_request_tokens, SSEDecoder,
+    feed_sse!, finish_sse!, declaration, tool_name, tool_schema, execution_mode,
+    validate_schema, execute, execute_call, ReadTool, SearchTool, EditTool, WriteTool,
+    PatchTool, ProcessTool, ProcessManager, cleanup_processes!, GitTool
 
 export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectDataBackend,
     AbstractAnalyzer, AbstractContextStrategy, AbstractScheduler, ShenScopeError,
@@ -25,17 +45,7 @@ export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectData
     rename_session!, list_sessions, branch_session, recover_tool_pairs!,
     parsejson, canonical, digest, cliptext
 
-function main(args = ARGS)
-    if isempty(args) || args == ["--help"]
-        println("ShenScope — Open coding intelligence for serious codebases.")
-        println("Usage: shenscope --version")
-        return 0
-    elseif args == ["--version"]
-        println("ShenScope ", VERSION)
-        return 0
-    end
-    println(stderr, "Unknown command: ", first(args))
-    return 2
-end
+include("CLI/Main.jl")
+main(args=ARGS)=cli_main(args)
 
 end

@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-03",
+  "platform": "Linux x86_64",
+  "julia": "1.11.7",
+  "threads": 4,
+  "command": "julia --startup-file=no --threads=4 --project=. test/runtests.jl",
+  "exit_code": 0,
+  "assertions_passed": 119,
+  "coverage": ["runtime context", "permissions and budgets", "checksummed sessions", "config profiles and CAS", "five HTTP streaming protocols", "reasoning replay", "retry and truncation", "file tools", "bounded process output, ownership, timeout", "Python unittest repair", "headless CLI"],
+  "classification": "IMPLEMENTED_MOCK_VERIFIED",
+  "limits": ["No live-model quality validation", "No Windows runtime validation", "No real OS sandbox validation", "TUI and both editor clients unfinished", "250000-line Core target unmet"]
+}

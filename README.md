@@ -2,13 +2,14 @@
 
 Open coding intelligence for serious codebases. Born in Shenzhen. Built with Julia.
 
-This repository is being reconstructed from design handoffs and historical
-conversation records after the original cloud machine was lost. It is not the
-historical 0.5.0 release. Current capability and evidence are in `WORK_STATUS.md`.
+ShenScope is an independent Julia coding agent under active development.
+Current capabilities, validation evidence and remaining work are recorded in
+`WORK_STATUS.md`.
 
 ```sh
 bash scripts/setup.sh
 bin/shenscope --version
+bin/shenscope doctor --state-dir .local/state
 ```
 
 The minimum scope includes a model-neutral Julia agent runtime, CLI/TUI,

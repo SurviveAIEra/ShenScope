@@ -1,0 +1,154 @@
+function cli_approval(request::PermissionRequest)
+    if !(stdin isa Base.TTY)
+        return :deny
+    end
+    println(stderr,"Permission: ",request.category," / ",request.tool,"\n",request.target)
+    print(stderr,"Allow once [a], allow session [s], deny [d]: ")
+    flush(stderr)
+    answer=lowercase(strip(readline(stdin)))
+    return answer=="a" ? :once : answer=="s" ? :session : :deny
+end
+
+function render_event(io::IO,event::AgentEvent;json=false)
+    if json
+        println(io,canonical(Dict("sequence"=>event.sequence,"kind"=>String(event.kind),
+            "session_id"=>event.session_id,"trace_id"=>event.trace_id,
+            "timestamp"=>event.timestamp,"payload"=>event.payload)))
+    elseif event.kind==:text_delta
+        print(io,event.payload["text"])
+    elseif event.kind==:tool_started
+        println(stderr,"\n[",event.payload["name"],"]")
+    elseif event.kind==:session_completed
+        println(io)
+    elseif event.kind==:no_progress
+        println(stderr,"Repeated tool results; no new evidence observed.")
+    end
+    flush(io)
+end
+
+function parse_cli(args::Vector{String})
+    flags=Dict{String,Any}();positionals=String[]
+    valued=Set(["--root","--state-dir","--config","--profile","--session","--script"])
+    switches=Set(["--json","--allow-edit","--allow-process","--allow-network"])
+    i=1
+    while i<=length(args)
+        arg=args[i]
+        if arg in valued
+            i<length(args) || throw(ShenScopeError(:input,arg * " requires a value"))
+            flags[arg]=args[i+1];i+=2
+        elseif arg in switches
+            flags[arg]=true;i+=1
+        elseif startswith(arg,"--")
+            throw(ShenScopeError(:input,"Unknown option " * arg))
+        else
+            push!(positionals,arg);i+=1
+        end
+    end
+    return positionals,flags
+end
+
+function scripted_provider(path::String)
+    filesize(path)<=8*1024*1024 || throw(ShenScopeError(:input,"Mock script exceeds limit"))
+    doc=parsejson(read(path,String))
+    doc isa AbstractVector || throw(ShenScopeError(:input,"Mock script must be an array"))
+    script=Any[]
+    for step in doc
+        calls=ToolCall[ToolCall(get(c,"id",string(uuid4())),c["name"],Dict{String,Any}(c["arguments"]))
+            for c in get(step,"calls",[])]
+        push!(script,response(get(step,"text","");calls))
+    end
+    return MockProvider(script)
+end
+
+function cli_session_command(args::Vector{String},state_dir::String)
+    isempty(args) && throw(ShenScopeError(:input,"Expected sessions list, export, rename or archive"))
+    action=first(args)
+    if action=="list"
+        println(canonical(list_sessions(state_dir;include_archived=true)))
+        return 0
+    end
+    length(args)>=2 || throw(ShenScopeError(:input,"Session ID required"))
+    s=load_session(state_dir,args[2])
+    if action=="export"
+        println(canonical(Dict("id"=>s.id,"root"=>s.root,"title"=>s.title,
+            "messages"=>message_dict.(s.messages),"metadata"=>s.metadata)))
+    elseif action=="rename"
+        length(args)>=3 || throw(ShenScopeError(:input,"Session title required"))
+        rename_session!(s,join(args[3:end]," "))
+    elseif action=="archive"
+        session_record!(s,"metadata",Dict("archived"=>true))
+    else
+        throw(ShenScopeError(:input,"Unknown sessions command"))
+    end
+    return 0
+end
+
+function cli_main(args=ARGS)
+    if args==["--version"]
+        println("ShenScope ",VERSION);return 0
+    end
+    if isempty(args) || args==["--help"]
+        println("ShenScope — Open coding intelligence for serious codebases.")
+        println("Usage: shenscope chat TASK | tui | sessions ACTION | doctor | serve --stdio")
+        println("Options: --root PATH --state-dir PATH --config PATH --profile NAME --session ID --json")
+        println("Explicit permissions: --allow-edit --allow-process --allow-network")
+        println("Offline protocol fixture: --script JSON_FILE")
+        return 0
+    end
+    try
+        positional,flags=parse_cli(String.(args))
+        isempty(positional) && throw(ShenScopeError(:input,"Command required"))
+        command=first(positional)
+        state_dir=get(flags,"--state-dir",get(ENV,"SHENSCOPE_STATE_DIR",joinpath(homedir(),".local/state/shenscope")))
+        if command=="sessions"
+            return cli_session_command(positional[2:end],state_dir)
+        end
+        config=load_config(;path=get(flags,"--config",config_path()),profile=get(flags,"--profile",nothing))
+        if command=="doctor"
+            p=provider_from_config(config)
+            println(canonical(Dict("version"=>string(VERSION),"julia"=>string(Base.VERSION),
+                "provider"=>provider_name(p),"protocol"=>String(p.config.protocol),"model"=>p.config.model,
+                "key_configured"=>!isempty(get(ENV,p.config.key_env,"")),"key_variable"=>p.config.key_env,
+                "state_dir"=>abspath(state_dir),"config_path"=>get(flags,"--config",config_path()),
+                "sandbox"=>"host process; OS isolation not configured")))
+            return 0
+        end
+        command in ("chat","tui") || throw(ShenScopeError(:input,"Unknown command"))
+        root=get(flags,"--root",pwd())
+        policy=permissions_from_config(config)
+        for (flag,category) in (("--allow-edit",:edit),("--allow-process",:process),("--allow-network",:network))
+            get(flags,flag,false) && (policy.rules[category]=Allow)
+        end
+        provider=haskey(flags,"--script") ? scripted_provider(flags["--script"]) : provider_from_config(config)
+        if provider isa HTTPProvider && isempty(get(ENV,provider.config.key_env,"")) && provider.config.protocol!=:ollama
+            throw(ShenScopeError(:credentials,"Configure " * provider.config.key_env * " securely before using a live model"))
+        end
+        id=get(flags,"--session",string(uuid4()))
+        ctx=RuntimeContext(root;session_id=id,state_dir,budget=BudgetLedger(limits_from_config(config)),
+            permissions=policy,approve=cli_approval,sink=e->render_event(stdout,e;json=get(flags,"--json",false)))
+        session=haskey(flags,"--session") ? load_session(state_dir,id) : new_session(ctx)
+        if command=="chat"
+            length(positional)>=2 || throw(ShenScopeError(:input,"Task text required"))
+            run_agent!(provider,join(positional[2:end]," "),ctx;session)
+            println(stderr,"Session: ",session.id)
+        else
+            println("ShenScope interactive terminal. /quit exits; /usage shows budget.")
+            while true
+                print("\nshenscope> ");flush(stdout)
+                eof(stdin) && break
+                prompt=readline(stdin)
+                prompt=="/quit" && break
+                prompt=="/usage" && (println(canonical(budget_status(ctx.budget)));continue)
+                isempty(strip(prompt)) && continue
+                run_agent!(provider,prompt,ctx;session)
+            end
+        end
+        return 0
+    catch e
+        if e isa InterruptException
+            println(stderr,"Interrupted");return 130
+        end
+        println(stderr,e isa ShenScopeError ? sprint(showerror,e) : "Unexpected command failure: " * string(nameof(typeof(e))))
+        return 1
+    end
+end
