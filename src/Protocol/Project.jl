@@ -22,7 +22,7 @@ function project_rpc(server::CoreServer,method::String,params::AbstractDict)
     method in PROJECT_WATCH_METHODS && return project_watch_rpc(server,method,params)
     tool=server_project_tool(server);manager=tool.manager
     if method=="project/backends"
-        return [capability_dict(backend_capabilities(backend)) for backend in (GoASTBackend(),TreeSitterBackend(),CodeGraphBackend(),TypeScriptSemanticBackend())]
+        return [capability_dict(backend_capabilities(backend)) for backend in (GoASTBackend(),TreeSitterBackend(),CodeGraphBackend(),TypeScriptSemanticBackend(),JuliaSyntaxBackend())]
     elseif method=="project/start"
         session=idle_session(server,params)
         args=Dict{String,Any}(key=>value for (key,value) in params if key!="session_id")
@@ -100,13 +100,14 @@ function project_rpc(server::CoreServer,method::String,params::AbstractDict)
             action=="status" && return merge(project_status(state),Dict("indexed"=>true))
             action=="search" && return graph_search(state,rpc_string(params,"query";default="",max_bytes=4096);
                 limit=get(params,"limit",50),offset=get(params,"offset",0))
-            if action in PROJECT_NAVIGATION_ACTIONS
+            if action in PROJECT_NAVIGATION_ACTIONS || action in JULIA_PROJECT_ACTIONS
                 arguments=Dict{String,Any}(key=>value for (key,value) in params if key!="session_id")
                 validate_tool_arguments(tool,arguments)
                 budget=haskey(params,"session_id") && haskey(server.contexts,params["session_id"]) ?
                     server.contexts[params["session_id"]].budget : BudgetLedger(limits_from_config(server.config))
                 context=RuntimeContext(server.root;state_dir=server.state_dir,permissions=policy,budget)
-                return project_navigation(state,arguments,context)
+                return action in JULIA_PROJECT_ACTIONS ? julia_project_query(state,arguments,context) :
+                    project_navigation(state,arguments,context)
             end
             throw(RPCFault(-32602,"Unknown project query"))
         finally

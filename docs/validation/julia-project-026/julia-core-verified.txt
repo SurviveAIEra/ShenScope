@@ -1,0 +1,32 @@
+ERROR: LoadError: Some tests did not pass: 18 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/julia_project.jl:1
+Test Summary:                                                          | Pass  Total  Time
+Julia method signatures preserve syntax without executing project code |   32     32  2.3s
+Test Summary:                                                          | Pass  Total  Time
+Julia declaration identities survive body edits, lines and type trivia |    8      8  1.6s
+Test Summary:                                                                  | Pass  Total  Time
+Malformed Julia source returns bounded diagnostics and no partial declarations |    8      8  0.3s
+Julia dispatch reports syntax patterns and refuses stale or unbounded evidence: Test Failed at /workspace/ShenScope/test/unit/julia_project.jl:32
+  Expression: julia_project_error((()->begin
+                #= /workspace/ShenScope/test/unit/julia_project.jl:32 =#
+                ShenScope.julia_project_query(state, Dict("action" => "julia_methods"), ctx)
+            end)) == :conflict
+   Evaluated: stale_index == conflict
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#57#68")(root::String)
+   @ Main /workspace/ShenScope/test/unit/julia_project.jl:32
+ [3] mktempdir(fn::var"#57#68", parent::String; prefix::String)
+   @ Base.Filesystem file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/unit/julia_project.jl:2 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/unit/julia_project.jl:2
+Test Summary:                                                                  | Pass  Fail  Total  Time
+Julia dispatch reports syntax patterns and refuses stale or unbounded evidence |   18     1     19  2.9s

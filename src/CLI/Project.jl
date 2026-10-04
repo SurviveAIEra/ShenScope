@@ -2,7 +2,18 @@ function cli_project_arguments(positional::Vector{String}, flags::AbstractDict)
     length(positional)>=2 || throw(ShenScopeError(:input,"Project action required"))
     action=positional[2]
     args=Dict{String,Any}("action"=>action,"backend"=>get(flags,"--backend","tree_sitter"))
-    if action in PROJECT_NAVIGATION_ACTIONS
+    if action in JULIA_PROJECT_ACTIONS
+        args["query"]=join(positional[3:end]," ")
+        haskey(flags,"--file") && (args["file"]=flags["--file"])
+        haskey(flags,"--sha256") && (args["sha256"]=flags["--sha256"])
+        for key in ("limit","offset","revision","max_pairs")
+            option="--"*replace(key,'_'=>'-')
+            haskey(flags,option) || continue
+            value=tryparse(Int,flags[option])
+            value===nothing && throw(ShenScopeError(:input,"Julia project $key must be an integer"))
+            args[key]=value
+        end
+    elseif action in PROJECT_NAVIGATION_ACTIONS
         if action!="diagnostics"
             if haskey(flags,"--symbol")
                 length(positional)==2 || throw(ShenScopeError(:input,"Choose --symbol or FILE LINE COLUMN"))

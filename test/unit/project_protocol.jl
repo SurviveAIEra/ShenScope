@@ -5,7 +5,7 @@
         try
             @test_throws RPCFault dispatch_rpc(server,"project/backends",Dict())
             dispatch_rpc(server,"initialize",Dict("protocol_version"=>PROTOCOL_VERSION))
-            @test length(dispatch_rpc(server,"project/backends",Dict()))==4
+            @test length(dispatch_rpc(server,"project/backends",Dict()))==5
             @test dispatch_rpc(server,"project/query",Dict("backend"=>"go_ast"))["indexed"]==false
             session=dispatch_rpc(server,"sessions/create",Dict("title"=>"Project graph"));id=session["id"]
             foreign=dispatch_rpc(server,"sessions/create",Dict("title"=>"Separate conversation"))["id"]

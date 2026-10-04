@@ -68,3 +68,22 @@ using PrecompileTools: @setup_workload, @compile_workload
         end
     end
 end
+
+# Compile synchronous editor queries using a disposable source fixture. This
+# context alone permits persistence; no project code or child process is run.
+@setup_workload begin
+    mktempdir(;prefix="shenscope-julia-precompile-") do root
+        write(joinpath(root,"methods.jl"),"module Fixture\nf(x::Int,y)=x\nf(x,y::Int)=y\nusing Base: show\ninclude(\"child.jl\")\nend\n")
+        @compile_workload begin
+            ctx=RuntimeContext(root;state_dir=joinpath(root,"state"),
+                permissions=PermissionPolicy(;rules=Dict(:read=>Allow,:persistence=>Allow,:process=>Deny,:network=>Deny,:dynamic=>Deny)))
+            backend=JuliaSyntaxBackend()
+            state=build!(backend,ctx)
+            for action in ("julia_methods","julia_dispatch","julia_structure")
+                args=Dict{String,Any}("action"=>action,"backend"=>"julia_syntax","query"=>"",
+                    "revision"=>state.revision,"limit"=>20,"offset"=>0,"max_pairs"=>10000)
+                julia_project_query(state,args,ctx)
+            end
+        end
+    end
+end

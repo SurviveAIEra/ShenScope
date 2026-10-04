@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { spawn, execFileSync } from 'node:child_process';
 import { createServer } from 'node:http';
-import { mkdtemp, writeFile, readFile, rm, mkdir } from 'node:fs/promises';
+import { mkdtemp, writeFile, readFile, rm, mkdir, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import assert from 'node:assert/strict';
@@ -48,6 +48,7 @@ const historyOnly = process.argv.includes('--history-only');
 const migrationOnly = process.argv.includes('--migration-only');
 const memoryOnly = process.argv.includes('--memory-only');
 const securityOnly = process.argv.includes('--security-only');
+const juliaOnly = process.argv.includes('--julia-only');
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
@@ -141,6 +142,10 @@ if (skillsOnly) {
     await writeFile(join(userSkill, 'SKILL.md'), '---\nname: manual-review\ndescription: Explicit user review instructions\ndisable-model-invocation: true\n---\nUSER SOURCE SENTINEL\n');
 }
 await writeFile(join(root, 'README.md'), 'Native sidebar test workspace\n');
+if (juliaOnly) {
+    await writeFile(join(root, 'methods.jl'), 'module 示例\nf(x::Int,y)=x\nf(x,y::Int)=y\nusing Base: show\ninclude("child.jl")\nend\n');
+    await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'ask'\nprocess = 'deny'\nnetwork = 'deny'\n`);
+}
 if (securityOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'deny'\nprocess = 'ask'\nnetwork = 'deny'\n`);
 }
@@ -238,7 +243,7 @@ try {
     }
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -267,6 +272,35 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (juliaOnly) {
+        await panel.getByRole('button', { name: 'Project', exact: true }).click();
+        await panel.getByRole('combobox', { name: 'Project backend' }).selectOption('julia_syntax');
+        await panel.getByRole('button', { name: 'Index project', exact: true }).click();
+        await approve(panel, 'project.index · persistence', 'Allow session');
+        await panel.getByRole('button', { name: 'Refresh index', exact: true }).waitFor({ timeout: 120_000 });
+        const section = panel.locator('.julia-evidence');
+        await section.getByRole('button', { name: 'Methods', exact: true }).click();
+        await section.getByText('2 entries · Source evidence', { exact: true }).waitFor({ timeout: 60_000 });
+        assert.equal(await section.locator('.julia-method-row').count(), 2);
+        assert.ok((await section.innerText()).includes('f(x::Int,y)'));
+        await section.getByRole('button', { name: 'Dispatch patterns', exact: true }).click();
+        await section.getByText('crossed annotation pattern', { exact: true }).waitFor();
+        await section.locator('.julia-dispatch-pair > summary').click();
+        assert.ok((await section.innerText()).includes('Argument 1: Int / Any'));
+        assert.ok((await section.innerText()).includes('Compiler confirmation required'));
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-julia-dispatch.png`) });
+        await section.getByRole('button', { name: 'methods.jl:2', exact: true }).first().click();
+        await page.locator('.monaco-workbench .tabs-container .tab').filter({ hasText: 'methods.jl' }).waitFor({ timeout: 30_000 });
+        await section.getByRole('button', { name: 'Module structure', exact: true }).click();
+        await section.getByText('include child.jl · relative path candidate', { exact: true }).waitFor();
+        assert.ok((await section.innerText()).includes('using Base: show'));
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-julia-structure.png`) });
+        const journals = (await readdir(join(root, 'state', 'projects'), { recursive: true })).filter(name => name.endsWith('.jsonl'));
+        assert.ok(journals.length > 0);
+        assert.equal(requests.length, 0, 'Source analysis does not call a model');
+        assert.equal(await panel.locator('.permission-card').count(), 0);
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual Julia syntax indexing, persistence approval, Chinese modules, dispatch patterns, import/include evidence and source opening without process/model calls`);
     }
     if (securityOnly) {
         await panel.getByRole('combobox', { name: 'More views' }).selectOption('Security');

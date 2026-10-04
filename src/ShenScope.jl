@@ -1,6 +1,7 @@
 module ShenScope
 
 using Dates, SHA, TOML, UUIDs, JSON3, HTTP, REPL, YAML, FileWatching
+import JuliaSyntax
 using Base.ScopedValues: ScopedValue, with
 
 const VERSION = v"0.1.0"
@@ -80,10 +81,17 @@ include("ProjectData/JSONC.jl")
 include("ProjectData/State.jl")
 include("ProjectData/Inputs.jl")
 include("ProjectData/Backends.jl")
+include("ProjectData/JuliaTypes.jl")
+include("ProjectData/JuliaSource.jl")
+include("ProjectData/JuliaSignatures.jl")
+include("ProjectData/JuliaDeclarations.jl")
+include("ProjectData/JuliaWalk.jl")
+include("ProjectData/JuliaBackend.jl")
 include("ProjectData/CompilerConfig.jl")
 include("ProjectData/TypeScript.jl")
 include("ProjectData/Queries.jl")
 include("ProjectData/Navigation.jl")
+include("ProjectData/JuliaQueries.jl")
 include("ProjectData/Fingerprints.jl")
 include("ProjectData/Replay.jl")
 include("ProjectData/Compaction.jl")
@@ -200,7 +208,7 @@ export MemoryManager, MemorySnapshot, MemoryQuery, MemoryFilters, MemoryRetrieva
     memory_history, memory_query, memory_tokens, memory_build_index, cleanup_memory!
 export SymbolId, SourceRange, SourceMap, CodeSymbol, Relation, FileFacts, CallReference, SymbolOccurrence,
     BackendCapabilities, ProjectState, ProjectDelta, TreeSitterBackend, CodeGraphBackend,
-    GoASTBackend, TypeScriptSemanticBackend, backend_capabilities, backend_close!, build!, update!, load_project,
+    GoASTBackend, TypeScriptSemanticBackend, JuliaSyntaxBackend, backend_capabilities, backend_close!, build!, update!, load_project,
     graph_snapshot, graph_search, graph_traverse, ProjectTool, ImpactAnalyzer,
     TestSelectionAnalyzer, ArchitectureAnalyzer, analyze, analyzer_name, requirements
 export compact_project!, project_fingerprint

@@ -16,8 +16,9 @@ tool_description(::ProjectTool)="Index source, navigate recorded facts, plan dep
 execution_mode(::ProjectTool)=:exclusive
 tool_schema(::ProjectTool)=object_schema(Dict(
     "action"=>Dict("type"=>"string","enum"=>["build","update","compact","status","search","impact","test_selection","architecture","git_cochange","risk","migration",
-        "definitions","references","hover","incoming_calls","outgoing_calls","implementations","diagnostics"]),
-    "backend"=>Dict("type"=>"string","enum"=>["tree_sitter","go_ast","codegraph","typescript"]),
+        "definitions","references","hover","incoming_calls","outgoing_calls","implementations","diagnostics",
+        "julia_methods","julia_dispatch","julia_structure"]),
+    "backend"=>Dict("type"=>"string","enum"=>["tree_sitter","go_ast","codegraph","typescript","julia_syntax"]),
     "paths"=>Dict("type"=>"array","maxItems"=>10000,"items"=>string_schema(;max=4096)),
     "query"=>string_schema(;max=4096),"limit"=>integer_schema(1,1000),"offset"=>integer_schema(0,100000),
     "symbols"=>Dict("type"=>"array","maxItems"=>128,"items"=>string_schema(;max=32)),
@@ -27,6 +28,7 @@ tool_schema(::ProjectTool)=object_schema(Dict(
     "order"=>Dict("type"=>"string","enum"=>["dependency_first","callers_first"]),
     "max_depth"=>integer_schema(0,32),"max_files"=>integer_schema(1,512),
     "max_symbols"=>integer_schema(1,20000),"max_relations"=>integer_schema(1,100000),
+    "max_pairs"=>integer_schema(1,20000),
     "minimum_confidence"=>Dict("type"=>"number","minimum"=>0,"maximum"=>1),
     "symbol_id"=>string_schema(;max=32),"file"=>string_schema(;max=4096),"line"=>integer_schema(1,8*1024*1024),
     "column"=>integer_schema(1,8*1024*1024),"column_unit"=>Dict("type"=>"string","enum"=>["utf8_byte","utf16"]),
@@ -39,6 +41,7 @@ function project_backend!(manager::ProjectManager,name::String)
         name=="go_ast" && return GoASTBackend()
         name=="codegraph" && return CodeGraphBackend()
         name=="typescript" && return TypeScriptSemanticBackend()
+        name=="julia_syntax" && return JuliaSyntaxBackend()
         throw(ShenScopeError(:backend,"Unknown project backend"))
     end
 end
@@ -85,6 +88,7 @@ function execute_project(tool::ProjectTool,args::AbstractDict,ctx::RuntimeContex
     action=="compact" && return compact_project!(state,ctx;expected_revision=get(args,"revision",nothing),
         minimum_savings=get(args,"minimum_savings",1),force=get(args,"force",false))
     action in PROJECT_NAVIGATION_ACTIONS && return project_navigation(state,args,ctx)
+    action in JULIA_PROJECT_ACTIONS && return julia_project_query(state,args,ctx)
     authorize!(ctx,:read,"project.query",ctx.root)
     action=="status" && return project_status(state)
     action=="search" && return graph_search(state,get(args,"query","");limit=get(args,"limit",50),offset=get(args,"offset",0))

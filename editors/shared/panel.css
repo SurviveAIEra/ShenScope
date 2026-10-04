@@ -307,3 +307,12 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .security-config select:focus-visible { outline: 1px solid var(--vscode-focusBorder); }
 .security-config select:disabled { opacity: .55; }
 .shenscope-panel .composer-toolbar:has(.model-role-choice) { flex-wrap: wrap; }
+.julia-evidence .inline-controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.julia-evidence .inline-controls input { flex: 1 1 180px; min-width: 0; }
+.julia-evidence-entry { padding: 12px 0; border-top: 1px solid var(--vscode-widget-border, #444); overflow-wrap: anywhere; }
+.julia-evidence-entry h4 { margin: 0 0 8px; font-weight: 600; }
+.julia-method-row { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; margin: 12px 0; }
+.julia-method-row small, .julia-evidence-entry > small { color: var(--vscode-descriptionForeground); }
+.julia-dispatch-pair { margin: 10px 0; padding: 8px; background: var(--vscode-textCodeBlock-background); border-radius: 4px; }
+.julia-dispatch-pair summary { cursor: pointer; }
+.julia-dispatch-pair .source-link { margin-right: 8px; }

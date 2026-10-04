@@ -161,3 +161,12 @@ the current container; its failure refuses the payload without host fallback.
 Successful full namespaces, platform alternatives, domain allowlists and restricted
 language/MCP environment adapters remain open; availability is not inferred from
 the existence of a binary or a Julia type.
+
+Checkpoint 026 adds the JuliaSyntax-backed project fact adapter and method,
+dispatch-pattern and module-structure queries across CLI, tool, RPC and both IDEs.
+Signatures include positional/keyword/default/vararg/where evidence, stable IDs,
+byte ranges and source hashes. Imports/includes and local type candidates remain
+explicit syntax evidence; project code and macros are not executed. Incremental
+1/5/20-file oracles, replay, compaction, deletion and permission/staleness tests
+exercise the existing backend-neutral graph. This adapter does not advertise
+compiler inference, runtime dispatch resolution or cursor reference navigation.

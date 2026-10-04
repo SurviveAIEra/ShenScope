@@ -430,3 +430,27 @@ container and its refusal is tested; the available-backend integration branch is
 not counted as executed here. Native/VSIX diagnostics preserve that distinction.
 Additional platform/domain policies, adapters and clean-machine validation remain
 pending. No upstream implementation was copied or translated.
+
+## Julia project evidence checkpoint source observations
+
+Checkpoint 026 rereads handoff sections 9.2/9.3 and 18.1–18.4: replaceable fact
+backends, language-specific semantics and Julia-owned analysis across evidence
+sources. Selected source reads extend the partial review of all seven primary
+agents; they do not establish complete upstream audits.
+
+| Project / source sections | Observation | Independent Julia implementation |
+| --- | --- | --- |
+| Codex `codex-rs/file-search/src/lib.rs` lines 45–100 | Matches retain root/path/type and a separate total count | Source identities, scoped paths and bounded evidence pages remain distinct from ranking |
+| OpenCode `packages/opencode/src/tool/lsp.ts` lines 1–70 | Navigation operations and source positions have explicit permission context | Existing navigation contracts plus independent Julia source actions; capability flags do not promise unsupported hover/references |
+| DeepSeek Harness `packages/lsp/lsp-stdio/src/translate.ts` lines 1–50 | Protocol translation and capability checks are separate from I/O | JuliaSyntax facts normalize into existing Core symbols/ranges; no backend-private schema enters analyzers |
+| Pi `packages/coding-agent/src/utils/syntax-highlight.ts` lines 1–65 | Highlight-language availability and plain text fallback are separate from code understanding | Source signature cards preserve readable text while disclosing absent compiler semantics |
+| Kimi Code `packages/agent-core-v2/src/agent/tools/os/grep/grepTool.ts` lines 1–81 | Source search explicitly excludes credential/secret path families | Existing workspace/read gates and hash verification also guard Julia indexing and evidence queries |
+| ZCode `packages/ui/src/ToolCallBlocks/renderers/search.tsx` lines 1–80 | Tool views normalize bounded human-readable query/target summaries | Both editors show source-linked method cards, human-readable axes and explicit confirmation requirements |
+| Qwen Code `packages/cli/src/ui/commands/lspCommand.ts` lines 1–78 | Disabled/disconnected language services have different user-visible states | Julia syntax capability is reported separately from the TypeScript compiler backend; missing semantics are not inferred from syntax availability |
+
+The JuliaSyntax dependency's parser and streaming raw-lexer APIs were inspected
+directly before integration. Core uses the pinned package and independently
+implements extraction, identities, scope handling, dispatch pattern comparison,
+permissions, bounds, persistence and queries. It never loads project code. The
+existing CodeGraphContext and non-Julia backends remain first-class capabilities;
+compiler-confirmed Julia dispatch and cross-backend fusion remain open.

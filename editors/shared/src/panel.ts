@@ -501,7 +501,7 @@ export class ShenScopePanel {
             el('p', 'Runs receive explicit data. Filesystem access, networking and additional processes are restricted. Every process checks enforcement before loading your code.', 'view-description'));
         this.content.append(isolation);
         const backendLabel = el('label', 'Project index', 'field'); const backend = el('select'); backend.setAttribute('aria-label', 'Analyzer project backend');
-        for (const [value, label] of [['tree_sitter', 'Tree-sitter'], ['go_ast', 'Go AST'], ['codegraph', 'CodeGraph'], ['typescript', 'TypeScript compiler']]) {
+        for (const [value, label] of [['tree_sitter', 'Tree-sitter'], ['go_ast', 'Go AST'], ['codegraph', 'CodeGraph'], ['typescript', 'TypeScript compiler'], ['julia_syntax', 'Julia source']]) {
             const index = (catalog.project_backends ?? []).find((item: any) => item.backend === value);
             const option = el('option', `${label}${index ? ` · ${index.symbols} symbols · revision ${index.revision}` : ' · index required'}`);
             option.value = value; option.selected = value === this.projectBackend; backend.append(option);
@@ -1015,7 +1015,7 @@ export class ShenScopePanel {
     private async project(revision: number): Promise<void> {
         const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Project intelligence'));
         const backend = el('select', '', 'backend-select'); backend.setAttribute('aria-label', 'Project backend');
-        for (const [value, label] of [['tree_sitter', 'Tree-sitter'], ['go_ast', 'Go AST'], ['codegraph', 'CodeGraph'], ['typescript', 'TypeScript compiler']]) {
+        for (const [value, label] of [['tree_sitter', 'Tree-sitter'], ['go_ast', 'Go AST'], ['codegraph', 'CodeGraph'], ['typescript', 'TypeScript compiler'], ['julia_syntax', 'Julia source']]) {
             const option = el('option', label); option.value = value; option.selected = value === this.projectBackend; backend.append(option);
         }
         backend.disabled = !!this.projectJob;
@@ -1045,6 +1045,7 @@ export class ShenScopePanel {
         const semantic = status.capabilities?.calls === 'semantic';
         this.content.append(metrics, el('p', semantic ? 'Compiler snapshot. Refresh after edits. Static resolution does not prove the target of every runtime call.' : 'Last indexed snapshot. Refresh after changes. Call links use syntax evidence and may miss dynamic or unresolved calls.', 'view-description'));
         const watchPanel = el('section', '', 'project-watch'); this.renderProjectWatch(watchPanel, this.projectWatch); this.content.append(watchPanel);
+        if (this.projectBackend === 'julia_syntax') { this.renderJuliaEvidence(this.content, status, revision); }
         const compact = this.button('Compact index history', () => this.startProject('compact'), 'secondary-button');
         compact.disabled = this.projectWatchLive(this.projectWatch); if (compact.disabled) { compact.title = 'Stop watching before compacting the index.'; }
         const cache = el('details', '', 'project-cache'); cache.append(el('summary', 'Index storage · ' + this.formatBytes(status.persistent_bytes ?? 0)),
@@ -1205,6 +1206,63 @@ export class ShenScopePanel {
         await this.renderTab();
     }
     private projectWatchLive(watch: any): boolean { return !!watch && ['starting', 'watching', 'pending', 'dirty', 'updating', 'stopping'].includes(watch.phase); }
+    private renderJuliaEvidence(parent: HTMLElement, status: any, revision: number): void {
+        const section = el('section', '', 'info-card julia-evidence');
+        section.append(el('h3', 'Julia method evidence'), el('p', 'Inspect declared signatures, dispatch patterns and module structure. Results describe the indexed source; runtime method selection needs compiler confirmation.', 'view-description'));
+        const filter = el('input'); filter.placeholder = 'Filter methods or source paths'; filter.setAttribute('aria-label', 'Julia evidence filter');
+        const controls = el('div', '', 'inline-controls'); controls.append(filter);
+        const results = el('div', '', 'julia-evidence-results'); results.setAttribute('aria-live', 'polite');
+        let request = 0;
+        const load = async (action: string, offset = 0): Promise<void> => {
+            const current = ++request; const session = this.sessionId;
+            results.replaceChildren(el('p', 'Reading Julia source evidence…', 'view-description'));
+            try {
+                const response = await this.bridge.request('project/query', { backend: 'julia_syntax', action,
+                    query: filter.value.trim(), revision: status.revision, limit: 20, offset, max_pairs: 10000,
+                    ...(session ? { session_id: session } : {}) });
+                if (current !== request || revision !== this.renderRevision || this.projectBackend !== 'julia_syntax' || session !== this.sessionId) { return; }
+                results.replaceChildren(el('p', `${response.total ?? 0} entries · Source evidence`, 'view-description'));
+                for (const item of response.items ?? []) {
+                    const card = el('article', '', 'julia-evidence-entry');
+                    card.append(el('h4', item.qualified_name ?? item.name ?? item.file), el('span', 'Compiler confirmation required', 'badge'));
+                    const methods = action === 'julia_dispatch' ? item.methods ?? [] : action === 'julia_methods' ? [item] : item.declarations ?? [];
+                    for (const method of methods) {
+                        const row = el('div', '', 'julia-method-row');
+                        if (method.metadata?.signature) { row.append(el('code', method.metadata.signature, 'semantic-signature')); }
+                        else { row.append(el('strong', method.qualified_name)); }
+                        if (method.location) { row.append(this.button(`${method.location.file}:${method.location.start_line}`, () => this.bridge.openFile(method.location.file, method.location.start_line), 'source-link')); }
+                        if (method.metadata?.positional) {
+                            const data = method.metadata;
+                            row.append(el('small', `Positional arity ${data.minimum_arity}–${data.maximum_arity ?? 'unbounded'} · ${(data.keywords ?? []).length} keyword parameters`));
+                            if (data.where?.length) { row.append(el('small', 'Constraints: ' + data.where.map((value: any) => value.text).join(', '))); }
+                        }
+                        card.append(row);
+                    }
+                    for (const pair of item.pairs ?? []) {
+                        const details = el('details', '', 'julia-dispatch-pair'); details.append(el('summary', pair.classification.replaceAll('_', ' ')));
+                        for (const axis of pair.axes ?? []) { details.append(el('p', `Argument ${axis.position}: ${axis.left} / ${axis.right}`, 'view-description')); }
+                        for (const location of pair.evidence ?? []) { details.append(this.button(`${location.file}:${location.start_line}`, () => this.bridge.openFile(location.file, location.start_line), 'source-link')); }
+                        card.append(details);
+                    }
+                    if (action === 'julia_structure') {
+                        card.append(el('small', `${(item.calls ?? []).length} call expressions · ${(item.imports ?? []).length} imports · ${(item.includes ?? []).length} includes`));
+                        for (const entry of item.imports ?? []) { card.append(el('code', entry.text, 'semantic-signature')); }
+                        for (const entry of item.includes ?? []) { card.append(el('p', `include ${entry.literal ?? entry.expression} · ${entry.resolved ? 'relative path candidate' : 'unresolved expression'}`, 'view-description')); }
+                    }
+                    results.append(card);
+                }
+                if (!response.items?.length) { results.append(el('p', 'No entries match this indexed snapshot.', 'empty-text')); }
+                if (response.next_offset !== null && response.next_offset !== undefined) { results.append(this.button('Next Julia evidence page', () => load(action, response.next_offset), 'secondary-button')); }
+            } catch (error) {
+                if (current === request && revision === this.renderRevision && session === this.sessionId) { results.replaceChildren(el('p', error instanceof Error ? error.message : 'Julia evidence could not be read.', 'inline-error')); }
+            }
+        };
+        for (const [label, action] of [['Methods', 'julia_methods'], ['Dispatch patterns', 'julia_dispatch'], ['Module structure', 'julia_structure']]) {
+            controls.append(this.button(label, () => load(action), 'secondary-button'));
+        }
+        section.append(controls, results); parent.append(section);
+    }
+
     private renderProjectWatch(parent: HTMLElement, watch: any): void {
         const live = this.projectWatchLive(watch); const heading = el('div', '', 'project-watch-heading');
         const phase = watch?.phase ?? 'off'; const labels: Record<string, string> = { off: 'Off', starting: 'Starting…', watching: 'Watching', pending: 'Waiting for saves', dirty: 'Changes pending', updating: 'Updating…', stopping: 'Stopping…', stopped: 'Stopped', failed: 'Stopped with error' };

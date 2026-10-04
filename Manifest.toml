@@ -2,7 +2,7 @@
 
 julia_version = "1.11.7"
 manifest_format = "2.0"
-project_hash = "754b0d82da3b3ad941b53cdfe191f6b1a7641dd8"
+project_hash = "85499fab578b7c0e3f71ad0e95ac0bbc68462517"
 
 [[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -72,6 +72,11 @@ version = "1.14.3"
 
     [deps.JSON3.weakdeps]
     ArrowTypes = "31f734f8-188a-4ce0-8406-c8a06bd891cd"
+
+[[deps.JuliaSyntax]]
+git-tree-sha1 = "937da4713526b96ac9a178e2035019d3b78ead4a"
+uuid = "70703baa-626e-46a2-a12c-08ffd08c73b4"
+version = "0.4.10"
 
 [[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"

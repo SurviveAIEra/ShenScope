@@ -1,0 +1,31 @@
+Precompiling ShenScope...
+  65409.3 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 66 seconds. 40 already precompiled.
+ERROR: LoadError: Some tests did not pass: 4 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/julia_project_protocol.jl:1
+Julia project RPC keeps approvals, ownership and syntax evidence explicit: Error During Test at /workspace/ShenScope/test/unit/julia_project_protocol.jl:1
+  Got exception outside of a @test
+  protocol: JSON source must be an object
+  Stacktrace:
+    [1] (::ShenScope.var"#reject#186"{Symbol})(message::String)
+      @ ShenScope /workspace/ShenScope/src/Storage/JSON.jl:4
+    [2] bounded_json_object(raw::SubString{String}; maximum::Int64, max_depth::Int64, max_nodes::Int64, max_string_bytes::Int64, error_code::Symbol)
+      @ ShenScope /workspace/ShenScope/src/Storage/JSON.jl:33
+    [3] (::var"#7#9")(root::String)
+      @ Main /workspace/ShenScope/test/unit/julia_project_protocol.jl:22
+    [4] mktempdir(fn::var"#7#9", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [5] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [6] macro expansion
+      @ /workspace/ShenScope/test/unit/julia_project_protocol.jl:2 [inlined]
+    [7] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+    [8] top-level scope
+      @ /workspace/ShenScope/test/unit/julia_project_protocol.jl:2
+    [9] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [10] top-level scope
+      @ none:1
+Test Summary:                                                             | Pass  Error  Total   Time
+Julia project RPC keeps approvals, ownership and syntax evidence explicit |    4      1      5  33.8s

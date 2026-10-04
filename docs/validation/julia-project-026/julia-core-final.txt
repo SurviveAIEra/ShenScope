@@ -1,0 +1,26 @@
+Test Summary:                                                          | Pass  Total  Time
+Julia method signatures preserve syntax without executing project code |   32     32  2.1s
+Test Summary:                                                          | Pass  Total  Time
+Julia declaration identities survive body edits, lines and type trivia |    8      8  0.8s
+Test Summary:                                                                  | Pass  Total  Time
+Malformed Julia source returns bounded diagnostics and no partial declarations |    8      8  0.3s
+Test Summary:                                                                  | Pass  Total  Time
+Julia dispatch reports syntax patterns and refuses stale or unbounded evidence |   19     19  2.3s
+Test Summary:                                                     | Pass  Total   Time
+Julia 1/5/20-file deltas match full extraction and durable replay |   39     39  57.3s
+Test Summary:                                                                      | Pass  Total  Time
+Julia indexing uses independent read and persistence gates without a process grant |    5      5  0.1s
+Test Summary:                                                             | Pass  Total  Time
+Julia project RPC keeps approvals, ownership and syntax evidence explicit |   11     11  2.2s
+Test Summary:                                                       | Pass  Total  Time
+Julia CLI query arguments carry bounded filters and revision checks |    3      3  0.0s
+Test Summary:                                                                  | Pass  Total  Time
+CLI navigation encodes one owned cursor or symbol with bounded evidence paging |   12     12  0.1s
+Test Summary:                                                         | Pass  Total  Time
+CLI history filters preserve indexed seed identity and integer limits |    5      5  0.0s
+Test Summary:                                                       | Pass  Total  Time
+Agent tool calling preserves contract evidence without loading code |    4      4  7.1s
+Test Summary:                                                        | Pass  Total  Time
+Julia interface contracts, ambiguity evidence and world-age boundary |   19     19  0.1s
+Test Summary:                                                                     | Pass  Total   Time
+Compiler diagnostics use listed targets, bounded output and independent processes |   23     23  17.6s

@@ -1,0 +1,76 @@
+Precompiling ShenScope...
+  60058.8 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 60 seconds. 40 already precompiled.
+ERROR: LoadError: Some tests did not pass: 3 passed, 2 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/julia_project_protocol.jl:1
+Julia project RPC keeps approvals, ownership and syntax evidence explicit: Test Failed at /workspace/ShenScope/test/unit/julia_project_protocol.jl:34
+  Expression: finished["status"] == "complete"
+   Evaluated: "running" == "complete"
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#7#9")(root::String)
+   @ Main /workspace/ShenScope/test/unit/julia_project_protocol.jl:34
+ [3] mktempdir(fn::var"#7#9", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/unit/julia_project_protocol.jl:2 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/unit/julia_project_protocol.jl:2
+Julia project RPC keeps approvals, ownership and syntax evidence explicit: Test Failed at /workspace/ShenScope/test/unit/julia_project_protocol.jl:35
+  Expression: :persistence in categories && (!(:process in categories) && !(:network in categories))
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#7#9")(root::String)
+   @ Main /workspace/ShenScope/test/unit/julia_project_protocol.jl:35
+ [3] mktempdir(fn::var"#7#9", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/unit/julia_project_protocol.jl:2 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/unit/julia_project_protocol.jl:2
+Julia project RPC keeps approvals, ownership and syntax evidence explicit: Error During Test at /workspace/ShenScope/test/unit/julia_project_protocol.jl:1
+  Got exception outside of a @test
+  runtime: Project index is busy; wait for its completion event
+  Stacktrace:
+    [1] (::ShenScope.var"#2509#2526"{CoreServer, ShenScope.ProjectManager})()
+      @ ShenScope /workspace/ShenScope/src/Protocol/Project.jl:83
+    [2] lock(f::ShenScope.var"#2509#2526"{CoreServer, ShenScope.ProjectManager}, l::ReentrantLock)
+      @ Base ./lock.jl:232
+    [3] project_rpc(server::CoreServer, method::String, params::Dict{String, String})
+      @ ShenScope /workspace/ShenScope/src/Protocol/Project.jl:82
+    [4] #invokelatest#2
+      @ ./essentials.jl:1055 [inlined]
+    [5] invokelatest
+      @ ./essentials.jl:1052 [inlined]
+    [6] dispatch_rpc(server::CoreServer, method::String, params::Dict{String, String})
+      @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:196
+    [7] (::var"#7#9")(root::String)
+      @ Main /workspace/ShenScope/test/unit/julia_project_protocol.jl:37
+    [8] mktempdir(fn::var"#7#9", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [9] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+   [10] macro expansion
+      @ /workspace/ShenScope/test/unit/julia_project_protocol.jl:2 [inlined]
+   [11] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [12] top-level scope
+      @ /workspace/ShenScope/test/unit/julia_project_protocol.jl:2
+   [13] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [14] top-level scope
+      @ none:1
+Test Summary:                                                             | Pass  Fail  Error  Total   Time
+Julia project RPC keeps approvals, ownership and syntax evidence explicit |    3     2      1      6  52.2s

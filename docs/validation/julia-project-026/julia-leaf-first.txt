@@ -1,0 +1,19 @@
+ERROR: LoadError: Some tests did not pass: 7 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/julia_syntax.jl:76
+Test Summary:                                                          | Pass  Total  Time
+Julia method signatures preserve syntax without executing project code |   32     32  2.1s
+Julia declaration identities survive body edits, lines and type trivia: Error During Test at /workspace/ShenScope/test/unit/julia_syntax.jl:80
+  Test threw exception
+  Expression: (only(julia_fact_methods(old))).id == (only(julia_fact_methods(changed))).id
+  ArgumentError: Collection is empty, must contain exactly 1 element
+  Stacktrace:
+   [1] _only(x::Vector{CodeSymbol}, ::typeof(iterate))
+     @ Base.Iterators iterators.jl:1550
+   [2] only(x::Vector{CodeSymbol})
+     @ Base.Iterators iterators.jl:1545
+   [3] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [4] (::var"#37#41")(root::String)
+     @ Main /workspace/ShenScope/test/unit/julia_syntax.jl:80
+Test Summary:                                                          | Pass  Error  Total  Time
+Julia declaration identities survive body edits, lines and type trivia |    7      1      8  1.2s

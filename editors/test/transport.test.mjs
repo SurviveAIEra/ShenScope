@@ -65,6 +65,50 @@ test('Node editor transport talks to real Julia Core with scoped approvals and U
     } finally { await client.dispose(); await rm(root, { recursive: true, force: true }); }
 });
 
+test('Julia source indexing and dispatch evidence travel through the real editor transport', { timeout: 180_000 }, async t => {
+    const started = Date.now(); const milestone = label => t.diagnostic(`${label}: ${Date.now() - started} ms`);
+    const root = await mkdtemp(join(tmpdir(), 'shenscope-julia-transport-'));
+    const project = resolve(new URL('../../', import.meta.url).pathname);
+    await writeFile(join(root, 'methods.jl'), 'module 中文\nf(x::Int,y)=x\nf(x,y::Int)=y\nend\n');
+    await writeFile(join(root, 'config.toml'), "[permissions]\nread='allow'\npersistence='ask'\nprocess='deny'\nnetwork='deny'\n");
+    const client = new CoreClient({ executable: process.env.SHENSCOPE_JULIA || '/workspace/toolchains/julia-1.11.7/bin/julia',
+        cwd: root, env: { ...process.env, JULIA_DEPOT_PATH: '/workspace/julia-depot' },
+        args: ['--startup-file=no', '--threads=4', `--project=${project}`, '-e', 'using ShenScope; exit(ShenScope.main())', '--',
+            'serve', '--stdio', '--root', root, '--state-dir', join(root, 'state'), '--config', join(root, 'config.toml')] });
+    const events = []; client.onNotification(event => events.push(event));
+    try {
+        await client.start();
+        milestone('Julia Core initialized');
+        const backends = await client.request('project/backends');
+        milestone('Julia backend capabilities');
+        const julia = backends.find(item => item.name === 'julia_syntax');
+        assert.deepEqual(julia.languages, ['julia']); assert.equal(julia.types, false);
+        const session = await client.request('sessions/create', { title: 'Julia project' });
+        milestone('Julia conversation created');
+        const job = await client.request('project/start', { session_id: session.id, backend: 'julia_syntax', action: 'build' });
+        milestone('Julia index job started');
+        await until(() => events.some(event => event.params?.kind === 'permission_request'), 60_000);
+        const request = events.find(event => event.params?.kind === 'permission_request').params;
+        assert.equal(request.payload.category, 'persistence');
+        await client.request('permissions/respond', { session_id: session.id, request_id: request.payload.id, decision: 'session' });
+        await until(() => events.some(event => event.params?.kind === 'project_completed'), 60_000);
+        milestone('Julia index completed');
+        assert.equal((await client.request('project/job', { session_id: session.id, job_id: job.job_id })).status, 'complete');
+        const query = { session_id: session.id, backend: 'julia_syntax', action: 'julia_dispatch', query: '中文.f' };
+        const result = await client.request('project/query', query);
+        milestone('Julia dispatch queried');
+        assert.equal(result.compiler_confirmed, false); assert.equal(result.source_evaluated, false);
+        assert.equal(result.items[0].method_count, 2); assert.equal(result.items[0].pairs[0].classification, 'crossed_annotation_pattern');
+        const method = result.items[0].methods[0];
+        assert.equal(method.location.column_unit, 'utf8_byte');
+        assert.equal(method.qualified_name, '中文.f');
+        await writeFile(join(root, 'methods.jl'), 'f(x)=x\n');
+        await assert.rejects(client.request('project/query', query), /changed|stale|Refresh/i);
+        milestone('Julia stale evidence refused');
+        assert.ok(events.filter(event => event.params?.kind === 'permission_request').every(event => event.params.payload.category === 'persistence'));
+    } finally { await client.dispose(); await rm(root, { recursive: true, force: true }); }
+});
+
 test('Malformed child framing closes transport and rejects pending requests', async () => {
     const source = `process.stdin.once('data', () => { const body=JSON.stringify({jsonrpc:'2.0',id:1,result:{protocol_version:'1.0'}}); process.stdout.write('Content-Length: '+Buffer.byteLength(body)+'\\r\\n\\r\\n'+body); process.stdin.once('data',()=>process.stdout.write('Content-Length: 999999999\\r\\n\\r\\n')); });`;
     const client = new CoreClient({ executable: process.execPath, args: ['-e', source], cwd: process.cwd() });

@@ -11,6 +11,13 @@ distributed. Do not distribute Microsoft's proprietary product branding.
 
 Julia and direct/transitive runtime dependencies retain their upstream license
 obligations. A distribution must include the corresponding license inventory.
+
+JuliaSyntax.jl 0.4.10 (JuliaLang/JuliaSyntax.jl, MIT; copyright 2021 Julia
+Computing and contributors) is a pinned source parser dependency. It is installed
+through Julia's package manager and is not counted as authored Core code. Its
+license accompanies the upstream dependency. Core extraction and graph/query
+logic are independently implemented; distribution license inventories remain
+required when dependencies are bundled.
 # Skills parsing dependency
 
 YAML.jl 0.4.17 (JuliaData/YAML.jl, MIT) is a general YAML parser dependency,

@@ -472,3 +472,41 @@ Development continues immediately with Julia-specific Core capabilities, process
 runtime, extensibility and remaining requirements. Domain/platform adapters, full
 namespace execution, PackageCompiler and installed restoration remain open. The
 250,000 authored Core-line target remains active and unmet.
+
+## Checkpoint 026: Julia source and dispatch evidence
+
+Core: 19,564 authored Julia lines in 190 files; CLI/TUI: 963 lines in 17 files.
+The minimum target remains 250,000; 230,436 Core lines are still required.
+
+The JuliaSyntax backend independently extracts modules, types, fields, method
+signatures, positional/keyword/default/vararg/where metadata, call expressions
+and import/export/include evidence. Stable IDs survive body/line/type-trivia
+changes; byte ranges preserve Unicode/CRLF. Project code, macros, generated
+functions and includes are not executed. Streaming raw-lexer guards precede
+recursive parsing, with explicit source/token/nesting/capacity failures.
+
+Method, conservative dispatch-pattern and structure queries use existing tool,
+CLI and RPC contracts. Runtime ambiguity/overwrite/selected-method claims remain
+unconfirmed. Both IDEs share source-linked cards and capability declarations.
+Independent read/persistence authorization, stale source/revision checks,
+cancellation, shared budgets and bounded pages retain the existing semantics.
+A disposable query precompile workload fixes a real first-query transport timeout.
+
+Validation: 12,297 distinct affected assertions, including 131 new assertions and
+12,050 existing source-position sweep assertions; four real Node/Core tests;
+complete Workbench typecheck; shared editor check/build; both actual development
+GUIs; and exact VSIX Core/helper/client payload checks pass. Incremental 1/5/20-file
+facts and relations match full extraction; replay, compaction and deletion pass.
+Evidence: docs/validation/julia-project-checkpoint-026.json. Scope and limits:
+docs/core/julia_project_data.md. Failed fixture/API attempts, parser-guard defects
+and the deliberately stopped interpreter run are retained with their corrections.
+
+Seven primary agent source observations extend the partial reference inventory;
+handoff backend/fusion requirements were reread. The one-checkout constraint and
+shared depot remain in effect; approximately 17.6 GiB is free. Package artifacts
+are refreshed in place. No project backup/worktree or copied upstream Core exists.
+
+Development continues with the remaining runtime, Julia extensibility, evidence
+fusion and distribution requirements. Compiler-confirmed Julia semantics,
+cross-backend fusion, PackageCompiler and installed distribution remain open.
+The 250,000 authored Core-line target remains active and unmet.

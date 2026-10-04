@@ -33,11 +33,11 @@ end
 function parse_cli(args::Vector{String})
     flags=Dict{String,Any}();positionals=String[]
     valued=Set(["--root","--state-dir","--config","--profile","--session","--script","--backend",
-        "--symbol","--column-unit","--limit","--offset","--revision","--sha256","--minimum-savings",
+        "--symbol","--file","--column-unit","--limit","--offset","--revision","--sha256","--minimum-savings",
         "--poll-seconds","--quiet-seconds","--duration","--watch-file-limit","--watch-byte-limit",
         "--scope","--expected-pointer","--count-mode","--model-role","--model-profile",
         "--history-limit","--bulk-threshold","--minimum-support","--change-kind","--order",
-        "--max-depth","--max-files","--max-symbols","--max-relations","--minimum-confidence",
+        "--max-depth","--max-files","--max-symbols","--max-relations","--minimum-confidence","--max-pairs",
         "--namespace","--title","--tags","--expected-version","--match","--sort","--cursor",
         "--expected-snapshot","--snippet-chars","--tags-all","--tags-any","--sources"])
     switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints"])
@@ -108,6 +108,7 @@ function cli_main(args=ARGS)
         println("Project evidence: --symbol ID --column-unit utf8_byte|utf16 --revision N --sha256 HASH --limit N --offset N --exclude-declarations; project diagnostics [FILE]")
         println("Project cache: project compact --backend NAME --minimum-savings BYTES [--force]")
         println("Project history: project git_cochange|risk [FILE ...] --history-limit N --bulk-threshold N --minimum-support N --limit N")
+        println("Julia source: project julia_methods|julia_dispatch|julia_structure [FILTER] --backend julia_syntax --max-pairs N")
         println("Project migration: project migration FILE ... --change-kind signature|rename|remove|move|behavior --order dependency_first|callers_first --max-depth N")
         println("Project changes: project watch --backend NAME [--automatic] [--poll-seconds N] [--duration N]")
         println("Memory: memory retrieve QUERY --namespace NAME --scope workspace|session|user --tags-all TAGS --match any|all")
