@@ -19,7 +19,8 @@
       "codex-rs/core/src/context_manager/history.rs",
       "codex-rs/core/src/tools/handlers/tool_search.rs",
       "codex-rs/core/src/tools/handlers/tool_search_spec.rs",
-      "codex-rs/core/src/unified_exec/async_watcher.rs"
+      "codex-rs/core/src/unified_exec/async_watcher.rs",
+      "codex-rs/app-server/src/fs_watch.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -156,7 +157,9 @@
       "apps/zcode-cli/packages/core/src/compact/rounds.ts",
       "apps/zcode-cli/packages/core/src/compact/policy.ts",
       "apps/zcode-cli/packages/core/src/compact/microcompact.ts",
-      "apps/zcode-cli/packages/core/src/tool/read-file-state.ts"
+      "apps/zcode-cli/packages/core/src/tool/read-file-state.ts",
+      "packages/services/src/fileWatcher/fileWatcher.ts",
+      "packages/services/src/fileWatcher/fileWatcherService.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -181,7 +184,8 @@
       "packages/core/src/config/rulesDiscovery.ts",
       "packages/core/src/lsp/LspResponseNormalizer.ts",
       "packages/core/src/lsp/native-lsp-service.ts",
-      "packages/core/src/managed-runtime/managed-session-record-sink.ts"
+      "packages/core/src/managed-runtime/managed-session-record-sink.ts",
+      "packages/cli/src/config/lsp-config-watcher.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

@@ -15,6 +15,7 @@ for (const name of ['panel', 'markdown']) {
 for (const [input, module] of [
     ['ide/overlay/src/vs/platform/shenscope/node/shenscopeChannel.ts', 'vs/platform/shenscope/node/shenscopeChannel'],
     ['editors/shared/src/rpcClient.ts', 'vs/platform/shenscope/common/rpcClient'],
+    ['editors/shared/src/rpcMethods.ts', 'vs/platform/shenscope/common/rpcMethods'],
 ]) {
     const source = await readFile(resolve(project, input), 'utf8');
     const output = await transform(source, { loader: 'ts', target: 'es2022', format: 'esm', sourcemap: false });

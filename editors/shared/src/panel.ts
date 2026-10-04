@@ -50,6 +50,10 @@ export class ShenScopePanel {
     private projectBackend = 'tree_sitter';
     private projectJob?: string;
     private projectResult: any;
+    private projectWatch: any;
+    private projectWatchAutomatic = false;
+    private projectWatchViews = new Map<string, any>();
+    private projectWatchEventRevision = 0;
     private completedProjectJobs = new Set<string>();
     private mcpJob?: string;
     private mcpResult?: { server: string; action: string; result: any };
@@ -616,9 +620,18 @@ export class ShenScopePanel {
         if (this.projectJob) {
             this.content.append(el('p', 'Working on the project index…', 'empty-text'), this.button('Cancel indexing', async () => { await this.bridge.request('project/cancel', { job_id: this.projectJob, session_id: this.sessionId }); })); return;
         }
-        const index = this.button('Index project', () => this.startProject('build'), 'primary-button', 'graph'); this.content.append(index);
+        const index = this.button('Index project', async () => {
+            if (this.projectWatchLive(this.projectWatch)) { await this.requestProjectWatchRefresh(); }
+            else { await this.startProject('build'); }
+        }, 'primary-button', 'graph'); this.content.append(index);
         const status = await this.bridge.request('project/query', { backend: this.projectBackend, action: 'status', ...(this.sessionId ? { session_id: this.sessionId } : {}) });
         if (revision !== this.renderRevision) { return; }
+        const watchEventRevision = this.projectWatchEventRevision;
+        const watches = this.sessionId ? await this.bridge.request('project/watch_list', { session_id: this.sessionId }) : [];
+        if (revision !== this.renderRevision) { return; }
+        const candidates = watches.filter((watch: any) => watch.backend === this.projectBackend);
+        this.projectWatch = candidates.find((watch: any) => this.projectWatchLive(watch)) ?? candidates[candidates.length - 1];
+        if (this.projectWatch && watchEventRevision !== this.projectWatchEventRevision) { this.projectWatch = this.projectWatchViews.get(this.projectWatch.id) ?? this.projectWatch; }
         if (status.indexed) { index.querySelector('span')!.textContent = 'Refresh index'; index.setAttribute('aria-label', 'Refresh index'); }
         if (!status.indexed) { this.content.append(el('p', 'Index source files to search declarations and compute dependency candidates. Your approval controls parsing and storage.', 'view-description')); return; }
         const metrics = el('div', '', 'project-metrics');
@@ -627,9 +640,12 @@ export class ShenScopePanel {
         }
         const semantic = status.capabilities?.calls === 'semantic';
         this.content.append(metrics, el('p', semantic ? 'Compiler snapshot. Refresh after edits. Static resolution does not prove the target of every runtime call.' : 'Last indexed snapshot. Refresh after changes. Call links use syntax evidence and may miss dynamic or unresolved calls.', 'view-description'));
+        const watchPanel = el('section', '', 'project-watch'); this.renderProjectWatch(watchPanel, this.projectWatch); this.content.append(watchPanel);
+        const compact = this.button('Compact index history', () => this.startProject('compact'), 'secondary-button');
+        compact.disabled = this.projectWatchLive(this.projectWatch); if (compact.disabled) { compact.title = 'Stop watching before compacting the index.'; }
         const cache = el('details', '', 'project-cache'); cache.append(el('summary', 'Index storage · ' + this.formatBytes(status.persistent_bytes ?? 0)),
             el('p', 'Store current index facts to reclaim space used by older index revisions.', 'view-description'),
-            this.button('Compact index history', () => this.startProject('compact'), 'secondary-button'));
+            compact);
         if (this.projectResult?.compacted !== undefined) { cache.open = true; cache.append(el('p', this.projectResult.compacted ? 'Reclaimed ' + this.formatBytes(this.projectResult.saved_bytes) + '.' : 'The current index already uses less space than a replacement snapshot.', 'view-description')); }
         this.content.append(cache);
         if (semantic) {
@@ -724,6 +740,56 @@ export class ShenScopePanel {
         if (!this.completedProjectJobs.has(result.job_id)) { this.projectJob = result.job_id; this.setStatus('Analyzing project…'); }
         await this.renderTab();
     }
+    private projectWatchLive(watch: any): boolean { return !!watch && ['starting', 'watching', 'pending', 'dirty', 'updating', 'stopping'].includes(watch.phase); }
+    private renderProjectWatch(parent: HTMLElement, watch: any): void {
+        const live = this.projectWatchLive(watch); const heading = el('div', '', 'project-watch-heading');
+        const phase = watch?.phase ?? 'off'; const labels: Record<string, string> = { off: 'Off', starting: 'Starting…', watching: 'Watching', pending: 'Waiting for saves', dirty: 'Changes pending', updating: 'Updating…', stopping: 'Stopping…', stopped: 'Stopped', failed: 'Stopped with error' };
+        heading.append(el('h3', 'File changes'), el('span', labels[phase] ?? phase, 'watch-state watch-' + phase));
+        parent.replaceChildren(heading);
+        if (!live) {
+            const label = el('label', '', 'watch-option'); const automatic = el('input'); automatic.type = 'checkbox'; automatic.checked = this.projectWatchAutomatic;
+            automatic.setAttribute('aria-label', 'Update index automatically'); automatic.addEventListener('change', () => { this.projectWatchAutomatic = automatic.checked; });
+            label.append(automatic, el('span', 'Update index automatically')); parent.append(label,
+                el('p', 'Watch saved files and configuration. Approvals still apply to index updates.', 'view-description'),
+                this.button('Watch file changes', () => this.startProjectWatch(), 'secondary-button'));
+        } else {
+            parent.append(el('p', watch.automatic ? 'Saved changes update the index after they settle.' : 'Saved changes stay pending until you refresh the index.', 'view-description'));
+            const actions = el('div', '', 'watch-actions');
+            if (watch.changes?.total && phase !== 'updating' && phase !== 'stopping') { actions.append(this.button(watch.error ? 'Retry index update' : 'Update pending changes', () => this.requestProjectWatchRefresh(), 'primary-button')); }
+            const stop = this.button('Stop watching', async () => {
+                this.projectWatch = await this.bridge.request('project/watch_stop', { session_id: this.sessionId, watch_id: watch.id });
+                this.renderProjectWatch(parent, this.projectWatch);
+            }, 'secondary-button'); stop.disabled = phase === 'stopping'; actions.append(stop); parent.append(actions);
+        }
+        if (watch?.changes?.total) {
+            const changes = el('details', '', 'watch-changes'); changes.append(el('summary', watch.changes.total + ' pending changes'));
+            if (watch.changes.inventory_changed) { changes.append(el('p', 'The saved source input inventory changed.', 'view-description')); }
+            for (const entry of watch.changes.entries ?? []) {
+                const row = el('div', '', 'watch-file'); const source = this.button(entry.path, () => this.bridge.openFile(entry.path), 'source-link'); source.disabled = entry.kind === 'deleted';
+                row.append(el('small', entry.kind), source); changes.append(row);
+            }
+            const page = async (offset: number): Promise<void> => {
+                const result = await this.bridge.request('project/watch_status', { session_id: this.sessionId, watch_id: watch.id, offset, limit: 100 });
+                if (this.projectWatch?.id === result.id) { this.projectWatch = result; this.renderProjectWatch(parent, result); }
+            };
+            if (watch.changes.offset > 0) { changes.append(this.button('Previous changes', () => page(Math.max(0, watch.changes.offset - 100)), 'secondary-button')); }
+            if (watch.changes.has_more) { changes.append(this.button('More changes', () => page(watch.changes.offset + watch.changes.entries.length), 'secondary-button')); } parent.append(changes);
+        }
+        if (watch?.error) { parent.append(el('p', watch.error.message, 'watch-error')); }
+        if (watch?.updates) { parent.append(el('small', watch.updates + (watch.updates === 1 ? ' batch indexed' : ' batches indexed'), 'watch-count')); }
+    }
+    private async startProjectWatch(): Promise<void> {
+        if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title: 'Project changes' }); this.sessionId = session.id; }
+        const watch = await this.bridge.request('project/watch_start', { session_id: this.sessionId, backend: this.projectBackend, automatic: this.projectWatchAutomatic });
+        this.projectWatch = this.projectWatchViews.get(watch.id) ?? watch; await this.renderTab();
+    }
+    private async requestProjectWatchRefresh(): Promise<void> {
+        if (!this.projectWatch) { return; }
+        const revision = this.projectWatchEventRevision;
+        const watch = await this.bridge.request('project/watch_refresh', { session_id: this.sessionId, watch_id: this.projectWatch.id });
+        this.projectWatch = revision === this.projectWatchEventRevision ? watch : this.projectWatchViews.get(watch.id) ?? watch;
+        const panel = this.content.querySelector<HTMLElement>('.project-watch'); if (panel) { this.renderProjectWatch(panel, this.projectWatch); }
+    }
     private async settings(revision: number): Promise<void> {
         const snapshot = await this.bridge.request('config/get'); if (revision !== this.renderRevision) { return; } this.config = snapshot.value; this.configRevision = snapshot.sha256;
         this.content.append(el('h2', 'Settings', 'view-title'), el('p', 'One configuration for your workspace and conversations.', 'view-description'));
@@ -767,6 +833,19 @@ export class ShenScopePanel {
         if (this.disposed) { return; }
         if (method === 'transport/closed') { this.active = false; this.setStatus('Disconnected'); this.notice.textContent = params.message; this.notice.hidden = false; this.approvals.replaceChildren(); this.updateActions(); return; }
         if (method !== 'agent/event' || params.session_id !== this.sessionId) { return; } const payload = params.payload;
+        if (params.kind.startsWith('project_watch_')) {
+            this.projectWatchEventRevision++;
+            this.projectWatchViews.set(payload.id, payload); while (this.projectWatchViews.size > 32) { this.projectWatchViews.delete(this.projectWatchViews.keys().next().value!); }
+            if (payload.backend === this.projectBackend) {
+                this.projectWatch = payload;
+                const panel = this.content.querySelector<HTMLElement>('.project-watch'); if (panel) { this.renderProjectWatch(panel, payload); }
+                if ((params.kind === 'project_watch_updated' || params.kind === 'project_watch_stopped') && this.tab === 'Intelligence') { void this.guard(() => this.renderTab()); }
+            }
+            if (params.kind === 'project_watch_stopped') { for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } } }
+            if (params.kind === 'project_watch_updated') { this.setStatus('Project index updated'); }
+            else if (params.kind === 'project_watch_error') { this.setStatus('Index update needs attention'); }
+            return;
+        }
         if (params.kind === 'context_job_completed' || params.kind === 'context_job_failed') {
             this.completedContextJobs.add(payload.job_id); while (this.completedContextJobs.size > 64) { this.completedContextJobs.delete(this.completedContextJobs.values().next().value!); }
             if (this.contextJob === payload.job_id) { this.contextJob = undefined; }

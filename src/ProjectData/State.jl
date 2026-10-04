@@ -121,12 +121,16 @@ end
 
 const SOURCE_LANGUAGES=Dict(".py"=>"python",".go"=>"go",".ts"=>"typescript",".tsx"=>"tsx",
     ".js"=>"javascript",".jsx"=>"javascript",".rs"=>"rust",".java"=>"java",".jl"=>"julia")
-const INDEX_IGNORES=Set([".git","node_modules","vendor","dist","build",".local",".venv","__pycache__","target",ATOMIC_STAGING_DIRECTORY])
-function project_paths(ctx::RuntimeContext,caps::BackendCapabilities;limit=10000)
+const INDEX_IGNORES=Set([".git",".aws",".ssh",".env","node_modules","vendor","dist","build",".local",".venv","__pycache__","target",ATOMIC_STAGING_DIRECTORY])
+function project_paths(ctx::RuntimeContext,caps::BackendCapabilities;limit=10000,checkpoint=()->check_cancelled(ctx.cancellation))
     paths=String[]
     for (directory,dirs,files) in walkdir(ctx.root;follow_symlinks=false)
         filter!(d->!(d in INDEX_IGNORES) && !islink(joinpath(directory,d)),dirs)
+        # walkdir is a Channel producer: prune its mutable directory list
+        # before yielding through a cancellation/budget checkpoint.
+        checkpoint()
         for file in files
+            checkpoint()
             path=joinpath(directory,file);islink(path) && continue
             get(SOURCE_LANGUAGES,lowercase(splitext(file)[2]),"") in caps.languages || continue
             relative=replace(relpath(path,ctx.root),'\\'=>'/')

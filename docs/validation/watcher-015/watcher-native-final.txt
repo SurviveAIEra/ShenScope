@@ -1,0 +1,1 @@
+PASS: native Workbench with extensions disabled, actual TypeScript checker indexing, permissions, navigation, cache compaction, observed changes, manual refresh, automatic watching, syntax-failure preservation and repair

@@ -1,0 +1,38 @@
+Precompiling ShenScope...
+   5474.2 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 6 seconds. 39 already precompiled.
+[ Info: Listening on: 127.0.0.1:37151, thread id: 2
+[ Info: Server on 127.0.0.1:37151 closing
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/model_error_body.jl:3
+in expression starting at /workspace/ShenScope/test/model_error_body.jl:2
+Fragmented HTTP error envelopes classify only complete bounded structured context errors: Error During Test at /workspace/ShenScope/test/integration/model_error_body.jl:3
+  Got exception outside of a @test
+  MethodError: no method matching ModelRequest(::Vector{Message})
+  The type `ModelRequest` exists, but no method is defined for this combination of argument types when trying to construct it.
+
+  Closest candidates are:
+    ModelRequest(::Vector{Message}, !Matched::Vector{Dict{String, Any}}, !Matched::Int64, !Matched::Dict{String, Any})
+     @ ShenScope /workspace/ShenScope/src/Core/Types.jl:69
+    ModelRequest(::Any, !Matched::Any, !Matched::Any, !Matched::Any)
+     @ ShenScope /workspace/ShenScope/src/Core/Types.jl:69
+
+  Stacktrace:
+   [1] (::var"#2#5"{Symbol, UInt16})(root::String)
+     @ Main /workspace/ShenScope/test/integration/model_error_body.jl:24
+   [2] mktempdir(fn::var"#2#5"{Symbol, UInt16}, parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [3] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [4] macro expansion
+     @ /workspace/ShenScope/test/integration/model_error_body.jl:21 [inlined]
+   [5] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [6] top-level scope
+     @ /workspace/ShenScope/test/integration/model_error_body.jl:4
+   [7] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [8] top-level scope
+     @ /workspace/ShenScope/test/model_error_body.jl:2
+Test Summary:                                                                            | Error  Total  Time
+Fragmented HTTP error envelopes classify only complete bounded structured context errors |     1      1  4.1s

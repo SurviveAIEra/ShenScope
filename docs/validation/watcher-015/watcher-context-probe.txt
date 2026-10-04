@@ -1,0 +1,4 @@
+[ Info: Listening on: 127.0.0.1:39371, thread id: 1
+[ Info: Server on 127.0.0.1:39371 closing
+status=400 bytes=0 expected=72
+parser_error=ShenScopeError protocol: JSON source is incomplete

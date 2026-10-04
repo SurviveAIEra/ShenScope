@@ -27,6 +27,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: editors/package-lock.json
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1.11'
@@ -38,6 +43,12 @@ jobs:
           SHENSCOPE_PARSER_CACHE: ${{ runner.temp }}/shenscope-parser-cache
       - run: julia --project=. -e 'using Pkg; Pkg.instantiate()'
       - run: julia --startup-file=no --threads=4 --project=. test/project_data.jl
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+        working-directory: editors
+      - run: python scripts/setup_semantic.py --verify
+      - run: julia --startup-file=no --threads=4 --project=. test/project_watch_integration.jl
+      - run: julia --startup-file=no --threads=4 --project=. test/project_watch_protocol.jl
+      - run: julia --startup-file=no --threads=4 --project=. test/project_watch.jl
   semantic:
     runs-on: ubuntu-latest
     steps:

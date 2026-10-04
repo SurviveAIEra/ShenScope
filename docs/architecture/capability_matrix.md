@@ -73,6 +73,7 @@ source occurrences and shared tool/CLI/RPC/editor navigation. The three
 builds. Existing nine syntax/database oracles still pass. All seven primary
 reviews remain partial; only OpenCode/DeepSeek/Qwen/Serena semantic-related paths
 are documented as such. The other primary reviews contribute bounded discovery,
-source reads and freshness; no LSP subsystem is invented for them. Watching,
-journal compaction, large graph evidence, multi-project/other-language semantics,
-rename and native Problems integration remain pending.
+source reads and freshness; no LSP subsystem is invented for them. Journal/cache
+compaction and saved-source watching are verified in checkpoints 014/015. Large
+graph evidence, multi-project/other-language semantics, rename and native Problems
+integration remain pending.

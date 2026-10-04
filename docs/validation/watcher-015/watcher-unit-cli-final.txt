@@ -1,0 +1,17 @@
+Precompiling ShenScope...
+   8953.6 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 9 seconds. 39 already precompiled.
+Test Summary:                                                   | Pass  Total   Time
+Watcher options bound work and preserve ordinary runtime scopes |   23     23  20.8s
+Test Summary:                                                                      | Pass  Total  Time
+Settling timer applies a stable hinted batch independently of a long poll interval |    6      6  5.4s
+Test Summary:                                                         | Pass  Total  Time
+Recursive watch snapshots share indexing scope and use actual content |   10     10  0.7s
+Test Summary:                                                                                           | Pass  Total  Time
+Quiet-window batches retain committed baseline across failure and require new content or explicit retry |   14     14  3.5s
+Test Summary:                                                                          | Pass  Total  Time
+Observe-only monitor owns native hints, timers, cancellation and persistence decisions |   14     14  1.5s
+Test Summary:                                                                                                   | Pass  Total  Time
+Nested periodic-only changes, rename, exhausted budgets and denied writes converge or stop without losing facts |   14     14  2.8s
+Test Summary:                                                                    | Pass  Total   Time
+Foreground project watch CLI emits actual owned lifecycle and closes at duration |    7      7  54.2s

@@ -1,0 +1,105 @@
+{
+    "trials": [
+        {
+            "backend": "go_ast",
+            "full_facts_oracle": "equal",
+            "watched_revision": 2,
+            "watch_updates": 1,
+            "watch_scans": 4,
+            "changed_files": 1
+        },
+        {
+            "backend": "go_ast",
+            "full_facts_oracle": "equal",
+            "watched_revision": 3,
+            "watch_updates": 2,
+            "watch_scans": 10,
+            "changed_files": 5
+        },
+        {
+            "backend": "go_ast",
+            "full_facts_oracle": "equal",
+            "watched_revision": 4,
+            "watch_updates": 3,
+            "watch_scans": 15,
+            "changed_files": 20
+        },
+        {
+            "backend": "tree_sitter",
+            "full_facts_oracle": "equal",
+            "watched_revision": 2,
+            "watch_updates": 1,
+            "watch_scans": 8,
+            "changed_files": 1
+        },
+        {
+            "backend": "tree_sitter",
+            "full_facts_oracle": "equal",
+            "watched_revision": 3,
+            "watch_updates": 2,
+            "watch_scans": 14,
+            "changed_files": 5
+        },
+        {
+            "backend": "tree_sitter",
+            "full_facts_oracle": "equal",
+            "watched_revision": 4,
+            "watch_updates": 3,
+            "watch_scans": 20,
+            "changed_files": 20
+        },
+        {
+            "backend": "codegraph",
+            "full_facts_oracle": "equal",
+            "watched_revision": 2,
+            "watch_updates": 1,
+            "watch_scans": 55,
+            "changed_files": 1
+        },
+        {
+            "backend": "codegraph",
+            "full_facts_oracle": "equal",
+            "watched_revision": 3,
+            "watch_updates": 2,
+            "watch_scans": 94,
+            "changed_files": 5
+        },
+        {
+            "backend": "codegraph",
+            "full_facts_oracle": "equal",
+            "watched_revision": 4,
+            "watch_updates": 3,
+            "watch_scans": 133,
+            "changed_files": 20
+        },
+        {
+            "backend": "typescript",
+            "full_facts_oracle": "equal",
+            "watched_revision": 2,
+            "watch_updates": 1,
+            "watch_scans": 23,
+            "changed_files": 1
+        },
+        {
+            "backend": "typescript",
+            "full_facts_oracle": "equal",
+            "watched_revision": 3,
+            "watch_updates": 2,
+            "watch_scans": 42,
+            "changed_files": 5
+        },
+        {
+            "backend": "typescript",
+            "full_facts_oracle": "equal",
+            "watched_revision": 4,
+            "watch_updates": 3,
+            "watch_scans": 65,
+            "changed_files": 20
+        }
+    ],
+    "fixture_files": 21,
+    "limits": [
+        "Small offline fixtures; no large-graph convergence latency or speed-advantage claim.",
+        "Recursive content scans are periodic; native root events are hints, not recursive coverage."
+    ]
+}

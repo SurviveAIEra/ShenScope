@@ -2,9 +2,11 @@ mutable struct ProjectManager
     backends::Dict{String,AbstractProjectDataBackend}
     states::Dict{String,ProjectState}
     jobs::Dict{String,Dict{String,Any}}
+    watches::Dict{String,ProjectWatch}
+    mutations::Set{String}
     mutex::ReentrantLock
 end
-ProjectManager()=ProjectManager(Dict{String,AbstractProjectDataBackend}(),Dict{String,ProjectState}(),Dict{String,Dict{String,Any}}(),ReentrantLock())
+ProjectManager()=ProjectManager(Dict{String,AbstractProjectDataBackend}(),Dict{String,ProjectState}(),Dict{String,Dict{String,Any}}(),Dict{String,ProjectWatch}(),Set{String}(),ReentrantLock())
 struct ProjectTool <: AbstractTool
     manager::ProjectManager
 end
@@ -33,6 +35,24 @@ function project_backend!(manager::ProjectManager,name::String)
     end
 end
 function execute(tool::ProjectTool,args::AbstractDict,ctx::RuntimeContext)
+    name=get(args,"backend","tree_sitter");manager=tool.manager
+    mutation=args["action"] in ("build","update","compact")
+    key=digest(ctx.root)*":"*name
+    if mutation
+        lock(manager.mutex) do
+            any(w->w.context.root==ctx.root && w.state.backend==name && watch_live(w),values(manager.watches)) &&
+                throw(ShenScopeError(:watch_busy,"Stop this backend watcher before changing its index manually"))
+            key in manager.mutations && throw(ShenScopeError(:graph_busy,"Another operation owns this project index"))
+            push!(manager.mutations,key)
+        end
+    end
+    try
+        execute_project(tool,args,ctx)
+    finally
+        mutation && lock(manager.mutex) do;delete!(manager.mutations,key);end
+    end
+end
+function execute_project(tool::ProjectTool,args::AbstractDict,ctx::RuntimeContext)
     name=get(args,"backend","tree_sitter");manager=tool.manager
     backend=lock(manager.mutex) do;project_backend!(manager,name);end
     key=digest(ctx.root)*":"*name
@@ -65,6 +85,8 @@ function execute(tool::ProjectTool,args::AbstractDict,ctx::RuntimeContext)
     analyze(analyzer,state,args,ctx)
 end
 function cleanup_projects!(manager::ProjectManager)
+    watches=lock(manager.mutex) do;collect(values(manager.watches));end
+    for watch in watches;stop_project_watch!(watch;wait_for_completion=false);end
     jobs=lock(manager.mutex) do;collect(values(manager.jobs));end
     for job in jobs
         get(job,"context",nothing)!==nothing && cancel!(job["context"].cancellation)
@@ -73,4 +95,5 @@ function cleanup_projects!(manager::ProjectManager)
     for job in jobs
         task=get(job,"task",nothing);task!==nothing && task!==current_task() && wait(task)
     end
+    for watch in watches;stop_project_watch!(watch);end
 end

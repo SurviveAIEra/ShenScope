@@ -194,3 +194,20 @@ from project graph storage and filesystem observation.
 Checkpoint 014 verifies streaming replay, atomic compaction, stale-writer fencing,
 hard-killed staging cleanup and actual compiler/CLI/RPC/editor flows. It does not
 establish watcher functionality, Windows durability or large-project performance.
+
+Checkpoint 015 implements owned monitoring, periodic recursive content checks,
+single-slot wakeups, a distinct settling timer, retained failure fingerprints,
+scoped asynchronous RPC and shared editor controls. Additional inspected sources:
+Codex `app-server/src/fs_watch.rs` (connection/watch ownership and drained unwatch),
+ZCode `fileWatcher/fileWatcherService.ts` (coalesced paths and timer/emitter cleanup),
+Qwen `lsp-config-watcher.ts` (invalid configuration preserves current runtime),
+and DeepSeek `fs-local/src/index.ts` lines 64–93 (ready/abort/error/close and explicit
+provider containment caveat). Julia independently supplies hashing, journal
+transaction reuse, baseline confirmation and policy/budget ownership. Its RPC
+stop acknowledges cancellation first and publishes final retirement after drain.
+Native hints are root-only; recursive content scans supply convergence. Twelve
+real 1/5/20-file watch/full-fact oracles and actual TypeScript configuration/scope
+tests cover the selected behavior. These remain partial reviews and small Linux
+evidence, not a complete synthesis of every upstream advantage or a performance
+claim. Native retry/backpressure enhancements and larger projects remain future
+research. The Core target is still unmet.

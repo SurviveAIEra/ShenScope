@@ -196,3 +196,17 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .shenscope-panel .project-cache { margin:10px 0 16px; padding:9px 11px; border:1px solid var(--border); border-radius:7px; font-size:11px; }
 .shenscope-panel .project-cache summary { cursor:pointer; color:var(--muted); }
 .shenscope-panel .project-cache p { font-size:11px; }
+.project-watch { margin: 10px 0 16px; padding: 12px; border: 1px solid var(--vscode-panel-border, #373737); border-radius: 8px; }
+.project-watch-heading, .watch-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.project-watch-heading { justify-content: space-between; }
+.project-watch-heading h3 { margin: 0; font-size: 12px; font-weight: 600; }
+.watch-state { font-size: 11px; color: var(--vscode-descriptionForeground); }
+.watch-watching { color: var(--vscode-testing-iconPassed, #73c991); }
+.watch-pending, .watch-dirty { color: var(--vscode-editorWarning-foreground, #cca700); }
+.watch-error, .watch-failed { color: var(--vscode-errorForeground, #f48771); }
+.watch-option { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; font-size: 12px; }
+.watch-option input { width: 14px; height: 14px; margin: 0; }
+.watch-count { display: block; margin-top: 10px; color: var(--vscode-descriptionForeground); }
+.watch-changes { margin-top: 12px; font-size: 12px; }
+.watch-file { display: grid; grid-template-columns: 70px minmax(0, 1fr); align-items: baseline; gap: 8px; margin-top: 6px; }
+.watch-file .source-link { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }

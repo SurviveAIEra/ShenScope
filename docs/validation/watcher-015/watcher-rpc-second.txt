@@ -1,0 +1,26 @@
+Precompiling ShenScope...
+   5242.9 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 5 seconds. 39 already precompiled.
+ERROR: LoadError: Some tests did not pass: 35 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/project_watch_protocol.jl:1
+in expression starting at /workspace/ShenScope/test/project_watch_protocol.jl:2
+Watch RPC owns conversations, excludes manual mutations and drains independently: Test Failed at /workspace/ShenScope/test/unit/project_watch_protocol.jl:75
+  Expression: isempty(server.approvals) && !(iscancelled(owner.cancellation))
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#1#12")(root::String)
+   @ Main /workspace/ShenScope/test/unit/project_watch_protocol.jl:75
+ [3] mktempdir(fn::var"#1#12", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/unit/project_watch_protocol.jl:2 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/unit/project_watch_protocol.jl:2
+Test Summary:                                                                    | Pass  Fail  Total   Time
+Watch RPC owns conversations, excludes manual mutations and drains independently |   35     1     36  48.8s

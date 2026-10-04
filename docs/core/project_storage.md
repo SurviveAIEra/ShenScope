@@ -96,4 +96,4 @@ Go AST/Tree-sitter/CodeGraph and compiler oracles verify the changed replay path
 The GUI flows use actual Core/TypeScript in native Workbench and standalone VSIX.
 See checkpoint 014 for raw evidence. No disk-pull failure injection, Windows,
 large-graph peak-memory benchmark or live-model result is inferred from these
-small Linux fixtures. File watching remains the next implementation step.
+small Linux fixtures. Saved-source watching is described in [project_watch.md](project_watch.md).

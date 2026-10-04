@@ -48,6 +48,7 @@ function cli_project_arguments(positional::Vector{String}, flags::AbstractDict)
 end
 
 function cli_project_command(positional::Vector{String},flags::AbstractDict,config::AbstractDict,state_dir::String)
+    length(positional)>=2 && positional[2]=="watch" && return cli_project_watch(positional,flags,config,state_dir)
     args=cli_project_arguments(positional,flags)
     policy=permissions_from_config(config)
     get(flags,"--allow-process",false) && (policy.rules[:process]=Allow)

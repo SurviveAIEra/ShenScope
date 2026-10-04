@@ -1,0 +1,532 @@
+Test Summary:                         | Pass  Total  Time
+Cancellation tree and dynamic context |    7      7  0.9s
+Test Summary:                                | Pass  Total  Time
+Concurrent budget reservation and accounting |    9      9  1.1s
+Test Summary:                             | Pass  Total  Time
+Permission decisions and path containment |    7      7  0.7s
+Test Summary:                                      | Pass  Total  Time
+Durable journal, torn tails and revision conflicts |    6      6  2.5s
+Test Summary:                                   | Pass  Total  Time
+Session reconstruction and unknown side effects |   11     11  4.4s
+Test Summary:                                                        |  Pass  Total  Time
+Compiler UTF-16 positions normalize to validated UTF-8 source ranges | 12050  12050  0.4s
+Test Summary:                                                             | Pass  Total  Time
+Compiler JSONC preserves literals and rejects ambiguous or excessive data |   13     13  0.2s
+Test Summary:                                                            | Pass  Total  Time
+Compiler configuration inheritance, source scope and post-read integrity |   17     17  3.0s
+Test Summary:                                               | Pass  Total  Time
+Compiler globs have bounded segment and recursive semantics |    6      6  0.0s
+Test Summary:                                                                  | Pass  Total  Time
+CLI navigation encodes one owned cursor or symbol with bounded evidence paging |   12     12  1.0s
+Test Summary:                                             | Pass  Total  Time
+Atomic replacement remains complete to concurrent readers |    3      3  0.4s
+Test Summary:                                   | Pass  Total  Time
+Oversized unterminated journal input is bounded |    2      2  0.1s
+Test Summary:                                                                        | Pass  Total  Time
+Compaction cancellation, expired budgets and post-approval denial preserve the cache |    7      7  6.8s
+Test Summary:                                                               | Pass  Total   Time
+Actual Julia process replacement fences a stale parent without losing facts |    5      5  12.6s
+Test Summary:                                                                          | Pass  Total  Time
+Killed snapshot writer leaves the published file intact and one identifiable temporary |    7      7  2.8s
+Test Summary:                                                                 | Pass  Total  Time
+Bounded atomic streams publish once and discard incomplete or rejected output |   15     15  0.5s
+Test Summary:                                                                            | Pass  Total  Time
+Streaming journal validates framing without accumulating history or repairing corruption |   16     16  0.5s
+Test Summary:                                                                   | Pass  Total  Time
+Project compaction retains revision/facts and fences stale writers and recovery |   26     26  5.1s
+Test Summary:                                                                  | Pass  Total  Time
+Staging reclamation preserves live, foreign, symlinked and malformed artifacts |    8      8  0.2s
+Test Summary:                                            | Pass  Total  Time
+Empty committed snapshot and metadata survive round trip |    4      4  0.1s
+Test Summary:                                                   | Pass  Total  Time
+Watcher options bound work and preserve ordinary runtime scopes |   23     23  2.6s
+Test Summary:                                                         | Pass  Total  Time
+Recursive watch snapshots share indexing scope and use actual content |   10     10  0.8s
+Test Summary:                                                                                           | Pass  Total  Time
+Quiet-window batches retain committed baseline across failure and require new content or explicit retry |   14     14  1.6s
+Test Summary:                                                                          | Pass  Total  Time
+Observe-only monitor owns native hints, timers, cancellation and persistence decisions |   14     14  1.3s
+Test Summary:                                                                                                   | Pass  Total  Time
+Nested periodic-only changes, rename, exhausted budgets and denied writes converge or stop without losing facts |   14     14  1.2s
+Test Summary:                                        | Pass  Total  Time
+Configuration profiles, credential rejection and CAS |   10     10  4.6s
+Test Summary:                         | Pass  Total  Time
+Canonical numeric journal round trips |    3      3  0.6s
+Test Summary:                                         | Pass  Total  Time
+Scoped memory, lexical retrieval and durable versions |   25     25  4.2s
+Test Summary:                                           | Pass  Total  Time
+Memory import validates every item before atomic commit |    7      7  0.7s
+Test Summary:                                                       | Pass  Total   Time
+Agent tool calling preserves contract evidence without loading code |    4      4  24.3s
+Test Summary:                                                        | Pass  Total  Time
+Julia interface contracts, ambiguity evidence and world-age boundary |   19     19  1.5s
+Test Summary:                                                                     | Pass  Total   Time
+Compiler diagnostics use listed targets, bounded output and independent processes |   23     23  18.0s
+Test Summary:                                           | Pass  Total  Time
+Task definition validation and independent graph checks |   15     15  5.0s
+Test Summary:                                                   | Pass  Total  Time
+Claims, dependency release, priority, fences and detached views |   13     13  7.7s
+Test Summary:                                               | Pass  Total  Time
+Safe retries, uncertain effects and explicit reconciliation |   16     16  2.7s
+Test Summary:                                                      | Pass  Total  Time
+Exclusive effects, cancellation propagation and read-only recovery |   16     16  1.3s
+Test Summary:                                                         | Pass  Total  Time
+Large result artifacts, digest verification and descriptor collisions |    6      6  0.6s
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.7s
+Test Summary:                                                    | Pass  Total   Time
+Protocol version, config ownership, secrets and session commands |   15     15  15.5s
+Test Summary:                                        | Pass  Total  Time
+Agent protocol permission ownership and cancellation |   13     13  1.9s
+Test Summary:                                               | Pass  Total  Time
+Asynchronous task protocol, approvals and session ownership |   13     13  4.6s
+Test Summary:                                                | Pass  Total  Time
+Task jobs block config replacement and drain owned processes |    5      5  1.3s
+Test Summary:                                | Pass  Total   Time
+MCP bounded schema assertions and references |   40     40  17.3s
+Test Summary:                                 | Pass  Total  Time
+MCP framing, content and configuration bounds |   25     25  1.2s
+Test Summary:                                                           | Pass  Total  Time
+MCP async protocol keeps approvals, jobs and connections session scoped |   33     33  5.2s
+Test Summary:                                                      | Pass  Total  Time
+Skills YAML metadata is bounded, typed and independently validated |   21     21  3.2s
+Test Summary:                                                               | Pass  Total  Time
+Skills discovery preserves sources, precedence, diagnostics and lazy bodies |   12     12  1.1s
+Test Summary:                                                             | Pass  Total  Time
+Skills activation, resource confinement, replay and permission boundaries |   22     22  2.5s
+Test Summary:                                        | Pass  Total  Time
+Skills source revisions are rechecked after approval |    3      3  0.1s
+Test Summary:                                                            | Pass  Total  Time
+Skills RPC scopes approvals, durable activation and source-opening proof |   23     23  2.4s
+Test Summary:                                                   | Pass  Total  Time
+Skills job cancellation drains approval and retains peer policy |    6      6  0.4s
+Test Summary:                                                            | Pass  Total  Time
+Hooks configuration has explicit points, bounds and no permission grants |   29     29  0.5s
+Test Summary:                                                   | Pass  Total  Time
+Hook source identity, read scope, ambiguity and explicit reload |   14     14  1.7s
+Test Summary:                              | Pass  Total  Time
+Context settings and exact model envelopes |   50     50  1.9s
+Test Summary:                                                 | Pass  Total  Time
+Instruction scope discovery, permissions and source revisions |   13     13  0.5s
+Test Summary:                                                 | Pass  Total  Time
+Balanced tool groups, no reasoning split and Unicode excerpts |   24     24  0.2s
+Test Summary:                                                   | Pass  Total  Time
+Durable context projections preserve transcripts and provenance |   17     17  1.3s
+Test Summary:                                              | Pass  Total  Time
+Compaction failure is atomic and fixed context is retained |    7      7  0.4s
+Test Summary:                                                       | Pass  Total  Time
+Original tool artifacts are scoped, permissioned and digest checked |    9      9  0.5s
+Test Summary:                                             | Pass  Total  Time
+Optional model summaries bind citations and shared budget |   10     10  1.2s
+Test Summary:                                                    | Pass  Total  Time
+Incremental process UTF-8 boundaries and malformed byte recovery |  128    128  0.0s
+Test Summary:                                                     | Pass  Total  Time
+Actual fragmented stdout and stderr match retained process output |    7      7  0.7s
+Test Summary:                                                        | Pass  Total  Time
+Terminal rendering sanitizes control sequences and handles wide text |   16     16  0.5s
+Test Summary:                                   | Pass  Total  Time
+SSE Unicode fragmentation, multiline and limits |    3      3  0.4s
+Test Summary:                                             | Pass  Total  Time
+OpenAI-compatible real HTTP tool stream and native replay |    7      7  7.3s
+Test Summary:                             | Pass  Total  Time
+Anthropic signature and tool continuation |    5      5  2.9s
+Test Summary:                                        | Pass  Total  Time
+OpenAI Responses encrypted reasoning and call stream |    3      3  2.2s
+Test Summary:                      | Pass  Total  Time
+Gemini and Ollama native protocols |    5      5  4.5s
+Test Summary:                                                    | Pass  Total  Time
+Retry before delivery, no replay after delivery, malformed calls |    5      5  9.5s
+HTTP context overflow recovers before delivery without replay: Error During Test at /workspace/ShenScope/test/integration/context.jl:16
+  Test threw exception
+  Expression: run_agent!(provider, "Continue without repeating previous tools", ctx; session, tools) == "Resumed with original evidence"
+  request: Model endpoint returned HTTP 400
+  Stacktrace:
+    [1] stream_chat(p::HTTPProvider, request::ModelRequest, sink::ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/Models/HTTP.jl:115
+    [2] request_with_context_recovery!(provider::HTTPProvider, session::Session, ctx::RuntimeContext; tools::Vector{AbstractTool}, schemas::Vector{Dict{String, Any}}, max_output::Int64, options::Dict{String, Any}, context_bytes::Int64, hook_context::String)
+      @ ShenScope /workspace/ShenScope/src/Context/Recovery.jl:40
+    [3] request_with_context_recovery!
+      @ /workspace/ShenScope/src/Context/Recovery.jl:11 [inlined]
+    [4] (::ShenScope.var"#1435#1443"{Vector{AbstractTool}, AgentControl, Int64, Dict{String, Any}, Int64, Int64, HTTPProvider, RuntimeContext, Session})()
+      @ ShenScope /workspace/ShenScope/src/Core/AgentLoop.jl:68
+    [5] with_lifecycle_hooks(callback::ShenScope.var"#1435#1443"{Vector{AbstractTool}, AgentControl, Int64, Dict{String, Any}, Int64, Int64, HTTPProvider, RuntimeContext, Session}, tools::Vector{AbstractTool}, ctx::RuntimeContext; effect_observer::Nothing)
+      @ ShenScope /workspace/ShenScope/src/Hooks/Lifecycle.jl:6
+    [6] with_lifecycle_hooks
+      @ /workspace/ShenScope/src/Hooks/Lifecycle.jl:1 [inlined]
+    [7] #1434
+      @ /workspace/ShenScope/src/Core/AgentLoop.jl:53 [inlined]
+    [8] with(::ShenScope.var"#1434#1442"{Vector{AbstractTool}, AgentControl, Int64, Dict{String, Any}, Int64, Int64, HTTPProvider, RuntimeContext, Session}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, RuntimeContext}}, RuntimeContext})
+      @ Base.ScopedValues ./scopedvalues.jl:269
+    [9] with_context
+      @ /workspace/ShenScope/src/Runtime/Context.jl:31 [inlined]
+   [10] run_agent!(provider::HTTPProvider, prompt::String, ctx::RuntimeContext; session::Session, tools::Vector{AbstractTool}, control::AgentControl, max_output::Int64, options::Dict{String, Any}, concurrency::Int64, context_bytes::Int64)
+      @ ShenScope /workspace/ShenScope/src/Core/AgentLoop.jl:52
+   [11] run_agent!
+      @ /workspace/ShenScope/src/Core/AgentLoop.jl:38 [inlined]
+   [12] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [13] (::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext})(endpoint::String)
+      @ Main /workspace/ShenScope/test/integration/context.jl:16
+
+  caused by: HTTP.RequestError:
+  HTTP.Request:
+  HTTP.Messages.Request:
+  """
+  POST /chat/completions HTTP/1.1
+  Content-Type: application/json
+  Host: 127.0.0.1:46289
+  Accept: */*
+  User-Agent: HTTP.jl/1.11.7
+  Accept-Encoding: gzip
+  Transfer-Encoding: chunked
+
+  [Message Body was streamed]"""Underlying error:
+  request: Model endpoint returned HTTP 400
+  Stacktrace:
+    [1] (::HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}})(req::HTTP.Messages.Request; proxy::Nothing, socket_type::Type, socket_type_tls::Nothing, readtimeout::Int64, connect_timeout::Int64, logerrors::Bool, logtag::Nothing, closeimmediately::Bool, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, decompress::Nothing, verbose::Int64, status_exception::Bool})
+      @ HTTP.ConnectionRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ConnectionRequest.jl:143
+    [2] connections
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ConnectionRequest.jl:60 [inlined]
+    [3] (::HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}})(req::HTTP.Messages.Request; retry::Bool, retries::Int64, retry_delays::ExponentialBackOff, retry_check::Function, retry_non_idempotent::Bool, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, decompress::Nothing, verbose::Int64, readtimeout::Int64, connect_timeout::Int64, status_exception::Bool})
+      @ HTTP.RetryRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RetryRequest.jl:35
+    [4] manageretries
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RetryRequest.jl:30 [inlined]
+    [5] (::HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}})(req::HTTP.Messages.Request; cookies::Bool, cookiejar::HTTP.Cookies.CookieJar, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, decompress::Nothing, verbose::Int64, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.CookieRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/CookieRequest.jl:42
+    [6] (::HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}})(req::HTTP.Messages.Request; iofunction::Function, decompress::Nothing, basicauth::Bool, detect_content_type::Bool, canonicalize_headers::Bool, kw::@Kwargs{verbose::Int64, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.HeadersRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/HeadersRequest.jl:71
+    [7] defaultheaders
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/HeadersRequest.jl:14 [inlined]
+    [8] (::HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}})(req::HTTP.Messages.Request; redirect::Bool, redirect_limit::Int64, redirect_method::Nothing, forwardheaders::Bool, response_stream::Nothing, kw::@Kwargs{verbose::Int64, iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.RedirectRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RedirectRequest.jl:17
+    [9] redirects
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RedirectRequest.jl:14 [inlined]
+   [10] (::HTTP.MessageRequest.var"#makerequest#3"{HTTP.MessageRequest.var"#makerequest#1#4"{HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}}}})(method::String, url::URIs.URI, headers::Vector{Pair{String, String}}, body::Nothing; copyheaders::Bool, response_stream::Nothing, http_version::HTTP.Strings.HTTPVersion, verbose::Int64, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool, redirect::Bool})
+      @ HTTP.MessageRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/MessageRequest.jl:35
+   [11] makerequest
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/MessageRequest.jl:24 [inlined]
+   [12] request(stack::HTTP.MessageRequest.var"#makerequest#3"{HTTP.MessageRequest.var"#makerequest#1#4"{HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}}}}, method::String, url::String, h::Vector{Pair{String, String}}, b::Nothing, q::Nothing; headers::Vector{Pair{String, String}}, body::Nothing, query::Nothing, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool, redirect::Bool})
+      @ HTTP /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:465
+   [13] #request#20
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:323 [inlined]
+   [14] open(f::Function, method::String, url::String, headers::Vector{Pair{String, String}}; kw::@Kwargs{readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool, redirect::Bool})
+      @ HTTP /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:587
+   [15] open
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:587 [inlined]
+   [16] stream_attempt(p::HTTPProvider, prepared::ShenScope.PreparedRequest, sink::Function, ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/Models/HTTP.jl:36
+   [17] stream_chat(p::HTTPProvider, request::ModelRequest, sink::ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/Models/HTTP.jl:106
+   [18] request_with_context_recovery!(provider::HTTPProvider, session::Session, ctx::RuntimeContext; tools::Vector{AbstractTool}, schemas::Vector{Dict{String, Any}}, max_output::Int64, options::Dict{String, Any}, context_bytes::Int64, hook_context::String)
+      @ ShenScope /workspace/ShenScope/src/Context/Recovery.jl:40
+   [19] request_with_context_recovery!
+      @ /workspace/ShenScope/src/Context/Recovery.jl:11 [inlined]
+   [20] (::ShenScope.var"#1435#1443"{Vector{AbstractTool}, AgentControl, Int64, Dict{String, Any}, Int64, Int64, HTTPProvider, RuntimeContext, Session})()
+      @ ShenScope /workspace/ShenScope/src/Core/AgentLoop.jl:68
+   [21] with_lifecycle_hooks(callback::ShenScope.var"#1435#1443"{Vector{AbstractTool}, AgentControl, Int64, Dict{String, Any}, Int64, Int64, HTTPProvider, RuntimeContext, Session}, tools::Vector{AbstractTool}, ctx::RuntimeContext; effect_observer::Nothing)
+      @ ShenScope /workspace/ShenScope/src/Hooks/Lifecycle.jl:6
+   [22] with_lifecycle_hooks
+      @ /workspace/ShenScope/src/Hooks/Lifecycle.jl:1 [inlined]
+   [23] #1434
+      @ /workspace/ShenScope/src/Core/AgentLoop.jl:53 [inlined]
+   [24] with(::ShenScope.var"#1434#1442"{Vector{AbstractTool}, AgentControl, Int64, Dict{String, Any}, Int64, Int64, HTTPProvider, RuntimeContext, Session}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, RuntimeContext}}, RuntimeContext})
+      @ Base.ScopedValues ./scopedvalues.jl:269
+   [25] with_context
+      @ /workspace/ShenScope/src/Runtime/Context.jl:31 [inlined]
+   [26] run_agent!(provider::HTTPProvider, prompt::String, ctx::RuntimeContext; session::Session, tools::Vector{AbstractTool}, control::AgentControl, max_output::Int64, options::Dict{String, Any}, concurrency::Int64, context_bytes::Int64)
+      @ ShenScope /workspace/ShenScope/src/Core/AgentLoop.jl:52
+   [27] run_agent!
+      @ /workspace/ShenScope/src/Core/AgentLoop.jl:38 [inlined]
+   [28] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [29] (::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext})(endpoint::String)
+      @ Main /workspace/ShenScope/test/integration/context.jl:16
+
+  caused by: request: Model endpoint returned HTTP 400
+  Stacktrace:
+    [1] (::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector})(stream::HTTP.Streams.Stream{HTTP.Messages.Response, HTTP.Connections.Connection{TCPSocket}})
+      @ ShenScope /workspace/ShenScope/src/Models/HTTP.jl:49
+    [2] macro expansion
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/StreamRequest.jl:73 [inlined]
+    [3] macro expansion
+      @ ./task.jl:498 [inlined]
+    [4] streamlayer(stream::HTTP.Streams.Stream{HTTP.Messages.Response, HTTP.Connections.Connection{TCPSocket}}; iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, decompress::Nothing, logerrors::Bool, logtag::Nothing, timedout::ConcurrentUtilities.TimedOut{HTTP.Messages.Response}, sse_callback::Nothing, kw::@Kwargs{verbose::Int64})
+      @ HTTP.StreamRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/StreamRequest.jl:39
+    [5] streamlayer
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/StreamRequest.jl:21 [inlined]
+    [6] (::HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}})(stream::HTTP.Streams.Stream{HTTP.Messages.Response, HTTP.Connections.Connection{TCPSocket}}; status_exception::Bool, timedout::ConcurrentUtilities.TimedOut{HTTP.Messages.Response}, logerrors::Bool, logtag::Nothing, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, decompress::Nothing, verbose::Int64})
+      @ HTTP.ExceptionRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ExceptionRequest.jl:14
+    [7] exceptions
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ExceptionRequest.jl:13 [inlined]
+    [8] #2
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/TimeoutRequest.jl:22 [inlined]
+    [9] macro expansion
+      @ /workspace/julia-depot/packages/ConcurrentUtilities/cxrmA/src/try_with_timeout.jl:92 [inlined]
+   [10] (::ConcurrentUtilities.var"#2#4"{HTTP.Messages.Response, Channel{HTTP.Messages.Response}, HTTP.TimeoutRequest.var"#2#5"{Bool, Nothing, @Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, decompress::Nothing, verbose::Int64, status_exception::Bool}, HTTP.Streams.Stream{HTTP.Messages.Response, HTTP.Connections.Connection{TCPSocket}}, HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}, Timer})()
+      @ ConcurrentUtilities /workspace/julia-depot/packages/ConcurrentUtilities/cxrmA/src/ConcurrentUtilities.jl:10
+  Stacktrace:
+    [1] try_yieldto(undo::typeof(Base.ensure_rescheduled))
+      @ Base ./task.jl:958
+    [2] wait()
+      @ Base ./task.jl:1022
+    [3] wait(c::Base.GenericCondition{ReentrantLock}; first::Bool)
+      @ Base ./condition.jl:130
+    [4] wait
+      @ ./condition.jl:125 [inlined]
+    [5] take_unbuffered(c::Channel{HTTP.Messages.Response})
+      @ Base ./channels.jl:510
+    [6] take!
+      @ ./channels.jl:487 [inlined]
+    [7] try_with_timeout(f::Function, timeout::Int64, ::Type{HTTP.Messages.Response})
+      @ ConcurrentUtilities /workspace/julia-depot/packages/ConcurrentUtilities/cxrmA/src/try_with_timeout.jl:99
+    [8] (::HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}})(stream::HTTP.Streams.Stream{HTTP.Messages.Response, HTTP.Connections.Connection{TCPSocket}}; readtimeout::Int64, logerrors::Bool, logtag::Nothing, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, decompress::Nothing, verbose::Int64, status_exception::Bool})
+      @ HTTP.TimeoutRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/TimeoutRequest.jl:21
+    [9] (::HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}})(req::HTTP.Messages.Request; proxy::Nothing, socket_type::Type, socket_type_tls::Nothing, readtimeout::Int64, connect_timeout::Int64, logerrors::Bool, logtag::Nothing, closeimmediately::Bool, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, decompress::Nothing, verbose::Int64, status_exception::Bool})
+      @ HTTP.ConnectionRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ConnectionRequest.jl:122
+   [10] connections
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ConnectionRequest.jl:60 [inlined]
+Precompiling ShenScope...
+   6059.3 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 6 seconds. 39 already precompiled.
+[ Info: Listening on: 127.0.0.1:45447, thread id: 1
+[ Info: Server on 127.0.0.1:45447 closing
+[ Info: Listening on: 127.0.0.1:34831, thread id: 1
+[ Info: Server on 127.0.0.1:34831 closing
+[ Info: Listening on: 127.0.0.1:39163, thread id: 1
+[ Info: Server on 127.0.0.1:39163 closing
+[ Info: Listening on: 127.0.0.1:34141, thread id: 1
+[ Info: Server on 127.0.0.1:34141 closing
+[ Info: Listening on: 127.0.0.1:42585, thread id: 1
+[ Info: Server on 127.0.0.1:42585 closing
+[ Info: Listening on: 127.0.0.1:46037, thread id: 1
+[ Info: Server on 127.0.0.1:46037 closing
+[ Info: Listening on: 127.0.0.1:32813, thread id: 1
+[ Info: Server on 127.0.0.1:32813 closing
+[ Info: Listening on: 127.0.0.1:33009, thread id: 3
+[ Info: Server on 127.0.0.1:33009 closing
+[ Info: Listening on: 127.0.0.1:46289, thread id: 1
+[ Info: Server on 127.0.0.1:46289 closing
+ERROR: LoadError: Some tests did not pass: 4 passed, 6 failed, 3 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/context.jl:1
+in expression starting at /workspace/ShenScope/test/runtests.jl:27
+   [11] (::HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}})(req::HTTP.Messages.Request; retry::Bool, retries::Int64, retry_delays::ExponentialBackOff, retry_check::Function, retry_non_idempotent::Bool, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, decompress::Nothing, verbose::Int64, readtimeout::Int64, connect_timeout::Int64, status_exception::Bool})
+      @ HTTP.RetryRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RetryRequest.jl:35
+   [12] manageretries
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RetryRequest.jl:30 [inlined]
+   [13] (::HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}})(req::HTTP.Messages.Request; cookies::Bool, cookiejar::HTTP.Cookies.CookieJar, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, decompress::Nothing, verbose::Int64, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.CookieRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/CookieRequest.jl:42
+   [14] (::HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}})(req::HTTP.Messages.Request; iofunction::Function, decompress::Nothing, basicauth::Bool, detect_content_type::Bool, canonicalize_headers::Bool, kw::@Kwargs{verbose::Int64, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.HeadersRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/HeadersRequest.jl:71
+   [15] defaultheaders
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/HeadersRequest.jl:14 [inlined]
+   [16] (::HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}})(req::HTTP.Messages.Request; redirect::Bool, redirect_limit::Int64, redirect_method::Nothing, forwardheaders::Bool, response_stream::Nothing, kw::@Kwargs{verbose::Int64, iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.RedirectRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RedirectRequest.jl:17
+   [17] redirects
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RedirectRequest.jl:14 [inlined]
+   [18] (::HTTP.MessageRequest.var"#makerequest#3"{HTTP.MessageRequest.var"#makerequest#1#4"{HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}}}})(method::String, url::URIs.URI, headers::Vector{Pair{String, String}}, body::Nothing; copyheaders::Bool, response_stream::Nothing, http_version::HTTP.Strings.HTTPVersion, verbose::Int64, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool, redirect::Bool})
+      @ HTTP.MessageRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/MessageRequest.jl:35
+   [19] makerequest
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/MessageRequest.jl:24 [inlined]
+   [20] request(stack::HTTP.MessageRequest.var"#makerequest#3"{HTTP.MessageRequest.var"#makerequest#1#4"{HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}}}}, method::String, url::String, h::Vector{Pair{String, String}}, b::Nothing, q::Nothing; headers::Vector{Pair{String, String}}, body::Nothing, query::Nothing, kw::@Kwargs{iofunction::ShenScope.var"#168#173"{ShenScope.PreparedRequest, ShenScope.var"#178#181"{ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, Base.RefValue{Bool}}, RuntimeContext, Symbol, Float64, SSEDecoder, ShenScope.StreamCollector}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool, redirect::Bool})
+      @ HTTP /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:465
+   [21] #request#20
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:323 [inlined]
+   [22] open(f::Function, method::String, url::String, headers::Vector{Pair{String, String}}; kw::@Kwargs{readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool, redirect::Bool})
+      @ HTTP /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:587
+   [23] open
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:587 [inlined]
+   [24] stream_attempt(p::HTTPProvider, prepared::ShenScope.PreparedRequest, sink::Function, ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/Models/HTTP.jl:36
+   [25] stream_chat(p::HTTPProvider, request::ModelRequest, sink::ShenScope.var"#153#154"{ShenScope.ModelDelivery, RuntimeContext}, ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/Models/HTTP.jl:106
+   [26] request_with_context_recovery!(provider::HTTPProvider, session::Session, ctx::RuntimeContext; tools::Vector{AbstractTool}, schemas::Vector{Dict{String, Any}}, max_output::Int64, options::Dict{String, Any}, context_bytes::Int64, hook_context::String)
+      @ ShenScope /workspace/ShenScope/src/Context/Recovery.jl:40
+   [27] request_with_context_recovery!
+      @ /workspace/ShenScope/src/Context/Recovery.jl:11 [inlined]
+   [28] (::ShenScope.var"#1435#1443"{Vector{AbstractTool}, AgentControl, Int64, Dict{String, Any}, Int64, Int64, HTTPProvider, RuntimeContext, Session})()
+      @ ShenScope /workspace/ShenScope/src/Core/AgentLoop.jl:68
+   [29] with_lifecycle_hooks(callback::ShenScope.var"#1435#1443"{Vector{AbstractTool}, AgentControl, Int64, Dict{String, Any}, Int64, Int64, HTTPProvider, RuntimeContext, Session}, tools::Vector{AbstractTool}, ctx::RuntimeContext; effect_observer::Nothing)
+      @ ShenScope /workspace/ShenScope/src/Hooks/Lifecycle.jl:6
+   [30] with_lifecycle_hooks
+      @ /workspace/ShenScope/src/Hooks/Lifecycle.jl:1 [inlined]
+   [31] #1434
+      @ /workspace/ShenScope/src/Core/AgentLoop.jl:53 [inlined]
+   [32] with(::ShenScope.var"#1434#1442"{Vector{AbstractTool}, AgentControl, Int64, Dict{String, Any}, Int64, Int64, HTTPProvider, RuntimeContext, Session}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, RuntimeContext}}, RuntimeContext})
+      @ Base.ScopedValues ./scopedvalues.jl:269
+   [33] with_context
+      @ /workspace/ShenScope/src/Runtime/Context.jl:31 [inlined]
+   [34] run_agent!(provider::HTTPProvider, prompt::String, ctx::RuntimeContext; session::Session, tools::Vector{AbstractTool}, control::AgentControl, max_output::Int64, options::Dict{String, Any}, concurrency::Int64, context_bytes::Int64)
+      @ ShenScope /workspace/ShenScope/src/Core/AgentLoop.jl:52
+   [35] run_agent!
+      @ /workspace/ShenScope/src/Core/AgentLoop.jl:38 [inlined]
+   [36] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [37] (::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext})(endpoint::String)
+      @ Main /workspace/ShenScope/test/integration/context.jl:16
+HTTP context overflow recovers before delivery without replay: Test Failed at /workspace/ShenScope/test/integration/context.jl:17
+  Expression: length(requests) == 2
+   Evaluated: 1 == 2
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext})(endpoint::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:17
+ [3] mock_http(f::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext}, handler::Function)
+   @ Main /workspace/ShenScope/test/integration/providers.jl:8
+ [4] (::var"#474#482")(root::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:13
+ [5] mktempdir(fn::var"#474#482", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [6] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [7] macro expansion
+   @ /workspace/ShenScope/test/integration/context.jl:2 [inlined]
+ [8] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [9] top-level scope
+   @ /workspace/ShenScope/test/integration/context.jl:2
+HTTP context overflow recovers before delivery without replay: Error During Test at /workspace/ShenScope/test/integration/context.jl:18
+  Test threw exception
+  Expression: ncodeunits(canonical(requests[2])) < ncodeunits(canonical(requests[1]))
+  BoundsError: attempt to access 1-element Vector{Dict{String, Any}} at index [2]
+  Stacktrace:
+   [1] throw_boundserror(A::Vector{Dict{String, Any}}, I::Tuple{Int64})
+     @ Base ./essentials.jl:14
+   [2] getindex
+     @ ./essentials.jl:916 [inlined]
+   [3] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [4] (::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext})(endpoint::String)
+     @ Main /workspace/ShenScope/test/integration/context.jl:18
+HTTP context overflow recovers before delivery without replay: Test Failed at /workspace/ShenScope/test/integration/context.jl:19
+  Expression: session.status == :complete
+   Evaluated: interrupted == complete
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext})(endpoint::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:19
+ [3] mock_http(f::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext}, handler::Function)
+   @ Main /workspace/ShenScope/test/integration/providers.jl:8
+ [4] (::var"#474#482")(root::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:13
+ [5] mktempdir(fn::var"#474#482", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [6] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [7] macro expansion
+   @ /workspace/ShenScope/test/integration/context.jl:2 [inlined]
+ [8] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [9] top-level scope
+   @ /workspace/ShenScope/test/integration/context.jl:2
+HTTP context overflow recovers before delivery without replay: Test Failed at /workspace/ShenScope/test/integration/context.jl:20
+  Expression: length(session.messages) == original_count + 2
+   Evaluated: 62 == 63
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext})(endpoint::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:20
+ [3] mock_http(f::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext}, handler::Function)
+   @ Main /workspace/ShenScope/test/integration/providers.jl:8
+ [4] (::var"#474#482")(root::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:13
+ [5] mktempdir(fn::var"#474#482", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [6] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [7] macro expansion
+   @ /workspace/ShenScope/test/integration/context.jl:2 [inlined]
+ [8] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [9] top-level scope
+   @ /workspace/ShenScope/test/integration/context.jl:2
+HTTP context overflow recovers before delivery without replay: Test Failed at /workspace/ShenScope/test/integration/context.jl:22
+  Expression: count((event->begin
+                #= /workspace/ShenScope/test/integration/context.jl:22 =#
+                event.kind == :context_recovery
+            end), events) == 1
+   Evaluated: 0 == 1
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext})(endpoint::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:22
+ [3] mock_http(f::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext}, handler::Function)
+   @ Main /workspace/ShenScope/test/integration/providers.jl:8
+ [4] (::var"#474#482")(root::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:13
+ [5] mktempdir(fn::var"#474#482", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [6] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [7] macro expansion
+   @ /workspace/ShenScope/test/integration/context.jl:2 [inlined]
+ [8] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [9] top-level scope
+   @ /workspace/ShenScope/test/integration/context.jl:2
+HTTP context overflow recovers before delivery without replay: Test Failed at /workspace/ShenScope/test/integration/context.jl:25
+  Expression: (budget_status(ctx.budget))["steps"] == 2
+   Evaluated: 1 == 2
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext})(endpoint::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:25
+ [3] mock_http(f::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext}, handler::Function)
+   @ Main /workspace/ShenScope/test/integration/providers.jl:8
+ [4] (::var"#474#482")(root::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:13
+ [5] mktempdir(fn::var"#474#482", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [6] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [7] macro expansion
+   @ /workspace/ShenScope/test/integration/context.jl:2 [inlined]
+ [8] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [9] top-level scope
+   @ /workspace/ShenScope/test/integration/context.jl:2
+HTTP context overflow recovers before delivery without replay: Test Failed at /workspace/ShenScope/test/integration/context.jl:26
+  Expression: (budget_status(ctx.budget))["tokens"] == 51
+   Evaluated: 0 == 51
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext})(endpoint::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:26
+ [3] mock_http(f::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext}, handler::Function)
+   @ Main /workspace/ShenScope/test/integration/providers.jl:8
+ [4] (::var"#474#482")(root::String)
+   @ Main /workspace/ShenScope/test/integration/context.jl:13
+ [5] mktempdir(fn::var"#474#482", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [6] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [7] macro expansion
+   @ /workspace/ShenScope/test/integration/context.jl:2 [inlined]
+ [8] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [9] top-level scope
+   @ /workspace/ShenScope/test/integration/context.jl:2
+HTTP context overflow recovers before delivery without replay: Error During Test at /workspace/ShenScope/test/integration/context.jl:28
+  Test threw exception
+  Expression: ((load_session(ctx.state_dir, session.id)).metadata["context_checkpoint"])["covered"] > 0
+  KeyError: key "context_checkpoint" not found
+  Stacktrace:
+   [1] getindex
+     @ ./dict.jl:477 [inlined]
+   [2] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [3] (::var"#477#485"{Vector{AgentEvent}, Vector{Dict{String, Any}}, Int64, Session, RuntimeContext})(endpoint::String)
+     @ Main /workspace/ShenScope/test/integration/context.jl:28
+Test Summary:                                                 | Pass  Fail  Error  Total   Time
+HTTP context overflow recovers before delivery without replay |    4     6      3     13  16.2s

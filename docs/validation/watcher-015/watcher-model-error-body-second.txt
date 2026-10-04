@@ -1,0 +1,10 @@
+[ Info: Listening on: 127.0.0.1:45527, thread id: 1
+[ Info: Server on 127.0.0.1:45527 closing
+[ Info: Listening on: 127.0.0.1:40009, thread id: 1
+[ Info: Server on 127.0.0.1:40009 closing
+[ Info: Listening on: 127.0.0.1:45535, thread id: 2
+[ Info: Server on 127.0.0.1:45535 closing
+[ Info: Listening on: 127.0.0.1:37891, thread id: 1
+[ Info: Server on 127.0.0.1:37891 closing
+Test Summary:                                                                            | Pass  Total   Time
+Fragmented HTTP error envelopes classify only complete bounded structured context errors |   12     12  14.8s

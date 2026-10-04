@@ -1,0 +1,11 @@
+export const PANEL_RPC_METHODS = Object.freeze([
+    'health', 'config/get', 'config/set', 'credentials/status', 'sessions/list', 'sessions/create',
+    'sessions/get', 'sessions/export', 'sessions/rename', 'sessions/archive', 'sessions/pin', 'sessions/branch',
+    'agent/start', 'agent/cancel', 'agent/steer', 'permissions/respond', 'tools/list', 'runtime/status',
+    'project/backends', 'project/start', 'project/job', 'project/cancel', 'project/query',
+    'project/watch_start', 'project/watch_status', 'project/watch_stop', 'project/watch_refresh', 'project/watch_list',
+    'tasks/start', 'tasks/query', 'tasks/job', 'tasks/cancel_job', 'mcp/start', 'mcp/query', 'mcp/job', 'mcp/cancel_job',
+    'skills/start', 'skills/query', 'skills/job', 'skills/cancel_job',
+    'hooks/start', 'hooks/query', 'hooks/job', 'hooks/cancel_job',
+    'context/start', 'context/query', 'context/job', 'context/cancel_job',
+]);

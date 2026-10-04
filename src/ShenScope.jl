@@ -1,6 +1,6 @@
 module ShenScope
 
-using Dates, SHA, TOML, UUIDs, JSON3, HTTP, REPL, YAML
+using Dates, SHA, TOML, UUIDs, JSON3, HTTP, REPL, YAML, FileWatching
 using Base.ScopedValues: ScopedValue, with
 
 const VERSION = v"0.1.0"
@@ -42,6 +42,10 @@ include("ProjectData/Navigation.jl")
 include("ProjectData/Fingerprints.jl")
 include("ProjectData/Replay.jl")
 include("ProjectData/Compaction.jl")
+include("ProjectData/WatchTypes.jl")
+include("ProjectData/WatchSnapshots.jl")
+include("ProjectData/WatchBatches.jl")
+include("ProjectData/WatchRuntime.jl")
 include("Analysis/Builtin.jl")
 include("Tools/Project.jl")
 include("Extensions/Contracts.jl")
@@ -99,6 +103,7 @@ include("Tools/Tasks.jl")
 include("Protocol/Framing.jl")
 include("Protocol/Server.jl")
 include("Protocol/Project.jl")
+include("Protocol/ProjectWatch.jl")
 include("Protocol/Tasks.jl")
 include("Protocol/MCP.jl")
 include("Protocol/Skills.jl")
@@ -119,6 +124,8 @@ export SymbolId, SourceRange, SourceMap, CodeSymbol, Relation, FileFacts, CallRe
     graph_snapshot, graph_search, graph_traverse, ProjectTool, ImpactAnalyzer,
     TestSelectionAnalyzer, ArchitectureAnalyzer, analyze, analyzer_name, requirements
 export compact_project!, project_fingerprint
+export ProjectWatchOptions, ProjectWatch, start_project_watch, stop_project_watch!,
+    project_watch_status, refresh_project_watch!
 
 export ProviderConfig, HTTPProvider, MockProvider, provider_name, capabilities,
     response, prepare_request, stream_chat, estimate_request_tokens, SSEDecoder,
@@ -165,6 +172,7 @@ export AbstractModelProvider, AbstractTool, AbstractSandbox, AbstractProjectData
 
 include("CLI/Main.jl")
 include("CLI/Project.jl")
+include("CLI/ProjectWatch.jl")
 include("CLI/MCP.jl")
 include("CLI/Skills.jl")
 include("CLI/Hooks.jl")

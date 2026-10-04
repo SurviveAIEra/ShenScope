@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 11,622 authored Julia Core code lines across 100 files;
-CLI/TUI add 639 lines and are counted separately. This is 4.6488% of the
-minimum line target, leaving 238,378 lines. These are early implementations,
+Latest cloc 2.11 count: 12,201 authored Julia Core code lines across 105 files;
+CLI/TUI add 702 lines and are counted separately. This is 4.8804% of the
+minimum line target, leaving 237,799 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -54,7 +54,7 @@ characters/bigrams and atomic import/export. Nonblocking cross-process locks
 fix worker starvation under concurrent writes. Broad affected suite: 204 passing
 assertions (32 new memory assertions). `docs/core/memory.md` describes limits.
 
-Next: stable-batch project watchers; durable tasks/MCP;
+Next: isolated Julia analyzers and extension lifecycle; durable tasks/MCP;
 Julia extensions/diagnostics and isolated analyzers; measured release preparation.
 
 Editor UI checkpoint: compact primary navigation, anchored composer, starter
@@ -227,3 +227,24 @@ three Node transport tests, full Workbench check and both actual GUI clients pas
 Raw evidence and source hashes: docs/validation/project-lifecycle-checkpoint-014.json.
 No large-graph memory or Windows durability claim. Work continues immediately
 with scoped watching, quiet-window change batches and shared editor feedback.
+
+Saved-source monitoring checkpoint 015: owned FileWatching hints plus recursive
+content scans, a single-slot wakeup Channel and separate settling timer. Quiet
+batches advance their baseline only after committed updates. Identical failed
+content waits for a change or explicit retry. Read revocation, denied writes,
+shared budget exhaustion and child cancellation retire owned resources. RPC
+conversation ownership, manual-mutation reservations and configuration barriers
+protect the same index. Compiler inventory digests include excluded inputs.
+Both actual editor clients expose observation/automatic mode, pending files,
+manual refresh, failure/repair and stop feedback through a shared RPC allowlist.
+
+Validation: final affected Core 13,522 assertions / 110 testsets (12,050 coordinate
+properties; 1,472 other assertions); semantic 12,265; watcher/CLI 88; watch RPC 36;
+four real-backend/configuration/scope integration 114; fragmented HTTP error
+envelopes 12. Editor check/build, three Node transport tests, full Workbench check
+and both real GUI flows pass. Raw evidence/source hashes are recorded in
+docs/validation/project-watch-checkpoint-015.json. The regression also fixes
+complete bounded HTTP error reads when headers/body arrive in separate packets.
+No installed-VSIX, Windows, large-project or live-model result is inferred.
+Work continues with OS-isolated Julia analyzers, selftests, archival/promotion
+and runtime integration. The minimum Core size goal remains unmet.

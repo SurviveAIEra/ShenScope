@@ -31,8 +31,13 @@ function model_stream_error(value; message="Model returned a stream error")
 end
 
 function bounded_model_error_body(stream, maximum=64 * 1024)
-    bytes = read(stream, maximum + 1)
-    length(bytes) <= maximum || return nothing
+    bytes=UInt8[]
+    while !eof(stream)
+        # HTTP.Stream reads currently available bytes, not the requested
+        # total. Headers and error JSON can arrive in separate packets.
+        append!(bytes,read(stream,min(8192,maximum+1-length(bytes))))
+        length(bytes)<=maximum || return nothing
+    end
     text = String(bytes)
     isvalid(text) || return nothing
     try bounded_json_object(text; maximum, max_depth=8, max_nodes=2048) catch; nothing end

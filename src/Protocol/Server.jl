@@ -195,6 +195,9 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
         lock(manager.mutex) do
             any(job->job["status"]=="running",values(manager.jobs)) &&
                 throw(ShenScopeError(:config,"Finish project jobs before changing configuration"))
+            any(watch_live,values(manager.watches)) &&
+                throw(ShenScopeError(:config,"Stop project watchers before changing configuration"))
+            isempty(manager.mutations) || throw(ShenScopeError(:config,"Finish project tool operations before changing configuration"))
         end
         mcpmanager=server_mcp_tool(server).manager
         lock(mcpmanager.mutex) do

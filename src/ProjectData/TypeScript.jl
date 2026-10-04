@@ -27,6 +27,7 @@ function project_inputs(backend::TypeScriptSemanticBackend, state::ProjectState,
     metadata = Dict{String,Any}("compiler" => Dict("name" => "typescript", "version" => "5.9.2",
         "configuration_sha256" => config.sha256, "input_sha256" => hash,
         "configuration_sources" => deepcopy(config.sources), "configuration_entry" => config.entry, "root_count" => length(roots),
+        "observed_inputs_sha256" => compiler_watch_inventory(documents,config),
         "options" => deepcopy(config.options)), "column_unit" => "utf8_byte")
     changed = full || get(get(state.metadata, "compiler", Dict()), "input_sha256", nothing) != hash
     selected = changed ? documents : Dict{String,Any}[]

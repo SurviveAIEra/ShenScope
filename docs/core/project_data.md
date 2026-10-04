@@ -46,8 +46,9 @@ parser worker. External writers require a reload after conflict.
 
 Limits are explicit: 10,000 indexed files, 8 MiB per source, 32 MiB helper frames,
 bounded helper stderr and timeout, and 128 MiB per backend journal. A limit
-failure preserves the committed state. File watching and large-project streaming
-remain unfinished. Explicit derived-journal compaction and streaming replay are
+failure preserves the committed state. Saved-source monitoring and stable batches
+are described in [project_watch.md](project_watch.md); large-project extraction
+measurements remain unfinished. Explicit derived-journal compaction and streaming replay are
 described in [project_storage.md](project_storage.md). The compiler semantic backend
 and its narrower 24 MiB source-snapshot limit are described in `semantic.md`.
 Compact obsolete index transactions when a journal reaches capacity. A snapshot

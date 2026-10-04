@@ -19,6 +19,7 @@ function finish_project_job!(manager::ProjectManager, job::AbstractDict, result)
     end
 end
 function project_rpc(server::CoreServer,method::String,params::AbstractDict)
+    method in PROJECT_WATCH_METHODS && return project_watch_rpc(server,method,params)
     tool=server_project_tool(server);manager=tool.manager
     if method=="project/backends"
         return [capability_dict(backend_capabilities(backend)) for backend in (GoASTBackend(),TreeSitterBackend(),CodeGraphBackend(),TypeScriptSemanticBackend())]
@@ -36,6 +37,9 @@ function project_rpc(server::CoreServer,method::String,params::AbstractDict)
         job=Dict{String,Any}("id"=>id,"status"=>"running","session_id"=>session.id,"backend"=>name,"action"=>args["action"],"context"=>context)
         lock(manager.mutex) do
             any(j->j["status"]=="running",values(manager.jobs)) && throw(ShenScopeError(:runtime,"A project job is already running"))
+            args["action"] in ("build","update","compact") &&
+                any(w->w.context.root==server.root && w.state.backend==name && watch_live(w),values(manager.watches)) &&
+                throw(ShenScopeError(:watch_busy,"Stop this backend watcher before a manual index job"))
             if length(manager.jobs)>=64
                 done=sort!([key for (key,j) in manager.jobs if j["status"]!="running"])
                 isempty(done) && throw(ShenScopeError(:runtime,"Project job limit reached"));delete!(manager.jobs,first(done))

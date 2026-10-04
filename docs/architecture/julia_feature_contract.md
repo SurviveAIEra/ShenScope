@@ -21,7 +21,7 @@ for the current source tree.
 | Mmap, lazy iterators/AbstractArray, sparse arrays, SIMD | Bound memory, stream/query graph subsets and update local adjacency | Pending large-graph evidence; no synthetic duplicate-edge scale claims |
 | Logging scopes, Profile/Profile.Allocs, Test | Trace operations; compiler/performance evidence before optimization/promotion | Structured scoped events and meaningful tests present; profiling pending |
 | GC, finalizers, WeakRef | Bounded caches with explicit external-resource cleanup | Explicit process cleanup, streamed frame replay and current-fact journal compaction verified on Linux; large-project cache measurements pending |
-| File watching, timers/conditions/events, LibGit2 | Changes feed batched graph deltas and invalidate dependent queries | Git CLI present; watcher/history adapters pending |
+| File watching, timers/conditions/events, LibGit2 | Changes feed batched graph deltas and invalidate dependent queries | Owned FileWatching/Task/Channel/Timers, recursive content reconciliation and stable batches verified across four real backends; historical/cochange adapters pending |
 | Distributed/RemoteChannel, GPU | Optional later execution backends with capability negotiation | Pending, outside the initial verified path |
 
 Project data must expose stable symbol IDs, source ranges, relation evidence,

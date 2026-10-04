@@ -1,0 +1,40 @@
+Precompiling ShenScope...
+   5366.7 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 5 seconds. 39 already precompiled.
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/project_watch.jl:28
+in expression starting at /workspace/ShenScope/test/project_watch.jl:4
+Test Summary:                                                   | Pass  Total   Time
+Watcher options bound work and preserve ordinary runtime scopes |   23     23  12.5s
+Recursive watch snapshots share indexing scope and use actual content: Error During Test at /workspace/ShenScope/test/unit/project_watch.jl:28
+  Got exception outside of a @test
+  permission: Protected path
+  Stacktrace:
+    [1] workspace_path(root::String, path::String; must_exist::Bool)
+      @ ShenScope /workspace/ShenScope/src/Security/Permissions.jl:47
+    [2] workspace_path
+      @ /workspace/ShenScope/src/Security/Permissions.jl:29 [inlined]
+    [3] project_paths(ctx::RuntimeContext, caps::BackendCapabilities; limit::Int64, checkpoint::ShenScope.var"#594#595"{ProjectWatch})
+      @ ShenScope /workspace/ShenScope/src/ProjectData/State.jl:135
+    [4] project_paths
+      @ /workspace/ShenScope/src/ProjectData/State.jl:125 [inlined]
+    [5] scan_project_watch(watch::ProjectWatch)
+      @ ShenScope /workspace/ShenScope/src/ProjectData/WatchSnapshots.jl:90
+    [6] (::var"#9#10")(root::String)
+      @ Main /workspace/ShenScope/test/unit/project_watch.jl:38
+    [7] mktempdir(fn::var"#9#10", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [8] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [9] macro expansion
+      @ /workspace/ShenScope/test/unit/project_watch.jl:29 [inlined]
+   [10] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [11] top-level scope
+      @ /workspace/ShenScope/test/unit/project_watch.jl:29
+   [12] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [13] top-level scope
+      @ /workspace/ShenScope/test/project_watch.jl:4
+Test Summary:                                                         | Error  Total  Time
+Recursive watch snapshots share indexing scope and use actual content |     1      1  2.4s

@@ -68,7 +68,8 @@ are deterministic bounded pages with the indexed source digest attached.
 
 Results describe a committed snapshot. Referenced target files can have changed
 after indexing; clients should use the returned digest to guard subsequent edits.
-Workspace additions require refresh; there is no watcher yet. All-project
+Workspace additions require refresh; [project_watch.md](project_watch.md) describes
+scoped monitoring and optional automatic refresh. All-project
 diagnostics describe the cached snapshot rather than promising every file is
 currently unchanged. There is no rename or complete language-server capability.
 

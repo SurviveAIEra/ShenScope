@@ -33,8 +33,9 @@ end
 function parse_cli(args::Vector{String})
     flags=Dict{String,Any}();positionals=String[]
     valued=Set(["--root","--state-dir","--config","--profile","--session","--script","--backend",
-        "--symbol","--column-unit","--limit","--offset","--revision","--sha256","--minimum-savings"])
-    switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force"])
+        "--symbol","--column-unit","--limit","--offset","--revision","--sha256","--minimum-savings",
+        "--poll-seconds","--quiet-seconds","--duration","--watch-file-limit","--watch-byte-limit"])
+    switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints"])
     i=1
     while i<=length(args)
         arg=args[i]
@@ -101,6 +102,7 @@ function cli_main(args=ARGS)
         println("Project navigation: project definitions|references|hover|incoming_calls|outgoing_calls|implementations FILE LINE COLUMN --backend typescript")
         println("Project evidence: --symbol ID --column-unit utf8_byte|utf16 --revision N --sha256 HASH --limit N --offset N --exclude-declarations; project diagnostics [FILE]")
         println("Project cache: project compact --backend NAME --minimum-savings BYTES [--force]")
+        println("Project changes: project watch --backend NAME [--automatic] [--poll-seconds N] [--duration N]")
         return 0
     end
     try

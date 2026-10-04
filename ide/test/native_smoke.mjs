@@ -199,8 +199,32 @@ try {
         await panel.getByRole('button', { name: 'Refresh index', exact: true }).waitFor({ timeout: 60_000 });
         await panel.getByText('The current index already uses less space than a replacement snapshot.', { exact: true }).waitFor();
         await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project-cache.png`) });
+        await panel.getByRole('button', { name: 'Watch file changes', exact: true }).click();
+        await panel.locator('.watch-state').filter({ hasText: /^Watching$/ }).waitFor();
+        const greeterPath = join(root, 'greeter.ts'); const greeter = await readFile(greeterPath, 'utf8');
+        await writeFile(greeterPath, greeter + 'export function WatchedAddition(): number { return 3; }\n');
+        await panel.locator('.watch-state').filter({ hasText: 'Changes pending' }).waitFor({ timeout: 30_000 });
+        await panel.locator('.project-watch').screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-watch-pending.png`) });
+        await panel.getByRole('button', { name: 'Update pending changes', exact: true }).click();
+        await panel.getByText('1 batch indexed', { exact: true }).waitFor({ timeout: 30_000 });
+        await panel.getByRole('textbox', { name: 'Search project symbols' }).fill('WatchedAddition');
+        await panel.getByRole('button', { name: 'Inspect WatchedAddition', exact: true }).waitFor();
+        await panel.getByRole('button', { name: 'Stop watching', exact: true }).click();
+        await panel.locator('.watch-state').filter({ hasText: /^Stopped$/ }).waitFor();
+        await panel.getByRole('checkbox', { name: 'Update index automatically', exact: true }).check();
+        await panel.getByRole('button', { name: 'Watch file changes', exact: true }).click();
+        await panel.locator('.watch-state').filter({ hasText: /^Watching$/ }).waitFor();
+        await writeFile(greeterPath, 'export function BROKEN( {\n');
+        await panel.locator('.watch-error').waitFor({ timeout: 30_000 });
+        await panel.locator('.project-watch').screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-watch-error.png`) });
+        await writeFile(greeterPath, greeter + 'export function WatchedAddition(): number { return 4; }\n');
+        await panel.getByText('1 batch indexed', { exact: true }).waitFor({ timeout: 30_000 });
+        assert.equal(await panel.locator('.watch-error').count(), 0);
+        await panel.locator('.project-watch').screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-watching.png`) });
+        await panel.getByRole('button', { name: 'Stop watching', exact: true }).click();
+        await panel.locator('.watch-state').filter({ hasText: /^Stopped$/ }).waitFor();
         assert.equal(requests.length, 0, 'Compiler navigation must not call the model');
-        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual TypeScript checker indexing, permissions, type, definitions, references, calls, diagnostics, source navigation and cache compaction`);
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual TypeScript checker indexing, permissions, navigation, cache compaction, observed changes, manual refresh, automatic watching, syntax-failure preservation and repair`);
     }
     if (mcpOnly) {
         await panel.getByRole('combobox', { name: 'More views' }).selectOption('MCP');

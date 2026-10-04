@@ -1,0 +1,7 @@
+Precompiling ShenScope...
+   5093.9 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 5 seconds. 39 already precompiled.
+Test Summary:                                                                | Pass  Total   Time
+Four real backends converge watched 1/5/20-file batches to complete rebuilds |   92     92  46.7s
+Test Summary:                                                                             | Pass  Total  Time
+Actual TypeScript watcher follows inherited configuration and newly selected source scope |   22     22  3.4s
