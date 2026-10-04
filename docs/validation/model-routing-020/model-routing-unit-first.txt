@@ -1,0 +1,33 @@
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/model_routing.jl:38
+Test Summary:                                                           | Pass  Total   Time
+Model routing config is strict, bounded, immutable and credential blind |   29     29  12.9s
+Route plans explain feature, capacity and native replay exclusions without keys: Error During Test at /workspace/ShenScope/test/unit/model_routing.jl:38
+  Got exception outside of a @test
+  MethodError: Cannot `convert` an object of type Dict{String, Integer} to an object of type String
+  The function `convert` exists, but no method is defined for this combination of argument types.
+
+  Closest candidates are:
+    convert(::Type{String}, !Matched::Base.JuliaSyntax.Kind)
+     @ Base /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/base/JuliaSyntax/src/kinds.jl:975
+    convert(::Type{String}, !Matched::String)
+     @ Base essentials.jl:461
+    convert(::Type{T}, !Matched::T) where T<:AbstractString
+     @ Base strings/basic.jl:231
+    ...
+
+  Stacktrace:
+   [1] setindex!(h::Dict{String, String}, v0::Dict{String, Integer}, key::String)
+     @ Base ./dict.jl:355
+   [2] macro expansion
+     @ /workspace/ShenScope/test/unit/model_routing.jl:39 [inlined]
+   [3] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [4] top-level scope
+     @ /workspace/ShenScope/test/unit/model_routing.jl:39
+   [5] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [6] top-level scope
+     @ none:1
+Test Summary:                                                                   | Error  Total  Time
+Route plans explain feature, capacity and native replay exclusions without keys |     1      1  1.9s

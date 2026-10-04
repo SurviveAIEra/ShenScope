@@ -97,12 +97,14 @@ function gemini_contents(messages::Vector{Message},identity::String)
     return contents,join(system,"\n\n")
 end
 
+model_wire_identity(config::ProviderConfig) = string(config.protocol,":",config.name,":",config.model,":",digest(config.endpoint))
+
 function prepare_request(p::HTTPProvider,request::ModelRequest; accounting=false)
     validate_config(p.config)
     accounting || validate_request(p,request)
     c=p.config
     key=CredentialSnapshot(accounting ? "" : p.credential_lookup(c.key_env))
-    identity=string(c.protocol,":",c.name,":",c.model,":",digest(c.endpoint))
+    identity=model_wire_identity(c)
     endpoint=rstrip(c.endpoint,'/')
     headers=Pair{String,String}["Content-Type"=>"application/json"]
     options=deepcopy(request.options)

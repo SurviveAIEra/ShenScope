@@ -106,3 +106,13 @@ subsequent fixture inference. Role/fleet routing, persistent health, live-model
 checks and packaged desktop validation remain pending. See
 `docs/core/model_policy.md`; the bounded circuit implementation is independent,
 not a claim that every reference has the same circuit feature.
+
+Checkpoint 020 adds selected role/model configuration observations for all seven
+primary projects. Core now supports explicit bounded sources/profiles/roles,
+credential-free eligibility planning, immutable prepared keys/bodies, typed
+pre-delivery fallback, native replay source checks and conservative context/cost
+admission. Worker/default roles, scoped receipts, CLI/RPC and actual native/VSIX
+clients share this policy. Agent prompt roles, reviewed imports, persistent fleet
+state, adaptive quality/latency/cost routing and native-history conversion remain
+pending. See `docs/core/model_routing.md`; role/source configuration is not a
+claim of complete multi-agent feature parity or live-model quality improvement.

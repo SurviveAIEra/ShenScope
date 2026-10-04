@@ -1,0 +1,17 @@
+Precompiling ShenScope...
+   6299.8 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 6 seconds. 39 already precompiled.
+ERROR: MethodError: no method matching bounded_canonical_json(::Dict{String, Any}; maximum::Int64, max_depth::Int64, max_nodes::Int64, error_code::Symbol)
+This error has been manually thrown, explicitly, so the method may exist but be intentionally marked as unimplemented.
+
+Closest candidates are:
+  bounded_canonical_json(::Any; maximum, max_depth, max_nodes) got unsupported keyword argument "error_code"
+   @ ShenScope /workspace/ShenScope/src/Storage/BoundedJSON.jl:75
+
+Stacktrace:
+ [1] kwerr(::@NamedTuple{maximum::Int64, max_depth::Int64, max_nodes::Int64, error_code::Symbol}, ::Function, ::Dict{String, Any})
+   @ Base ./error.jl:165
+ [2] model_routing_from_config(config::Dict{String, Any}; credential_lookup::Function)
+   @ ShenScope /workspace/ShenScope/src/Models/RoutingConfig.jl:54
+ [3] top-level scope
+   @ none:1

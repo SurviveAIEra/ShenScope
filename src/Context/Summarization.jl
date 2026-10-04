@@ -49,7 +49,7 @@ function summarize_context_checkpoint!(provider::AbstractModelProvider, session:
     estimated = context_measure(provider, request, config).estimated_tokens
     estimated + cap + config.safety_tokens <= capabilities(provider).context_window ||
         throw(ShenScopeError(:context_overflow, "Summary request cannot fit the model window"))
-    prices = provider isa HTTPProvider ? (provider.config.input_price, provider.config.output_price) : (0.0, 0.0)
+    prices = model_price_bound(provider)
     lease = reserve!(ctx.budget, estimated + cap, (estimated * prices[1] + cap * prices[2]) / 1_000_000)
     output = IOBuffer()
     reported = Ref{Union{Nothing,Usage}}(nothing)

@@ -35,7 +35,7 @@ function parse_cli(args::Vector{String})
     valued=Set(["--root","--state-dir","--config","--profile","--session","--script","--backend",
         "--symbol","--column-unit","--limit","--offset","--revision","--sha256","--minimum-savings",
         "--poll-seconds","--quiet-seconds","--duration","--watch-file-limit","--watch-byte-limit",
-        "--scope","--expected-pointer","--count-mode"])
+        "--scope","--expected-pointer","--count-mode","--model-role","--model-profile"])
     switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints"])
     i=1
     while i<=length(args)
@@ -157,8 +157,8 @@ function cli_main(args=ARGS)
             if haskey(flags,"--script")
                 factory=ctx->scripted_provider(flags["--script"])
             else
-                template=provider_from_config(config);bind_models_provider!(worker_tools,template)
-                factory=ctx->HTTPProvider(template.config,template.credential_lookup;runtime=template.runtime)
+                model = only(entry for entry in worker_tools if entry isa ModelsTool)
+                factory=ctx->agent_model_provider(model;role=get(flags,"--model-role",model_worker_role(model)))
             end
             tool=TaskTool(WorkExecutor(;tools=worker_tools,provider_factory=factory))
             try
@@ -204,7 +204,7 @@ function cli_main(args=ARGS)
             get(flags,flag,false) && (policy.rules[category]=Allow)
         end
         provider=haskey(flags,"--script") ? scripted_provider(flags["--script"]) : provider_from_config(config)
-        if provider isa HTTPProvider && isempty(get(ENV,provider.config.key_env,"")) && provider.config.protocol!=:ollama
+        if provider isa HTTPProvider && !haskey(config,"model_routing") && isempty(get(ENV,provider.config.key_env,"")) && provider.config.protocol!=:ollama
             throw(ShenScopeError(:credentials,"Configure " * provider.config.key_env * " securely before using a live model"))
         end
         id=get(flags,"--session",string(uuid4()))
@@ -212,6 +212,10 @@ function cli_main(args=ARGS)
             permissions=policy,approve=cli_approval,sink=e->render_event(stdout,e;json=get(flags,"--json",false)))
         session=haskey(flags,"--session") ? load_session(state_dir,id) : new_session(ctx)
         tools=core_tools(;config,config_source=get(flags,"--config",config_path()))
+        if !haskey(flags,"--script")
+            model = only(tool for tool in tools if tool isa ModelsTool)
+            provider = agent_model_provider(model;role=get(flags,"--model-role",nothing))
+        end
         bind_models_provider!(tools,provider)
         if haskey(flags,"--script")
             workers = only(tool for tool in tools if tool isa TaskTool).manager

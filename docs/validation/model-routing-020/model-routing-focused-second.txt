@@ -1,0 +1,90 @@
+Precompiling ShenScope...
+   6665.6 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 7 seconds. 39 already precompiled.
+[ Info: Listening on: 127.0.0.1:42313, thread id: 1
+[ Info: Listening on: 127.0.0.1:46141, thread id: 1
+[ Info: Server on 127.0.0.1:46141 closing
+[ Info: Server on 127.0.0.1:42313 closing
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/model_routing.jl:1
+Test Summary:                                                           | Pass  Total   Time
+Model routing config is strict, bounded, immutable and credential blind |   29     29  12.3s
+Test Summary:                                                                   | Pass  Total  Time
+Route plans explain feature, capacity and native replay exclusions without keys |   14     14  3.1s
+Test Summary:                                                           | Pass  Total  Time
+Routing receipts and runtime seats retain strict conversation ownership |   11     11  3.0s
+Explicit routing fixes every eligible key before approval and records real source fallback: Error During Test at /workspace/ShenScope/test/integration/model_routing.jl:1
+  Got exception outside of a @test
+  permission: Operation not approved
+  Stacktrace:
+    [1] stream_chat(provider::RoutedProvider, request::ModelRequest, sink::var"#66#81", ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/Models/RoutingRuntime.jl:62
+    [2] (::var"#62#77"{String, String, Vector{AgentEvent}, Base.RefValue{Int64}, Vector{Dict{String, Any}}, Vector{String}, Dict{String, String}, Base.RefValue{Int64}, Base.RefValue{Int64}})(backup_endpoint::String)
+      @ Main /workspace/ShenScope/test/integration/model_routing.jl:22
+    [3] model_service_fixture(f::var"#62#77"{String, String, Vector{AgentEvent}, Base.RefValue{Int64}, Vector{Dict{String, Any}}, Vector{String}, Dict{String, String}, Base.RefValue{Int64}, Base.RefValue{Int64}}, handler::Function; stream::Bool)
+      @ Main /workspace/ShenScope/test/fixtures/model_services.jl:7
+    [4] model_service_fixture
+      @ /workspace/ShenScope/test/fixtures/model_services.jl:3 [inlined]
+    [5] #61
+      @ /workspace/ShenScope/test/integration/model_routing.jl:9 [inlined]
+    [6] model_service_fixture(f::var"#61#76"{String, Vector{AgentEvent}, Base.RefValue{Int64}, Vector{Dict{String, Any}}, Vector{String}, Dict{String, String}, Base.RefValue{Int64}, Base.RefValue{Int64}}, handler::Function; stream::Bool)
+      @ Main /workspace/ShenScope/test/fixtures/model_services.jl:7
+    [7] model_service_fixture
+      @ /workspace/ShenScope/test/fixtures/model_services.jl:3 [inlined]
+    [8] #60
+      @ /workspace/ShenScope/test/integration/model_routing.jl:5 [inlined]
+    [9] mktempdir(fn::var"#60#75", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+   [10] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+   [11] macro expansion
+      @ /workspace/ShenScope/test/integration/model_routing.jl:2 [inlined]
+   [12] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [13] top-level scope
+      @ /workspace/ShenScope/test/integration/model_routing.jl:2
+   [14] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [15] top-level scope
+      @ none:1
+
+  caused by: permission: Operation not approved
+  Stacktrace:
+    [1] authorize!(ctx::RuntimeContext, category::Symbol, tool::String, target::String; reason::String)
+      @ ShenScope /workspace/ShenScope/src/Runtime/Context.jl:56
+    [2] authorize!
+      @ /workspace/ShenScope/src/Runtime/Context.jl:42 [inlined]
+    [3] stream_prepared_chat(p::HTTPProvider, prepared::ShenScope.PreparedRequest, sink::Function, ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/Models/HTTP.jl:107
+    [4] stream_chat(provider::RoutedProvider, request::ModelRequest, sink::var"#66#81", ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/Models/RoutingRuntime.jl:48
+    [5] (::var"#62#77"{String, String, Vector{AgentEvent}, Base.RefValue{Int64}, Vector{Dict{String, Any}}, Vector{String}, Dict{String, String}, Base.RefValue{Int64}, Base.RefValue{Int64}})(backup_endpoint::String)
+      @ Main /workspace/ShenScope/test/integration/model_routing.jl:22
+    [6] model_service_fixture(f::var"#62#77"{String, String, Vector{AgentEvent}, Base.RefValue{Int64}, Vector{Dict{String, Any}}, Vector{String}, Dict{String, String}, Base.RefValue{Int64}, Base.RefValue{Int64}}, handler::Function; stream::Bool)
+      @ Main /workspace/ShenScope/test/fixtures/model_services.jl:7
+    [7] model_service_fixture
+      @ /workspace/ShenScope/test/fixtures/model_services.jl:3 [inlined]
+    [8] #61
+      @ /workspace/ShenScope/test/integration/model_routing.jl:9 [inlined]
+    [9] model_service_fixture(f::var"#61#76"{String, Vector{AgentEvent}, Base.RefValue{Int64}, Vector{Dict{String, Any}}, Vector{String}, Dict{String, String}, Base.RefValue{Int64}, Base.RefValue{Int64}}, handler::Function; stream::Bool)
+      @ Main /workspace/ShenScope/test/fixtures/model_services.jl:7
+   [10] model_service_fixture
+      @ /workspace/ShenScope/test/fixtures/model_services.jl:3 [inlined]
+   [11] #60
+      @ /workspace/ShenScope/test/integration/model_routing.jl:5 [inlined]
+   [12] mktempdir(fn::var"#60#75", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+   [13] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+   [14] macro expansion
+      @ /workspace/ShenScope/test/integration/model_routing.jl:2 [inlined]
+   [15] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [16] top-level scope
+      @ /workspace/ShenScope/test/integration/model_routing.jl:2
+   [17] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [18] top-level scope
+      @ none:1
+Test Summary:                                                                              | Error  Total  Time
+Explicit routing fixes every eligible key before approval and records real source fallback |     1      1  6.0s

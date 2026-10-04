@@ -24,6 +24,7 @@ end
 
 function stream_attempt(p::HTTPProvider,prepared::PreparedRequest,sink::Function,ctx::RuntimeContext;encoded_body=nothing)
     collector=StreamCollector(prepared.identity)
+    collector.native["source_id"] = catalog_source_id(p)
     decoder=SSEDecoder()
     remaining = lock(ctx.budget.mutex) do
         check_budget(ctx.budget)
@@ -99,6 +100,10 @@ end
 
 function stream_chat(p::HTTPProvider,request::ModelRequest,sink::Function,ctx::RuntimeContext)
     prepared=prepare_request(p,request)
+    stream_prepared_chat(p,prepared,sink,ctx)
+end
+
+function stream_prepared_chat(p::HTTPProvider,prepared::PreparedRequest,sink::Function,ctx::RuntimeContext)
     authorize!(ctx,:network,provider_name(p),string(HTTP.URI(prepared.endpoint).host);reason="Model API request")
     model_network_checkpoint(p,prepared,ctx)
     # One prepared body/credential snapshot is retained across every attempt.

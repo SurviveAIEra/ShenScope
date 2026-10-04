@@ -24,7 +24,8 @@
       "codex-rs/linux-sandbox/src/landlock.rs",
       "codex-rs/core/src/context/world_state/model_catalog.rs",
       "codex-rs/core/src/responses_retry.rs",
-      "codex-rs/core/src/compact_model_fallback.rs"
+      "codex-rs/core/src/compact_model_fallback.rs",
+      "codex-rs/agent-roles/src/agent_role_config.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -55,7 +56,8 @@
       "packages/schema/src/filesystem-watcher.ts",
       "packages/opencode/src/plugin/loader.ts",
       "packages/opencode/src/provider/provider.ts",
-      "packages/opencode/src/session/retry.ts"
+      "packages/opencode/src/session/retry.ts",
+      "packages/opencode/src/config/agent.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -90,7 +92,8 @@
       "packages/fs/fs-local/src/index.ts",
       "packages/fs/fs-sandbox/src/containment.ts",
       "packages/llm/llm-pi-ai/src/catalog.ts",
-      "packages/llm/llm/src/retry-policy.ts"
+      "packages/llm/llm/src/retry-policy.ts",
+      "packages/experimental/agent-team/src/roster.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -122,7 +125,8 @@
       "packages/coding-agent/examples/extensions/sandbox/index.ts",
       "packages/ai/src/models-store.ts",
       "packages/ai/src/models.ts",
-      "packages/ai/src/utils/provider-retry.ts"
+      "packages/ai/src/utils/provider-retry.ts",
+      "packages/coding-agent/src/core/model-config.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -154,7 +158,8 @@
       "packages/agent-core-v2/src/runtime/runtimeRegistry.ts",
       "packages/agent-core-v2/src/app/kosongConfig/modelsDevImport.ts",
       "packages/agent-core-v2/src/human/llm/requester/retry.ts",
-      "packages/agent-core-v2/src/_base/utils/retry.ts"
+      "packages/agent-core-v2/src/_base/utils/retry.ts",
+      "packages/klient/src/contract/global/models.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -182,7 +187,8 @@
       "apps/zcode-cli/packages/core/src/repl/node-repl-session.ts",
       "apps/zcode-cli/packages/contracts/src/tools/eval-workflow-snippet.ts",
       "apps/zcode-cli/packages/core/src/runtime/model-selection.ts",
-      "apps/zcode-cli/packages/core/src/subagent/profile-model-selection.ts"
+      "apps/zcode-cli/packages/core/src/subagent/profile-model-selection.ts",
+      "packages/shared/src/model-selection.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -212,7 +218,9 @@
       "packages/cli/src/config/extension-runtime-reload.ts",
       "packages/cli/src/config/execution-sandbox-settings.ts",
       "packages/core/src/models/model-catalog-refresh.ts",
-      "packages/core/src/utils/retryPolicy.ts"
+      "packages/core/src/utils/retryPolicy.ts",
+      "packages/core/src/subagents/types.ts",
+      "packages/core/src/subagents/agent-frontmatter-schema.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

@@ -249,3 +249,16 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .model-health-state.open { color: var(--vscode-editorWarning-foreground, #e5bd63); }
 .model-health > small { display: block; color: var(--vscode-descriptionForeground); line-height: 1.5; margin-top: 8px; }
 .model-health-policy { margin: 10px 0; }
+.model-routing, .model-route-plan { padding: 12px; margin: 12px 0; border: 1px solid var(--vscode-widget-border, #444); border-radius: 8px; background: var(--vscode-editor-background); }
+.model-route-row, .model-route-receipt { display: grid; gap: 5px; margin: 12px 0; overflow-wrap: anywhere; }
+.model-route-row > small, .model-route-receipt > small, .model-route-sequence small { display: block; color: var(--vscode-descriptionForeground); font-size: 11px; line-height: 1.5; }
+.model-route-sequence { margin: 8px 0 0; padding-left: 20px; }
+.model-route-sequence li { margin: 0 0 9px; padding-left: 4px; }
+.model-route-excluded { padding: 10px 0; border-top: 1px solid var(--vscode-widget-border, #444); }
+.model-route-excluded p { margin: 5px 0 0; }
+.model-route-receipt[data-outcome=success] > strong { color: var(--vscode-testing-iconPassed, #73c991); }
+.model-route-receipt[data-outcome=failed] > strong { color: var(--vscode-editorWarning-foreground, #e5bd63); }
+.model-role-choice { max-width: 95px; min-width: 60px; padding: 3px 5px; font-size: 11px; color: var(--vscode-dropdown-foreground, var(--vscode-input-foreground)); background: var(--vscode-dropdown-background, var(--vscode-input-background)); border: 1px solid var(--vscode-dropdown-border, var(--vscode-widget-border)); border-radius: 5px; }
+.model-route-credentials { margin-top: 12px; }
+.model-route-credentials > button { display: block; margin: 8px 0; }
+.shenscope-panel .composer-toolbar:has(.model-role-choice) { flex-wrap: wrap; }

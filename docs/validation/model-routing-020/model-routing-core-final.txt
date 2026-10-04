@@ -1,0 +1,540 @@
+Test Summary:                         | Pass  Total  Time
+Cancellation tree and dynamic context |    7      7  0.9s
+Test Summary:                                | Pass  Total  Time
+Concurrent budget reservation and accounting |    9      9  1.1s
+Test Summary:                             | Pass  Total  Time
+Permission decisions and path containment |    7      7  0.6s
+Test Summary:                                      | Pass  Total  Time
+Durable journal, torn tails and revision conflicts |    6      6  2.5s
+Test Summary:                                   | Pass  Total  Time
+Session reconstruction and unknown side effects |   11     11  4.3s
+Test Summary:                                                                            | Pass  Total  Time
+Bounded JSON encoding matches canonical wire data and rejects before unbounded traversal |   96     96  1.6s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  1.9s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  1.4s
+Test Summary:                                                             | Pass  Total  Time
+Provider catalog fields preserve unknowns, provenance and conflicting IDs |   40     40  4.5s
+Test Summary:                                                                    | Pass  Total  Time
+Token-count inputs validate roles/tools and estimate without reading credentials |   12     12  6.3s
+Test Summary:                                                               | Pass  Total  Time
+Model retry policies reject terminal categories and unbounded configuration |   24     24  0.9s
+Test Summary:                                                               | Pass  Total  Time
+Provider retry headers are bounded, time-aware and never expose raw headers |   21     21  0.0s
+Test Summary:                                                                   | Pass  Total  Time
+Retry decisions preserve server floors, delivery and configured/deadline limits |   25     25  0.0s
+Test Summary:                                                                        | Pass  Total  Time
+Circuit epochs reject stale completion and allow exactly one explicit recovery probe |   21     21  2.1s
+Test Summary:                                                                            | Pass  Total  Time
+Circuit admission reserves version capacity and does not reuse saturated CAS generations |    6      6  0.1s
+Test Summary:                                                                     | Pass  Total  Time
+Concurrent recovery acquisition admits one probe and preserves every other caller |    5      5  0.4s
+Test Summary:                                                                  | Pass  Total  Time
+Circuit windows, neutral errors, disabled policy and global seats are distinct |   11     11  0.3s
+Test Summary:                                                                           | Pass  Total  Time
+Health metadata scopes credentials and resets with CAS without claiming a network probe |   13     13  1.4s
+Test Summary:                                                           | Pass  Total  Time
+Model routing config is strict, bounded, immutable and credential blind |   31     31  3.0s
+Test Summary:                                                                   | Pass  Total  Time
+Route plans explain feature, capacity and native replay exclusions without keys |   14     14  1.7s
+Test Summary:                                                           | Pass  Total  Time
+Routing receipts and runtime seats retain strict conversation ownership |   11     11  3.2s
+Test Summary:                            | Pass  Total  Time
+Compute limits and strict in-memory JSON |   39     39  2.1s
+Test Summary:                                                 | Pass  Total  Time
+Shared writable mapping remains unsafe after descriptor close |    4      4  0.1s
+Test Summary:                             | Pass  Total   Time
+Analyzer definitions and session registry |   39     39  13.0s
+Test Summary:                                      | Pass  Total  Time
+Parent-owned analyzer graph evidence and freshness |   24     24  6.1s
+Test Summary:                                                        |  Pass  Total  Time
+Compiler UTF-16 positions normalize to validated UTF-8 source ranges | 12050  12050  0.3s
+Test Summary:                                                             | Pass  Total  Time
+Compiler JSONC preserves literals and rejects ambiguous or excessive data |   13     13  0.0s
+Test Summary:                                                            | Pass  Total  Time
+Compiler configuration inheritance, source scope and post-read integrity |   17     17  2.1s
+Test Summary:                                               | Pass  Total  Time
+Compiler globs have bounded segment and recursive semantics |    6      6  0.0s
+Test Summary:                                                                  | Pass  Total  Time
+CLI navigation encodes one owned cursor or symbol with bounded evidence paging |   12     12  0.6s
+Test Summary:                                             | Pass  Total  Time
+Atomic replacement remains complete to concurrent readers |    3      3  0.3s
+Test Summary:                                   | Pass  Total  Time
+Oversized unterminated journal input is bounded |    2      2  0.1s
+Test Summary:                                                                   | Pass  Total  Time
+Contended journal locks check cancellation and release after failed checkpoints |    6      6  0.4s
+Test Summary:                                                                        | Pass  Total  Time
+Compaction cancellation, expired budgets and post-approval denial preserve the cache |    7      7  3.9s
+Test Summary:                                                               | Pass  Total   Time
+Actual Julia process replacement fences a stale parent without losing facts |    5      5  12.7s
+Test Summary:                                                                          | Pass  Total  Time
+Killed snapshot writer leaves the published file intact and one identifiable temporary |    7      7  2.9s
+Test Summary:                                                                 | Pass  Total  Time
+Bounded atomic streams publish once and discard incomplete or rejected output |   15     15  0.4s
+Test Summary:                                                                            | Pass  Total  Time
+Streaming journal validates framing without accumulating history or repairing corruption |   16     16  0.5s
+Test Summary:                                                                   | Pass  Total  Time
+Project compaction retains revision/facts and fences stale writers and recovery |   26     26  4.1s
+Test Summary:                                                                  | Pass  Total  Time
+Staging reclamation preserves live, foreign, symlinked and malformed artifacts |    8      8  0.2s
+Test Summary:                                            | Pass  Total  Time
+Empty committed snapshot and metadata survive round trip |    4      4  0.1s
+Test Summary:                                                   | Pass  Total  Time
+Watcher options bound work and preserve ordinary runtime scopes |   23     23  2.4s
+Test Summary:                                                                      | Pass  Total  Time
+Settling timer applies a stable hinted batch independently of a long poll interval |    6      6  2.3s
+Test Summary:                                                         | Pass  Total  Time
+Recursive watch snapshots share indexing scope and use actual content |   10     10  0.4s
+Test Summary:                                                                                           | Pass  Total  Time
+Quiet-window batches retain committed baseline across failure and require new content or explicit retry |   14     14  0.4s
+Test Summary:                                                                          | Pass  Total  Time
+Observe-only monitor owns native hints, timers, cancellation and persistence decisions |   14     14  0.9s
+Test Summary:                                                                                                   | Pass  Total  Time
+Nested periodic-only changes, rename, exhausted budgets and denied writes converge or stop without losing facts |   14     14  1.1s
+Test Summary:                                        | Pass  Total  Time
+Configuration profiles, credential rejection and CAS |   10     10  4.6s
+Test Summary:                         | Pass  Total  Time
+Canonical numeric journal round trips |    3      3  0.6s
+Test Summary:                                         | Pass  Total  Time
+Scoped memory, lexical retrieval and durable versions |   25     25  4.2s
+Test Summary:                                           | Pass  Total  Time
+Memory import validates every item before atomic commit |    7      7  0.7s
+Test Summary:                                                       | Pass  Total   Time
+Agent tool calling preserves contract evidence without loading code |    4      4  31.9s
+Test Summary:                                                        | Pass  Total  Time
+Julia interface contracts, ambiguity evidence and world-age boundary |   19     19  2.1s
+Test Summary:                                                                     | Pass  Total   Time
+Compiler diagnostics use listed targets, bounded output and independent processes |   23     23  21.3s
+Test Summary:                                           | Pass  Total  Time
+Task definition validation and independent graph checks |   15     15  4.6s
+Test Summary:                                                   | Pass  Total  Time
+Claims, dependency release, priority, fences and detached views |   13     13  7.1s
+Test Summary:                                               | Pass  Total  Time
+Safe retries, uncertain effects and explicit reconciliation |   16     16  1.3s
+Test Summary:                                                      | Pass  Total  Time
+Exclusive effects, cancellation propagation and read-only recovery |   16     16  0.9s
+Test Summary:                                                         | Pass  Total  Time
+Large result artifacts, digest verification and descriptor collisions |    6      6  0.6s
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.6s
+Test Summary:                                                    | Pass  Total   Time
+Protocol version, config ownership, secrets and session commands |   15     15  24.2s
+Test Summary:                                        | Pass  Total  Time
+Agent protocol permission ownership and cancellation |   13     13  3.8s
+Test Summary:                                                            | Pass  Total   Time
+Model RPC owns operations, approvals, caches and configuration lifecycle |   40     40  13.1s
+Test Summary:                                                                       | Pass  Total  Time
+Model health RPC reflects live runtime and enforces reset permission, CAS and scope |   25     25  1.2s
+Test Summary:                                                                             | Pass  Total  Time
+Routing RPC, default/worker roles, profile services and config validation share one fleet |   24     24  1.7s
+Test Summary:                                               | Pass  Total  Time
+Asynchronous task protocol, approvals and session ownership |   13     13  6.3s
+Test Summary:                                                | Pass  Total  Time
+Task jobs block config replacement and drain owned processes |    5      5  1.7s
+Test Summary:                                                                | Pass  Total  Time
+Analyzer RPC ownership, permissions, cancellation and configuration barriers |   31     31  3.5s
+Test Summary:                                | Pass  Total   Time
+MCP bounded schema assertions and references |   40     40  23.0s
+Test Summary:                                 | Pass  Total  Time
+MCP framing, content and configuration bounds |   25     25  1.5s
+Test Summary:                                                           | Pass  Total  Time
+MCP async protocol keeps approvals, jobs and connections session scoped |   33     33  6.5s
+Test Summary:                                                      | Pass  Total  Time
+Skills YAML metadata is bounded, typed and independently validated |   21     21  3.4s
+Test Summary:                                                               | Pass  Total  Time
+Skills discovery preserves sources, precedence, diagnostics and lazy bodies |   12     12  1.1s
+Test Summary:                                                             | Pass  Total  Time
+Skills activation, resource confinement, replay and permission boundaries |   22     22  2.9s
+Test Summary:                                        | Pass  Total  Time
+Skills source revisions are rechecked after approval |    3      3  0.1s
+Test Summary:                                                            | Pass  Total  Time
+Skills RPC scopes approvals, durable activation and source-opening proof |   23     23  2.5s
+Test Summary:                                                   | Pass  Total  Time
+Skills job cancellation drains approval and retains peer policy |    6      6  0.5s
+Test Summary:                                                            | Pass  Total  Time
+Hooks configuration has explicit points, bounds and no permission grants |   29     29  0.5s
+Test Summary:                                                   | Pass  Total  Time
+Hook source identity, read scope, ambiguity and explicit reload |   14     14  1.7s
+Test Summary:                              | Pass  Total  Time
+Context settings and exact model envelopes |   50     50  0.8s
+Test Summary:                                                 | Pass  Total  Time
+Instruction scope discovery, permissions and source revisions |   13     13  0.5s
+Test Summary:                                                 | Pass  Total  Time
+Balanced tool groups, no reasoning split and Unicode excerpts |   24     24  0.2s
+Test Summary:                                                   | Pass  Total  Time
+Durable context projections preserve transcripts and provenance |   17     17  1.4s
+Test Summary:                                              | Pass  Total  Time
+Compaction failure is atomic and fixed context is retained |    7      7  0.5s
+Test Summary:                                                       | Pass  Total  Time
+Original tool artifacts are scoped, permissioned and digest checked |    9      9  0.5s
+Test Summary:                                             | Pass  Total  Time
+Optional model summaries bind citations and shared budget |   10     10  1.3s
+Test Summary:                                                    | Pass  Total  Time
+Incremental process UTF-8 boundaries and malformed byte recovery |  128    128  0.0s
+Test Summary:                                                     | Pass  Total  Time
+Actual fragmented stdout and stderr match retained process output |    7      7  0.7s
+Test Summary:                                                        | Pass  Total  Time
+Terminal rendering sanitizes control sequences and handles wide text |   16     16  0.8s
+Test Summary:                                   | Pass  Total  Time
+SSE Unicode fragmentation, multiline and limits |    3      3  0.5s
+Test Summary:                                             | Pass  Total  Time
+OpenAI-compatible real HTTP tool stream and native replay |    7      7  5.2s
+Test Summary:                             | Pass  Total  Time
+Anthropic signature and tool continuation |    5      5  3.3s
+Test Summary:                                        | Pass  Total  Time
+OpenAI Responses encrypted reasoning and call stream |    3      3  2.7s
+Test Summary:                      | Pass  Total  Time
+Gemini and Ollama native protocols |    5      5  6.3s
+Test Summary:                                                    | Pass  Total  Time
+Retry before delivery, no replay after delivery, malformed calls |    5      5  9.7s
+Test Summary:                                                                            | Pass  Total  Time
+Fragmented HTTP error envelopes classify only complete bounded structured context errors |   12     12  2.7s
+Test Summary:                                                            | Pass  Total  Time
+Real model catalog protocols snapshot credentials and confine every page |   55     55  1.5s
+Test Summary:                                                                  | Pass  Total  Time
+Catalog TTL, ETag validation, failure preservation, ownership and cancellation |   15     15  1.0s
+Test Summary:                                                                      | Pass  Total  Time
+Real provider token-count bodies preserve actual input and one credential snapshot |   17     17  0.9s
+Test Summary:                                                                       | Pass  Total  Time
+Token-count API does not hide authentication, malformed counts or missing endpoints |    5      5  0.6s
+Test Summary:                                                     | Pass  Total  Time
+Model services bound declared/chunked bodies and reject redirects |    9      9  0.4s
+Test Summary:                                                               | Pass  Total  Time
+Model service blocked reads retire on cancellation, revocation and deadline |   18     18  3.3s
+Test Summary:                                                                      | Pass  Total  Time
+Single refresh approval covers pages and scope checks prevent reusing it elsewhere |    4      4  0.6s
+Test Summary:                                                                               | Pass  Total  Time
+Catalog capacity failure preserves the prior snapshot and scoped cleanup preserves siblings |    8      8  0.6s
+Test Summary:                                                       | Pass  Total  Time
+Model CLI uses bounded explicit input and honest stateless catalogs |   15     15  4.8s
+Test Summary:                                                                            | Pass  Total  Time
+Undelivered interrupted streams retry while delivered reasoning progress prevents replay |    4      4  6.7s
+Test Summary:                                                              | Pass  Total  Time
+HTTP retries retain exact body/key snapshots and count one logical outcome |    8      8  7.8s
+Test Summary:                                                                     | Pass  Total  Time
+Provider wait caps, terminal failures and server veto prevent extra HTTP attempts |   22     22  6.1s
+Test Summary:                                                                           | Pass  Total  Time
+Actual provider failures open circuits and the next explicit request performs one probe |    6      6  9.9s
+Test Summary:                                                                             | Pass  Total  Time
+Partial output and broken output consumers never cause replay or health misclassification |    8      8  6.4s
+Test Summary:                                                                            | Pass  Total  Time
+Retry wait cancellation, network revocation and shared deadlines release inference seats |   28     28  5.7s
+Test Summary:                                                               | Pass  Total  Time
+Revocation and cancellation retire blocked inference reads without retrying |   10     10  6.7s
+Test Summary:                                                                     | Pass  Total  Time
+Server and worker factories share explicit config, credentials and runtime health |   11     11  1.0s
+Test Summary:                                                                              | Pass  Total   Time
+Explicit routing fixes every eligible key before approval and records real source fallback |   17     17  23.4s
+Test Summary:                                                                           | Pass  Total   Time
+Terminal, partial, consumer and explicit fallback restrictions prevent source switching |   28     28  18.0s
+Test Summary:                                                                           | Pass  Total  Time
+Route cancellation, admission and context cost accounting stop work before side effects |    8      8  3.6s
+Test Summary:                                                                      | Pass  Total  Time
+CLI role routing previews and explicit profile services stay local until inference |   12     12  7.5s
+Test Summary:                         | Pass  Total   Time
+Actual Julia compute kernel isolation |   36     36  12.6s
+Test Summary:                             | Pass  Total   Time
+Compute rejection, capacity and lifecycle |   28     28  58.1s
+Test Summary:                                                | Pass  Total   Time
+Inherited descriptors, running cancellation and output flood |    9      9  29.9s
+Test Summary:                               | Pass  Total   Time
+External analyzer tests are checked by Core |   12     12  27.5s
+Test Summary:                                      | Pass  Total   Time
+Analyzer archive, CAS promotion and fresh rollback |   40     40  49.1s
+Test Summary:                                 | Pass  Total   Time
+Identical computations reuse scoped approvals |    3      3  16.7s
+Test Summary:                                           | Pass  Total   Time
+One isolated analyzer across four real project backends |  133    133  56.1s
+{"archived":true,"name":"incoming","scope":"project","validation_at_archive":false,"version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"}
+{"next_offset":null,"offset":0,"retained_bytes":2711,"scope":"project","total":1,"versions":[{"active":false,"archived_at":"2026-10-04T07:24:39.755Z","definition":{"bytes":2227,"description":"","format":1,"limits":{"address_space_bytes":8589934592,"cpu_seconds":30,"input_bytes":8388608,"max_tests":32,"output_bytes":1048576,"source_bytes":262144,"wall_seconds":60},"name":"incoming","source_sha256":"e16bb7bc8c063d3f59a92aac90c57b7ef8339abc172d0c654bd803893d8914f4","test_count":2,"version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"},"pointer":null,"scope":"project","validation_at_archive":false}]}
+{"archived_at":"2026-10-04T07:24:39.755Z","definition":{"bytes":2227,"description":"","format":1,"limits":{"address_space_bytes":8589934592,"cpu_seconds":30,"input_bytes":8388608,"max_tests":32,"output_bytes":1048576,"source_bytes":262144,"wall_seconds":60},"name":"incoming","source":"function analyze(data, request)\n    incoming = Dict{String,Vector{Any}}()\n    for edge in data[\"relations\"]\n        push!(get!(Vector{Any}, incoming, edge[\"dst\"]), edge)\n    end\n    candidates = Dict{String,Any}[]\n    denominator = max(1, length(data[\"relations\"]))\n    for symbol in data[\"symbols\"]\n        edges = get(incoming, symbol[\"id\"], Any[])\n        isempty(edges) && continue\n        push!(candidates, Dict(\"symbol_id\" => symbol[\"id\"],\n            \"score\" => length(edges) / denominator,\n            \"confidence\" => minimum(edge[\"confidence\"] for edge in edges),\n            \"reason\" => string(length(edges), \" incoming recorded relations\"),\n            \"evidence\" => sort!([edge[\"id\"] for edge in edges])))\n    end\n    sort!(candidates; by=candidate -> (-candidate[\"score\"], candidate[\"symbol_id\"]))\n    Dict(\"candidates\" => candidates, \"notes\" => [\"Incoming relation counts over supplied facts\"],\n        \"truncated\" => get(data, \"truncated\", false))\nend\nselftest() = isempty(analyze(Dict(\"symbols\" => [], \"relations\" => []), Dict())[\"candidates\"])\n","source_sha256":"e16bb7bc8c063d3f59a92aac90c57b7ef8339abc172d0c654bd803893d8914f4","test_count":2,"tests":[{"data":{"relations":[],"seed_ids":[],"symbols":[],"truncated":false},"expected":{"candidates":[],"notes":["Incoming relation counts over supplied facts"],"truncated":false},"name":"empty graph","request":{}},{"data":{"relations":[{"confidence":0.5,"dst":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","id":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","src":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}],"symbols":[{"id":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},{"id":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}],"truncated":false},"expected":{"candidates":[{"confidence":0.5,"evidence":["cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"],"reason":"1 incoming recorded relations","score":1,"symbol_id":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}],"notes":["Incoming relation counts over supplied facts"],"truncated":false},"name":"one incoming dependency","request":{}}],"version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"},"pointer":null,"scope":"project","validation_at_archive":null}
+{"created_at":"2026-10-04T07:24:40.047Z","definition":{"bytes":2227,"description":"","format":1,"limits":{"address_space_bytes":8589934592,"cpu_seconds":30,"input_bytes":8388608,"max_tests":32,"output_bytes":1048576,"source_bytes":262144,"wall_seconds":60},"name":"incoming","source_sha256":"e16bb7bc8c063d3f59a92aac90c57b7ef8339abc172d0c654bd803893d8914f4","test_count":2,"version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"},"failure":null,"lifetime":"session","restored_from":"project","running":0,"selected":true,"validation":null,"validation_required":true}
+{"pointer":{"core_version":"0.1.0","external_test_count":2,"external_test_suite_sha256":"20856d64d9f6d189cbccab77a4bbcdfe41f6848bf6083a8ba75a3f2ff86069bd","name":"incoming","operation":"promote","owner":"84238534db7404264119011e8b93d181afb5b6c01eee4845bcc96ea56ff521d6","pointer_revision":1,"previous_version":null,"scope":"project","source_sha256":"e16bb7bc8c063d3f59a92aac90c57b7ef8339abc172d0c654bd803893d8914f4","updated_at":"2026-10-04T07:24:50.436Z","validated_at":"2026-10-04T07:24:50.376Z","version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"},"session_selected":true,"validation":{"child_reported_metrics":{"analyze_seconds":0.414133811,"compile_seconds":0.011684041},"core_version":"0.1.0","elapsed_seconds":10.29930904,"external_tests":{"count":2,"passed":true,"receipts":[{"actual_sha256":"a9fc8f2ccc9ee09a067548482e2becedfd45c33df02dc860769919769fb534dd","data_sha256":"979e629f8e716a86d91c4ba19e71c7aba0f50e54a4815fe62ebeb20d8e159117","expected_sha256":"a9fc8f2ccc9ee09a067548482e2becedfd45c33df02dc860769919769fb534dd","name":"empty graph","passed":true,"request_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},{"actual_sha256":"4bde3bab9b65e72aeb58d55473e3628081b76d5b27be5039cc71805dabaf78f2","data_sha256":"282fdadb7247127c6da242d695b9f09cf5efe0784ca0a29f3f817d7cbee05755","expected_sha256":"4bde3bab9b65e72aeb58d55473e3628081b76d5b27be5039cc71805dabaf78f2","name":"one incoming dependency","passed":true,"request_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"}],"test_suite_sha256":"20856d64d9f6d189cbccab77a4bbcdfe41f6848bf6083a8ba75a3f2ff86069bd"},"limits":{"address_space_bytes":8589934592,"cpu_seconds":30,"input_bytes":8388608,"max_tests":32,"output_bytes":1048576,"source_bytes":262144,"wall_seconds":60},"passed":true,"sandbox":{"backend":"linux-seccomp-compute-v1","child_processes":false,"default_action":"EACCES","descriptor_count":18,"enforced":true,"filesystem_open":false,"filesystem_write":false,"jit_memfd_count":1,"network":false,"no_new_privileges":true,"thread_synchronized":true,"unconditional_calls":["brk","munmap","mprotect","mremap","madvise","futex","futex_waitv","sched_yield","sched_getaffinity","clock_gettime","clock_getres","gettimeofday","time","nanosleep","clock_nanosleep","getpid","getppid","gettid","getuid","geteuid","getgid","getegid","getrandom","rt_sigaction","rt_sigprocmask","rt_sigreturn","sigaltstack","rseq","membarrier","set_robust_list","set_tid_address","restart_syscall","exit","exit_group","close","fstat","read","readv","write","writev","poll","ppoll","select","pselect6","epoll_wait","epoll_pwait","epoll_pwait2","epoll_ctl","epoll_create1","eventfd2","getrusage","uname"]},"selftest":true,"source_sha256":"e16bb7bc8c063d3f59a92aac90c57b7ef8339abc172d0c654bd803893d8914f4","tested_at":"2026-10-04T07:24:50.376Z","version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"}}
+{"backend":"go_ast","capabilities":{"calls":"heuristic","definitions":true,"diagnostics":true,"global_relink":false,"implementations":false,"incremental_parse":true,"inheritance":false,"languages":["go"],"name":"go_ast","references":false,"rename":false,"syntax":true,"types":false},"compiler":null,"diagnostics":0,"external_semantic_calls":0,"files":1,"persistent_bytes":2400,"relations":3,"revision":1,"semantic_occurrences":0,"symbols":3,"unresolved_semantic_calls":0,"unresolved_syntax_calls":0}
+{"analyzer":"incoming","backend":"go_ast","candidates":[{"claim_status":"hypothesis_with_recorded_evidence","confidence":0.65,"evidence":["11828fca57a54c591531ac5a38b3c059b79865ea55f5a3c7638c24874eaead8a","2eef1b2734dbf29702b237c085618d41e5e54ff3da71e887b95c46353efccc4c"],"provenance":"generated_analyzer","reason":"2 incoming recorded relations","relation_evidence":[{"confidence":1,"dst":"1084b6ac04d57cd98275ba842a805883","id":"11828fca57a54c591531ac5a38b3c059b79865ea55f5a3c7638c24874eaead8a","kind":"contains","location":{"column_unit":"utf8_byte","end_column":31,"end_line":2,"file":"sample.go","start_column":1,"start_line":2},"provenance":"parser_declaration","src":"1c8c6b473ac1671b5aae6fa5dc930004"},{"confidence":0.65,"dst":"1084b6ac04d57cd98275ba842a805883","id":"2eef1b2734dbf29702b237c085618d41e5e54ff3da71e887b95c46353efccc4c","kind":"calls","location":{"column_unit":"utf8_byte","end_column":36,"end_line":3,"file":"sample.go","start_column":28,"start_line":3},"provenance":"unique_syntax_candidate","src":"449ec4c215eff5d335304481d993cd56"}],"score":0.6666666666666666,"seed_connected":false,"symbol":{"id":"1084b6ac04d57cd98275ba842a805883","kind":"function","language":"go","location":{"column_unit":"utf8_byte","end_column":31,"end_line":2,"file":"sample.go","start_column":1,"start_line":2},"metadata":{"semantic":false,"signature":"func target() int"},"name":"target","qualified_name":"target"}},{"claim_status":"hypothesis_with_recorded_evidence","confidence":1,"evidence":["a37f240054dda97c3647f72c65e5f162d41209317bd2d17b30bb27749f1c7dbc"],"provenance":"generated_analyzer","reason":"1 incoming recorded relations","relation_evidence":[{"confidence":1,"dst":"449ec4c215eff5d335304481d993cd56","id":"a37f240054dda97c3647f72c65e5f162d41209317bd2d17b30bb27749f1c7dbc","kind":"contains","location":{"column_unit":"utf8_byte","end_column":38,"end_line":3,"file":"sample.go","start_column":1,"start_line":3},"provenance":"parser_declaration","src":"1c8c6b473ac1671b5aae6fa5dc930004"}],"score":0.3333333333333333,"seed_connected":false,"symbol":{"id":"449ec4c215eff5d335304481d993cd56","kind":"function","language":"go","location":{"column_unit":"utf8_byte","end_column":38,"end_line":3,"file":"sample.go","start_column":1,"start_line":3},"metadata":{"semantic":false,"signature":"func caller() int"},"name":"caller","qualified_name":"caller"}}],"coverage":{"calls":"heuristic","definitions":true,"diagnostics":true,"global_relink":false,"implementations":false,"incremental_parse":true,"inheritance":false,"languages":["go"],"name":"go_ast","references":false,"rename":false,"syntax":true,"types":false},"fingerprint":"1988e043b1bc8032a9313ec24ab07acd5aa7c0393d4015ba6175836a063331f6","lifetime":"session","limitations":["Only facts in the supplied indexed snapshot are available; this does not verify current disk or runtime behavior.","Evidence identity and connectivity are checked. Generated reasons and scores remain hypotheses.","Confidence is bounded by recorded relation evidence; it is not a probability of correctness."],"notes":["Incoming relation counts over supplied facts"],"revision":1,"scope":"project","truncated":false,"validation":{"child_reported_metrics":{"analyze_seconds":0.407335745,"compile_seconds":0.006905103},"core_version":"0.1.0","elapsed_seconds":9.174372112,"external_tests":{"count":2,"passed":true,"receipts":[{"actual_sha256":"a9fc8f2ccc9ee09a067548482e2becedfd45c33df02dc860769919769fb534dd","data_sha256":"979e629f8e716a86d91c4ba19e71c7aba0f50e54a4815fe62ebeb20d8e159117","expected_sha256":"a9fc8f2ccc9ee09a067548482e2becedfd45c33df02dc860769919769fb534dd","name":"empty graph","passed":true,"request_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},{"actual_sha256":"4bde3bab9b65e72aeb58d55473e3628081b76d5b27be5039cc71805dabaf78f2","data_sha256":"282fdadb7247127c6da242d695b9f09cf5efe0784ca0a29f3f817d7cbee05755","expected_sha256":"4bde3bab9b65e72aeb58d55473e3628081b76d5b27be5039cc71805dabaf78f2","name":"one incoming dependency","passed":true,"request_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"}],"test_suite_sha256":"20856d64d9f6d189cbccab77a4bbcdfe41f6848bf6083a8ba75a3f2ff86069bd"},"limits":{"address_space_bytes":8589934592,"cpu_seconds":30,"input_bytes":8388608,"max_tests":32,"output_bytes":1048576,"source_bytes":262144,"wall_seconds":60},"passed":true,"sandbox":{"backend":"linux-seccomp-compute-v1","child_processes":false,"default_action":"EACCES","descriptor_count":18,"enforced":true,"filesystem_open":false,"filesystem_write":false,"jit_memfd_count":1,"network":false,"no_new_privileges":true,"thread_synchronized":true,"unconditional_calls":["brk","munmap","mprotect","mremap","madvise","futex","futex_waitv","sched_yield","sched_getaffinity","clock_gettime","clock_getres","gettimeofday","time","nanosleep","clock_nanosleep","getpid","getppid","gettid","getuid","geteuid","getgid","getegid","getrandom","rt_sigaction","rt_sigprocmask","rt_sigreturn","sigaltstack","rseq","membarrier","set_robust_list","set_tid_address","restart_syscall","exit","exit_group","close","fstat","read","readv","write","writev","poll","ppoll","select","pselect6","epoll_wait","epoll_pwait","epoll_pwait2","epoll_ctl","epoll_create1","eventfd2","getrusage","uname"]},"selftest":true,"source_sha256":"e16bb7bc8c063d3f59a92aac90c57b7ef8339abc172d0c654bd803893d8914f4","tested_at":"2026-10-04T07:25:01.448Z","version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"},"version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"}
+{"analyzer":"incoming","backend":"go_ast","candidates":[{"claim_status":"hypothesis_with_recorded_evidence","confidence":0.65,"evidence":["11828fca57a54c591531ac5a38b3c059b79865ea55f5a3c7638c24874eaead8a","2eef1b2734dbf29702b237c085618d41e5e54ff3da71e887b95c46353efccc4c"],"provenance":"generated_analyzer","reason":"2 incoming recorded relations","relation_evidence":[{"confidence":1,"dst":"1084b6ac04d57cd98275ba842a805883","id":"11828fca57a54c591531ac5a38b3c059b79865ea55f5a3c7638c24874eaead8a","kind":"contains","location":{"column_unit":"utf8_byte","end_column":31,"end_line":2,"file":"sample.go","start_column":1,"start_line":2},"provenance":"parser_declaration","src":"1c8c6b473ac1671b5aae6fa5dc930004"},{"confidence":0.65,"dst":"1084b6ac04d57cd98275ba842a805883","id":"2eef1b2734dbf29702b237c085618d41e5e54ff3da71e887b95c46353efccc4c","kind":"calls","location":{"column_unit":"utf8_byte","end_column":36,"end_line":3,"file":"sample.go","start_column":28,"start_line":3},"provenance":"unique_syntax_candidate","src":"449ec4c215eff5d335304481d993cd56"}],"score":0.6666666666666666,"seed_connected":false,"symbol":{"id":"1084b6ac04d57cd98275ba842a805883","kind":"function","language":"go","location":{"column_unit":"utf8_byte","end_column":31,"end_line":2,"file":"sample.go","start_column":1,"start_line":2},"metadata":{"semantic":false,"signature":"func target() int"},"name":"target","qualified_name":"target"}},{"claim_status":"hypothesis_with_recorded_evidence","confidence":1,"evidence":["a37f240054dda97c3647f72c65e5f162d41209317bd2d17b30bb27749f1c7dbc"],"provenance":"generated_analyzer","reason":"1 incoming recorded relations","relation_evidence":[{"confidence":1,"dst":"449ec4c215eff5d335304481d993cd56","id":"a37f240054dda97c3647f72c65e5f162d41209317bd2d17b30bb27749f1c7dbc","kind":"contains","location":{"column_unit":"utf8_byte","end_column":38,"end_line":3,"file":"sample.go","start_column":1,"start_line":3},"provenance":"parser_declaration","src":"1c8c6b473ac1671b5aae6fa5dc930004"}],"score":0.3333333333333333,"seed_connected":false,"symbol":{"id":"449ec4c215eff5d335304481d993cd56","kind":"function","language":"go","location":{"column_unit":"utf8_byte","end_column":38,"end_line":3,"file":"sample.go","start_column":1,"start_line":3},"metadata":{"semantic":false,"signature":"func caller() int"},"name":"caller","qualified_name":"caller"}}],"coverage":{"calls":"heuristic","definitions":true,"diagnostics":true,"global_relink":false,"implementations":false,"incremental_parse":true,"inheritance":false,"languages":["go"],"name":"go_ast","references":false,"rename":false,"syntax":true,"types":false},"fingerprint":"1988e043b1bc8032a9313ec24ab07acd5aa7c0393d4015ba6175836a063331f6","lifetime":"session","limitations":["Only facts in the supplied indexed snapshot are available; this does not verify current disk or runtime behavior.","Evidence identity and connectivity are checked. Generated reasons and scores remain hypotheses.","Confidence is bounded by recorded relation evidence; it is not a probability of correctness."],"notes":["Incoming relation counts over supplied facts"],"revision":1,"scope":"project","truncated":false,"validation":{"child_reported_metrics":{"analyze_seconds":0.406811265,"compile_seconds":0.005970175},"core_version":"0.1.0","elapsed_seconds":8.507386406,"external_tests":{"count":2,"passed":true,"receipts":[{"actual_sha256":"a9fc8f2ccc9ee09a067548482e2becedfd45c33df02dc860769919769fb534dd","data_sha256":"979e629f8e716a86d91c4ba19e71c7aba0f50e54a4815fe62ebeb20d8e159117","expected_sha256":"a9fc8f2ccc9ee09a067548482e2becedfd45c33df02dc860769919769fb534dd","name":"empty graph","passed":true,"request_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},{"actual_sha256":"4bde3bab9b65e72aeb58d55473e3628081b76d5b27be5039cc71805dabaf78f2","data_sha256":"282fdadb7247127c6da242d695b9f09cf5efe0784ca0a29f3f817d7cbee05755","expected_sha256":"4bde3bab9b65e72aeb58d55473e3628081b76d5b27be5039cc71805dabaf78f2","name":"one incoming dependency","passed":true,"request_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"}],"test_suite_sha256":"20856d64d9f6d189cbccab77a4bbcdfe41f6848bf6083a8ba75a3f2ff86069bd"},"limits":{"address_space_bytes":8589934592,"cpu_seconds":30,"input_bytes":8388608,"max_tests":32,"output_bytes":1048576,"source_bytes":262144,"wall_seconds":60},"passed":true,"sandbox":{"backend":"linux-seccomp-compute-v1","child_processes":false,"default_action":"EACCES","descriptor_count":18,"enforced":true,"filesystem_open":false,"filesystem_write":false,"jit_memfd_count":1,"network":false,"no_new_privileges":true,"thread_synchronized":true,"unconditional_calls":["brk","munmap","mprotect","mremap","madvise","futex","futex_waitv","sched_yield","sched_getaffinity","clock_gettime","clock_getres","gettimeofday","time","nanosleep","clock_nanosleep","getpid","getppid","gettid","getuid","geteuid","getgid","getegid","getrandom","rt_sigaction","rt_sigprocmask","rt_sigreturn","sigaltstack","rseq","membarrier","set_robust_list","set_tid_address","restart_syscall","exit","exit_group","close","fstat","read","readv","write","writev","poll","ppoll","select","pselect6","epoll_wait","epoll_pwait","epoll_pwait2","epoll_ctl","epoll_create1","eventfd2","getrusage","uname"]},"selftest":true,"source_sha256":"e16bb7bc8c063d3f59a92aac90c57b7ef8339abc172d0c654bd803893d8914f4","tested_at":"2026-10-04T07:25:09.989Z","version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"},"version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"}
+{"pointer":{"core_version":"0.1.0","external_test_count":2,"external_test_suite_sha256":"20856d64d9f6d189cbccab77a4bbcdfe41f6848bf6083a8ba75a3f2ff86069bd","name":"incoming","operation":"rollback","owner":"84238534db7404264119011e8b93d181afb5b6c01eee4845bcc96ea56ff521d6","pointer_revision":2,"previous_version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617","scope":"project","source_sha256":"e16bb7bc8c063d3f59a92aac90c57b7ef8339abc172d0c654bd803893d8914f4","updated_at":"2026-10-04T07:25:18.709Z","validated_at":"2026-10-04T07:25:18.577Z","version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"},"session_selected":true,"validation":{"child_reported_metrics":{"analyze_seconds":0.38266317,"compile_seconds":0.006208923},"core_version":"0.1.0","elapsed_seconds":8.412529199,"external_tests":{"count":2,"passed":true,"receipts":[{"actual_sha256":"a9fc8f2ccc9ee09a067548482e2becedfd45c33df02dc860769919769fb534dd","data_sha256":"979e629f8e716a86d91c4ba19e71c7aba0f50e54a4815fe62ebeb20d8e159117","expected_sha256":"a9fc8f2ccc9ee09a067548482e2becedfd45c33df02dc860769919769fb534dd","name":"empty graph","passed":true,"request_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},{"actual_sha256":"4bde3bab9b65e72aeb58d55473e3628081b76d5b27be5039cc71805dabaf78f2","data_sha256":"282fdadb7247127c6da242d695b9f09cf5efe0784ca0a29f3f817d7cbee05755","expected_sha256":"4bde3bab9b65e72aeb58d55473e3628081b76d5b27be5039cc71805dabaf78f2","name":"one incoming dependency","passed":true,"request_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"}],"test_suite_sha256":"20856d64d9f6d189cbccab77a4bbcdfe41f6848bf6083a8ba75a3f2ff86069bd"},"limits":{"address_space_bytes":8589934592,"cpu_seconds":30,"input_bytes":8388608,"max_tests":32,"output_bytes":1048576,"source_bytes":262144,"wall_seconds":60},"passed":true,"sandbox":{"backend":"linux-seccomp-compute-v1","child_processes":false,"default_action":"EACCES","descriptor_count":18,"enforced":true,"filesystem_open":false,"filesystem_write":false,"jit_memfd_count":1,"network":false,"no_new_privileges":true,"thread_synchronized":true,"unconditional_calls":["brk","munmap","mprotect","mremap","madvise","futex","futex_waitv","sched_yield","sched_getaffinity","clock_gettime","clock_getres","gettimeofday","time","nanosleep","clock_nanosleep","getpid","getppid","gettid","getuid","geteuid","getgid","getegid","getrandom","rt_sigaction","rt_sigprocmask","rt_sigreturn","sigaltstack","rseq","membarrier","set_robust_list","set_tid_address","restart_syscall","exit","exit_group","close","fstat","read","readv","write","writev","poll","ppoll","select","pselect6","epoll_wait","epoll_pwait","epoll_pwait2","epoll_ctl","epoll_create1","eventfd2","getrusage","uname"]},"selftest":true,"source_sha256":"e16bb7bc8c063d3f59a92aac90c57b7ef8339abc172d0c654bd803893d8914f4","tested_at":"2026-10-04T07:25:18.577Z","version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"}}
+{"history":[{"core_version":"0.1.0","external_test_count":2,"external_test_suite_sha256":"20856d64d9f6d189cbccab77a4bbcdfe41f6848bf6083a8ba75a3f2ff86069bd","name":"incoming","operation":"rollback","owner":"84238534db7404264119011e8b93d181afb5b6c01eee4845bcc96ea56ff521d6","pointer_revision":2,"previous_version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617","scope":"project","source_sha256":"e16bb7bc8c063d3f59a92aac90c57b7ef8339abc172d0c654bd803893d8914f4","updated_at":"2026-10-04T07:25:18.709Z","validated_at":"2026-10-04T07:25:18.577Z","version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"},{"core_version":"0.1.0","external_test_count":2,"external_test_suite_sha256":"20856d64d9f6d189cbccab77a4bbcdfe41f6848bf6083a8ba75a3f2ff86069bd","name":"incoming","operation":"promote","owner":"84238534db7404264119011e8b93d181afb5b6c01eee4845bcc96ea56ff521d6","pointer_revision":1,"previous_version":null,"scope":"project","source_sha256":"e16bb7bc8c063d3f59a92aac90c57b7ef8339abc172d0c654bd803893d8914f4","updated_at":"2026-10-04T07:24:50.436Z","validated_at":"2026-10-04T07:24:50.376Z","version":"3a7b3fe80b819ec149c9bb97b1f28f93e5ac833eb3d22ed8082d6837c0dda617"}],"name":"incoming","scope":"project"}
+{"architecture":"x86_64","constraints":["No filesystem opens, network creation, child processes or process inspection after bootstrap.","Preloaded Julia/Base and explicit JSON inputs only; arbitrary package loading is unavailable.","Virtual-address-space limit is enforced; this is not a resident-memory quota.","Linux x86_64 was runtime-verified; other platforms remain unverified or unavailable."],"default_lifetime":"session","dependency_available":true,"enforcement":"Verified separately for every child before caller code is delivered","fallback":false,"host_sandbox_changed":false,"input_contract":"analyze(data::Dict, request::Dict) -> Dict; selftest() -> true","limits":{"address_space_bytes":8589934592,"cpu_seconds":30,"input_bytes":8388608,"max_tests":32,"output_bytes":1048576,"source_bytes":262144,"wall_seconds":60},"platform":"Linux","sandbox_backend":"linux-seccomp-compute-v1"}
+Test Summary:                                                          | Pass  Total   Time
+Stateless analyzer CLI preserves archives and revalidates project runs |   16     16  39.7s
+Test Summary:                                                 | Pass  Total  Time
+HTTP context overflow recovers before delivery without replay |   13     13  5.0s
+Test Summary:                                                          | Pass  Total  Time
+Model network approval respects the remaining shared wall-clock budget |    7      7  3.7s
+Test Summary:                                                       | Pass  Total  Time
+Reasoning and partial tool arguments fence model retry and recovery |   21     21  1.1s
+Test Summary:                                                             | Pass  Total  Time
+Completed stream calls remain undispatched when a later call is malformed |    8      8  0.7s
+Test Summary:                                                         | Pass  Total  Time
+Provider usage survives failed context attempts and disabled recovery |   14     14  1.0s
+Test Summary:                                                         | Pass  Total  Time
+Context RPC ownership, permissions, asynchronous cancellation and CAS |   16     16  1.6s
+Test Summary:                                                          | Pass  Total  Time
+Manual context checkpoints are shared by RPC and subsequent agent runs |    8      8  0.9s
+Test Summary:                                                       | Pass  Total  Time
+Workspace tools conflict guard, schema and transactional validation |    9      9  1.1s
+Test Summary:                                                 | Pass  Total  Time
+Process execution, bounded logs, ownership, input and timeout |   12     12  0.8s
+Test Summary:                                                | Pass  Total  Time
+Agent repairs a failing Python test with real tool execution |   10     10  1.1s
+Test Summary:                                       | Pass  Total  Time
+Actual worker DAG binds verified dependency results |    5      5  0.5s
+Test Summary:                                                   | Pass  Total  Time
+Test processes, timeout uncertainty and separate model sessions |   16     16  1.8s
+Test Summary:                                       | Pass  Total   Time
+Two real Julia processes cannot claim the same task |    3      3  13.8s
+{"counts":{"blocked":0,"cancelled":0,"failed":0,"pending":0,"ready":1,"retry_waiting":0,"running":0,"succeeded":0,"uncertain":0},"created_at":"2026-10-04T07:25:52.780Z","id":"cli-tool","journal_bytes":597,"revision":1,"scope":"session","session_id":"cli-owner","status":"ready","task_count":1,"title":"Workflow"}
+{"counts":{"blocked":0,"cancelled":0,"failed":0,"pending":0,"ready":0,"retry_waiting":0,"running":0,"succeeded":1,"uncertain":0},"created_at":"2026-10-04T07:25:52.780Z","id":"cli-tool","journal_bytes":3092,"revision":4,"scope":"session","session_id":"cli-owner","status":"succeeded","task_count":1,"title":"Workflow"}
+{"attempts":1,"cancel_requested":false,"definition":{"arguments":{"path":"source.txt"},"deduplication_key":"","dependencies":[],"id":"read","kind":"tool","operation":"read","priority":0,"retry":{"initial_delay":1,"jitter_fraction":0.1,"max_attempts":1,"maximum_delay":60,"multiplier":2},"safe_retry":false,"timeout":300,"title":"read"},"failure":null,"id":"read","lease":null,"not_before":0,"receipts":[{"attempt":1,"evidence":"Completion acknowledged by execution owner","execution_id":"cf3e840c-13e1-4759-8a5f-516d86616471","finished_at":1.791098752825671e9,"hooks_barrier":false,"hooks_started":false,"phase":"succeeded","result_sha256":"ca555ce2b0f7556aaf7d17080f939372b6527e7e015b4dec0aeb728ed0caef0f","started_at":1.79109875278231e9}],"result":{"end_line":2,"path":"source.txt","sha256":"4b6a0df8336e6c161d6bd201436a455396d834fdaccdb83a89063a6073e1c6cd","start_line":1,"text":"1: shared Core\n2: ","total_lines":2},"status":"succeeded","version":4}
+Test Summary:                                            | Pass  Total  Time
+Agent and headless CLI invoke the same durable task tool |    6      6  0.7s
+Test Summary:                            | Pass  Total  Time
+Actual MCP stdio lifecycle and discovery |   34     34  4.8s
+Test Summary:                                          | Pass  Total  Time
+Actual Streamable HTTP JSON, SSE and session ownership |   10     10  5.6s
+Test Summary:                                            | Pass  Total  Time
+HTTP MCP does not replay failed POST or follow redirects |   24     24  1.3s
+Test Summary:                                                           | Pass  Total  Time
+SSE HTTP response ends a request while the server keeps the stream open |    3      3  1.6s
+Test Summary:                                                  | Pass  Total  Time
+Actual HTTP GET notification resumption keeps the same session |    7      7  0.8s
+Test Summary:                                            | Pass  Total  Time
+MCP rejects invalid servers and preserves dirty catalogs |   26     26  0.8s
+Test Summary:                                              | Pass  Total  Time
+MCP environment, permission, ownership and error isolation |   11     11  0.7s
+Test Summary:                                          | Pass  Total  Time
+MCP timeouts, cancellation, fencing and no tool replay |   17     17  1.5s
+Test Summary:                                       | Pass  Total  Time
+MCP flapping connection exhausts one bounded outage |    4      4  0.8s
+Test Summary:                                                             | Pass  Total  Time
+MCP parent cancellation closes its owned process without cancelling peers |    4      4  0.4s
+Test Summary:                                             | Pass  Total  Time
+Agent advertises discovered MCP tools on the next request |   12     12  2.6s
+[{"enabled":true,"generation":0,"name":"fixture","state":"disconnected","transport":"stdio"}]
+{"content":[{"text":"\"CLI 中文\"","type":"text"}],"structuredContent":{"echo":"CLI 中文"}}
+Test Summary:                                                      | Pass  Total  Time
+MCP CLI executes the same permissioned Core and closes its process |    6      6  1.0s
+Test Summary:                                                           | Pass  Total  Time
+Actual agent lazily activates a Skill and narrows its next declarations |    9      9  1.0s
+{"diagnostics":[],"entries":3,"generation":1,"loaded_at":"2026-10-04T07:26:16.224Z","roots":{"project":["skills"],"user":[]},"skills":[{"description":"Review changes with evidence","directory":"/tmp/jl_hwcSd4/skills/review-code","enabled":true,"id":"skill-51384bdcf520af885d1c8619","loaded":false,"loaded_at":null,"metadata":{"description":"Review changes with evidence","name":"review-code"},"model_invocable":true,"name":"review-code","path":"/tmp/jl_hwcSd4/skills/review-code/SKILL.md","scope":"project","selected":true,"sha256":"1cc00a529a04dcb0854d591e52df328d869d36b9c9c7264604ca066a00a0a9f0","shadowed_by":null,"user_invocable":true}],"truncated":false}
+{"body":"Use inspected evidence. CLI 中文","id":"skill-51384bdcf520af885d1c8619","loaded_at":"2026-10-04T07:26:16.226Z","name":"review-code","session_id":"skills-owner","sha256":"1cc00a529a04dcb0854d591e52df328d869d36b9c9c7264604ca066a00a0a9f0"}
+{"deactivated":["skill-51384bdcf520af885d1c8619"],"session_id":"skills-owner"}
+Test Summary:                                                           | Pass  Total  Time
+Headless Skills CLI reads shared references and preserves session state |    6      6  0.2s
+Test Summary:                                                                     | Pass  Total  Time
+Real Hook commands have bounded metadata, private output and narrowed environment |   14     14  1.1s
+Test Summary:                                                           | Pass  Total  Time
+Hook approval rechecks source identity and current policy before launch |    8      8  0.5s
+Test Summary:                                                     | Pass  Total  Time
+Hook timeouts, cancellation, malformed output and bounded history |   14     14  1.1s
+Test Summary:                                                                      | Pass  Total  Time
+Actual agent applies Hook context and lifecycle observations without exposing chat |   10     10  1.1s
+Test Summary:                                                                     | Pass  Total  Time
+Before-effect Hook denial prevents writes; post-effect failure preserves receipts |   11     11  0.6s
+Test Summary:                                             | Pass  Total  Time
+Owned processes drain descendants and bound blocked stdin |    8      8  1.9s
+Test Summary:                                                           | Pass  Total  Time
+Hook RPC scopes command approval, cancellation and source-opening proof |   29     29  2.8s
+Test Summary:                                                                    | Pass  Total  Time
+Actual durable workers persist Hook effects and serialize unknown command checks |   12     12  1.2s
+Test Summary:                                                                      | Pass  Total  Time
+Lost leases cannot silently replay declared Hook effects or accept foreign markers |    8      8  0.2s
+Test Summary:                                                    | Pass  Total  Time
+Hooks CLI uses the same commands, permissions and failure status |    6      6  0.4s
+{"kind":"session_started","payload":{"id":"b0db22b2-85b4-47dc-8845-637a83487595","provider":"mock"},"sequence":1,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.627Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+{"kind":"skills_reloaded","payload":{"count":0,"diagnostics":0,"generation":1,"truncated":false},"sequence":2,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.629Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+{"kind":"context_prepared","payload":{"checkpoint_id":null,"instruction_sources":0,"measure":{"byte_limit":262144,"context_window":128000,"envelope_bytes":13261,"estimated_tokens":4459,"fits":true,"input_limit":124928,"max_output":2048,"message_bytes":555,"options_bytes":2,"token_source":"byte_and_unicode_estimate","tools_bytes":12650,"wire_bytes":13261},"original_messages":1,"projected_messages":2,"pruned_results":0},"sequence":3,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.631Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+{"kind":"model_request","payload":{"context_attempt":0,"estimated_input_tokens":4459,"provider":"mock","request_sha256":"ae97e79ede0e86d43c5ec1d19e6886139ea72b3c99ff8a19e66b8c73bac3bea4"},"sequence":4,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.632Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+{"kind":"text_delta","payload":{"text":"离"},"sequence":5,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.633Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+{"kind":"text_delta","payload":{"text":"线"},"sequence":6,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.633Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+{"kind":"text_delta","payload":{"text":"任"},"sequence":7,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.633Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+{"kind":"text_delta","payload":{"text":"务"},"sequence":8,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.633Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+{"kind":"text_delta","payload":{"text":"完"},"sequence":9,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.633Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+{"kind":"text_delta","payload":{"text":"成"},"sequence":10,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.633Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+{"kind":"usage","payload":{"input_tokens":0,"output_tokens":0},"sequence":11,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.633Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+{"kind":"session_completed","payload":{"budget":{"cost":0,"elapsed_seconds":0.01886019,"limits":{"max_cost":10,"max_seconds":3600,"max_steps":100,"max_tokens":1000000},"reported_cost":0,"reserved_cost":0,"reserved_tokens":0,"steps":1,"tokens":0},"text":"离线任务完成"},"sequence":12,"session_id":"b0db22b2-85b4-47dc-8845-637a83487595","timestamp":"2026-10-04T07:26:27.634Z","trace_id":"4acfadd6-334e-4e34-a624-ef4e7e5e2fea"}
+[ Info: Listening on: 127.0.0.1:44537, thread id: 1
+[ Info: Server on 127.0.0.1:44537 closing
+[ Info: Listening on: 127.0.0.1:40475, thread id: 1
+[ Info: Server on 127.0.0.1:40475 closing
+[ Info: Listening on: 127.0.0.1:42177, thread id: 2
+[ Info: Server on 127.0.0.1:42177 closing
+[ Info: Listening on: 127.0.0.1:35371, thread id: 1
+[ Info: Server on 127.0.0.1:35371 closing
+[ Info: Listening on: 127.0.0.1:43317, thread id: 1
+[ Info: Server on 127.0.0.1:43317 closing
+[ Info: Listening on: 127.0.0.1:45833, thread id: 1
+[ Info: Server on 127.0.0.1:45833 closing
+[ Info: Listening on: 127.0.0.1:43393, thread id: 1
+[ Info: Server on 127.0.0.1:43393 closing
+[ Info: Listening on: 127.0.0.1:38087, thread id: 1
+[ Info: Server on 127.0.0.1:38087 closing
+[ Info: Listening on: 127.0.0.1:35079, thread id: 1
+[ Info: Server on 127.0.0.1:35079 closing
+[ Info: Listening on: 127.0.0.1:38783, thread id: 1
+[ Info: Server on 127.0.0.1:38783 closing
+[ Info: Listening on: 127.0.0.1:40779, thread id: 2
+[ Info: Server on 127.0.0.1:40779 closing
+[ Info: Listening on: 127.0.0.1:38941, thread id: 2
+[ Info: Server on 127.0.0.1:38941 closing
+[ Info: Listening on: 127.0.0.1:36337, thread id: 2
+[ Info: Server on 127.0.0.1:36337 closing
+[ Info: Listening on: 127.0.0.1:40693, thread id: 1
+[ Info: Server on 127.0.0.1:40693 closing
+[ Info: Listening on: 127.0.0.1:43933, thread id: 1
+[ Info: Server on 127.0.0.1:43933 closing
+[ Info: Listening on: 127.0.0.1:42091, thread id: 2
+[ Info: Server on 127.0.0.1:42091 closing
+[ Info: Listening on: 127.0.0.1:35523, thread id: 2
+[ Info: Server on 127.0.0.1:35523 closing
+[ Info: Listening on: 127.0.0.1:45467, thread id: 2
+[ Info: Server on 127.0.0.1:45467 closing
+[ Info: Listening on: 127.0.0.1:41979, thread id: 2
+[ Info: Server on 127.0.0.1:41979 closing
+[ Info: Listening on: 127.0.0.1:42231, thread id: 1
+[ Info: Server on 127.0.0.1:42231 closing
+[ Info: Listening on: 127.0.0.1:44161, thread id: 1
+[ Info: Server on 127.0.0.1:44161 closing
+[ Info: Listening on: 127.0.0.1:42885, thread id: 2
+[ Info: Server on 127.0.0.1:42885 closing
+[ Info: Listening on: 127.0.0.1:37395, thread id: 1
+[ Info: Server on 127.0.0.1:37395 closing
+[ Info: Listening on: 127.0.0.1:45053, thread id: 1
+[ Info: Server on 127.0.0.1:45053 closing
+[ Info: Listening on: 127.0.0.1:39379, thread id: 2
+[ Info: Server on 127.0.0.1:39379 closing
+[ Info: Listening on: 127.0.0.1:36407, thread id: 2
+[ Info: Server on 127.0.0.1:36407 closing
+[ Info: Listening on: 127.0.0.1:42663, thread id: 1
+[ Info: Server on 127.0.0.1:42663 closing
+[ Info: Listening on: 127.0.0.1:36349, thread id: 1
+[ Info: Server on 127.0.0.1:36349 closing
+[ Info: Listening on: 127.0.0.1:42707, thread id: 2
+[ Info: Server on 127.0.0.1:42707 closing
+[ Info: Listening on: 127.0.0.1:46041, thread id: 2
+[ Info: Server on 127.0.0.1:46041 closing
+[ Info: Listening on: 127.0.0.1:40099, thread id: 1
+[ Info: Server on 127.0.0.1:40099 closing
+[ Info: Listening on: 127.0.0.1:41025, thread id: 1
+[ Info: Server on 127.0.0.1:41025 closing
+[ Info: Listening on: 127.0.0.1:45865, thread id: 2
+arguments: arguments.limit is out of range
+input: --offset requires a nonnegative integer
+permission: Path escapes workspace
+arguments: arguments.mode has an unsupported value
+catalog: Model is not in this conversation's catalog
+arguments: JSON source is incomplete
+[ Info: Server on 127.0.0.1:45865 closing
+[ Info: Listening on: 127.0.0.1:43723, thread id: 1
+[ Info: Server on 127.0.0.1:43723 closing
+[ Info: Listening on: 127.0.0.1:35241, thread id: 1
+[ Info: Server on 127.0.0.1:35241 closing
+[ Info: Listening on: 127.0.0.1:35955, thread id: 3
+[ Info: Server on 127.0.0.1:35955 closing
+[ Info: Listening on: 127.0.0.1:43123, thread id: 4
+[ Info: Server on 127.0.0.1:43123 closing
+[ Info: Listening on: 127.0.0.1:36619, thread id: 1
+[ Info: Server on 127.0.0.1:36619 closing
+[ Info: Listening on: 127.0.0.1:35105, thread id: 1
+[ Info: Server on 127.0.0.1:35105 closing
+[ Info: Listening on: 127.0.0.1:45489, thread id: 1
+[ Info: Server on 127.0.0.1:45489 closing
+[ Info: Listening on: 127.0.0.1:46827, thread id: 4
+[ Info: Server on 127.0.0.1:46827 closing
+[ Info: Listening on: 127.0.0.1:43201, thread id: 2
+[ Info: Server on 127.0.0.1:43201 closing
+[ Info: Listening on: 127.0.0.1:39387, thread id: 2
+[ Info: Server on 127.0.0.1:39387 closing
+[ Info: Listening on: 127.0.0.1:40781, thread id: 2
+[ Info: Server on 127.0.0.1:40781 closing
+[ Info: Listening on: 127.0.0.1:38397, thread id: 2
+[ Info: Server on 127.0.0.1:38397 closing
+[ Info: Listening on: 127.0.0.1:36387, thread id: 1
+[ Info: Server on 127.0.0.1:36387 closing
+[ Info: Listening on: 127.0.0.1:38533, thread id: 2
+[ Info: Server on 127.0.0.1:38533 closing
+[ Info: Listening on: 127.0.0.1:46597, thread id: 2
+[ Info: Server on 127.0.0.1:46597 closing
+[ Info: Listening on: 127.0.0.1:38523, thread id: 1
+[ Info: Server on 127.0.0.1:38523 closing
+[ Info: Listening on: 127.0.0.1:42353, thread id: 1
+[ Info: Listening on: 127.0.0.1:44667, thread id: 1
+[ Info: Server on 127.0.0.1:44667 closing
+[ Info: Server on 127.0.0.1:42353 closing
+[ Info: Listening on: 127.0.0.1:35611, thread id: 1
+[ Info: Listening on: 127.0.0.1:35513, thread id: 1
+[ Info: Server on 127.0.0.1:35513 closing
+[ Info: Server on 127.0.0.1:35611 closing
+[ Info: Listening on: 127.0.0.1:40627, thread id: 3
+[ Info: Listening on: 127.0.0.1:45627, thread id: 3
+[ Info: Server on 127.0.0.1:45627 closing
+[ Info: Server on 127.0.0.1:40627 closing
+[ Info: Listening on: 127.0.0.1:41651, thread id: 1
+[ Info: Listening on: 127.0.0.1:36365, thread id: 2
+[ Info: Server on 127.0.0.1:36365 closing
+[ Info: Server on 127.0.0.1:41651 closing
+[ Info: Listening on: 127.0.0.1:35275, thread id: 1
+[ Info: Listening on: 127.0.0.1:39671, thread id: 1
+[ Info: Server on 127.0.0.1:39671 closing
+[ Info: Server on 127.0.0.1:35275 closing
+[ Info: Listening on: 127.0.0.1:36967, thread id: 1
+[ Info: Listening on: 127.0.0.1:36433, thread id: 1
+[ Info: Server on 127.0.0.1:36433 closing
+[ Info: Server on 127.0.0.1:36967 closing
+[ Info: Listening on: 127.0.0.1:43235, thread id: 3
+[ Info: Server on 127.0.0.1:43235 closing
+[ Info: Listening on: 127.0.0.1:33439, thread id: 3
+[ Info: Listening on: 127.0.0.1:45237, thread id: 3
+arguments: Unknown model route profile
+Session: ef0f8480-7d4f-44d8-8f85-6c001f6a5408
+config: Unknown model route role
+[ Info: Server on 127.0.0.1:45237 closing
+[ Info: Server on 127.0.0.1:33439 closing
+input: Promotion and rollback require --expected-pointer REVISION
+input: --offset requires a nonnegative integer
+arguments: arguments.scope has an unsupported value
+arguments: arguments.limit is out of range
+[ Info: Listening on: 127.0.0.1:43171, thread id: 1
+[ Info: Server on 127.0.0.1:43171 closing
+[ Info: Listening on: 127.0.0.1:37601, thread id: 1
+[ Info: Server on 127.0.0.1:37601 closing
+[ Info: Listening on: 127.0.0.1:41447, thread id: 1
+[ Info: Server on 127.0.0.1:41447 closing
+[ Info: Listening on: 127.0.0.1:36437, thread id: 1
+[ Info: Server on 127.0.0.1:36437 closing
+[ Info: Listening on: 127.0.0.1:40577, thread id: 1
+[ Info: Server on 127.0.0.1:40577 closing
+[ Info: Listening on: 127.0.0.1:33007, thread id: 1
+[ Info: Server on 127.0.0.1:33007 closing
+[ Info: Listening on: 127.0.0.1:41955, thread id: 1
+[ Info: Server on 127.0.0.1:41955 closing
+[ Info: Listening on: 127.0.0.1:35659, thread id: 1
+[ Info: Server on 127.0.0.1:35659 closing
+[ Info: Listening on: 127.0.0.1:38809, thread id: 1
+[ Info: Server on 127.0.0.1:38809 closing
+[ Info: Listening on: 127.0.0.1:44787, thread id: 3
+[ Info: Server on 127.0.0.1:44787 closing
+[ Info: Listening on: 127.0.0.1:42619, thread id: 1
+[ Info: Server on 127.0.0.1:42619 closing
+[ Info: Listening on: 127.0.0.1:36987, thread id: 1
+[ Info: Server on 127.0.0.1:36987 closing
+[ Info: Listening on: 127.0.0.1:46615, thread id: 1
+[ Info: Server on 127.0.0.1:46615 closing
+[ Info: Listening on: 127.0.0.1:33289, thread id: 1
+[ Info: Server on 127.0.0.1:33289 closing
+[ Info: Listening on: 127.0.0.1:43569, thread id: 1
+[ Info: Server on 127.0.0.1:43569 closing
+[ Info: Listening on: 127.0.0.1:46231, thread id: 1
+[ Info: Server on 127.0.0.1:46231 closing
+[ Info: Listening on: 127.0.0.1:33913, thread id: 1
+[ Info: Server on 127.0.0.1:33913 closing
+[ Info: Listening on: 127.0.0.1:37387, thread id: 1
+[ Info: Server on 127.0.0.1:37387 closing
+permission: Operation not approved
+input: Skills activation requires --session ID
+Session: b0db22b2-85b4-47dc-8845-637a83487595
+input: Unknown option --unknown
+Test Summary:                                    | Pass  Total  Time
+Headless CLI, offline task and session lifecycle |    9      9  0.3s

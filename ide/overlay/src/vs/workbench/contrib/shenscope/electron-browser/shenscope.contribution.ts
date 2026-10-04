@@ -64,6 +64,9 @@ class ShenScopeViewPane extends ViewPane {
                     executable: this.configurationService.getValue<string>('shenscope.launcher.juliaPath') });
                 const config: any = await channel.call('request', { method: 'config/get', params: {} });
                 const variables = new Set<string>([config.value.provider.key_env]);
+                for (const provider of Object.values(config.value.model_routing?.providers ?? {}) as any[]) {
+                    variables.add(provider.key_env);
+                }
                 for (const server of Object.values(config.value.mcp?.servers ?? {}) as any[]) {
                     for (const binding of [...(server.environment_env ?? []), ...(server.header_env ?? [])]) { variables.add(binding.env); }
                 }

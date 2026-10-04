@@ -298,3 +298,28 @@ cooldown, admission state and the last observed outcome. See
 `docs/core/model_policy.md` and checkpoint 019 evidence. Persistent fleet health,
 automatic role routing and live-provider availability claims are not implemented
 by this checkpoint.
+
+## Explicit role-route synthesis
+
+Checkpoint 020 reads selected role/model configuration boundaries in all seven
+primary references. These observations remain partial, pinned source evidence.
+Core's provider/profile/role planner and fleet runtime are independently authored
+Julia and do not translate or embed those implementations.
+
+| Primary source | Observed advantage | Core application and current boundary |
+|---|---|---|
+| Codex `agent-roles/src/agent_role_config.rs` | Role metadata and resolved configuration are distinct, with strict normalization | Named role routes and strict referenced profiles; role prompts/config-file imports remain separate work |
+| OpenCode `config/agent.ts` | Agent declarations are loaded and validated at a clear configuration boundary | Fleet validation precedes config-file replacement; Markdown agent imports are not implemented here |
+| DeepSeek Harness `agent-team/src/roster.ts` | Root/teammate identity, explicit provider and inherited model are observable without conflating ownership | Shared configured source runtime, explicit optional worker role and conversation-owned receipts; durable teams remain separate |
+| Pi `coding-agent/src/core/model-config.ts` | Credential-blind immutable configuration, declared compatibility/routing options | Canonical immutable profile options, credential-free planning and prepared logical snapshots; provider dialect presets remain pending |
+| Kimi `contract/global/models.ts` | Wire protocol, provider identity, concrete model and capability overrides are independent fields | Typed source/profile selection with explicit capacity/feature overrides; OAuth/import reconciliation remain pending |
+| ZCode `shared/src/model-selection.ts` | Structured provider/model/options selection; picker strings are display boundaries | Structured selections and explicit role/profile RPC/CLI fields; no model identity is reconstructed from UI display strings |
+| Qwen `subagents/types.ts`, `agent-frontmatter-schema.ts` | Inheritance/fast/explicit selectors and subagent-only permission distinctions | A declared worker route inherits the default when absent; model profiles cannot change permission policy; fast aliases and declarative agent imports remain pending |
+
+Planning reports actual wire/context and native replay exclusions before keys or
+network. All eligible keys are captured before approval; typed transient fallback
+stops after delivery. Conservative role capacity/price admission, bounded shared
+circuits and private conversation receipts support both actual editor clients,
+CLI and RPC. This is explicit routing, not an automatic model-quality ranking or
+evidence of faster/cheaper live inference. See `docs/core/model_routing.md` and
+checkpoint 020 validation for precise evidence and remaining scope.

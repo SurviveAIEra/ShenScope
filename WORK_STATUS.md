@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 15,485 authored Julia Core code lines across 140 files;
-CLI/TUI add 839 lines and are counted separately. This is 6.194% of the
-minimum line target, leaving 234,515 lines. These are early implementations,
+Latest cloc 2.11 count: 16,041 authored Julia Core code lines across 146 files;
+CLI/TUI add 845 lines and are counted separately. This is 6.4164% of the
+minimum line target, leaving 233,959 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -337,3 +337,27 @@ docs/core/model_policy.md. Persistent fleet health, role routing, live-model
 checks and installed-package/desktop/Windows validation remain pending.
 Development immediately continues with explicit role profiles, eligible routes
 and controlled fallback. The 250,000 authored Core-line goal remains unmet.
+
+Model routing checkpoint 020: explicit bounded sources, immutable profiles and
+ordered roles; credential-free eligibility planning with actual wire/native
+replay checks; captured eligible keys/bodies before approval; typed fallback
+before delivery only. Shared fleet circuits, conservative role capacities and
+configured-price admission, default/worker factories, scoped receipts and
+validated configuration replacement are integrated into CLI/RPC and both IDEs.
+Chat roles, service profiles, preview/results and secure keys have shared UI.
+
+Validation: broad affected Core 14,692 assertions, including 145 new routing and
+12,050 prior coordinate-property assertions. Final focused routing passes 113,
+including four new nested/aliased credential cases after broad source freeze;
+RPC passes 64 (40 prior, 24 new), CLI passes 27 (15 prior, 12 new). New routing
+assertions total 149; focused/broad overlaps are not added twice. Editor check/
+build, three Node/Core transport tests, full Workbench typecheck, final package
+payload equality and both actual native/independent VSIX development GUI flows
+pass. GUI role selection also proves the worker cannot use the healthy main
+backup. Failed attempts and the accessible-name correction remain recorded in
+docs/validation/model-routing-checkpoint-020.json. Scope and limitations are in
+docs/core/model_routing.md. Durable fleet state, adaptive routing, role imports,
+native-history conversion and installed-package/desktop/Windows validation remain
+pending. Development continues immediately with evidence-backed Git history,
+co-change/risk analysis and the remaining Core/runtime/security scope. The
+250,000 authored Core-line goal remains active and unmet.

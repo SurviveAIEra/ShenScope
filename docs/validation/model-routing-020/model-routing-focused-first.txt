@@ -1,0 +1,34 @@
+Precompiling ShenScope...
+   6807.6 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 7 seconds. 39 already precompiled.
+ERROR: LoadError: Some tests did not pass: 13 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/model_routing.jl:38
+Test Summary:                                                           | Pass  Total   Time
+Model routing config is strict, bounded, immutable and credential blind |   29     29  11.8s
+Route plans explain feature, capacity and native replay exclusions without keys: Test Failed at /workspace/ShenScope/test/unit/model_routing.jl:59
+  Expression: validate_request(route, routing_request(options = Dict{String, Any}("reasoning_effort" => "high")))
+    Expected: ShenScopeError
+      Thrown: UndefVarError
+      UndefVarError: `validate_request` not defined in `Main`
+      Suggestion: check for spelling errors or missing imports.
+      Stacktrace:
+       [1] macro expansion
+         @ /workspace/ShenScope/test/unit/model_routing.jl:59 [inlined]
+       [2] macro expansion
+         @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:774 [inlined]
+       [3] macro expansion
+         @ /workspace/ShenScope/test/unit/model_routing.jl:59 [inlined]
+       [4] macro expansion
+         @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+       [5] top-level scope
+         @ /workspace/ShenScope/test/unit/model_routing.jl:39
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/ShenScope/test/unit/model_routing.jl:59 [inlined]
+ [2] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [3] top-level scope
+   @ /workspace/ShenScope/test/unit/model_routing.jl:39
+Test Summary:                                                                   | Pass  Fail  Total  Time
+Route plans explain feature, capacity and native replay exclusions without keys |   13     1     14  5.5s

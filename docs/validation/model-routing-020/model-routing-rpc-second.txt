@@ -1,0 +1,11 @@
+Precompiling ShenScope...
+   8133.5 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 8 seconds. 39 already precompiled.
+[ Info: Listening on: 127.0.0.1:46417, thread id: 2
+[ Info: Server on 127.0.0.1:46417 closing
+[ Info: Listening on: 127.0.0.1:37519, thread id: 1
+[ Info: Server on 127.0.0.1:37519 closing
+Test Summary:                                                            | Pass  Total     Time
+Model RPC owns operations, approvals, caches and configuration lifecycle |   40     40  1m10.6s
+Test Summary:                                                                             | Pass  Total  Time
+Routing RPC, default/worker roles, profile services and config validation share one fleet |   24     24  3.8s

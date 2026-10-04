@@ -29,7 +29,7 @@ function request_with_context_recovery!(provider::AbstractModelProvider, session
                 throw(ShenScopeError(:context_overflow, "Context recovery could not produce a smaller request"))
         end
         validate_request(provider, request)
-        prices = provider isa HTTPProvider ? (provider.config.input_price, provider.config.output_price) : (0.0, 0.0)
+        prices = model_price_bound(provider)
         lease = reserve!(ctx.budget, measure.estimated_tokens + max_output,
             (measure.estimated_tokens * prices[1] + max_output * prices[2]) / 1_000_000)
         delivery = ModelDelivery()

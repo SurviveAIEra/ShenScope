@@ -1,0 +1,1 @@
+PASS: native Workbench with extensions disabled, key-free/no-network route preview, selected-profile directory, explicit two-source failure fallback, actual chosen model and scoped route receipt

@@ -35,6 +35,8 @@ const contextOnly = process.argv.includes('--context-only');
 const semanticOnly = process.argv.includes('--semantic-only');
 const analyzersOnly = process.argv.includes('--analyzers-only');
 const modelsOnly = process.argv.includes('--models-only');
+const routingOnly = process.argv.includes('--routing-only');
+const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
 const userSkillRoot = skillsOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-skills-')) : undefined;
@@ -45,6 +47,12 @@ let modelInferenceCalls = 0;
 const fixture = createServer(async (request, response) => {
     const chunks = []; for await (const chunk of request) { chunks.push(chunk); }
     const raw = Buffer.concat(chunks).toString();
+    if (routingOnly) {
+        const body = raw ? JSON.parse(raw) : undefined; requests.push({ method: request.method, target: request.url, body });
+        if (request.method === 'GET') { response.writeHead(200, { 'Content-Type': 'application/json' }); response.end(JSON.stringify({ data: [{ id: request.url.startsWith('/primary') ? 'writer-model' : 'backup-model' }] })); return; }
+        if (request.url.startsWith('/primary')) { response.writeHead(503, { 'Content-Type': 'application/json' }); response.end('{}'); return; }
+        response.writeHead(200, { 'Content-Type': 'text/event-stream' }); response.end(`data: ${JSON.stringify({ choices: [{ delta: { content: 'Role routing verified 中文' }, finish_reason: 'stop' }], usage: { prompt_tokens: 5, completion_tokens: 3 } })}\n\ndata: [DONE]\n\n`); return;
+    }
     if (modelsOnly) {
         const body = raw ? JSON.parse(raw) : undefined;
         requests.push({ method: request.method, target: request.url, body });
@@ -84,6 +92,10 @@ const config = join(root, 'config.toml');
 await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[permissions]\nnetwork = 'allow'\nedit = 'ask'\n${skillsOnly ? `[skills]\nproject_roots = ['.shenscope/skills']\nuser_roots = ['${userSkillRoot}']\n` : ''}`);
 if (modelsOnly) {
     await writeFile(config, `[provider]\nprotocol = 'anthropic'\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[provider.circuit]\nfailure_threshold = 1\ncooldown = 30.0\n[permissions]\nnetwork = 'ask'\nedit = 'ask'\npersistence = 'allow'\n`);
+}
+if (routingOnly) {
+    const provider = (id, name) => `[model_routing.providers.${id}]\nprotocol = 'openai_chat'\nname = '${name}'\nendpoint = 'http://127.0.0.1:${port}/${id}'\nkey_env = 'ROUTE_${id.toUpperCase()}_KEY'\nretries = 0\n[model_routing.providers.${id}.circuit]\nfailure_threshold = 1\ncooldown = 300.0\n`;
+    await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nnetwork = 'ask'\npersistence = 'allow'\n[model_routing]\ndefault_role = 'main'\n${provider('primary', 'route-primary')}${provider('backup', 'route-backup')}[model_routing.profiles.writer]\nprovider = 'primary'\nmodel = 'writer-model'\n[model_routing.profiles.backup]\nprovider = 'backup'\nmodel = 'backup-model'\n[model_routing.profiles.worker]\nprovider = 'primary'\nmodel = 'worker-model'\n[model_routing.profiles.worker.capabilities]\ncontext_window = 128000\nmax_output = 512\n[model_routing.roles.main]\nprofiles = ['writer', 'backup']\n[model_routing.roles.worker]\nprofiles = ['worker']\n`);
 }
 if (contextOnly) {
     await writeFile(config, (await readFile(config, 'utf8')) + `read = 'ask'\npersistence = 'ask'\n[context]\nuser_files = ['${join(userContextRoot, 'user.md')}']\n`);
@@ -166,16 +178,16 @@ try {
         while (!frame && Date.now() < deadline) {
             for (const candidate of page.frames()) {
                 if (candidate === page.mainFrame()) { continue; }
-                if (await candidate.locator('.shenscope-panel .status').filter({ hasText: 'Ready · native-fixture' }).isVisible().catch(() => false)) { frame = candidate; break; }
+                if (await candidate.locator('.shenscope-panel .status').filter({ hasText: readyState }).isVisible().catch(() => false)) { frame = candidate; break; }
             }
             if (!frame) { await new Promise(resolve => setTimeout(resolve, 200)); }
         }
         assert.ok(frame, 'Extension webview must start independently of the native panel');
         assert.notEqual(frame, page.mainFrame()); panel = frame.locator('.shenscope-panel');
     }
-    await panel.getByText('Ready · native-fixture', { exact: true }).waitFor({ timeout: 120_000 });
+    await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -204,6 +216,51 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (routingOnly) {
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Models');
+        await panel.getByRole('heading', { name: 'Role routing', exact: true }).waitFor();
+        assert.equal(await panel.locator('.configured-model h3').textContent(), 'writer-model');
+        await panel.locator('.model-count-form > summary').click();
+        await panel.getByRole('textbox', { name: 'Model request to count' }).fill(JSON.stringify({ messages: [{ role: 'user', text: 'Preview 中文' }], max_output: 64 }));
+        await panel.getByRole('button', { name: 'Preview eligible models', exact: true }).click();
+        await panel.getByRole('heading', { name: 'Eligible models · main', exact: true }).waitFor({ timeout: 60_000 });
+        assert.equal(await panel.locator('.model-route-plan .model-route-row').count(), 2);
+        assert.equal(requests.length, 0, 'Route preview sends no provider request');
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-routing-plan.png`) });
+        await panel.getByRole('combobox', { name: 'Model service profile' }).selectOption('backup');
+        await panel.locator('.configured-model h3').filter({ hasText: 'backup-model' }).waitFor();
+        await panel.getByRole('button', { name: 'Refresh provider models', exact: true }).click();
+        await approve(panel, 'route-backup · network', 'Allow once');
+        await panel.getByRole('heading', { name: 'Provider directory · 1 models' }).waitFor({ timeout: 60_000 });
+        assert.equal(requests.length, 1); assert.equal(requests[0].target, '/backup/models');
+        await panel.getByRole('button', { name: 'Chat', exact: true }).click();
+        await panel.getByRole('textbox', { name: 'Message ShenScope', exact: true }).fill('Use the declared main route and report its selected model');
+        await panel.getByRole('button', { name: 'Send message', exact: true }).click();
+        assert.equal(await panel.getByRole('combobox', { name: 'Model role' }).isDisabled(), true);
+        await approve(panel, 'route-primary · network', 'Allow once');
+        await approve(panel, 'route-backup · network', 'Allow once');
+        await panel.getByText('Role routing verified 中文', { exact: true }).waitFor({ timeout: 120_000 });
+        await panel.locator('.status').filter({ hasText: 'Complete' }).waitFor();
+        const inference = requests.filter(request => request.method === 'POST'); assert.equal(inference.length, 2);
+        assert.equal(inference[0].body.model, 'writer-model'); assert.equal(inference[1].body.model, 'backup-model');
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Models');
+        await panel.locator('.model-route-receipts > summary').click();
+        await panel.locator('.model-route-receipt[data-outcome="success"]').waitFor();
+        assert.equal(await panel.locator('.model-route-receipt strong').textContent(), 'backup');
+        await panel.getByText('Last observed request succeeded.', { exact: true }).waitFor();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-routing-recovery.png`) });
+        await panel.getByRole('button', { name: 'Chat', exact: true }).click();
+        await panel.getByRole('combobox', { name: 'Model role' }).selectOption('worker');
+        await panel.getByRole('button', { name: 'worker · worker-model', exact: true }).waitFor();
+        await panel.getByRole('textbox', { name: 'Message ShenScope', exact: true }).fill('Use only the selected worker role');
+        await panel.getByRole('button', { name: 'Send message', exact: true }).click();
+        await approve(panel, 'route-primary · network', 'Allow once');
+        await panel.locator('.status').filter({ hasText: 'Task failed' }).waitFor({ timeout: 120_000 });
+        assert.equal(requests.filter(request => request.method === 'POST').length, 2, 'The selected worker role cannot use the healthy main-role backup');
+        assert.equal(await panel.getByRole('combobox', { name: 'Model role' }).isEnabled(), true);
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-routing-role.png`) });
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, key-free/no-network route preview, selected-profile directory, explicit two-source failure fallback, actual chosen model and scoped route receipt`);
     }
     if (modelsOnly) {
         await panel.getByRole('combobox', { name: 'More views' }).selectOption('Models');

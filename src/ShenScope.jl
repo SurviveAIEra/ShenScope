@@ -43,6 +43,12 @@ include("Models/CatalogParsing.jl")
 include("Models/CatalogCache.jl")
 include("Models/CircuitServices.jl")
 include("Models/TokenCounts.jl")
+include("Models/RoutingTypes.jl")
+include("Models/RoutingConfig.jl")
+include("Models/RoutingCapabilities.jl")
+include("Models/RoutingPlans.jl")
+include("Models/RoutingState.jl")
+include("Models/RoutingRuntime.jl")
 include("Tools/Schema.jl")
 include("Tools/Models.jl")
 include("Tools/Files.jl")
@@ -171,6 +177,9 @@ export ModelDescriptor, ModelCatalogManager, ModelsTool, model_descriptor_dict,
 export ModelRetryPolicy, ModelRetryAdvice, ModelAttemptFailure, ModelRetryDecision,
     ModelCircuitPolicy, ModelCircuitManager, ModelProviderRuntime, model_retry_decision,
     model_health_snapshot, reset_model_health!, cleanup_models_tool!, bind_models_provider!
+export ModelSelection, ModelProfile, ModelRoleRoute, ModelFleet, RoutedProvider,
+    model_routing_from_config, model_route_plan, model_route_plan_dict, model_fleet_metadata,
+    model_price_bound, close_model_fleet!, agent_model_provider
 export ProjectWatchOptions, ProjectWatch, start_project_watch, stop_project_watch!,
     project_watch_status, refresh_project_watch!
 

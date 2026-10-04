@@ -3,7 +3,7 @@ server_models_tool(server::CoreServer) = only(tool for tool in server.tools if t
 function models_rpc(server::CoreServer,method::String,params::AbstractDict)
     method in ("models/query","models/start","models/job","models/cancel_job") || throw(RPCFault(-32601,"Unknown model service method"))
     if method != "models/start"
-        allowed = method == "models/query" ? ("session_id","offset","limit") : ("session_id","job_id")
+        allowed = method == "models/query" ? ("session_id","offset","limit","profile") : ("session_id","job_id")
         all(key -> key in allowed,keys(params)) || throw(RPCFault(-32602,"Unknown model service parameter"))
     end
     session = server_session(server,params);tool = server_models_tool(server)
@@ -13,10 +13,11 @@ function models_rpc(server::CoreServer,method::String,params::AbstractDict)
         permission_decision(policy,PermissionRequest("models-query",:read,"models.catalog",server.root,"Read cached model catalog")) == Allow ||
             throw(ShenScopeError(:permission,"Use models/start for permissioned model metadata reads"))
         ctx = RuntimeContext(server.root;session_id=session.id,state_dir=server.state_dir,permissions=policy)
-        credentials = CredentialSnapshot(tool.provider.credential_lookup(tool.provider.config.key_env))
-        return Dict("status"=>model_services_status(tool.provider),"catalog"=>
-            model_catalog_view(tool.manager,tool.provider,ctx;offset=get(params,"offset",0),limit=get(params,"limit",50),credentials),
-            "health"=>model_health_read(tool.provider,ctx,credentials))
+        provider = model_tool_provider(tool;profile=get(params,"profile",nothing))
+        credentials = CredentialSnapshot(provider.credential_lookup(provider.config.key_env))
+        return Dict("status"=>model_services_status(provider),"catalog"=>
+            model_catalog_view(tool.manager,provider,ctx;offset=get(params,"offset",0),limit=get(params,"limit",50),credentials),
+            "health"=>model_health_read(provider,ctx,credentials),"routing"=>model_fleet_metadata(tool.fleet,ctx))
     elseif method in ("models/job","models/cancel_job")
         ctx = RuntimeContext(server.root;session_id=session.id,state_dir=server.state_dir)
         return owned_operation(tool.manager.operations,rpc_string(params,"job_id";max_bytes=128),ctx;cancel=method == "models/cancel_job")

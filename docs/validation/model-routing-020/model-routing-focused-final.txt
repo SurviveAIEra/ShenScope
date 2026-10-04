@@ -1,0 +1,41 @@
+Precompiling ShenScope...
+   9326.2 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 9 seconds. 39 already precompiled.
+[ Info: Listening on: 127.0.0.1:35103, thread id: 3
+[ Info: Listening on: 127.0.0.1:37013, thread id: 3
+[ Info: Server on 127.0.0.1:37013 closing
+[ Info: Server on 127.0.0.1:35103 closing
+[ Info: Listening on: 127.0.0.1:40549, thread id: 2
+[ Info: Listening on: 127.0.0.1:39565, thread id: 1
+[ Info: Server on 127.0.0.1:39565 closing
+[ Info: Server on 127.0.0.1:40549 closing
+[ Info: Listening on: 127.0.0.1:46713, thread id: 2
+[ Info: Listening on: 127.0.0.1:39403, thread id: 2
+[ Info: Server on 127.0.0.1:39403 closing
+[ Info: Server on 127.0.0.1:46713 closing
+[ Info: Listening on: 127.0.0.1:34987, thread id: 2
+[ Info: Listening on: 127.0.0.1:36659, thread id: 1
+[ Info: Server on 127.0.0.1:36659 closing
+[ Info: Server on 127.0.0.1:34987 closing
+[ Info: Listening on: 127.0.0.1:35309, thread id: 1
+[ Info: Listening on: 127.0.0.1:38727, thread id: 2
+[ Info: Server on 127.0.0.1:38727 closing
+[ Info: Server on 127.0.0.1:35309 closing
+[ Info: Listening on: 127.0.0.1:41983, thread id: 1
+[ Info: Listening on: 127.0.0.1:37735, thread id: 2
+[ Info: Server on 127.0.0.1:37735 closing
+[ Info: Server on 127.0.0.1:41983 closing
+[ Info: Listening on: 127.0.0.1:34205, thread id: 1
+[ Info: Server on 127.0.0.1:34205 closing
+Test Summary:                                                           | Pass  Total   Time
+Model routing config is strict, bounded, immutable and credential blind |   35     35  21.6s
+Test Summary:                                                                   | Pass  Total  Time
+Route plans explain feature, capacity and native replay exclusions without keys |   14     14  4.9s
+Test Summary:                                                           | Pass  Total  Time
+Routing receipts and runtime seats retain strict conversation ownership |   11     11  4.9s
+Test Summary:                                                                              | Pass  Total   Time
+Explicit routing fixes every eligible key before approval and records real source fallback |   17     17  32.6s
+Test Summary:                                                                           | Pass  Total  Time
+Terminal, partial, consumer and explicit fallback restrictions prevent source switching |   28     28  7.1s
+Test Summary:                                                                           | Pass  Total   Time
+Route cancellation, admission and context cost accounting stop work before side effects |    8      8  25.9s

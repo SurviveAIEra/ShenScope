@@ -1,0 +1,22 @@
+Precompiling ShenScope...
+   7976.9 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 8 seconds. 39 already precompiled.
+[ Info: Listening on: 127.0.0.1:38711, thread id: 3
+arguments: arguments.limit is out of range
+input: --offset requires a nonnegative integer
+permission: Path escapes workspace
+arguments: arguments.mode has an unsupported value
+catalog: Model is not in this conversation's catalog
+arguments: JSON source is incomplete
+[ Info: Server on 127.0.0.1:38711 closing
+[ Info: Listening on: 127.0.0.1:43895, thread id: 1
+[ Info: Listening on: 127.0.0.1:41605, thread id: 2
+arguments: Unknown model route profile
+Session: ebf25b40-613b-4c42-bc94-04f5c14da83e
+config: Unknown model route role
+[ Info: Server on 127.0.0.1:41605 closing
+[ Info: Server on 127.0.0.1:43895 closing
+Test Summary:                                                       | Pass  Total     Time
+Model CLI uses bounded explicit input and honest stateless catalogs |   15     15  1m32.2s
+Test Summary:                                                                      | Pass  Total   Time
+CLI role routing previews and explicit profile services stay local until inference |   12     12  23.3s

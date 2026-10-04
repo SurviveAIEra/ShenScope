@@ -8,10 +8,9 @@ function context_measure(provider::AbstractModelProvider, request::ModelRequest,
     # Measure the provider's actual serialization too: chat, Responses,
     # Anthropic, Gemini and Ollama do not have identical envelopes. Preparing
     # this body deliberately performs no credential lookup or network request.
-    wire = provider isa HTTPProvider ? canonical(model_body(provider, request)) : canonical(Dict("messages" => message_dict.(request.messages),
-        "tools" => request.tools, "options" => request.options, "max_output" => request.max_output))
-    wire_bytes = ncodeunits(wire)
-    estimate = max(estimate_request_tokens(request), estimate_text_tokens(wire) + 32)
+    wires = model_measurement_wires(provider,request)
+    wire_bytes = maximum(ncodeunits(wire) for wire in wires)
+    estimate = max(estimate_request_tokens(request),maximum(estimate_text_tokens(wire)+32 for wire in wires))
     input_limit = max(0, capability.context_window - request.max_output - config.safety_tokens)
     ContextMeasure(message_bytes, tools_bytes, options_bytes, envelope_bytes, wire_bytes,
         estimate, request.max_output, capability.context_window, input_limit, config.max_request_bytes)

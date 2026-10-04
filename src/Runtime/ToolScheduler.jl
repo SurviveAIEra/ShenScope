@@ -69,7 +69,7 @@ function core_tools(; tasks = true, mcp = true, skills = true, hooks = true, con
     context && push!(tools, ContextTool(ContextManager(config)))
     if tasks
         model = only(tool for tool in tools if tool isa ModelsTool)
-        factory = ctx->HTTPProvider(model.provider.config,model.provider.credential_lookup;runtime=model.provider.runtime)
+        factory = ctx->agent_model_provider(model;role=model_worker_role(model))
         push!(tools,TaskTool(WorkExecutor(;tools,provider_factory=factory)))
     end
     tools

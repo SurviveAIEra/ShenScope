@@ -82,6 +82,9 @@ export class ShenScopePanel {
     private modelsResult?: { action: string; result: any };
     private completedModelJobs = new Set<string>();
     private modelsOffset = 0;
+    private modelsProfile = '';
+    private modelPlanRole = '';
+    private chatModelRole = '';
     private modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
     private modelCountMode = 'auto';
     private analyzerTests = '[{"name":"empty graph","data":{"symbols":[],"relations":[],"seed_ids":[],"truncated":false},"request":{},"expected":{"candidates":[],"notes":[],"truncated":false}}]';
@@ -116,7 +119,7 @@ export class ShenScopePanel {
         await this.guard(async () => {
             const hello = await this.bridge.request('editor/hello'); this.capabilities = hello.capabilities;
             const snapshot = await this.bridge.request('config/get'); this.config = snapshot.value; this.configRevision = snapshot.sha256;
-            this.setStatus(`Ready · ${this.config.provider.model}`); await this.renderTab();
+            this.setStatus(`Ready · ${this.configuredModelLabel()}`); await this.renderTab();
         });
     }
     private button(label: string, action: () => Promise<void>, className = 'secondary-button', glyph?: string): HTMLButtonElement {
@@ -129,9 +132,16 @@ export class ShenScopePanel {
     }
     private setStatus(text: string): void { this.status.textContent = text; this.status.classList.toggle('running', this.active); }
     private async selectTab(name: string): Promise<void> { this.tab = name; await this.renderTab(); }
+    private configuredModelLabel(): string {
+        const routing = this.config?.model_routing;
+        if (!routing) { return this.config?.provider.model ?? 'Choose model'; }
+        const role = this.chatModelRole || routing.default_role; const id = routing.roles[role]?.profiles?.[0];
+        return `${role} · ${routing.profiles[id]?.model ?? 'Choose model'}`;
+    }
     private async newConversation(): Promise<void> {
         if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
         this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
+        this.modelsProfile = ''; this.modelPlanRole = '';
         this.sessionId = undefined; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
@@ -153,6 +163,7 @@ export class ShenScopePanel {
         this.transcript.append(row); this.trimTranscript(); this.scrollToEnd(); return body;
     }
     private updateActions(): void {
+        const role = this.content.querySelector<HTMLSelectElement>('.model-role-choice'); if (role) { role.disabled = this.active; }
         if (!this.sendButton || !this.cancelButton) { return; } const label = this.active ? 'Send guidance' : 'Send message';
         this.sendButton.setAttribute('aria-label', label); this.sendButton.title = `${label} (Ctrl / ⌘ Enter)`;
         this.sendButton.disabled = !this.config || !this.composer.value.trim() || !!this.hooksJob || this.hooksStarting || !!this.contextJob || this.contextStarting || !!this.analyzersJob || this.analyzersStarting || !!this.modelsJob || this.modelsStarting; this.cancelButton.hidden = !this.active;
@@ -166,7 +177,7 @@ export class ShenScopePanel {
             if (this.active && this.sessionId) { await this.bridge.request('agent/steer', { session_id: this.sessionId, prompt }); this.addMessage('steering', prompt); this.composer.value = ''; this.updateActions(); return; }
             if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title: prompt.slice(0, 100) }); this.sessionId = session.id; }
             this.addMessage('user', prompt); this.assistant = undefined; this.assistantText = ''; this.active = true; this.composer.value = ''; this.setStatus('Working…'); this.updateActions(); this.scrollToEnd(true);
-            try { await this.bridge.request('agent/start', { session_id: this.sessionId, prompt }); }
+            try { await this.bridge.request('agent/start', { session_id: this.sessionId, prompt, ...(this.config.model_routing ? { model_role: this.chatModelRole || this.config.model_routing.default_role } : {}) }); }
             catch (error) { this.active = false; this.setStatus('Task could not start'); this.updateActions(); throw error; }
         });
     }
@@ -179,7 +190,14 @@ export class ShenScopePanel {
             const box = el('section', '', 'composer-box'); const toolbar = el('div', '', 'composer-toolbar'); const actions = el('div', '', 'composer-actions');
             this.cancelButton = this.button('Stop', async () => { if (this.sessionId && this.active) { await this.bridge.request('agent/cancel', { session_id: this.sessionId }); this.setStatus('Cancelling…'); } }, 'stop-button', 'stop');
             this.sendButton = this.button('Send message', () => this.send(), 'send-button', 'send'); actions.append(this.cancelButton, this.sendButton);
-            toolbar.append(this.button(this.config?.provider.model ?? 'Choose model', () => this.selectTab('Settings'), 'model-button'), actions);
+            const selectedModel = this.button(this.configuredModelLabel(), () => this.selectTab(this.config?.model_routing ? 'Models' : 'Settings'), 'model-button'); toolbar.append(selectedModel);
+            if (this.config?.model_routing) {
+                const roles = el('select', '', 'model-role-choice'); roles.setAttribute('aria-label', 'Model role');
+                for (const role of Object.keys(this.config.model_routing.roles).sort()) { const option = el('option', role); option.value = role; roles.append(option); }
+                roles.value = this.chatModelRole || this.config.model_routing.default_role; roles.disabled = this.active;
+                roles.addEventListener('change', () => { this.chatModelRole = roles.value; const label = this.configuredModelLabel(); selectedModel.textContent = label; selectedModel.title = label; selectedModel.setAttribute('aria-label', label); }); toolbar.append(roles);
+            }
+            toolbar.append(actions);
             box.append(this.composer, toolbar); this.content.append(conversation, box, el('div', 'Ctrl / ⌘ Enter to send · Changes require your permission', 'composer-hint')); this.updateActions(); return;
         }
         if (this.tab === 'History') { await this.history(revision); return; }
@@ -219,6 +237,7 @@ export class ShenScopePanel {
                 const row = el('article', '', 'session-card'); const open = this.button(session.title, async () => {
                     if (this.analyzersBusy()) { throw new Error('Finish the current task before switching conversations.'); }
                     this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
+                    this.modelsProfile = ''; this.modelPlanRole = '';
                     const openingRevision = this.renderRevision; this.sessionId = session.id; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 };
                     const full = await this.bridge.request('sessions/get', { session_id: session.id });
                     if (this.sessionId !== full.id) { return; }
@@ -327,7 +346,7 @@ export class ShenScopePanel {
         this.updateActions();
         try {
             const session_id = await this.ensureSession('Model catalog');
-            const response = await this.bridge.request('models/start', { session_id, action, ...args });
+            const response = await this.bridge.request('models/start', { session_id, action, ...(this.modelsProfile ? { profile: this.modelsProfile } : {}), ...args });
             if (!this.completedModelJobs.has(response.job_id)) { this.modelsJob = response.job_id; this.setStatus('Working with the model…'); }
         } finally { this.modelsStarting = false; this.updateActions(); }
         if (this.tab === 'Models') { await this.renderTab(); }
@@ -342,12 +361,13 @@ export class ShenScopePanel {
             if (this.modelsJob) { operation.append(this.button('Cancel model operation', async () => { await this.bridge.request('models/cancel_job', { session_id, job_id: this.modelsJob }); })); } this.content.append(operation);
         }
         let snapshot: any;
-        try { snapshot = await this.bridge.request('models/query', { session_id, offset: this.modelsOffset }); }
+        try { snapshot = await this.bridge.request('models/query', { session_id, offset: this.modelsOffset, ...(this.modelsProfile ? { profile: this.modelsProfile } : {}) }); }
         catch { if (this.modelsResult?.action === 'list') { snapshot = { catalog: this.modelsResult.result, status: { count_modes: ['auto', 'estimate'] } }; } }
         if (revision !== this.renderRevision) { return; }
         if (!snapshot) { const load = this.button('Load model catalog', () => this.startModels('list')); load.disabled = this.modelsBusy(); this.content.append(load); return; }
+        if (snapshot.routing?.enabled) { this.modelRoutingCard(snapshot.routing); }
         const catalog = snapshot.catalog; const configured = catalog.configured;
-        const selected = el('section', '', 'model-card configured-model'); selected.append(el('span', 'Configured model', 'model-source'), el('h3', configured.id), el('small', this.config.provider.name));
+        const selected = el('section', '', 'model-card configured-model'); selected.append(el('span', 'Configured model', 'model-source'), el('h3', configured.id), el('small', snapshot.status.provider ?? this.config.provider.name));
         selected.append(el('p', `${configured.context_window.toLocaleString()} context · ${configured.max_output.toLocaleString()} maximum output`, 'view-description')); this.content.append(selected);
         if (snapshot.health) {
             const health = snapshot.health; const section = el('section', '', 'model-health'); section.dataset.state = health.state;
@@ -389,11 +409,47 @@ export class ShenScopePanel {
         for (const [value, label] of [['auto', 'Automatic'], ['estimate', 'Local estimate'], ['provider', 'Provider token count']]) { if (!(snapshot.status.count_modes ?? []).includes(value)) { continue; } const option = el('option', label); option.value = value; option.selected = value === this.modelCountMode; mode.append(option); }
         mode.addEventListener('change', () => { this.modelCountMode = mode.value; }); modeField.append(mode); form.append(modeField);
         const count = this.button('Measure input tokens', () => this.startModels('count', { request: JSON.parse(request.value), mode: mode.value }), 'primary-button'); count.disabled = this.modelsBusy(); form.append(count); this.content.append(form);
+        if (snapshot.routing?.enabled) {
+            const field = el('label', 'Plan model role', 'field'); const roles = el('select');
+            for (const route of snapshot.routing.roles) { const option = el('option', route.role); option.value = route.role; roles.append(option); }
+            roles.value = this.modelPlanRole || snapshot.routing.default_role; roles.disabled = this.modelsBusy(); roles.addEventListener('change', () => { this.modelPlanRole = roles.value; }); field.append(roles); form.append(field);
+            const plan = this.button('Preview eligible models', () => this.startModels('plan', { role: roles.value, request: JSON.parse(request.value) })); plan.disabled = this.modelsBusy(); form.append(plan, el('small', 'Preview checks the request without reading API keys or sending it to a provider.'));
+        }
         if (this.modelsResult?.action === 'count') {
             const report = this.modelsResult.result; const result = el('section', '', 'model-count-result'); result.append(el('h3', report.source === 'provider_api' ? 'Provider token count' : 'Estimated input'), el('strong', `${report.input_tokens.toLocaleString()} input tokens`, 'model-token-total'));
             result.append(el('p', `${report.requested_output.toLocaleString()} output requested · ${report.within_configured_capacity ? 'Fits configured limits' : 'Exceeds configured limits'}`, report.within_configured_capacity ? 'analyzer-validation-pass' : 'validation-error'));
             for (const message of [...report.capacity_violations, ...(report.limitations ?? []), ...(report.fallback_reason ? [report.fallback_reason] : [])]) { result.append(el('p', message, 'view-description')); } this.content.append(result);
         } else if (this.modelsResult?.action === 'inspect') { const result = el('section', '', 'model-metadata'); result.append(el('h3', 'Model metadata'), el('pre', JSON.stringify(this.modelsResult.result, null, 2), 'analyzer-source')); this.content.append(result); }
+        else if (this.modelsResult?.action === 'plan') { this.modelRoutePlanCard(this.modelsResult.result); }
+    }
+    private modelRoutingCard(routing: any): void {
+        const card = el('section', '', 'model-routing'); const heading = el('div', '', 'model-health-heading'); heading.append(el('h3', 'Role routing'), el('span', routing.default_role, 'model-health-state')); card.append(heading);
+        const lookup = new Map<string, any>(routing.profiles.map((profile: any) => [profile.id, profile]));
+        for (const route of routing.roles) {
+            const row = el('div', '', 'model-route-row'); row.append(el('strong', route.role)); const sequence = el('ol', '', 'model-route-sequence');
+            for (const id of route.profiles) { const profile = lookup.get(id); const item = el('li'); item.append(el('span', profile?.model ?? id), el('small', `${id} · ${profile?.provider ?? ''}`)); sequence.append(item); }
+            row.append(sequence); card.append(row);
+        }
+        card.append(el('p', 'Models are checked in this order. Fallback stops after any output and only handles configured transient failures.', 'view-description'));
+        const field = el('label', 'Model service profile', 'field'); const profiles = el('select'); const automatic = el('option', 'Default role · first profile'); automatic.value = ''; profiles.append(automatic);
+        for (const profile of routing.profiles) { const option = el('option', `${profile.id} · ${profile.model}`); option.value = profile.id; profiles.append(option); }
+        profiles.value = this.modelsProfile; profiles.disabled = this.modelsBusy(); profiles.addEventListener('change', () => { this.modelsProfile = profiles.value; this.modelsOffset = 0; this.modelsResult = undefined; void this.guard(() => this.renderTab()); }); field.append(profiles); card.append(field);
+        if (routing.recent_requests.length) {
+            const details = el('details', '', 'model-route-receipts'); details.append(el('summary', 'Recent routed requests'));
+            for (const receipt of routing.recent_requests.slice(-3).reverse()) { const row = el('div', '', 'model-route-receipt'); row.dataset.outcome = receipt.outcome; row.append(el('strong', receipt.selected_profile ?? 'No eligible model'), el('small', `${receipt.outcome} · ${receipt.attempts.length} source ${receipt.attempts.length === 1 ? 'attempt' : 'attempts'}`)); details.append(row); }
+            card.append(details);
+        }
+        const credentials = el('details', '', 'model-route-credentials'); credentials.append(el('summary', 'Provider API keys'));
+        for (const provider of routing.providers) { const key = this.button(`Set key for ${provider.name}`, () => this.bridge.setCredential(provider.key_env)); key.disabled = this.modelsBusy(); credentials.append(key); } card.append(credentials);
+        this.content.append(card);
+    }
+    private modelRoutePlanCard(plan: any): void {
+        const card = el('section', '', 'model-route-plan'); card.append(el('h3', `Eligible models · ${plan.role}`));
+        if (!plan.eligible.length) { card.append(el('p', 'No configured model can accept this request.', 'validation-error')); }
+        for (const candidate of plan.eligible) { const row = el('div', '', 'model-route-row'); row.append(el('strong', candidate.profile), el('span', candidate.model), el('small', `About ${candidate.estimated_input_tokens.toLocaleString()} input tokens · ${candidate.wire_bytes.toLocaleString()} bytes`)); card.append(row); }
+        const reasons: Record<string, string> = { capability: 'Required features or output capacity are unavailable.', context_overflow: 'The request exceeds the declared context capacity.', native_replay_model_mismatch: 'Previous native reasoning belongs to another model.', native_replay_source_mismatch: 'Previous native reasoning belongs to another provider source.', native_replay_scope_unknown: 'The previous native reasoning has no verified source scope.', native_replay_invalid: 'Previous native reasoning metadata is malformed.' };
+        for (const excluded of plan.excluded) { const row = el('div', '', 'model-route-excluded'); row.append(el('strong', excluded.profile), el('p', reasons[excluded.code] ?? excluded.code, 'view-description')); card.append(row); }
+        this.content.append(card);
     }
     private analyzersBusy(): boolean { return this.contextBusy() || !!this.analyzersJob || this.analyzersStarting; }
     private async startAnalyzer(action: string, args: Record<string, unknown> = {}): Promise<void> {
@@ -1042,6 +1098,10 @@ export class ShenScopePanel {
     private event(method: string, params: any): void {
         if (this.disposed) { return; }
         if (method === 'transport/closed') { this.active = false; this.setStatus('Disconnected'); this.notice.textContent = params.message; this.notice.hidden = false; this.approvals.replaceChildren(); this.updateActions(); return; }
+        if (method === 'config/changed') {
+            this.modelsProfile = ''; this.modelPlanRole = ''; this.chatModelRole = ''; this.modelsResult = undefined;
+            void this.guard(async () => { const snapshot = await this.bridge.request('config/get'); if (this.disposed) { return; } this.config = snapshot.value; this.configRevision = snapshot.sha256; await this.renderTab(); }); return;
+        }
         if (method !== 'agent/event' || params.session_id !== this.sessionId) { return; } const payload = params.payload;
         if (params.kind.startsWith('project_watch_')) {
             this.projectWatchEventRevision++;
@@ -1125,6 +1185,8 @@ export class ShenScopePanel {
             if (this.tab === 'Intelligence') { void this.guard(() => this.renderTab()); } return;
         }
         if (params.kind === 'model_request') { this.flushAssistant(); this.assistant = undefined; this.assistantText = ''; }
+        else if (params.kind === 'model_route_selected') { this.setStatus(`Using ${payload.profile} · ${payload.model}`); }
+        else if (params.kind === 'model_route_fallback') { this.setStatus(`Trying ${payload.to_profile} after ${payload.code}`); }
         else if (params.kind === 'text_delta') {
             if (!this.assistant) { this.assistant = this.addMessage('assistant', ''); } this.assistantText = (this.assistantText + payload.text).slice(0, 1_000_000);
             if (this.animation === undefined) { this.animation = requestAnimationFrame(() => { this.animation = undefined; this.flushAssistant(); }); }

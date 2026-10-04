@@ -1,0 +1,42 @@
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Settings
+Models
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+You
+Use the declared main route and report its selected model
+ShenScope
+
+Role routing verified 中文
+
+worker · worker-model
+main
+worker
+Ctrl / ⌘ Enter to send · Changes require your permission
+Complete · 8 tokens · $0.0000
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.shenscope-panel').getByRole('button', { name: 'worker · worker-model', exact: true }) to be visible[22m
+
+    at /workspace/ShenScope/ide/test/native_smoke.mjs:255:89 {
+  log: [
+    "  - waiting for locator('.shenscope-panel').getByRole('button', { name: 'worker · worker-model', exact: true }) to be visible"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0
