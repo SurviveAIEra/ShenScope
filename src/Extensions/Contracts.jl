@@ -86,7 +86,7 @@ end
 dispatch_ambiguities(;kwargs...)=dispatch_ambiguities(interface_functions();kwargs...)
 
 function interface_catalog()
-    types=DataType[ReadTool,SearchTool,EditTool,WriteTool,PatchTool,ProcessTool,GitTool,MemoryTool,ProjectTool,
+    types=DataType[ReadTool,SearchTool,EditTool,WriteTool,PatchTool,ProcessTool,TerminalTool,GitTool,MemoryTool,ProjectTool,
         HTTPProvider,MockProvider,GoASTBackend,TreeSitterBackend,CodeGraphBackend,TypeScriptSemanticBackend,JuliaSyntaxBackend,ImpactAnalyzer,TestSelectionAnalyzer,ArchitectureAnalyzer,IsolatedJuliaAnalyzer,AnalyzersTool,ModelsTool]
     isdefined(@__MODULE__,:DiagnosticsTool) && push!(types,DiagnosticsTool)
     isdefined(@__MODULE__,:ExtensionsTool) && append!(types,[ExtensionsTool,RegisteredExtensionTool])

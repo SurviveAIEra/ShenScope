@@ -190,3 +190,12 @@ code: Julia methods remain loaded, package dependencies are not attested, arbitr
 initializers are not isolated and cleanup covers registered callbacks. Persistent
 activation, an extension marketplace, isolated hosts and configured selection of
 contributed providers/backends remain pending.
+
+Checkpoint 029 adds Linux controlling PTY processes, checked bootstrap readiness,
+bounded UTF-8 output cursors and explicit loss, control-string filtering, input,
+dimensions, foreground interruption and group cleanup. Agent tools, ephemeral
+CLI, owned RPC and real native Workbench/VSIX terminal widgets use Julia Core.
+Dynamic read/process denial, cancellation, lifetime/shared budget and foreign
+conversation checks retain the permission/runtime boundary. Windows ConPTY,
+restricted sandbox PTY, durable reconnect, shell integration and detached hostile
+process containment remain pending. This host PTY is not advertised as isolated.

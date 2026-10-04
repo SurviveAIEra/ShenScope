@@ -500,3 +500,25 @@ No upstream implementation was copied or translated. Trusted in-process loading
 does not replace isolated analyzers or OS sandboxing. Persistent package
 configuration, marketplace distribution, plugin host isolation and broad provider/
 backend config registration remain pending.
+
+## Terminal runtime source observations
+
+Checkpoint 029 rereads the handoff Cmd/process/IO guidance and V3's native terminal
+requirements. These selected reads remain a partial capability review.
+
+| Source | Observation | Independent Julia behavior |
+| --- | --- | --- |
+| Codex `codex-rs/utils/pty/src/process.rs` 1–75 and `spawn_helper_tests.rs` 1–100 | Terminal size, signals, exec-helper readiness and descriptor inheritance need distinct contracts | A dedicated Julia bootstrap checks the controlling terminal; Core owns size, lifecycle, nonce receipt and real-child tests |
+| OpenCode `packages/server/src/handlers/pty.ts` 1–95 | Workspace identity and terminal ownership precede access | Every handle/job binds one workspace and conversation; clients receive no direct host shell launcher |
+| DeepSeek Harness `packages/terminal/tool-terminal/src/background.ts` 1–39 | Consuming output and monotonic byte cursors have different semantics | Retained filtered UTF-8 offsets, observed raw bytes and explicit loss are independent fields |
+| Pi `packages/coding-agent/src/core/bash-executor.ts` 1–78 | Cancellation, truncation, sanitization and optional full-output files are independent choices | Core retains bounded output in memory and does not silently persist complete terminal transcripts |
+| Kimi Code `packages/agent-core-v2/src/session/terminal/terminalService.ts` 1–85 | Scoped records separate process, client sinks, buffer and cleanup | Core owns the process; thin native/VSIX adapters attach bounded cursor readers and serialized input |
+| ZCode `packages/ui/src/terminal/terminalDataTransform.ts` 1–55 | Terminal display normalization is platform-specific | Julia filters control strings and preserves common display escapes; unsupported platforms are declared rather than inferred |
+| Qwen Code `packages/core/src/managed-runtime/local-shell-result-capture.ts` 1–75 | Observed bytes, retained segments, stream identity and completion differ | PTY streams explicitly merge; output floor, cursors, raw counts and completion remain inspectable |
+
+No upstream source was copied or translated. Windows ConPTY, restricted PTY,
+durable reconnect, shell integration and complete terminal screen reconstruction
+after retention loss remain pending. Real signal tests found both ignored signal
+dispositions and blocked masks inherited from the Julia bootstrap; both are reset
+before exec. Development Workbench builtin-extension output warnings do not prove
+an installed desktop distribution, which remains a separate gate.

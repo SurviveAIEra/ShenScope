@@ -1,0 +1,141 @@
+ERROR: LoadError: Some tests did not pass: 2 passed, 4 failed, 4 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/terminal.jl:1
+Test Summary:                                                      | Pass  Total  Time
+Terminal byte cursors retain Unicode and make output loss explicit |    8      8  1.3s
+Test Summary:                                                                | Pass  Total  Time
+Streaming terminal filtering removes control strings across chunk boundaries |   10     10  0.6s
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle: Error During Test at /workspace/ShenScope/test/integration/terminal.jl:7
+  Test threw exception
+  Expression: (terminal_wait_ready!(handle, ctx))["controlling_terminal_confirmed"]
+  terminal_start: Terminal bootstrap receipt is invalid
+  Stacktrace:
+   [1] terminal_wait_ready!(handle::TerminalHandle, ctx::RuntimeContext)
+     @ ShenScope /workspace/ShenScope/src/Runtime/TerminalLifecycle.jl:199
+   [2] macro expansion
+     @ /workspace/ShenScope/test/integration/terminal.jl:7 [inlined]
+   [3] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [4] (::var"#9#11")(root::String)
+     @ Main /workspace/ShenScope/test/integration/terminal.jl:7
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle: Test Failed at /workspace/ShenScope/test/integration/terminal.jl:8
+  Expression: terminal_await_output(handle, "TTY_READY 19005b00")
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#9#11")(root::String)
+   @ Main /workspace/ShenScope/test/integration/terminal.jl:8
+ [3] mktempdir(fn::var"#9#11", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/terminal.jl:2 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/integration/terminal.jl:2
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle: Error During Test at /workspace/ShenScope/test/integration/terminal.jl:9
+  Test threw exception
+  Expression: (ShenScope.terminal_write!(handle, "中文🙂\n", ctx))["written_bytes"] == 11
+  terminal_io: Terminal process has exited
+  Stacktrace:
+   [1] terminal_write!(handle::TerminalHandle, text::String, ctx::RuntimeContext)
+     @ ShenScope /workspace/ShenScope/src/Runtime/TerminalOperations.jl:7
+   [2] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [3] (::var"#9#11")(root::String)
+     @ Main /workspace/ShenScope/test/integration/terminal.jl:9
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle: Test Failed at /workspace/ShenScope/test/integration/terminal.jl:10
+  Expression: terminal_await_output(handle, "ECHO:中文🙂")
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#9#11")(root::String)
+   @ Main /workspace/ShenScope/test/integration/terminal.jl:10
+ [3] mktempdir(fn::var"#9#11", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/terminal.jl:2 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/integration/terminal.jl:2
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle: Error During Test at /workspace/ShenScope/test/integration/terminal.jl:11
+  Test threw exception
+  Expression: (ShenScope.terminal_resize!(handle, TerminalSize(31, 107), ctx))["rows"] == 31
+  timeout: Terminal lifetime expired
+  Stacktrace:
+   [1] terminal_checkpoint(handle::TerminalHandle, ctx::RuntimeContext)
+     @ ShenScope /workspace/ShenScope/src/Runtime/TerminalLifecycle.jl:29
+   [2] terminal_resize!
+     @ /workspace/ShenScope/src/Runtime/TerminalOperations.jl:18 [inlined]
+   [3] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [4] (::var"#9#11")(root::String)
+     @ Main /workspace/ShenScope/test/integration/terminal.jl:11
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle: Test Failed at /workspace/ShenScope/test/integration/terminal.jl:12
+  Expression: terminal_await_output(handle, "RESIZED 1f006b00")
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#9#11")(root::String)
+   @ Main /workspace/ShenScope/test/integration/terminal.jl:12
+ [3] mktempdir(fn::var"#9#11", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/terminal.jl:2 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/integration/terminal.jl:2
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle: Test Failed at /workspace/ShenScope/test/integration/terminal.jl:16
+  Expression: ShenScope.terminal_remove!(manager, handle.id, ctx)
+    Expected: ShenScopeError
+  No exception thrown
+
+Stacktrace:
+ [1] (::var"#9#11")(root::String)
+   @ Main /workspace/ShenScope/test/integration/terminal.jl:16
+ [2] mktempdir(fn::var"#9#11", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [3] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [4] macro expansion
+   @ /workspace/ShenScope/test/integration/terminal.jl:2 [inlined]
+ [5] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [6] top-level scope
+   @ /workspace/ShenScope/test/integration/terminal.jl:2
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle: Error During Test at /workspace/ShenScope/test/integration/terminal.jl:1
+  Got exception outside of a @test
+  timeout: Terminal lifetime expired
+  Stacktrace:
+    [1] terminal_checkpoint(handle::TerminalHandle, ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/Runtime/TerminalLifecycle.jl:29
+    [2] terminal_write!(handle::TerminalHandle, text::String, ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/Runtime/TerminalOperations.jl:6
+    [3] (::var"#9#11")(root::String)
+      @ Main /workspace/ShenScope/test/integration/terminal.jl:17
+    [4] mktempdir(fn::var"#9#11", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [5] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [6] macro expansion
+      @ /workspace/ShenScope/test/integration/terminal.jl:2 [inlined]
+    [7] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+    [8] top-level scope
+      @ /workspace/ShenScope/test/integration/terminal.jl:2
+    [9] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [10] top-level scope
+      @ none:1
+Test Summary:                                                                      | Pass  Fail  Error  Total     Time
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle |    2     4      4     10  1m10.8s

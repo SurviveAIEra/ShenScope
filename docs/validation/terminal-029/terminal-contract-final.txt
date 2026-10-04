@@ -1,0 +1,6 @@
+ERROR: There was an error during testing
+Test Failed at none:1
+  Expression: any((row->begin
+            #= none:1 =#
+            row["type"] == "ShenScope.TerminalTool"
+        end), interface_catalog())

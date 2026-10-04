@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 20,833 authored Julia Core code lines across 208 files;
-CLI/TUI add 1,027 lines and optional Julia extensions add 57, counted separately.
-This is 8.3332% of the minimum line target, leaving 229,167 lines. These are early implementations,
+Latest cloc 2.11 count: 21,477 authored Julia Core code lines across 216 files;
+CLI/TUI add 1,074 lines and optional Julia extensions add 57, counted separately.
+This is 8.5908% of the minimum line target, leaving 228,523 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -595,3 +595,45 @@ were created. Persistent extension configuration, isolated extension hosts,
 provider/backend selection, general process PTY, PackageCompiler and installed
 restoration remain pending. Development continues toward all functional gates
 and the active 250,000 authored Core-line target.
+
+## Checkpoint 029: owned controlling PTY terminals
+
+Core: 21,477 authored Julia lines in 216 files; CLI/TUI: 1,074 in 19 files.
+Optional Julia extension source remains separately counted at 57 lines.
+The minimum target remains 250,000; 228,523 Core lines are still required.
+
+Linux PTY handles use an independent Julia bootstrap with a nonce receipt,
+controlling-terminal/foreground checks, descriptor closure, parent-death signal,
+restored signal dispositions and an unblocked mask before argument-vector exec.
+Core owns input, dimensions, foreground interruption, timeout, live process denial,
+shared budget and group cleanup. Bounded UTF-8 output retains byte cursors and
+explicit loss, independently counts raw bytes and filters control strings across
+chunks. Output is ephemeral and stdout/stderr merge. Restricted sandbox PTY and
+unsupported platforms refuse execution; host fallback is not inferred.
+
+Agent tools, ephemeral CLI, owned async RPC and both IDEs use the same runtime.
+Native Workbench attaches a custom child-process adapter through its terminal
+service; VSIX attaches a pseudoterminal. Neither client starts a shell. Actual
+terminal widgets exercise scoped approvals, Chinese/emoji typing, dimensions,
+output pages, interruption and removal. Competing per-conversation mutations
+retain the existing busy refusal. Native attachment requires read Allow.
+
+Validation: 296 distinct affected assertions (71 new), seven actual Node/Core
+transport tests, both actual development GUIs, shared editor check/build, complete
+Workbench typecheck and exact VSIX payload comparisons pass. Source amendments
+for idempotent cleanup and contract discovery were checked separately and current
+GUI/Node flows rerun. Evidence: docs/validation/terminal-checkpoint-029.json.
+Scope/limits: docs/core/terminal_runtime.md. Initial worker syntax failure,
+inherited signal-mask defects, fixture API assumptions and source-invalidation
+compilation timeout remain recorded with their corrected runs. Development
+Workbench builtin-extension build warnings remain visible; installed desktop
+packaging is not claimed.
+
+Seven primary-agent source observations and the handoff/native IDE guidance extend
+the partial reference review. Storage retains one application checkout and shared
+depot; 46 dependency repositories and no unknown checkouts were audited. About
+17.5 GiB is free and known reproducible build artifacts are refreshed in place.
+No project directories or worktrees were copied. Windows ConPTY, restricted PTY,
+durable reconnect, shell integration, detached hostile-process containment,
+PackageCompiler and installed restoration remain pending. Development continues
+through the remaining functional gates and the active 250,000 Core-line target.

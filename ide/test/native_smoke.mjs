@@ -51,6 +51,7 @@ const securityOnly = process.argv.includes('--security-only');
 const juliaOnly = process.argv.includes('--julia-only');
 const evidenceOnly = process.argv.includes('--evidence-only');
 const extensionsOnly = process.argv.includes('--extensions-only');
+const terminalOnly = process.argv.includes('--terminal-only');
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
@@ -160,6 +161,7 @@ if (evidenceOnly) {
 if (extensionsOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\ndynamic = 'ask'\nprocess = 'ask'\npersistence = 'ask'\nnetwork = 'deny'\n`);
 }
+if(terminalOnly){await writeFile(config,`[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\nprocess = 'ask'\npersistence = 'allow'\nnetwork = 'deny'\n`);}
 if (memoryOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'ask'\nprocess = 'deny'\nnetwork = 'deny'\n`);
     const seed = `using ShenScope
@@ -253,7 +255,7 @@ try {
     }
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly && !extensionsOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly && !extensionsOnly && !terminalOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -282,6 +284,33 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if(terminalOnly){
+        await panel.getByRole('combobox',{name:'More views'}).selectOption('Terminal');
+        const code="import sys,os,signal;assert os.isatty(0);print('NATIVE_PTY_READY',flush=True);signal.signal(signal.SIGWINCH,lambda *_:print('GUI_RESIZED',flush=True));[(print('GUI_ECHO:'+line.strip(),flush=True)) for line in sys.stdin]";
+        await panel.getByRole('textbox',{name:'Terminal command arguments'}).fill(JSON.stringify(['python3','-u','-c',code]));
+        await panel.getByRole('button',{name:'Start terminal',exact:true}).click();
+        await approve(panel,'terminal.start · process','Allow once');
+        await panel.locator('.terminal-card').waitFor({timeout:120_000});
+        await waitEnabled(panel.getByRole('button',{name:'Open native terminal',exact:true}));
+        await panel.getByRole('button',{name:'Open native terminal',exact:true}).click();
+        await approve(panel,'terminal.resize · process','Allow session');
+        const xterm=page.locator('.terminal.xterm');await xterm.first().waitFor({timeout:30_000});
+        await page.getByText('NATIVE_PTY_READY',{exact:false}).first().waitFor({timeout:30_000});
+        await xterm.first().locator('textarea.xterm-helper-textarea').focus();
+        await page.keyboard.insertText('原生终端🙂');await page.keyboard.press('Enter');
+        await page.getByText('GUI_ECHO:原生终端🙂',{exact:false}).first().waitFor({timeout:30_000});
+        await page.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-terminal-xterm.png`)});
+        await panel.getByRole('button',{name:'Read output',exact:true}).click();
+        await panel.locator('.terminal-output').filter({hasText:'GUI_ECHO:原生终端🙂'}).waitFor({timeout:30_000});
+        await panel.locator('.terminal-result').scrollIntoViewIfNeeded();
+        await panel.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-terminal-output.png`)});
+        await panel.getByRole('button',{name:'Interrupt terminal',exact:true}).click();
+        await panel.getByRole('button',{name:'Remove terminal',exact:true}).waitFor({timeout:30_000});
+        await panel.getByRole('button',{name:'Remove terminal',exact:true}).click();
+        await waitCount(panel.locator('.terminal-card'),0);
+        assert.equal(requests.length,0);
+        console.log(`PASS: ${vsix?'VSIX pseudoterminal':'native Workbench without extensions'}, real Core controlling PTY, process approval, original terminal widget, Unicode input, resize, bounded output, foreground interrupt and removal`);
     }
     if (extensionsOnly) {
         await panel.getByRole('combobox', { name: 'More views' }).selectOption('Extensions');

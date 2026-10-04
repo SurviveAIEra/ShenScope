@@ -1,0 +1,35 @@
+Test Summary:                                                      | Pass  Total  Time
+Terminal byte cursors retain Unicode and make output loss explicit |    8      8  0.8s
+Test Summary:                                                                | Pass  Total  Time
+Streaming terminal filtering removes control strings across chunk boundaries |   11     11  0.6s
+Test Summary:                                                                      | Pass  Total  Time
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle |   14     14  5.4s
+Test Summary:                                                                    | Pass  Total  Time
+PTY foreground interrupt, inherited descriptors and grouped descendants are real |    8      8  2.8s
+{"backend":"linux-openpty-v1","controlling_terminal_confirmed":true,"elapsed_seconds":0.807898998260498,"error":null,"exit_code":0,"handle":"64061ef3-cdc2-4a12-918b-6c11abd2cbd1","merged_output":true,"output":{"from_offset":0,"lost_bytes":0,"more":false,"next_offset":16,"observed_raw_bytes":16,"offset_unit":"filtered_utf8_bytes","retained_from":0,"text":"CLI PTY 中文\r\n","total_bytes":16},"permission_revoked":false,"phase":"exited","running":false,"sandbox":"host","signal":0,"size":{"columns":80,"rows":24},"timed_out":false}
+Test Summary:                                                               | Pass  Total  Time
+Terminal capacity, restricted sandbox refusal and CLI use the owned runtime |    5      5  3.1s
+Test Summary:                                                                   | Pass  Total  Time
+PTY short output, missing executable, live denial and timeout close descriptors |    9      9  3.7s
+Test Summary:                                                                    | Pass  Total  Time
+Terminal RPC grants, jobs, output and cancellation retain conversation ownership |   15     15  8.1s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  1.6s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  2.9s
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.7s
+Test Summary:                                                    | Pass  Total  Time
+Protocol version, config ownership, secrets and session commands |   15     15  3.3s
+Test Summary:                                        | Pass  Total   Time
+Agent protocol permission ownership and cancellation |   13     13  25.5s
+Test Summary:                                                       | Pass  Total  Time
+Workspace tools conflict guard, schema and transactional validation |    9      9  1.4s
+Test Summary:                                                 | Pass  Total  Time
+Process execution, bounded logs, ownership, input and timeout |   12     12  4.1s
+Test Summary:                                                | Pass  Total  Time
+Agent repairs a failing Python test with real tool execution |   10     10  1.2s
+Test Summary:                                                    | Pass  Total  Time
+Incremental process UTF-8 boundaries and malformed byte recovery |  128    128  0.0s
+Test Summary:                                                     | Pass  Total  Time
+Actual fragmented stdout and stderr match retained process output |    7      7  0.6s

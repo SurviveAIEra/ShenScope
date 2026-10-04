@@ -1,0 +1,33 @@
+ERROR: LoadError: Some tests did not pass: 2 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/terminal.jl:56
+Test Summary:                                                      | Pass  Total  Time
+Terminal byte cursors retain Unicode and make output loss explicit |    8      8  0.7s
+Test Summary:                                                                | Pass  Total  Time
+Streaming terminal filtering removes control strings across chunk boundaries |   11     11  0.5s
+Test Summary:                                                                      | Pass  Total  Time
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle |   14     14  2.7s
+Test Summary:                                                                    | Pass  Total  Time
+PTY foreground interrupt, inherited descriptors and grouped descendants are real |    8      8  1.8s
+Terminal capacity, restricted sandbox refusal and CLI use the owned runtime: Error During Test at /workspace/ShenScope/test/integration/terminal.jl:56
+  Got exception outside of a @test
+  UndefVarError: `BubblewrapSandbox` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] (::var"#19#20")(root::String)
+     @ Main /workspace/ShenScope/test/integration/terminal.jl:64
+   [2] mktempdir(fn::var"#19#20", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [3] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [4] macro expansion
+     @ /workspace/ShenScope/test/integration/terminal.jl:57 [inlined]
+   [5] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [6] top-level scope
+     @ /workspace/ShenScope/test/integration/terminal.jl:57
+   [7] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [8] top-level scope
+     @ none:1
+Test Summary:                                                               | Pass  Error  Total  Time
+Terminal capacity, restricted sandbox refusal and CLI use the owned runtime |    2      1      3  1.8s

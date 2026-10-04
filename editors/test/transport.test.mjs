@@ -13,6 +13,42 @@ async function until(predicate, timeout = 30_000) {
     }
 }
 
+test('Real PTY RPC keeps input, resize, replay and interruption in the owning conversation', {timeout:180_000}, async () => {
+    const root=await mkdtemp(join(tmpdir(),'shenscope-terminal-editor-'));const project=resolve('..');
+    await writeFile(join(root,'config.toml'),"[permissions]\nread='allow'\nprocess='ask'\npersistence='allow'\nnetwork='deny'\n");
+    const client=new CoreClient({executable:process.env.SHENSCOPE_JULIA||'/workspace/toolchains/julia-1.11.7/bin/julia',cwd:root,
+        env:{...process.env,JULIA_DEPOT_PATH:'/workspace/julia-depot'},
+        args:['--startup-file=no','--threads=4',`--project=${project}`,'-e','using ShenScope;exit(ShenScope.main())','--','serve','--stdio','--root',root,'--state-dir',join(root,'state'),'--config',join(root,'config.toml')]});
+    const events=[];client.onNotification(event=>events.push(event));
+    try{
+        const hello=await client.start();assert.equal(hello.capabilities.terminal_pty.host_pty_implemented,true);
+        const owner=await client.request('sessions/create',{title:'PTY owner'});const foreign=await client.request('sessions/create',{title:'Other conversation'});
+        const code="import os,sys,signal;assert os.isatty(0);print('PTY_NODE_READY',flush=True);signal.signal(signal.SIGWINCH,lambda *_:print('NODE_RESIZE',flush=True));[(print('NODE:'+line.strip(),flush=True)) for line in sys.stdin]";
+        const start=await client.request('terminal/start',{session_id:owner.id,action:'start',argv:['python3','-u','-c',code],timeout:30});
+        await until(()=>events.some(event=>event.params?.kind==='permission_request'&&event.params.payload.tool==='terminal.start'));
+        const approval=events.find(event=>event.params?.kind==='permission_request'&&event.params.payload.tool==='terminal.start').params.payload;
+        await assert.rejects(client.request('terminal/job',{session_id:foreign.id,job_id:start.job_id}),/another conversation/i);
+        await client.request('permissions/respond',{session_id:owner.id,request_id:approval.id,decision:'once'});
+        async function finished(job){let value;const end=Date.now()+30_000;do{value=await client.request('terminal/job',{session_id:owner.id,job_id:job});if(value.status!=='running'){assert.equal(value.status,'complete',value.error);return value.result;}await new Promise(resolve=>setTimeout(resolve,25));}while(Date.now()<end);throw new Error('PTY job timeout');}
+        const terminal=await finished(start.job_id);assert.equal(terminal.controlling_terminal_confirmed,true);
+        await assert.rejects(client.request('terminal/query',{session_id:foreign.id,action:'poll',handle:terminal.handle}),/another conversation/i);
+        const write=await client.request('terminal/start',{session_id:owner.id,action:'write',handle:terminal.handle,input:'中文🙂\n'});
+        await until(()=>events.some(event=>event.params?.kind==='permission_request'&&event.params.payload.tool==='terminal.write'));
+        const input=events.find(event=>event.params?.kind==='permission_request'&&event.params.payload.tool==='terminal.write').params.payload;
+        assert.equal(input.target,terminal.handle);
+        await client.request('permissions/respond',{session_id:owner.id,request_id:input.id,decision:'session'});
+        assert.equal((await finished(write.job_id)).written_bytes,11);
+        const resize=await client.request('terminal/start',{session_id:owner.id,action:'resize',handle:terminal.handle,rows:33,columns:119});
+        assert.equal((await finished(resize.job_id)).rows,33);
+        let page;for(let attempt=0;attempt<100;attempt++){page=await client.request('terminal/query',{session_id:owner.id,action:'poll',handle:terminal.handle});if(page.output.text.includes('NODE:中文🙂')&&page.output.text.includes('NODE_RESIZE')){break;}await new Promise(resolve=>setTimeout(resolve,25));}
+        assert.match(page.output.text,/NODE:中文🙂/);assert.match(page.output.text,/NODE_RESIZE/);
+        const cursor=await client.request('terminal/query',{session_id:owner.id,action:'poll',handle:terminal.handle,offset:page.output.next_offset});assert.equal(cursor.output.text,'');
+        const interrupt=await client.request('terminal/start',{session_id:owner.id,action:'interrupt',handle:terminal.handle});assert.equal((await finished(interrupt.job_id)).foreground_group_verified,true);
+        await until(()=>events.some(event=>event.params?.kind==='terminal_exited'&&event.params.payload.handle===terminal.handle));
+        const remove=await client.request('terminal/start',{session_id:owner.id,action:'remove',handle:terminal.handle});assert.equal((await finished(remove.job_id)).removed,true);
+    }finally{await client.dispose();await rm(root,{recursive:true,force:true});}
+});
+
 test('Node editor transport talks to real Julia Core with scoped approvals and Unicode', { timeout: 240_000 }, async t => {
     const started = Date.now();
     const milestone = label => t.diagnostic(`${label}: ${Date.now() - started} ms`);

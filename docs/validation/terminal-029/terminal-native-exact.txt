@@ -1,0 +1,1 @@
+PASS: native Workbench without extensions, real Core controlling PTY, process approval, original terminal widget, Unicode input, resize, bounded output, foreground interrupt and removal

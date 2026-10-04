@@ -1,0 +1,48 @@
+
+> shenscope-editor-tooling@0.1.0 test
+> node --test test/*.test.mjs
+
+✔ Real PTY RPC keeps input, resize, replay and interruption in the owning conversation (70086.108733ms)
+✔ Node editor transport talks to real Julia Core with scoped approvals and Unicode (27611.862838ms)
+ℹ Core initialized: 1848 ms
+ℹ Conversation created: 1853 ms
+ℹ Agent request accepted: 15455 ms
+ℹ Edit approved: 26663 ms
+ℹ Archive approved: 26764 ms
+ℹ Conversation and artifact verified: 27030 ms
+✔ Julia source indexing and dispatch evidence travel through the real editor transport (25218.992955ms)
+ℹ Julia Core initialized: 1696 ms
+ℹ Julia backend capabilities: 4212 ms
+ℹ Julia conversation created: 4218 ms
+ℹ Julia index job started: 22909 ms
+ℹ Julia index completed: 24331 ms
+ℹ Julia dispatch queried: 24664 ms
+ℹ Julia stale evidence refused: 24672 ms
+✔ Real editor transport combines parser evidence with pinned pagination and stale-source refusal (29547.099817ms)
+ℹ Combined Core initialized: 1902 ms
+ℹ go_ast build started: 23737 ms
+ℹ go_ast build completed: 25871 ms
+ℹ tree_sitter build started: 26177 ms
+ℹ tree_sitter build completed: 26407 ms
+ℹ combined evidence_compare started: 27356 ms
+ℹ combined evidence_compare completed: 28215 ms
+ℹ combined evidence_compare started: 28408 ms
+ℹ combined evidence_compare completed: 28459 ms
+ℹ combined evidence_tests started: 28460 ms
+ℹ combined evidence_tests completed: 29040 ms
+✔ Independent Julia extensions travel through real editor RPC with registry and generation guards (12255.112862ms)
+✔ Malformed child framing closes transport and rejects pending requests (350.83133ms)
+✔ Disposal terminates an owned child that ignores shutdown and SIGTERM (4072.01796ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 169253.807537
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

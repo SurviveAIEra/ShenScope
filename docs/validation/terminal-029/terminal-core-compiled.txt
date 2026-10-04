@@ -1,0 +1,53 @@
+Precompiling ShenScope...
+  96408.0 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 97 seconds. 40 already precompiled.
+ERROR: LoadError: Some tests did not pass: 6 passed, 2 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/terminal.jl:29
+Test Summary:                                                      | Pass  Total  Time
+Terminal byte cursors retain Unicode and make output loss explicit |    8      8  0.7s
+Test Summary:                                                                | Pass  Total  Time
+Streaming terminal filtering removes control strings across chunk boundaries |   11     11  0.4s
+Test Summary:                                                                      | Pass  Total  Time
+Real PTY confirms controlling terminal, Unicode input, resize and scoped lifecycle |   14     14  2.8s
+PTY foreground interrupt, inherited descriptors and grouped descendants are real: Test Failed at /workspace/ShenScope/test/integration/terminal.jl:38
+  Expression: timedwait((()->begin
+                #= /workspace/ShenScope/test/integration/terminal.jl:38 =#
+                istaskdone(checked.monitor)
+            end), 5; pollint = 0.01) == :ok
+   Evaluated: timed_out == ok
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#13#16")(root::String)
+   @ Main /workspace/ShenScope/test/integration/terminal.jl:38
+ [3] mktempdir(fn::var"#13#16", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/terminal.jl:30 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/integration/terminal.jl:30
+PTY foreground interrupt, inherited descriptors and grouped descendants are real: Test Failed at /workspace/ShenScope/test/integration/terminal.jl:39
+  Expression: (terminal_status(checked))["exit_code"] != 0 && checked.endpoint.descriptor == -1
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#13#16")(root::String)
+   @ Main /workspace/ShenScope/test/integration/terminal.jl:39
+ [3] mktempdir(fn::var"#13#16", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/terminal.jl:30 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/integration/terminal.jl:30
+Test Summary:                                                                    | Pass  Fail  Total  Time
+PTY foreground interrupt, inherited descriptors and grouped descendants are real |    6     2      8  8.4s

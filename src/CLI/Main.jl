@@ -41,7 +41,8 @@ function parse_cli(args::Vector{String})
         "--namespace","--title","--tags","--expected-version","--match","--sort","--cursor",
         "--expected-snapshot","--snippet-chars","--tags-all","--tags-any","--sources",
         "--backends","--evidence-key","--evidence-fingerprint","--scope-paths",
-        "--package-name","--package-uuid","--package-version","--entry-sha256","--project-sha256","--contribution","--generation","--arguments"])
+        "--package-name","--package-uuid","--package-version","--entry-sha256","--project-sha256","--contribution","--generation","--arguments",
+        "--argv","--input","--rows","--columns","--timeout"])
     switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints","--no-evidence-bridges","--accept-cleanup-failure"])
     i=1
     while i<=length(args)
@@ -113,6 +114,7 @@ function cli_main(args=ARGS)
         println("Julia source: project julia_methods|julia_dispatch|julia_structure [FILTER] --backend julia_syntax --max-pairs N")
         println("Combined evidence: project evidence_compare|evidence_search|evidence_impact|evidence_tests [FILE or QUERY] --backends NAME,NAME")
         println("Julia extensions: extensions list | inspect_package PACKAGE --package-uuid UUID; pinned ephemeral invoke uses --package-name, --package-version, --entry-sha256, --project-sha256 and --contribution")
+        println("PTY terminal: terminal platform | terminal run --argv '[\"python3\",\"script.py\"]' [--input TEXT] [--rows 24 --columns 80] [--timeout 120] [--json]")
         println("Project migration: project migration FILE ... --change-kind signature|rename|remove|move|behavior --order dependency_first|callers_first --max-depth N")
         println("Project changes: project watch --backend NAME [--automatic] [--poll-seconds N] [--duration N]")
         println("Memory: memory retrieve QUERY --namespace NAME --scope workspace|session|user --tags-all TAGS --match any|all")

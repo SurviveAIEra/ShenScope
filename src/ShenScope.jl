@@ -62,6 +62,12 @@ include("Tools/Schema.jl")
 include("Tools/Models.jl")
 include("Tools/Files.jl")
 include("Tools/Processes.jl")
+include("Runtime/TerminalTypes.jl")
+include("Runtime/TerminalJournal.jl")
+include("Runtime/TerminalEndpoint.jl")
+include("Runtime/TerminalLifecycle.jl")
+include("Runtime/TerminalOperations.jl")
+include("Tools/Terminal.jl")
 include("Security/ExecutionProbe.jl")
 include("Tools/Security.jl")
 include("Memory/Types.jl")
@@ -202,6 +208,7 @@ include("Protocol/Framing.jl")
 include("Protocol/Server.jl")
 include("Protocol/Project.jl")
 include("Protocol/Extensions.jl")
+include("Protocol/Terminal.jl")
 include("Protocol/ProjectWatch.jl")
 include("Protocol/Tasks.jl")
 include("Protocol/MCP.jl")
@@ -264,7 +271,9 @@ export ProviderConfig, HTTPProvider, MockProvider, provider_name, capabilities,
     response, prepare_request, stream_chat, estimate_request_tokens, SSEDecoder,
     feed_sse!, finish_sse!, declaration, tool_name, tool_schema, execution_mode,
     validate_schema, execute, execute_call, ReadTool, SearchTool, EditTool, WriteTool,
-    PatchTool, ProcessTool, ProcessManager, cleanup_processes!, GitTool
+    PatchTool, ProcessTool, ProcessManager, cleanup_processes!, GitTool,
+    TerminalTool, TerminalManager, TerminalHandle, TerminalSize, TerminalJournal,
+    terminal_start!, terminal_wait_ready!, terminal_status, terminal_page, cleanup_terminals!
 export contract_report, interface_catalog, dispatch_ambiguities, invoke_extension_latest,
     compiler_report, run_compiler_diagnostic, compiler_targets, DiagnosticsTool
 export WorkStatus, WorkSpec, WorkRetryPolicy, WorkLease, WorkFailure, WorkReceipt,
@@ -316,6 +325,7 @@ include("CLI/TUI.jl")
 include("CLI/Tasks.jl")
 include("CLI/Diagnostics.jl")
 include("CLI/Extensions.jl")
+include("CLI/Terminal.jl")
 include("CLI/Serve.jl")
 include("CLI/Doctor.jl")
 include("CLI/Agent.jl")
@@ -325,7 +335,7 @@ const CLI_COMMAND_HANDLERS = Dict{String,Function}(
     "mcp"=>cli_mcp_command, "skills"=>cli_skills_command, "hooks"=>cli_hooks_command,
     "context"=>cli_context_command, "analyzers"=>cli_analyzers_command,
     "models"=>cli_models_command, "tasks"=>cli_tasks_command,
-    "diagnostics"=>cli_diagnostics_command, "extensions"=>cli_extensions_command, "project"=>cli_project_command,
+    "diagnostics"=>cli_diagnostics_command, "extensions"=>cli_extensions_command, "terminal"=>cli_terminal_command, "project"=>cli_project_command,
     "serve"=>cli_serve_command, "doctor"=>cli_doctor_command,
     "chat"=>cli_agent_command, "tui"=>cli_agent_command, "memory"=>cli_memory_command,
     "security"=>cli_security_command)

@@ -337,3 +337,7 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .shenscope-panel .extension-contribution { border-top: 1px solid var(--border); display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 10px 0; }
 .shenscope-panel .extension-tool-form .field { display: flex; flex-direction: column; gap: 5px; margin: 10px 0; }
 .shenscope-panel .extension-tool-result pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.terminal-launch textarea,.terminal-card textarea { width:100%; box-sizing:border-box; color:var(--vscode-input-foreground); background:var(--vscode-input-background); border:1px solid var(--vscode-input-border, transparent); padding:8px; border-radius:6px; font-family:var(--vscode-editor-font-family,monospace); }
+.terminal-controls,.terminal-dimensions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.terminal-dimensions input { width:64px; color:var(--vscode-input-foreground); background:var(--vscode-input-background); border:1px solid var(--vscode-input-border, transparent); padding:6px; }
+.terminal-output { overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; max-height:340px; font-family:var(--vscode-editor-font-family,monospace); font-size:12px; }

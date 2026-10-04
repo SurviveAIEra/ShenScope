@@ -24,6 +24,8 @@ import { IViewDescriptorService, IViewContainersRegistry, IViewsRegistry, Extens
 import { ViewPane, IViewPaneOptions } from '../../../browser/parts/views/viewPane.js';
 import { ViewPaneContainer } from '../../../browser/parts/views/viewPaneContainer.js';
 import { ShenScopePanel } from '../browser/panel.js';
+import { ITerminalService, ITerminalGroupService } from '../../terminal/browser/terminal.js';
+import { ShenScopeTerminalProcess } from './shenscopeTerminal.js';
 
 class ShenScopeViewPane extends ViewPane {
     private panel?: ShenScopePanel;
@@ -45,6 +47,8 @@ class ShenScopeViewPane extends ViewPane {
         @IQuickInputService private readonly quickInput: IQuickInputService,
         @IEnvironmentService private readonly environment: IEnvironmentService,
         @IEditorService private readonly editors: IEditorService,
+        @ITerminalService private readonly terminals: ITerminalService,
+        @ITerminalGroupService private readonly terminalGroups: ITerminalGroupService,
     ) { super(options, keybinding, contextMenu, configuration, contextKeys, descriptors, instantiation, opener, theme, hover); }
 
     protected override renderBody(container: HTMLElement): void {
@@ -100,6 +104,15 @@ class ShenScopeViewPane extends ViewPane {
                 const root = this.workspace.getWorkspace().folders[0]?.uri;
                 if (!root || path.split(/[\\/]/).includes('..') || /^[/\\]/.test(path)) { throw new Error('Invalid workspace file'); }
                 await this.editors.openEditor({ resource: URI.joinPath(root, path), options: { selection: { startLineNumber: line, startColumn: 1 } } });
+            },
+            openTerminal: async (handle,session_id) => {
+                await connect();
+                const request = (method: string,params: Record<string,unknown>) => channel.call<any>('request',{method,params});
+                await request('terminal/query',{session_id,action:'poll',handle,max_bytes:4,format:'terminal'});
+                const cwd=this.workspace.getWorkspace().folders[0]!.uri.fsPath;
+                const instance=await this.terminals.createTerminal({config:{name:'ShenScope Core',cwd,
+                    customPtyImplementation:(_id,columns,rows)=>new ShenScopeTerminalProcess(request,session_id,handle,cwd,columns,rows)}});
+                this.terminals.setActiveInstance(instance);await this.terminalGroups.showPanel(true);
             },
             openSkillSource: async (job_id, session_id) => {
                 const source: any = await channel.call('request', { method: 'skills/source_path', params: { job_id, session_id } });

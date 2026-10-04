@@ -1,0 +1,9 @@
+ERROR: LoadError: ParseError:
+# Error @ /workspace/ShenScope/src/Runtime/TerminalWorker.jl:24:34
+end
+abspath(PROGRAM_FILE)==@__FILE__ && TerminalWorker.main(ARGS)
+#                                └┘ ── invalid identifier
+Stacktrace:
+ [1] top-level scope
+   @ /workspace/ShenScope/src/Runtime/TerminalWorker.jl:24
+in expression starting at /workspace/ShenScope/src/Runtime/TerminalWorker.jl:24

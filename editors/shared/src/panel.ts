@@ -6,6 +6,7 @@ export interface PanelBridge {
     openFile(path: string, line?: number): Promise<void>;
     openSkillSource(jobId: string, sessionId: string): Promise<void>;
     openHookSource(jobId: string, sessionId: string): Promise<void>;
+    openTerminal(handle: string, sessionId: string): Promise<void>;
 }
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, text = '', className = ''): HTMLElementTagNameMap[K] {
     const node = document.createElement(tag); node.textContent = text; node.className = className; return node;
@@ -58,6 +59,11 @@ export class ShenScopePanel {
     private extensionsPackageReceipt: any;
     private extensionsPackageName = '';
     private extensionsPackageUUID = '';
+    private terminalStarting = false;
+    private terminalJob?: string;
+    private completedTerminalJobs = new Set<string>();
+    private terminalArgv = '["/bin/bash", "--noprofile", "--norc"]';
+    private terminalResult: any;
     private projectResult: any;
     private evidenceBackends = new Set(['tree_sitter', 'go_ast']);
     private evidenceQuery = '';
@@ -132,7 +138,7 @@ export class ShenScopePanel {
             const button = this.button(label, () => this.selectTab(name), 'nav-button', glyph); this.navigation.set(name, button); nav.append(button);
         }
         const more = el('select', '', 'more-views'); more.setAttribute('aria-label', 'More views');
-        for (const name of ['More', 'Settings', 'Models', 'Memory', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context', 'Analyzers', 'Extensions']) { const option = el('option', name); option.value = name; more.append(option); }
+        for (const name of ['More', 'Settings', 'Models', 'Memory', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context', 'Analyzers', 'Extensions', 'Terminal']) { const option = el('option', name); option.value = name; more.append(option); }
         more.addEventListener('change', () => { if (more.value !== 'More') { void this.guard(() => this.selectTab(more.value)); } more.value = 'More'; }); nav.append(more);
         this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite'); this.notice.setAttribute('role', 'alert'); this.notice.hidden = true;
         root.append(header, nav, this.notice, this.approvals, this.content, this.status);
@@ -177,6 +183,7 @@ export class ShenScopePanel {
         if (this.active || this.projectJob || this.projectStarting || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
         this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
         this.modelsProfile = ''; this.modelPlanRole = '';
+        this.terminalResult = undefined;
         this.sessionId = undefined; this.extensionsResult = undefined; this.extensionsPackageReceipt = undefined; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
@@ -246,6 +253,7 @@ export class ShenScopePanel {
         if (this.tab === 'Analyzers' && this.capabilities.dynamic_analyzers) { await this.analyzersView(revision); return; }
         if (this.tab === 'Models' && this.capabilities.model_catalog) { await this.modelsView(revision); return; }
         if (this.tab === 'Extensions' && this.capabilities.julia_extension_lifecycle) { await this.extensionsView(revision); return; }
+        if (this.tab === 'Terminal' && this.capabilities.terminal_pty) { await this.terminalView(revision); return; }
         this.content.append(el('h2', this.tab === 'Intelligence' ? 'Project intelligence' : this.tab, 'view-title'));
         if (this.tab === 'Tools') {
             const tools = await this.bridge.request('tools/list'); if (revision !== this.renderRevision) { return; }
@@ -370,7 +378,68 @@ export class ShenScopePanel {
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
         }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
     }
-    private contextBusy(): boolean { return !!this.extensionsJob || this.extensionsStarting || !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.modelsJob || this.modelsStarting; }
+    private contextBusy(): boolean { return !!this.terminalJob || this.terminalStarting || !!this.extensionsJob || this.extensionsStarting || !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.modelsJob || this.modelsStarting; }
+    private async startTerminal(action: string, args: Record<string, unknown> = {}): Promise<void> {
+        if (this.contextBusy()) { throw new Error('Finish or cancel the current operation first.'); }
+        this.terminalStarting = true; this.updateActions();
+        if(this.tab==='Terminal'){for(const control of Array.from(this.content.querySelectorAll<HTMLButtonElement>('button'))){control.disabled=true;}}
+        try {
+            const session_id = await this.ensureSession('Workspace terminals');
+            const started = await this.bridge.request('terminal/start', { session_id, action, ...args });
+            if (!this.completedTerminalJobs.has(started.job_id)) { this.terminalJob = started.job_id; this.setStatus('Working with terminal…'); }
+        } finally { this.terminalStarting = false; this.updateActions(); }
+        if (this.tab === 'Terminal') { await this.renderTab(); }
+    }
+    private async terminalView(revision: number): Promise<void> {
+        const session_id = await this.ensureSession('Workspace terminals');
+        const heading = el('div', '', 'view-heading'); heading.append(el('h2','Terminals'), this.button('Refresh terminals', () => this.renderTab()));
+        this.content.append(heading, el('p','Run interactive commands through Julia Core. Output and controls belong to this conversation.','view-description'));
+        const busy = this.contextBusy();
+        const form = el('section','','info-card terminal-launch');
+        const label = el('label','Command arguments · JSON array','field'); const argv = el('textarea'); argv.rows = 3; argv.value = this.terminalArgv;
+        argv.setAttribute('aria-label','Terminal command arguments'); argv.disabled = busy; argv.addEventListener('input', () => { this.terminalArgv = argv.value; }); label.append(argv); form.append(label);
+        const start = this.button('Start terminal',async () => {
+            const parsed = JSON.parse(this.terminalArgv);
+            if (!Array.isArray(parsed) || !parsed.length || parsed.some(value => typeof value !== 'string')) { throw new Error('Enter a nonempty array of command arguments.'); }
+            await this.startTerminal('start',{ argv: parsed, timeout: 3600, rows: 24, columns: 80 });
+        },'primary-button'); start.disabled = busy; form.append(start); this.content.append(form);
+        if (this.terminalJob) { this.content.append(el('p','Waiting for the terminal or your approval…','empty-text'),this.button('Cancel terminal operation',async () => { await this.bridge.request('terminal/cancel_job',{session_id,job_id:this.terminalJob}); })); }
+        let snapshot: any;
+        try { snapshot = await this.bridge.request('terminal/query',{ session_id, action: 'list' }); }
+        catch (cause) {
+            this.content.append(el('p',cause instanceof Error ? cause.message : 'Unable to read terminal inventory','empty-text'));
+            const read = this.button('Read terminal inventory',() => this.startTerminal('list')); read.disabled = busy; this.content.append(read); return;
+        }
+        if (revision !== this.renderRevision) { return; }
+        for (const terminal of snapshot.terminals ?? []) {
+            const card = el('section','','info-card terminal-card'); card.dataset.terminalHandle = terminal.handle;
+            const title = el('div','','view-heading'); title.append(el('h3',`Terminal ${terminal.handle.slice(0,8)}`),el('span',terminal.phase,'badge')); card.append(title);
+            card.append(el('small',`${terminal.size.columns} × ${terminal.size.rows} · ${terminal.backend} · ${terminal.sandbox}`));
+            const controls = el('div','','terminal-controls');
+            const open = this.button('Open native terminal',() => this.bridge.openTerminal(terminal.handle,session_id)); open.disabled = busy;
+            const read = this.button('Read output',() => this.startTerminal('poll',{handle:terminal.handle,format:'plain'})); read.disabled = busy; controls.append(open,read);
+            if (terminal.running) {
+                const input = el('textarea'); input.rows=2; input.setAttribute('aria-label','Terminal input'); input.disabled=busy;
+                const send = this.button('Send input',() => this.startTerminal('write',{handle:terminal.handle,input:input.value+'\n'})); send.disabled=busy; card.append(input); controls.append(send);
+                const interrupt = this.button('Interrupt terminal',() => this.startTerminal('interrupt',{handle:terminal.handle})); interrupt.disabled=busy;
+                const stop = this.button('Stop terminal',() => this.startTerminal('stop',{handle:terminal.handle})); stop.disabled=busy; controls.append(interrupt,stop);
+                const dimensions = el('div','','terminal-dimensions');
+                const columns = el('input'); columns.type='number'; columns.min='2'; columns.max='500'; columns.value=String(terminal.size.columns); columns.setAttribute('aria-label','Terminal columns');
+                const rows = el('input'); rows.type='number'; rows.min='2'; rows.max='500'; rows.value=String(terminal.size.rows); rows.setAttribute('aria-label','Terminal rows');
+                const resize = this.button('Resize terminal',() => this.startTerminal('resize',{handle:terminal.handle,columns:Number(columns.value),rows:Number(rows.value)})); resize.disabled=busy; dimensions.append(columns,rows,resize); card.append(dimensions);
+            } else { const remove = this.button('Remove terminal',() => this.startTerminal('remove',{handle:terminal.handle})); remove.disabled=busy; controls.append(remove); }
+            card.append(controls); if(terminal.error){ card.append(el('p',terminal.error,'empty-text')); } this.content.append(card);
+        }
+        if(this.terminalResult?.action==='poll') {
+            const result=el('section','','info-card terminal-result'); result.append(el('h3','Terminal output'));
+            const output=this.terminalResult.result.output;
+            if(output.lost_bytes){result.append(el('p',`${output.lost_bytes} bytes no longer retained.`,'memory-muted'));}
+            result.append(el('pre',output.text,'terminal-output'));
+            if(output.more){const next=this.button('Next output page',()=>this.startTerminal('poll',{handle:this.terminalResult.result.handle,offset:output.next_offset,format:'plain'}));next.disabled=busy;result.append(next);}
+            this.content.append(result);
+        }
+        this.content.append(el('small','Terminal output merges stdout and stderr. Clipboard/title control strings are filtered. Linux host PTY is available; restricted sandbox PTY and Windows ConPTY remain pending.','memory-muted'));
+    }
     private modelsBusy(): boolean { return this.contextBusy() || !!this.analyzersJob || this.analyzersStarting; }
     private async startModels(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.modelsBusy()) { throw new Error('Finish or cancel the current operation before working with models.'); }
@@ -1560,6 +1629,17 @@ export class ShenScopePanel {
             void this.guard(async () => { const snapshot = await this.bridge.request('config/get'); if (this.disposed) { return; } this.config = snapshot.value; this.configRevision = snapshot.sha256; await this.renderTab(); }); return;
         }
         if (method !== 'agent/event' || params.session_id !== this.sessionId) { return; } const payload = params.payload;
+        if (params.kind === 'terminal_job_completed' || params.kind === 'terminal_job_failed') {
+            this.completedTerminalJobs.add(payload.job_id); while(this.completedTerminalJobs.size>64){this.completedTerminalJobs.delete(this.completedTerminalJobs.values().next().value!);}
+            const owned = this.terminalJob === payload.job_id || this.terminalStarting;
+            if(this.terminalJob===payload.job_id){this.terminalJob=undefined;}
+            for(const card of Array.from(this.approvals.children)){const element=card as HTMLElement;if(element.dataset.traceId===params.trace_id || (payload.permission_ids??[]).includes(element.dataset.requestId)){card.remove();}}
+            if(owned && params.kind==='terminal_job_completed'){this.terminalResult={action:payload.action,result:payload.result};this.setStatus('Terminal operation complete');}
+            else if(params.kind==='terminal_job_failed'){this.notice.textContent=payload.error??'Terminal operation stopped';this.notice.hidden=false;}
+            this.updateActions(); if(owned && this.tab==='Terminal'){void this.guard(()=>this.renderTab());} return;
+        }
+        if(params.kind==='terminal_exited'){if(this.tab==='Terminal' && !this.terminalJob && !this.terminalStarting){void this.guard(()=>this.renderTab());}return;}
+        if(params.kind==='terminal_output' || params.kind==='terminal_ready'){return;}
         if (params.kind.startsWith('project_watch_')) {
             this.projectWatchEventRevision++;
             this.projectWatchViews.set(payload.id, payload); while (this.projectWatchViews.size > 32) { this.projectWatchViews.delete(this.projectWatchViews.keys().next().value!); }

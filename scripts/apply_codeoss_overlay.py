@@ -25,6 +25,7 @@ def install(checkout):
         'editors/shared/src/rpcMethods.ts': 'src/vs/platform/shenscope/common/rpcMethods.ts',
         'editors/shared/src/panel.ts': 'src/vs/workbench/contrib/shenscope/browser/panel.ts',
         'editors/shared/src/markdown.ts': 'src/vs/workbench/contrib/shenscope/browser/markdown.ts',
+        'editors/shared/src/terminalClient.ts': 'src/vs/workbench/contrib/shenscope/browser/terminalClient.ts',
         'editors/shared/panel.css': 'src/vs/workbench/contrib/shenscope/electron-browser/shenscope.css',
     }
     for source, relative in shared.items():

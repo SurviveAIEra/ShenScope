@@ -1,0 +1,4 @@
+Precompiling ShenScope...
+  86759.7 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 87 seconds. 40 already precompiled.
+PASS: current Core compile cache is ready

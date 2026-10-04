@@ -1,0 +1,52 @@
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Settings
+Models
+Memory
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+Extensions
+Terminal
+Terminals
+Refresh terminals
+
+Run interactive commands through Julia Core. Output and controls belong to this conversation.
+
+Command arguments · JSON array
+Start terminal
+Terminal 5bc3511a
+running
+70 × 13 · linux-openpty-v1 · host
+Resize terminal
+Open native terminal
+Read output
+Send input
+Interrupt terminal
+Stop terminal
+Terminal output merges stdout and stderr. Clipboard/title control strings are filtered. Linux host PTY is available; restricted sandbox PTY and Windows ConPTY remain pending.
+Terminal operation complete
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.shenscope-panel').getByRole('button', { name: 'Remove terminal', exact: true }) to be visible[22m
+
+    at /workspace/ShenScope/ide/test/native_smoke.mjs:308:77 {
+  log: [
+    "  - waiting for locator('.shenscope-panel').getByRole('button', { name: 'Remove terminal', exact: true }) to be visible"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0
