@@ -108,6 +108,8 @@ end
 function idle_session(server::CoreServer,params::AbstractDict)
     session=server_session(server,params)
     haskey(server.runs,session.id) && throw(ShenScopeError(:session,"Session has an active run"))
+    operations_running(server_extensions_tool(server).operations;session_id=session.id) &&
+        throw(ShenScopeError(:extension_busy,"Finish this conversation's extension operation first"))
     operations_running(server_memory_tool(server).manager.operations;session_id=session.id) &&
         throw(ShenScopeError(:memory_busy,"Finish this conversation's memory operation first"))
     operations_running(server_security_tool(server).manager.operations;session_id=session.id) &&
@@ -120,6 +122,9 @@ function idle_session(server::CoreServer,params::AbstractDict)
 end
 
 function start_agent!(server::CoreServer,params::AbstractDict)
+    extension_session=server_session(server,params)
+    operations_running(server_extensions_tool(server).operations;session_id=extension_session.id) &&
+        throw(ShenScopeError(:extension_busy,"Finish this conversation's extension operation before starting the agent"))
     session=server_session(server,params)
     haskey(server.runs,session.id) && throw(ShenScopeError(:session,"Session has an active run"))
     operations_running(server_memory_tool(server).manager.operations;session_id=session.id) &&
@@ -170,10 +175,11 @@ end
 
 function capability_manifest()
     Dict("agent"=>true,"streaming_protocols"=>["openai_chat","openai_responses","anthropic","gemini","ollama"],
-        "tools"=>["read","search","edit","write","patch","process","git","memory","security","project","diagnostics","analyzers","models","tasks","mcp","skills","hooks","context"],"session_journal"=>true,"memory"=>true,"memory_namespaces"=>true,"memory_retrieval_evidence"=>true,
+        "tools"=>["read","search","edit","write","patch","process","git","memory","security","project","diagnostics","analyzers","models","tasks","mcp","skills","hooks","context","extensions"],"session_journal"=>true,"memory"=>true,"memory_namespaces"=>true,"memory_retrieval_evidence"=>true,
         "execution_sandbox_policy"=>true,"execution_sandbox_probe"=>true,
         "permission_approvals"=>true,"config_profiles"=>true,"os_isolation"=>false,
         "mcp"=>true,"mcp_transports"=>["stdio","streamable_http"],"skills"=>true,"hooks"=>true,"project_intelligence"=>true,
+        "julia_extension_lifecycle"=>true,"julia_optional_extensions"=>true,"extension_isolation"=>"trusted_in_process",
         "durable_tasks"=>true,"dynamic_analyzers"=>true,"context_checkpoints"=>true,"context_recovery"=>true,
         "model_catalog"=>true,"model_counting"=>true,"model_health"=>true,"model_routing"=>true,
         "isolated_compute"=>Dict("dependency_available"=>compute_seccomp_available(),"backend"=>"linux-seccomp-compute-v1",
@@ -194,6 +200,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     # Service controllers own separate compilation/lifecycle boundaries. The
     # initialize/health path must not infer every model, parser and worker branch.
     startswith(method,"project/") && return Base.invokelatest(project_rpc,server,method,params)
+    startswith(method,"extensions/") && return Base.invokelatest(extensions_rpc,server,method,params)
     startswith(method,"analyzers/") && return Base.invokelatest(analyzers_rpc,server,method,params)
     startswith(method,"models/") && return Base.invokelatest(models_rpc,server,method,params)
     startswith(method,"memory/") && return Base.invokelatest(memory_rpc,server,method,params)
@@ -228,6 +235,8 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
             throw(ShenScopeError(:config,"Finish analyzer operations before changing configuration"))
         operations_running(server_models_tool(server).manager.operations) &&
             throw(ShenScopeError(:config,"Finish model service operations before changing configuration"))
+        operations_running(server_extensions_tool(server).operations) &&
+            throw(ShenScopeError(:config,"Finish extension operations before changing configuration"))
         taskmanager = server_task_tool(server).manager
         lock(taskmanager.mutex) do
             any(job -> job.status == :running, values(taskmanager.jobs)) &&
@@ -264,7 +273,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
         value isa AbstractDict || throw(RPCFault(-32602,"Configuration object required"))
         expected=rpc_string(params,"expected_sha256";max_bytes=64)
         revision=save_config!(Dict{String,Any}(value);path=server.config_file,expected_sha256=expected,
-            before_write=()->begin;cleanup_mcp!(mcpmanager);cleanup_skills!(skillsmanager);cleanup_hooks!(hooksmanager);cleanup_context!(server_context_tool(server).manager);cleanup_analyzers!(server_analyzers_tool(server).manager);end)
+            before_write=()->begin;cleanup_mcp!(mcpmanager);cleanup_skills!(skillsmanager);cleanup_hooks!(hooksmanager);cleanup_context!(server_context_tool(server).manager);cleanup_analyzers!(server_analyzers_tool(server).manager);close_extension_registry!(server_extensions_tool(server).registry);close_operations!(server_extensions_tool(server).operations);end)
         server.config=load_config(;path=server.config_file)
         for (index,tool) in pairs(server.tools)
             if tool isa MemoryTool || tool isa SecurityTool
@@ -391,6 +400,9 @@ function stop_server!(server::CoreServer)
         tool isa ModelsTool && cleanup_models_tool!(tool)
         tool isa MemoryTool && cleanup_memory!(tool.manager)
         tool isa SecurityTool && cleanup_execution!(tool.manager)
+        if tool isa ExtensionsTool
+            close_operations!(tool.operations);close_extension_registry!(tool.registry)
+        end
         tool isa ProcessTool || continue
         for id in keys(server.contexts);cleanup_processes!(tool.manager,id);end
     end

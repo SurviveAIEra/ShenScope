@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 20,173 authored Julia Core code lines across 200 files;
-CLI/TUI add 988 lines and are counted separately. This is 8.0692% of the
-minimum line target, leaving 229,827 lines. These are early implementations,
+Latest cloc 2.11 count: 20,833 authored Julia Core code lines across 208 files;
+CLI/TUI add 1,027 lines and optional Julia extensions add 57, counted separately.
+This is 8.3332% of the minimum line target, leaving 229,167 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -424,6 +424,55 @@ Development continues immediately with scoped memory retrieval/management,
 security/runtime and remaining requirements. PackageCompiler remains pending.
 The 250,000 authored Core-line target remains active and unmet.
 
+Memory checkpoint 024: independent collections with root/session ownership,
+strict journal validation, Unicode witnesses/BM25F, filters/phrases/expiry, bounded
+partial indexes, fixed-snapshot pagination and declared source/hash evidence.
+Julia-owned asynchronous jobs share permissions/budgets with agent work; CLI and
+both IDEs support versioned notes and retained history. Seven primary source
+observations extend the reference synthesis without copying upstream code.
+
+Validation: 316 distinct affected Core/interface assertions (181 new), three
+real Node/Core transport tests, editor check/build, final full Workbench typecheck
+and exact VSIX source/assets payload pass. Both actual native and independent
+VSIX development GUIs verify approvals, Chinese evidence, updates, namespace
+isolation, pagination, deletion and independent durable Julia history checks
+without model requests. Failed fixture loads and two GUI attempts are retained
+and corrected. Evidence: docs/validation/memory-checkpoint-024.json. Scope:
+docs/core/memory.md. Lexical/source evidence is not fact verification; bounded
+coverage is disclosed, namespace admission is separate from the fact transaction,
+legacy session-proof migration and secure erasure remain pending.
+
+Development continues immediately with general host-tool sandbox/security,
+runtime/state and remaining Julia-specific capabilities. The 250,000 authored
+Core-line target remains active and unmet.
+
+Execution security checkpoint 025: explicit host/required-Linux policies, bounded
+mount plans/protected masks, reduced child state, namespace preflight, Julia-owned
+network/resource bootstrap, setup receipts and scoped CLI/RPC/native/VSIX controls.
+Read/Edit/Process/Network remain separate; policy/runtime paths are reviewed before
+launch, and Deny revocation terminates owned processes. Native signals now report
+truthful exit status. Interrupted unsafe durable tasks retain uncertain effects and
+receipts, including a real CPU-killed task that first writes a file.
+
+Configuration is validated before replacement; active jobs and draining processes
+block saves. Fresh memory/security managers and task references remain usable after
+policy changes, preserving durable facts. Seven primary project observations extend
+the partial reference review without copying implementations.
+
+Validation: 541 distinct affected assertions (141 new), three real Node/Core tests,
+final shared editor check/build, complete Workbench typecheck, exact package payload
+and both actual development GUIs pass. Actual kernel network denial, descriptor
+closure, CPU/file limits and process revocation pass. This container blocks nested
+namespace UID maps and exposes no Landlock interface; target refusal is verified,
+while successful full namespaces remain unverified here. Failed API/fixture attempts
+and the task cancellation regression are retained with their corrections. Evidence:
+docs/validation/security-checkpoint-025.json. Scope: docs/core/execution_security.md.
+
+Development continues immediately with Julia-specific Core capabilities, process
+runtime, extensibility and remaining requirements. Domain/platform adapters, full
+namespace execution, PackageCompiler and installed restoration remain open. The
+250,000 authored Core-line target remains active and unmet.
+
 ## Checkpoint 026: Julia source and dispatch evidence
 
 Core: 19,564 authored Julia lines in 190 files; CLI/TUI: 963 lines in 17 files.
@@ -505,51 +554,44 @@ remaining requirements. Git/coverage/runtime fusion, compiler-confirmed Julia
 semantics, PackageCompiler and installed restoration remain pending. The 250,000
 authored Core-line target remains active and unmet.
 
-Memory checkpoint 024: independent collections with root/session ownership,
-strict journal validation, Unicode witnesses/BM25F, filters/phrases/expiry, bounded
-partial indexes, fixed-snapshot pagination and declared source/hash evidence.
-Julia-owned asynchronous jobs share permissions/budgets with agent work; CLI and
-both IDEs support versioned notes and retained history. Seven primary source
-observations extend the reference synthesis without copying upstream code.
+## Checkpoint 028: Julia package extension lifecycle
 
-Validation: 316 distinct affected Core/interface assertions (181 new), three
-real Node/Core transport tests, editor check/build, final full Workbench typecheck
-and exact VSIX source/assets payload pass. Both actual native and independent
-VSIX development GUIs verify approvals, Chinese evidence, updates, namespace
-isolation, pagination, deletion and independent durable Julia history checks
-without model requests. Failed fixture loads and two GUI attempts are retained
-and corrected. Evidence: docs/validation/memory-checkpoint-024.json. Scope:
-docs/core/memory.md. Lexical/source evidence is not fact verification; bounded
-coverage is disclosed, namespace admission is separate from the fact transaction,
-legacy session-proof migration and secure erasure remain pending.
+Core: 20,833 authored Julia lines in 208 files; CLI/TUI: 1,027 lines in 18 files.
+Optional Julia extension source: 57 lines, excluded from the Core target.
+The minimum target remains 250,000; 229,167 Core lines are still required.
 
-Development continues immediately with general host-tool sandbox/security,
-runtime/state and remaining Julia-specific capabilities. The 250,000 authored
-Core-line target remains active and unmet.
+Installed independent Julia packages have reviewed identities, compatibility,
+entry/Project.toml hashes and explicit dynamic-code authorization. Normal Julia
+compilation requests separate process/cache-write grants. Registration is inactive;
+activation validates dispatch contracts and freezes tool schemas. Registry UUIDs,
+monotonic generations and leases fence old calls. Draining rejects new work,
+cleanup callbacks run in reverse order and failures quarantine registrations.
+Config replacement/shutdown closes owned registries. These are trusted in-process
+packages: arbitrary initialization is not isolated, methods remain loaded and
+source inspection does not attest every dependency or compiled instruction.
 
-Execution security checkpoint 025: explicit host/required-Linux policies, bounded
-mount plans/protected masks, reduced child state, namespace preflight, Julia-owned
-network/resource bootstrap, setup receipts and scoped CLI/RPC/native/VSIX controls.
-Read/Edit/Process/Network remain separate; policy/runtime paths are reviewed before
-launch, and Deny revocation terminates owned processes. Native signals now report
-truthful exit status. Interrupted unsafe durable tasks retain uncertain effects and
-receipts, including a real CPU-killed task that first writes a file.
+Tools join actual agent requests through the existing discovery interface. CLI
+supports pinned ephemeral invocation; owned async RPC and both IDEs provide
+package inspection, scoped approvals, activation, tool parameter forms and results.
+A real SparseArrays weak dependency activates an optional sparse evidence
+projection with retained relation/anchor provenance and explicit static limits.
 
-Configuration is validated before replacement; active jobs and draining processes
-block saves. Fresh memory/security managers and task references remain usable after
-policy changes, preserving durable facts. Seven primary project observations extend
-the partial reference review without copying implementations.
+Validation: 267 distinct affected assertions (105 new, including the final tool
+capability check), six actual Node/Core tests, both actual development GUIs,
+shared editor check/build, complete Workbench typecheck and exact VSIX payload
+comparison pass. GUI checks cover an independent installed Julia package and
+actual optional dependency activation. The final capability-only source amendment
+was checked separately and repackaged. Evidence:
+docs/validation/extensions-checkpoint-028.json. Scope and limitations:
+docs/core/julia_extension_lifecycle.md. Constructor validation, fixture assumptions
+and the missing client RPC whitelist found in initial runs are corrected; failed
+attempt evidence remains alongside passing results.
 
-Validation: 541 distinct affected assertions (141 new), three real Node/Core tests,
-final shared editor check/build, complete Workbench typecheck, exact package payload
-and both actual development GUIs pass. Actual kernel network denial, descriptor
-closure, CPU/file limits and process revocation pass. This container blocks nested
-namespace UID maps and exposes no Landlock interface; target refusal is verified,
-while successful full namespaces remain unverified here. Failed API/fixture attempts
-and the task cancellation regression are retained with their corrections. Evidence:
-docs/validation/security-checkpoint-025.json. Scope: docs/core/execution_security.md.
-
-Development continues immediately with Julia-specific Core capabilities, process
-runtime, extensibility and remaining requirements. Domain/platform adapters, full
-namespace execution, PackageCompiler and installed restoration remain open. The
-250,000 authored Core-line target remains active and unmet.
+Seven primary agent observations and selected PromptingTools/Kaimon sources extend
+the partial reference review. Storage audit finds one application checkout,
+46 dependency repositories, no unknown repositories and approximately 17.6 GiB
+free. One reproducible Core cache pair is retained. No project copies/worktrees
+were created. Persistent extension configuration, isolated extension hosts,
+provider/backend selection, general process PTY, PackageCompiler and installed
+restoration remain pending. Development continues toward all functional gates
+and the active 250,000 authored Core-line target.

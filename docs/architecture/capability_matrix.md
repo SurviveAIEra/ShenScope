@@ -179,3 +179,14 @@ during saved-fact reads. CLI, owned RPC and both shared IDE clients expose the
 same Core actions. Read/cancel/budget and source/revision refusal remain enforced.
 Anchors and confidence are static heuristics; Git, runtime traces, coverage and
 compiler-confirmed Julia evidence are not yet connected to this combined graph.
+
+Checkpoint 028 adds independent installed Julia package inspection and explicitly
+authorized loading, version/source pins, generation-fenced activation, draining,
+resource callbacks and quarantine. Registered tools join real agent requests;
+owned RPC, native Workbench and VSIX expose package review, scoped approvals,
+parameter forms and lifecycle actions. A real SparseArrays weak dependency
+activates an optional sparse evidence projection. This is trusted in-process
+code: Julia methods remain loaded, package dependencies are not attested, arbitrary
+initializers are not isolated and cleanup covers registered callbacks. Persistent
+activation, an extension marketplace, isolated hosts and configured selection of
+contributed providers/backends remain pending.

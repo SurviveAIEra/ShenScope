@@ -61,7 +61,8 @@ contract_report(instance)=contract_report(typeof(instance))
 
 function interface_functions()
     [tool_name,tool_schema,tool_description,execution_mode,execute,provider_name,capabilities,stream_chat,
-        backend_capabilities,extract_files,backend_close!,analyzer_name,requirements,analyze]
+        backend_capabilities,extract_files,backend_close!,analyzer_name,requirements,analyze,
+        projection_name,project_projection,projection_neighbors]
 end
 function dispatch_ambiguities(functions::AbstractVector;max_pairs=10000,limit=128,ctx=nothing)
     1<=max_pairs<=100000 && 1<=limit<=1000 || throw(ShenScopeError(:extension,"Invalid ambiguity scan limits"))
@@ -88,6 +89,7 @@ function interface_catalog()
     types=DataType[ReadTool,SearchTool,EditTool,WriteTool,PatchTool,ProcessTool,GitTool,MemoryTool,ProjectTool,
         HTTPProvider,MockProvider,GoASTBackend,TreeSitterBackend,CodeGraphBackend,TypeScriptSemanticBackend,JuliaSyntaxBackend,ImpactAnalyzer,TestSelectionAnalyzer,ArchitectureAnalyzer,IsolatedJuliaAnalyzer,AnalyzersTool,ModelsTool]
     isdefined(@__MODULE__,:DiagnosticsTool) && push!(types,DiagnosticsTool)
+    isdefined(@__MODULE__,:ExtensionsTool) && append!(types,[ExtensionsTool,RegisteredExtensionTool])
     contract_report.(types)
 end
 

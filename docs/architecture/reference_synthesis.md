@@ -477,3 +477,26 @@ No implementation was copied or translated. Exact-source bridges, conflict
 refusal, namespaced identities, bounded capture and dispatch on the combined
 snapshot are authored Julia behavior. Git/coverage/runtime fusion and broader
 compiler-confirmed semantics remain pending.
+
+## Julia optional extension lifecycle source observations
+
+Checkpoint 028 rereads the handoff's multiple-dispatch, invokelatest,
+weakdeps/extensions, resource cleanup and precompilation guidance. Selected source
+reads are capability observations, not complete upstream audits.
+
+| Source | Observation | Independent Julia implementation |
+| --- | --- | --- |
+| Codex `codex-rs/core-plugin-common/src/plugin_id.rs` 1–65 | Stable identifier validation is separate from storage paths | Registry and contribution names reject traversal; UUIDs and generations retain identity |
+| OpenCode `packages/opencode/src/plugin/loader.ts` 1–58 | Planned, resolved, loaded and stage-specific failures differ | Package receipts, inactive registration, activation, quarantine and cleanup receipts remain separate |
+| DeepSeek Harness `packages/sdk/server/tests/plugin-shape.spec.ts` 1–29 | Plugin export shape is tested through the actual loader | Real Base.require and the named bundle function are tested against an independent Julia package |
+| Pi `packages/coding-agent/src/core/extensions/loader.ts` 1–65 | Optional loader machinery is lazy and runtime-dependent | No automatic package installation; Pkg weakdep module loading and registry activation are independent |
+| Kimi Code `packages/agent-core-v2/src/app/plugin/manifest.ts` 1–55 | Manifest candidates and unsupported runtime fields have explicit diagnostics | Exact installed UUID/version/hash receipts precede factory execution; unsupported interfaces refuse activation |
+| ZCode `packages/ui/src/store/pluginStore.ts` 1–58 | Operations include workspace identity and shared pending state | Workspace scope, owned jobs and pending-operation controls guard both editors |
+| Qwen Code `packages/core/src/tools/tool-registry.ts` 49–75 | Deferred parameter fingerprints matter separately from mutable prose | Reviewed schemas are frozen and compared; descriptions do not authorize argument changes |
+| PromptingTools `Project.toml` 30–45 | Real Julia weakdeps and extensions are independent package declarations | SparseArrays activates an authored optional Core extension through Pkg's actual loader |
+| Kaimon `src/extensions.jl` 1–42 | Namespace, module entry and shutdown callback have different responsibilities | Bundle identity, latest-world factory invocation and reverse cleanup callbacks are independently validated |
+
+No upstream implementation was copied or translated. Trusted in-process loading
+does not replace isolated analyzers or OS sandboxing. Persistent package
+configuration, marketplace distribution, plugin host isolation and broad provider/
+backend config registration remain pending.

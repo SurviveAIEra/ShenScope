@@ -1,0 +1,50 @@
+Precompiling ShenScope...
+  98820.5 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 99 seconds. 40 already precompiled.
+Test Summary:                                                         | Pass  Total  Time
+Extension factories are permissioned and publish complete generations |   15     15  4.3s
+Test Summary:                                                       | Pass  Total  Time
+Extension control tools expose reviewed schemas and agent snapshots |    8      8  2.8s
+Test Summary:                                                  | Pass  Total  Time
+Extension draining fences calls and preserves leased instances |    8      8  0.4s
+Test Summary:                                                           | Pass  Total  Time
+Failed factories quarantine resources and cleanup failures stay visible |    9      9  0.4s
+Test Summary:                                                          | Pass  Total  Time
+Extension schemas, root ownership and live dynamic denial are enforced |   11     11  0.5s
+Test Summary:                                                              | Pass  Total  Time
+Extension RPC approvals, results and cancellation belong to a conversation |   13     13  3.5s
+Test Summary:                                                           | Pass  Total  Time
+Installed Julia package loading pins identity, source and real dispatch |   14     14  3.4s
+Test Summary:                                                      | Pass  Total  Time
+Already loaded Julia code refuses changed inspected package source |    4      4  2.4s
+Test Summary:                                                                | Pass  Total   Time
+Registered tools enter a real agent request with generation-fenced execution |    5      5  12.4s
+{"contribution":"echo","generation":2,"isolation":"trusted_in_process","name":"installed_example","registry_id":"461d5536-4982-4073-b774-1b73a74fb654","value":{"echo":"CLI extension","package":"ShenScopeLifecycleExample"}}
+Test Summary:                                                              | Pass  Total  Time
+CLI invokes a pinned independent package and closes its ephemeral registry |    2      2  0.6s
+Test Summary:                                                               | Pass  Total   Time
+Pkg weak dependency activates a sparse evidence extension only after import |   15     15  10.3s
+Test Summary:                                                       | Pass  Total   Time
+Agent tool calling preserves contract evidence without loading code |    4      4  20.4s
+Test Summary:                                                        | Pass  Total  Time
+Julia interface contracts, ambiguity evidence and world-age boundary |   19     19  1.3s
+Test Summary:                                                                     | Pass  Total   Time
+Compiler diagnostics use listed targets, bounded output and independent processes |   23     23  20.7s
+Test Summary:                         | Pass  Total  Time
+Cancellation tree and dynamic context |    7      7  0.1s
+Test Summary:                                | Pass  Total  Time
+Concurrent budget reservation and accounting |    9      9  0.3s
+Test Summary:                             | Pass  Total  Time
+Permission decisions and path containment |    7      7  0.2s
+Test Summary:                                      | Pass  Total  Time
+Durable journal, torn tails and revision conflicts |    6      6  0.3s
+Test Summary:                                   | Pass  Total  Time
+Session reconstruction and unknown side effects |   11     11  0.5s
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.3s
+Test Summary:                                                    | Pass  Total  Time
+Protocol version, config ownership, secrets and session commands |   15     15  3.3s
+Test Summary:                                        | Pass  Total  Time
+Agent protocol permission ownership and cancellation |   13     13  2.2s
+Test Summary:                                                | Pass  Total   Time
+Project RPC lifecycle, approvals and responsive cancellation |   40     40  24.0s

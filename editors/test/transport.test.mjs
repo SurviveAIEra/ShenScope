@@ -163,6 +163,45 @@ test('Real editor transport combines parser evidence with pinned pagination and 
     } finally { await client.dispose(); await rm(root, { recursive: true, force: true }); }
 });
 
+test('Independent Julia extensions travel through real editor RPC with registry and generation guards', { timeout: 240_000 }, async () => {
+    const root = await mkdtemp(join(tmpdir(), 'shenscope-extension-editor-'));
+    const project = resolve('..'); const packageName = 'ShenScopeLifecycleExample';
+    const uuid = 'c4e77152-5e6f-480b-8a7a-9fc6f6d7f6f2';
+    await writeFile(join(root, 'config.toml'), '[permissions]\nread="allow"\ndynamic="allow"\nprocess="allow"\npersistence="allow"\nnetwork="deny"\n');
+    const client = new CoreClient({ executable: process.env.SHENSCOPE_JULIA || '/workspace/toolchains/julia-1.11.7/bin/julia', cwd: root,
+        env: { ...process.env, JULIA_DEPOT_PATH: '/workspace/julia-depot', JULIA_LOAD_PATH: `@:${join(project, 'test/fixtures/extensions/ShenScopeLifecycleExample')}:@stdlib` },
+        args: ['--startup-file=no', '--threads=4', `--project=${project}`, '-e', 'using ShenScope; exit(ShenScope.main())', '--',
+            'serve', '--stdio', '--root', root, '--state-dir', join(root, 'state'), '--config', join(root, 'config.toml')] });
+    const events = []; client.onNotification(event => events.push(event));
+    try {
+        assert.equal((await client.start()).capabilities.julia_extension_lifecycle, true);
+        const session = await client.request('sessions/create', { title: 'Independent extensions' });
+        const foreign = await client.request('sessions/create', { title: 'Separate extension owner' });
+        const run = async args => {
+            const job = await client.request('extensions/start', { session_id: session.id, ...args });
+            await until(() => events.some(event => ['extensions_job_completed', 'extensions_job_failed'].includes(event.params?.kind)
+                && event.params.payload.job_id === job.job_id), 120_000);
+            await assert.rejects(client.request('extensions/job', { session_id: foreign.id, job_id: job.job_id }), /another conversation/i);
+            const done = await client.request('extensions/job', { session_id: session.id, job_id: job.job_id });
+            assert.equal(done.status, 'complete', done.error); return done.result;
+        };
+        const receipt = await run({ action: 'inspect_package', package_name: packageName, uuid });
+        assert.equal(receipt.all_package_sources_verified, false);
+        const registered = await run({ action: 'load_package', package_name: packageName, uuid, version: receipt.version,
+            entry_sha256: receipt.entry_sha256, project_sha256: receipt.project_sha256 });
+        assert.equal(registered.phase, 'inactive');
+        const active = await run({ action: 'activate', name: 'installed_example' });
+        const schema = await run({ action: 'inspect_tool', name: 'installed_example', contribution: 'echo' });
+        assert.equal(schema.registry_id, active.registry_id); assert.deepEqual(schema.schema.required, ['text']);
+        const result = await run({ action: 'invoke', name: 'installed_example', contribution: 'echo',
+            registry_id: schema.registry_id, generation: schema.generation, arguments: { text: '真实编辑器扩展' } });
+        assert.equal(result.value.echo, '真实编辑器扩展');
+        assert.equal((await run({ action: 'deactivate', name: 'installed_example' })).phase, 'inactive');
+        assert.equal((await run({ action: 'remove', name: 'installed_example' })).julia_methods_unloaded, false);
+        assert.equal((await client.request('extensions/query', { session_id: session.id })).extensions.length, 0);
+    } finally { await client.dispose(); await rm(root, { recursive: true, force: true }); }
+});
+
 test('Malformed child framing closes transport and rejects pending requests', async () => {
     const source = `process.stdin.once('data', () => { const body=JSON.stringify({jsonrpc:'2.0',id:1,result:{protocol_version:'1.0'}}); process.stdout.write('Content-Length: '+Buffer.byteLength(body)+'\\r\\n\\r\\n'+body); process.stdin.once('data',()=>process.stdout.write('Content-Length: 999999999\\r\\n\\r\\n')); });`;
     const client = new CoreClient({ executable: process.execPath, args: ['-e', source], cwd: process.cwd() });

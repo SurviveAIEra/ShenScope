@@ -16,12 +16,19 @@ TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
+[weakdeps]
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+
+[extensions]
+ShenScopeSparseEvidenceExt = "SparseArrays"
+
 [compat]
 HTTP = "1"
 JSON3 = "1"
 JuliaSyntax = "=0.4.10"
 PrecompileTools = "1"
 YAML = "=0.4.17"
+SparseArrays = "1.11"
 julia = "1.11"
 
 [extras]
@@ -29,4 +36,4 @@ Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "Sockets"]
+test = ["Test", "Sockets", "SparseArrays"]

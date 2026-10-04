@@ -140,6 +140,13 @@ include("ProjectData/EvidenceManager.jl")
 include("Tools/Analyzers.jl")
 include("Analysis/Jobs.jl")
 include("Extensions/Contracts.jl")
+include("Extensions/LifecycleTypes.jl")
+include("Extensions/LifecycleRegistry.jl")
+include("Extensions/LifecycleActivation.jl")
+include("Extensions/LifecycleInvocation.jl")
+include("Extensions/InstalledPackages.jl")
+include("Extensions/ProjectionTypes.jl")
+include("Tools/Extensions.jl")
 include("Extensions/CompilerDiagnostics.jl")
 include("Tools/Diagnostics.jl")
 include("MCP/Types.jl")
@@ -194,6 +201,7 @@ include("Tools/Tasks.jl")
 include("Protocol/Framing.jl")
 include("Protocol/Server.jl")
 include("Protocol/Project.jl")
+include("Protocol/Extensions.jl")
 include("Protocol/ProjectWatch.jl")
 include("Protocol/Tasks.jl")
 include("Protocol/MCP.jl")
@@ -224,6 +232,13 @@ export SymbolId, SourceRange, SourceMap, CodeSymbol, Relation, FileFacts, CallRe
 export compact_project!, project_fingerprint
 export ProjectEvidenceSnapshot, EvidenceSourceStamp, EvidenceSymbol, EvidenceRelation,
     EvidenceAnchor, project_evidence_snapshot
+export ExtensionContribution, ExtensionBundle, ExtensionRegistry, InstalledExtensionSpec,
+    register_extension!, activate_extension!, deactivate_extension!, unregister_extension!,
+    extension_list, extension_inspect, installed_extension_receipt, load_installed_extension!,
+    with_extension_instance, active_extension_tools, AbstractEvidenceProjection, projection_name, project_projection
+export EvidenceMatrixProjection, projection_summary, projection_neighbors,
+    optional_extension_status, register_optional_extension!
+export ExtensionsTool, extension_tool_snapshot, close_extension_registry!
 export GitHistoryLimits, GitHistoryChange, GitHistoryCommit, GitHistorySnapshot,
     git_history_snapshot, git_history_coverage, GitCochangeAnalyzer, RiskAnalyzer
 export MigrationAnalyzer, MigrationOptions, MigrationPlan
@@ -300,6 +315,7 @@ include("CLI/Models.jl")
 include("CLI/TUI.jl")
 include("CLI/Tasks.jl")
 include("CLI/Diagnostics.jl")
+include("CLI/Extensions.jl")
 include("CLI/Serve.jl")
 include("CLI/Doctor.jl")
 include("CLI/Agent.jl")
@@ -309,7 +325,7 @@ const CLI_COMMAND_HANDLERS = Dict{String,Function}(
     "mcp"=>cli_mcp_command, "skills"=>cli_skills_command, "hooks"=>cli_hooks_command,
     "context"=>cli_context_command, "analyzers"=>cli_analyzers_command,
     "models"=>cli_models_command, "tasks"=>cli_tasks_command,
-    "diagnostics"=>cli_diagnostics_command, "project"=>cli_project_command,
+    "diagnostics"=>cli_diagnostics_command, "extensions"=>cli_extensions_command, "project"=>cli_project_command,
     "serve"=>cli_serve_command, "doctor"=>cli_doctor_command,
     "chat"=>cli_agent_command, "tui"=>cli_agent_command, "memory"=>cli_memory_command,
     "security"=>cli_security_command)

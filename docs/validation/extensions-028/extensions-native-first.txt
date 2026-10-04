@@ -1,0 +1,44 @@
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Settings
+Models
+Memory
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+Extensions
+Julia extensions
+Refresh extensions
+
+Load installed packages explicitly, review their contributions and activate them for this running Core.
+
+Trusted extension code runs inside Core with its privileges. Deactivation closes registered resources; Julia methods stay loaded. Registrations end when Core stops or configuration is replaced.
+
+Extension inventory needs a read grant.
+
+Read extension inventory
+Ready · native-fixture
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.fill: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.shenscope-panel').getByRole('textbox', { name: 'Julia extension package name' })[22m
+
+    at /workspace/ShenScope/ide/test/native_smoke.mjs:288:84 {
+  log: [
+    "  - waiting for locator('.shenscope-panel').getByRole('textbox', { name: 'Julia extension package name' })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

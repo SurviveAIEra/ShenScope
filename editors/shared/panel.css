@@ -330,3 +330,10 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .combined-evidence-entry { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px 0; border-top: 1px solid var(--vscode-widget-border, #444); }
 .combined-evidence-entry small { color: var(--vscode-descriptionForeground); }
 .combined-evidence-entry details { width: 100%; }
+.shenscope-panel .extension-trust-note { border-left: 2px solid var(--vscode-editorWarning-foreground, #d6a75e); padding: 8px 10px; color: var(--muted); font-size: 12px; }
+.shenscope-panel .extension-package, .shenscope-panel .extension-optional { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
+.shenscope-panel .extension-package input, .shenscope-panel .extension-tool-form input:not([type=checkbox]), .shenscope-panel .extension-tool-form textarea { width: 100%; min-height: 32px; padding: 6px 8px; color: var(--vscode-input-foreground, var(--text)); background: var(--vscode-input-background, var(--raised)); border: 1px solid var(--vscode-input-border, var(--border)); border-radius: 5px; }
+.shenscope-panel .extension-controls { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.shenscope-panel .extension-contribution { border-top: 1px solid var(--border); display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 10px 0; }
+.shenscope-panel .extension-tool-form .field { display: flex; flex-direction: column; gap: 5px; margin: 10px 0; }
+.shenscope-panel .extension-tool-result pre { white-space: pre-wrap; overflow-wrap: anywhere; }

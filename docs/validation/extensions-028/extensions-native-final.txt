@@ -1,0 +1,1 @@
+PASS: native Workbench with extensions disabled, inspected independent Julia package, scoped code/compiler/cache approvals, tool parameter form and execution, deactivation/removal and actual SparseArrays package extension

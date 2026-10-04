@@ -1,0 +1,1 @@
+PASS: extensions tool capability is advertised

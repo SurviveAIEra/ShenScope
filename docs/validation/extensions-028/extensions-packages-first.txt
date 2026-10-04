@@ -1,0 +1,22 @@
+ERROR: LoadError: Some tests did not pass: 12 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/extension_packages.jl:1
+Installed Julia package loading pins identity, source and real dispatch: Test Failed at /workspace/ShenScope/test/integration/extension_packages.jl:31
+  Expression: InstalledExtensionSpec("../unsafe", uuid, v"0.1.0", repeat("0", 64), repeat("0", 64))
+    Expected: ShenScopeError
+  No exception thrown
+
+Stacktrace:
+ [1] (::var"#1#6")(root::String)
+   @ Main /workspace/ShenScope/test/integration/extension_packages.jl:31
+ [2] mktempdir(fn::var"#1#6", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [3] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [4] macro expansion
+   @ /workspace/ShenScope/test/integration/extension_packages.jl:2 [inlined]
+ [5] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [6] top-level scope
+   @ /workspace/ShenScope/test/integration/extension_packages.jl:2
+Test Summary:                                                           | Pass  Fail  Total   Time
+Installed Julia package loading pins identity, source and real dispatch |   12     1     13  11.2s

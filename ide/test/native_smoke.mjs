@@ -50,6 +50,7 @@ const memoryOnly = process.argv.includes('--memory-only');
 const securityOnly = process.argv.includes('--security-only');
 const juliaOnly = process.argv.includes('--julia-only');
 const evidenceOnly = process.argv.includes('--evidence-only');
+const extensionsOnly = process.argv.includes('--extensions-only');
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
@@ -156,6 +157,9 @@ if (evidenceOnly) {
     await writeFile(join(root, 'sample_test.go'), 'package fixture\nfunc TestGreet() int { return Greet() }\n');
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'ask'\nprocess = 'ask'\nnetwork = 'deny'\n`);
 }
+if (extensionsOnly) {
+    await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\ndynamic = 'ask'\nprocess = 'ask'\npersistence = 'ask'\nnetwork = 'deny'\n`);
+}
 if (memoryOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'ask'\nprocess = 'deny'\nnetwork = 'deny'\n`);
     const seed = `using ShenScope
@@ -224,7 +228,7 @@ try {
     application = await _electron.launch({ executablePath: join(checkout, '.build/electron/electron'), cwd: checkout,
         args: [checkout, root, ...(vsix ? ['--extensionDevelopmentPath', join(project, 'editors/vscode')] : ['--disable-extensions']), '--disable-workspace-trust', '--skip-welcome', '--skip-release-notes',
             '--user-data-dir', join(root, 'user-data'), '--extensions-dir', join(root, 'extensions')],
-        env: { ...process.env, DISPLAY: display, XDG_CACHE_HOME: join(root, 'cache'), VSCODE_DEV: '1', SHENSCOPE_CORE_DIR: project,
+        env: { ...process.env, ...(extensionsOnly ? { JULIA_LOAD_PATH: `@:${join(project, 'test/fixtures/extensions/ShenScopeLifecycleExample')}:@stdlib` } : {}), DISPLAY: display, XDG_CACHE_HOME: join(root, 'cache'), VSCODE_DEV: '1', SHENSCOPE_CORE_DIR: project,
             SHENSCOPE_JULIA: '/workspace/toolchains/julia-1.11.7/bin/julia', JULIA_DEPOT_PATH: '/workspace/julia-depot', SHENSCOPE_CONFIG: config }, timeout: 120_000 });
     const page = await application.firstWindow();
     page.on('pageerror', error => console.error('Workbench error:', error.message));
@@ -249,7 +253,7 @@ try {
     }
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly && !extensionsOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -278,6 +282,48 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (extensionsOnly) {
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Extensions');
+        await panel.getByRole('textbox', { name: 'Julia extension package name' }).fill('ShenScopeLifecycleExample');
+        await panel.getByRole('textbox', { name: 'Julia extension package UUID' }).fill('c4e77152-5e6f-480b-8a7a-9fc6f6d7f6f2');
+        await panel.getByRole('button', { name: 'Inspect installed package', exact: true }).click();
+        await panel.getByRole('button', { name: 'Load inspected package', exact: true }).waitFor({ timeout: 120_000 });
+        await panel.getByRole('button', { name: 'Load inspected package', exact: true }).click();
+        await approve(panel, 'extension.lifecycle · dynamic', 'Allow session');
+        await approve(panel, 'extension.precompile · process', 'Allow session');
+        await approve(panel, 'extension.precompile · persistence', 'Allow session');
+        const installed = panel.locator('[data-extension-name="installed_example"]');
+        await installed.getByRole('button', { name: 'Activate extension', exact: true }).waitFor({ timeout: 120_000 });
+        await installed.getByRole('button', { name: 'Activate extension', exact: true }).click();
+        await approve(panel, 'extension.lifecycle · dynamic', 'Allow session');
+        await installed.getByRole('button', { name: 'Inspect tool parameters', exact: true }).waitFor({ timeout: 120_000 });
+        await installed.getByRole('button', { name: 'Inspect tool parameters', exact: true }).click();
+        const form = panel.locator('.extension-tool-form');
+        await form.getByRole('textbox', { name: 'text', exact: true }).fill('独立 Julia GUI 工具');
+        await form.getByRole('button', { name: 'Run extension tool', exact: true }).click();
+        await panel.locator('.extension-tool-result').getByText(/独立 Julia GUI 工具/).waitFor({ timeout: 120_000 });
+        await panel.locator('.extension-tool-result').scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-extensions-tool.png`) });
+        await installed.getByRole('button', { name: 'Deactivate extension', exact: true }).click();
+        await installed.getByRole('button', { name: 'Remove registration', exact: true }).waitFor({ timeout: 120_000 });
+        await installed.getByRole('button', { name: 'Remove registration', exact: true }).click();
+        await installed.waitFor({ state: 'detached', timeout: 120_000 });
+        await panel.getByRole('button', { name: 'Register sparse extension', exact: true }).click();
+        await approve(panel, 'extension.lifecycle · dynamic', 'Allow session');
+        await approve(panel, 'extension.precompile · process', 'Allow session');
+        await approve(panel, 'extension.precompile · persistence', 'Allow session');
+        const sparse = panel.locator('[data-extension-name="sparse_evidence"]');
+        await sparse.getByRole('button', { name: 'Activate extension', exact: true }).waitFor({ timeout: 120_000 });
+        await sparse.getByRole('button', { name: 'Activate extension', exact: true }).click();
+        await sparse.getByText('projection · active', { exact: true }).waitFor({ timeout: 120_000 });
+        await sparse.scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-extensions-sparse.png`) });
+        await sparse.getByRole('button', { name: 'Deactivate extension', exact: true }).click();
+        await sparse.getByRole('button', { name: 'Remove registration', exact: true }).waitFor({ timeout: 120_000 });
+        assert.equal(requests.length, 0, 'Extensions make no model request');
+        assert.equal(await panel.locator('.permission-card').count(), 0);
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, inspected independent Julia package, scoped code/compiler/cache approvals, tool parameter form and execution, deactivation/removal and actual SparseArrays package extension`);
     }
     if (evidenceOnly) {
         await panel.getByRole('button', { name: 'Project', exact: true }).click();

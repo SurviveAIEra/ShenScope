@@ -51,6 +51,13 @@ export class ShenScopePanel {
     private projectBackend = 'tree_sitter';
     private projectJob?: string;
     private projectStarting = false;
+    private extensionsStarting = false;
+    private extensionsJob?: string;
+    private completedExtensionsJobs = new Set<string>();
+    private extensionsResult: any;
+    private extensionsPackageReceipt: any;
+    private extensionsPackageName = '';
+    private extensionsPackageUUID = '';
     private projectResult: any;
     private evidenceBackends = new Set(['tree_sitter', 'go_ast']);
     private evidenceQuery = '';
@@ -125,7 +132,7 @@ export class ShenScopePanel {
             const button = this.button(label, () => this.selectTab(name), 'nav-button', glyph); this.navigation.set(name, button); nav.append(button);
         }
         const more = el('select', '', 'more-views'); more.setAttribute('aria-label', 'More views');
-        for (const name of ['More', 'Settings', 'Models', 'Memory', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context', 'Analyzers']) { const option = el('option', name); option.value = name; more.append(option); }
+        for (const name of ['More', 'Settings', 'Models', 'Memory', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context', 'Analyzers', 'Extensions']) { const option = el('option', name); option.value = name; more.append(option); }
         more.addEventListener('change', () => { if (more.value !== 'More') { void this.guard(() => this.selectTab(more.value)); } more.value = 'More'; }); nav.append(more);
         this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite'); this.notice.setAttribute('role', 'alert'); this.notice.hidden = true;
         root.append(header, nav, this.notice, this.approvals, this.content, this.status);
@@ -170,7 +177,7 @@ export class ShenScopePanel {
         if (this.active || this.projectJob || this.projectStarting || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
         this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
         this.modelsProfile = ''; this.modelPlanRole = '';
-        this.sessionId = undefined; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
+        this.sessionId = undefined; this.extensionsResult = undefined; this.extensionsPackageReceipt = undefined; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
         const distance = this.transcript.scrollHeight - this.transcript.scrollTop - this.transcript.clientHeight;
@@ -238,6 +245,7 @@ export class ShenScopePanel {
         if (this.tab === 'Memory' && this.capabilities.memory_retrieval_evidence) { await this.memoryView(revision); return; }
         if (this.tab === 'Analyzers' && this.capabilities.dynamic_analyzers) { await this.analyzersView(revision); return; }
         if (this.tab === 'Models' && this.capabilities.model_catalog) { await this.modelsView(revision); return; }
+        if (this.tab === 'Extensions' && this.capabilities.julia_extension_lifecycle) { await this.extensionsView(revision); return; }
         this.content.append(el('h2', this.tab === 'Intelligence' ? 'Project intelligence' : this.tab, 'view-title'));
         if (this.tab === 'Tools') {
             const tools = await this.bridge.request('tools/list'); if (revision !== this.renderRevision) { return; }
@@ -362,7 +370,7 @@ export class ShenScopePanel {
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
         }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
     }
-    private contextBusy(): boolean { return !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.modelsJob || this.modelsStarting; }
+    private contextBusy(): boolean { return !!this.extensionsJob || this.extensionsStarting || !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.modelsJob || this.modelsStarting; }
     private modelsBusy(): boolean { return this.contextBusy() || !!this.analyzersJob || this.analyzersStarting; }
     private async startModels(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.modelsBusy()) { throw new Error('Finish or cancel the current operation before working with models.'); }
@@ -1289,6 +1297,90 @@ export class ShenScopePanel {
         section.append(results);
     }
 
+    private async startExtension(action: string, args: Record<string, unknown> = {}): Promise<void> {
+        if (this.contextBusy()) { throw new Error('Finish the current operation before changing extensions.'); }
+        this.extensionsStarting = true; this.notice.hidden = true;
+        for (const button of Array.from(this.content.querySelectorAll('button'))) { button.disabled = true; }
+        try {
+            const session_id = await this.ensureSession('Julia extensions');
+            const result = await this.bridge.request('extensions/start', { session_id, action, ...args });
+            if (!this.completedExtensionsJobs.has(result.job_id)) { this.extensionsJob = result.job_id; this.setStatus('Working on Julia extensions…'); }
+        } finally { this.extensionsStarting = false; this.updateActions(); }
+        if (this.tab === 'Extensions') { await this.renderTab(); }
+    }
+
+    private async extensionsView(revision: number): Promise<void> {
+        const session_id = await this.ensureSession('Julia extensions');
+        const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Julia extensions'));
+        const refresh = this.button('Refresh extensions', () => this.renderTab()); refresh.disabled = this.contextBusy(); heading.append(refresh);
+        this.content.append(heading, el('p', 'Load installed packages explicitly, review their contributions and activate them for this running Core.', 'view-description'),
+            el('p', 'Trusted extension code runs inside Core with its privileges. Deactivation closes registered resources; Julia methods stay loaded. Registrations end when Core stops or configuration is replaced.', 'extension-trust-note'));
+        if (this.extensionsJob || this.extensionsStarting) {
+            this.content.append(el('p', 'Waiting for the extension operation…', 'empty-text'));
+            if (this.extensionsJob) { this.content.append(this.button('Cancel extension operation', async () => { await this.bridge.request('extensions/cancel_job', { session_id, job_id: this.extensionsJob }); })); }
+            return;
+        }
+        let inventory: any;
+        try { inventory = await this.bridge.request('extensions/query', { session_id }); }
+        catch (error) {
+            const message = error instanceof Error ? error.message : 'Unable to read extension inventory.';
+            this.content.append(el('p', message, 'view-description'));
+            if (/permission|grant|permissioned/i.test(message)) { this.content.append(this.button('Read extension inventory', () => this.startExtension('list'))); }
+            return;
+        }
+        if (revision !== this.renderRevision) { return; }
+        const records = inventory.extensions ?? []; const optional = inventory.optional_extensions?.sparse_evidence;
+        const builtIn = el('section', '', 'info-card extension-optional'); builtIn.append(el('h3', 'Sparse project evidence'),
+            el('p', 'An optional Julia package extension creates sparse dependency matrices while preserving backend origins and revision vectors.', 'view-description'),
+            el('small', optional?.loaded ? 'SparseArrays extension is loaded in Julia.' : 'SparseArrays extension is available to load.'));
+        const register = this.button('Register sparse extension', () => this.startExtension('load_optional', { name: 'sparse_evidence' }), 'secondary-button');
+        register.disabled = this.contextBusy() || records.some((record: any) => record.name === 'sparse_evidence'); builtIn.append(register); this.content.append(builtIn);
+        const packageCard = el('section', '', 'info-card extension-package'); packageCard.append(el('h3', 'Installed Julia package'));
+        const name = el('input'); name.value = this.extensionsPackageName; name.placeholder = 'Package name'; name.setAttribute('aria-label', 'Julia extension package name');
+        const uuid = el('input'); uuid.value = this.extensionsPackageUUID; uuid.placeholder = 'Package UUID'; uuid.setAttribute('aria-label', 'Julia extension package UUID');
+        const invalidate = (): void => { this.extensionsPackageName = name.value; this.extensionsPackageUUID = uuid.value; this.extensionsPackageReceipt = undefined; const load = packageCard.querySelector<HTMLButtonElement>('.load-extension-package'); if (load) { load.disabled = true; } };
+        name.addEventListener('input', invalidate); uuid.addEventListener('input', invalidate);
+        packageCard.append(name, uuid, this.button('Inspect installed package', () => this.startExtension('inspect_package', { package_name: name.value.trim(), uuid: uuid.value.trim() })));
+        if (this.extensionsPackageReceipt) {
+            const receipt = this.extensionsPackageReceipt; packageCard.append(el('strong', `${receipt.name} · ${receipt.version}`),
+                el('small', 'Entry ' + receipt.entry_sha256.slice(0, 12) + ' · Project.toml ' + receipt.project_sha256.slice(0, 12)),
+                el('p', 'These hashes cover the entry and package metadata. Other source files and dependencies are not attested.', 'view-description'));
+            const load = this.button('Load inspected package', () => {
+                const current = this.extensionsPackageReceipt; if (!current) { throw new Error('Inspect this package again before loading it.'); }
+                return this.startExtension('load_package', { package_name: current.name, uuid: current.uuid, version: current.version,
+                    entry_sha256: current.entry_sha256, project_sha256: current.project_sha256 });
+            }, 'secondary-button load-extension-package'); load.disabled = records.some((record: any) => record.source?.name === receipt.name && record.package_uuid === receipt.uuid); packageCard.append(load);
+        }
+        this.content.append(packageCard);
+        for (const record of records) {
+            const card = el('section', '', 'info-card extension-record'); card.dataset.extensionName = record.name;
+            card.append(el('h3', record.name), el('span', `${record.phase} · generation ${record.generation}`, 'badge'), el('p', record.description, 'view-description'));
+            const controls = el('div', '', 'extension-controls');
+            if (record.phase === 'inactive') { controls.append(this.button('Activate extension', () => this.startExtension('activate', { name: record.name }), 'primary-button')); }
+            if (['active', 'draining'].includes(record.phase)) { controls.append(this.button(record.phase === 'draining' ? 'Finish deactivation' : 'Deactivate extension', () => this.startExtension('deactivate', { name: record.name }))); }
+            if (['inactive', 'quarantined'].includes(record.phase)) {
+                controls.append(this.button(record.cleanup_failures ? 'Remove after cleanup failure' : 'Remove registration', () => this.startExtension('remove', { name: record.name, accept_cleanup_failure: !!record.cleanup_failures }), 'deny-button'));
+            }
+            card.append(controls);
+            if (record.cleanup_failures) { card.append(el('p', `${record.cleanup_failures} cleanup callbacks failed. Removing this registration will not confirm that their resources were closed.`, 'view-description')); }
+            if (record.phase === 'draining') { card.append(el('p', `${record.active_calls} calls still hold instances. New calls are stopped. Finish deactivation after those calls complete.`, 'view-description')); }
+            for (const item of record.contributions ?? []) {
+                const row = el('div', '', 'extension-contribution'); row.append(el('strong', item.name), el('small', item.kind + (item.active ? ' · active' : ' · inactive')));
+                if (item.kind === 'tool' && record.phase === 'active') { row.append(this.button('Inspect tool parameters', () => this.startExtension('inspect_tool', { name: record.name, contribution: item.name }))); }
+                card.append(row);
+            }
+            this.content.append(card);
+        }
+        const result = this.extensionsResult;
+        if (result?.action === 'inspect_tool') {
+            const value = result.result; const card = el('section', '', 'info-card extension-tool-form'); card.append(el('h3', value.contribution), el('small', `${value.name} · generation ${value.generation}`));
+            const definitions = Object.entries(value.schema.properties ?? {}).map(([name, property]: [string, any]) => ({ name, description: property.description, required: value.schema.required?.includes(name) }));
+            const readArguments = this.mcpArgumentForm(card, definitions, value.schema);
+            card.append(this.button('Run extension tool', () => this.startExtension('invoke', { name: value.name, contribution: value.contribution, generation: value.generation, registry_id: value.registry_id, arguments: readArguments() }), 'primary-button')); this.content.append(card);
+        }
+        if (result?.action === 'invoke') { const card = el('section', '', 'info-card extension-tool-result'); card.append(el('h3', 'Extension tool result'), el('pre', JSON.stringify(result.result.value, null, 2))); this.content.append(card); }
+    }
+
     private async startEvidenceRequest(request: Record<string, unknown>): Promise<void> {
         if (request.session_id !== this.sessionId) { throw new Error('Refresh the project view after changing conversations.'); }
         if (this.projectJob || this.projectStarting) { throw new Error('Finish the current project operation first.'); }
@@ -1560,6 +1652,17 @@ export class ShenScopePanel {
         }
         if (params.kind === 'mcp_connected' || params.kind === 'mcp_disconnected') { if (this.tab === 'MCP' && !this.mcpJob) { void this.guard(() => this.renderTab()); } return; }
         if (params.kind === 'mcp_resource_updated') { this.setStatus('MCP resource updated'); return; }
+        if (params.kind === 'extensions_job_completed' || params.kind === 'extensions_job_failed') {
+            this.completedExtensionsJobs.add(payload.job_id); while (this.completedExtensionsJobs.size > 64) { this.completedExtensionsJobs.delete(this.completedExtensionsJobs.values().next().value!); }
+            if (this.extensionsJob === payload.job_id) { this.extensionsJob = undefined; }
+            for (const card of Array.from(this.approvals.children)) { const element = card as HTMLElement; if (element.dataset.traceId === params.trace_id || (payload.permission_ids ?? []).includes(element.dataset.requestId)) { card.remove(); } }
+            if (params.kind === 'extensions_job_completed') {
+                this.extensionsResult = { action: payload.action, result: payload.result };
+                if (payload.action === 'inspect_package') { this.extensionsPackageReceipt = payload.result; }
+                this.setStatus('Extension operation complete');
+            } else { this.notice.textContent = payload.error ?? 'Extension operation stopped'; this.notice.hidden = false; this.setStatus('Extension operation stopped'); }
+            this.updateActions(); if (this.tab === 'Extensions') { void this.guard(() => this.renderTab()); } return;
+        }
         if (params.kind === 'project_completed' || params.kind === 'project_failed') {
             this.completedProjectJobs.add(payload.job_id);
             while (this.completedProjectJobs.size > 64) { this.completedProjectJobs.delete(this.completedProjectJobs.values().next().value!); }
