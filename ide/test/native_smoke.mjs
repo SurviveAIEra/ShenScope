@@ -37,6 +37,7 @@ const analyzersOnly = process.argv.includes('--analyzers-only');
 const modelsOnly = process.argv.includes('--models-only');
 const routingOnly = process.argv.includes('--routing-only');
 const historyOnly = process.argv.includes('--history-only');
+const migrationOnly = process.argv.includes('--migration-only');
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
@@ -132,6 +133,16 @@ if (skillsOnly) {
 await writeFile(join(root, 'README.md'), 'Native sidebar test workspace\n');
 await writeFile(join(root, 'sample.go'), 'package fixture\nfunc Greet() int { return 1 }\nfunc TestGreet() int { return Greet() }\n');
 let historyCommits;
+if (migrationOnly) {
+    await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\nprocess = 'ask'\nnetwork = 'deny'\npersistence = 'allow'\n`);
+    for (const [path, source] of Object.entries({
+        'a.go': 'package fixture\nfunc A() int { return 1 }\n',
+        'b.go': 'package fixture\nfunc B() int { return A() + C() }\n',
+        'c.go': 'package fixture\nfunc C() int { return B() }\n',
+        'd.go': 'package fixture\nfunc D() int { return A() }\n',
+        't_test.go': 'package fixture\nfunc TestCaller() int { return B() }\n',
+    })) { await writeFile(join(root, path), source); }
+}
 if (historyOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\nprocess = 'ask'\nnetwork = 'deny'\npersistence = 'allow'\n`);
     const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')));
@@ -205,7 +216,7 @@ try {
     }
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -234,6 +245,41 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (migrationOnly) {
+        await panel.getByRole('button', { name: 'Project', exact: true }).click();
+        await panel.getByRole('combobox', { name: 'Project backend' }).selectOption('go_ast');
+        await panel.getByRole('button', { name: 'Index project', exact: true }).click();
+        await approve(panel, 'project.backend · process', 'Allow once');
+        await panel.getByRole('button', { name: 'Refresh index', exact: true }).waitFor({ timeout: 120_000 });
+        const plan = async () => {
+            await panel.getByRole('textbox', { name: 'Files to analyze (comma separated)' }).fill('a.go');
+            await panel.getByRole('button', { name: 'Plan migration', exact: true }).click();
+        };
+        await plan();
+        await panel.locator('.migration-summary').getByText('4 batches · 1 cycle group', { exact: true }).waitFor({ timeout: 120_000 });
+        const cycle = panel.locator('.migration-batch').filter({ hasText: 'Cycle group' });
+        assert.equal(await cycle.count(), 1); assert.equal(await cycle.getByRole('button', { name: 'b.go', exact: true }).count(), 1); assert.equal(await cycle.getByRole('button', { name: 'c.go', exact: true }).count(), 1);
+        await cycle.locator('.migration-relations > summary').click();
+        assert.ok((await cycle.innerText()).includes('b.go → c.go'));
+        await cycle.scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-migration-cycle.png`) });
+        await cycle.getByRole('button', { name: 'b.go', exact: true }).click();
+        await page.locator('.monaco-editor .view-lines').filter({ hasText: 'func B' }).waitFor();
+        await panel.getByRole('combobox', { name: 'Migration order', exact: true }).selectOption('callers_first');
+        await plan();
+        await panel.locator('.migration-summary').getByText('callers first · index revision 1', { exact: true }).waitFor({ timeout: 120_000 });
+        assert.equal(await panel.locator('.migration-batch').last().getByRole('button', { name: 'a.go', exact: true }).count(), 1);
+        await panel.getByRole('spinbutton', { name: 'Migration depth', exact: true }).fill('0');
+        await panel.getByRole('spinbutton', { name: 'Migration depth', exact: true }).blur();
+        await plan();
+        await panel.locator('.migration-summary').getByText('Partial proposal', { exact: true }).waitFor({ timeout: 120_000 });
+        assert.equal(await panel.locator('.migration-batch').count(), 1); assert.equal(await panel.locator('.permission-card').count(), 0);
+        assert.equal(requests.length, 0, 'Migration reads the saved graph without model requests');
+        await panel.locator('.migration-summary').scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-migration-partial.png`) });
+        assert.equal(await readFile(join(root, 'a.go'), 'utf8'), 'package fixture\nfunc A() int { return 1 }\n');
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual graph migration cycles, relation evidence, reversed dependency order, partial-depth proposal and native source opening without process/model calls during planning`);
     }
     if (historyOnly) {
         await panel.getByRole('button', { name: 'Project', exact: true }).click();

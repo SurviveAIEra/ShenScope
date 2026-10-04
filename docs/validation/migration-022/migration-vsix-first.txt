@@ -1,0 +1,1 @@
+PASS: VSIX webview, actual graph migration cycles, relation evidence, reversed dependency order, partial-depth proposal and native source opening without process/model calls during planning

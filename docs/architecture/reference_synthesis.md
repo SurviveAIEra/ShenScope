@@ -346,3 +346,24 @@ co-change support, exact-path project join and declared review heuristic are
 independent Julia implementations with full commit evidence and explicit limits.
 All seven primary agent reviews remain partial; this checkpoint does not claim
 complete synthesis, calibrated risk or model-quality improvements.
+
+## Migration and graph coverage — checkpoint 022
+
+Codex plan-tool statuses inform the distinction between a proposal and completed
+work. DeepSeek Harness task-graph validation contributes dependency/cycle design
+questions; its recursive validator is not translated. OpenCode LSP exposes
+recorded definitions, references and call hierarchy with scope checks. Kimi's
+todo updates separate observed state from optional mutations. Pi's exact-edit
+contract reinforces that a graph proposal cannot substitute for guarded source
+edits. ZCode's plan-guidance UI keeps evidence/readability separate from checklist
+status. Qwen's captured-diff plan keeps proposal identity tied to concrete input.
+Selected paths are in the research lockfile; all reviews remain partial.
+
+Independent Julia graph algorithms now supply validated iterative SCCs for both
+Architecture and Migration, deterministic dependency layers, source/index/seed
+identity and bounded relation/test evidence. The analyzer graph snapshot is reused,
+and depth-boundary omissions now correctly mark ordinary traversal as partial.
+Real Go AST, Tree-sitter, CodeGraph and TypeScript compiler fixtures verify the
+shared planner. No upstream implementation, review-agent topology or worktree
+copy workflow is reused. No safe-migration, calibrated-confidence or performance
+improvement claim follows from these facts.

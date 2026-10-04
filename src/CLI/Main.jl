@@ -36,7 +36,8 @@ function parse_cli(args::Vector{String})
         "--symbol","--column-unit","--limit","--offset","--revision","--sha256","--minimum-savings",
         "--poll-seconds","--quiet-seconds","--duration","--watch-file-limit","--watch-byte-limit",
         "--scope","--expected-pointer","--count-mode","--model-role","--model-profile",
-        "--history-limit","--bulk-threshold","--minimum-support"])
+        "--history-limit","--bulk-threshold","--minimum-support","--change-kind","--order",
+        "--max-depth","--max-files","--max-symbols","--max-relations","--minimum-confidence"])
     switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints"])
     i=1
     while i<=length(args)
@@ -105,6 +106,7 @@ function cli_main(args=ARGS)
         println("Project evidence: --symbol ID --column-unit utf8_byte|utf16 --revision N --sha256 HASH --limit N --offset N --exclude-declarations; project diagnostics [FILE]")
         println("Project cache: project compact --backend NAME --minimum-savings BYTES [--force]")
         println("Project history: project git_cochange|risk [FILE ...] --history-limit N --bulk-threshold N --minimum-support N --limit N")
+        println("Project migration: project migration FILE ... --change-kind signature|rename|remove|move|behavior --order dependency_first|callers_first --max-depth N")
         println("Project changes: project watch --backend NAME [--automatic] [--poll-seconds N] [--duration N]")
         return 0
     end

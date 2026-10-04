@@ -76,6 +76,7 @@ include("Git/HistoryRepository.jl")
 include("Git/HistoryProcess.jl")
 include("Git/HistoryParsing.jl")
 include("Git/HistorySnapshot.jl")
+include("Analysis/GraphAlgorithms.jl")
 include("Analysis/Builtin.jl")
 include("Analysis/HistoryEvidence.jl")
 include("Analysis/Cochange.jl")
@@ -92,6 +93,11 @@ include("Analysis/ArchiveLifecycle.jl")
 include("Analysis/GraphSnapshots.jl")
 include("Analysis/GraphEvidence.jl")
 include("Analysis/GraphRuntime.jl")
+include("Analysis/MigrationTypes.jl")
+include("Analysis/MigrationGraph.jl")
+include("Analysis/MigrationBatches.jl")
+include("Analysis/MigrationEvidence.jl")
+include("Analysis/MigrationRuntime.jl")
 include("Tools/Project.jl")
 include("Tools/Analyzers.jl")
 include("Analysis/Jobs.jl")
@@ -175,6 +181,7 @@ export SymbolId, SourceRange, SourceMap, CodeSymbol, Relation, FileFacts, CallRe
 export compact_project!, project_fingerprint
 export GitHistoryLimits, GitHistoryChange, GitHistoryCommit, GitHistorySnapshot,
     git_history_snapshot, git_history_coverage, GitCochangeAnalyzer, RiskAnalyzer
+export MigrationAnalyzer, MigrationOptions, MigrationPlan
 export ComputeLimits, AnalyzerTestCase, AnalyzerDefinition, AnalyzerManager, AnalyzersTool,
     register_analyzer!, analyzer_list, analyzer_inspect, select_analyzer!, remove_analyzer!,
     validate_analyzer!, evaluate_analyzer!, cancel_analyzer!, cleanup_analyzers!, run_isolated_compute

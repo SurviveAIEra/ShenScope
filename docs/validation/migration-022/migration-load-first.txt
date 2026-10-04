@@ -1,0 +1,4 @@
+Precompiling ShenScope...
+   6813.0 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 7 seconds. 39 already precompiled.
+Migration modules loaded

@@ -1,0 +1,175 @@
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Settings
+Models
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+Project intelligence
+
+Explore symbols and trace the evidence behind affected code and test candidates.
+
+Tree-sitter
+Go AST
+CodeGraph
+TypeScript compiler
+Refresh index
+6
+Files
+13
+Symbols
+13
+Relations
+1
+Revision
+
+Last indexed snapshot. Refresh after changes. Call links use syntax evidence and may miss dynamic or unresolved calls.
+
+File changes
+Off
+Update index automatically
+
+Watch saved files and configuration. Approvals still apply to index updates.
+
+Watch file changes
+Index storage · 9.0 KiB
+C
+function · c.go:2
+B
+function · b.go:2
+TestGreet
+function · sample.go:3
+A
+function · a.go:2
+D
+function · d.go:2
+TestCaller
+function · t_test.go:2
+Greet
+function · sample.go:2
+sample.go
+file · sample.go:1
+t_test.go
+file · t_test.go:1
+d.go
+file · d.go:1
+a.go
+file · a.go:1
+b.go
+file · b.go:1
+c.go
+file · c.go:1
+Show diagnostics
+Files to analyze (comma separated)
+Impact
+Test candidates
+Architecture
+Migration plan
+
+Propose dependency batches for the selected files. Review the evidence before changing code.
+
+Migration change
+API signature
+Rename API
+Remove API
+Move code
+Behavior change
+Migration order
+Dependencies first
+Callers first
+Dependency depth
+Plan migration
+Commit evidence
+
+Find files that change together or rank files for review using local Git history.
+
+Commits
+Bulk file threshold
+Minimum shared commits
+Git co-change
+Review priority
+Migration
+4 batchs · 1 cycle group
+
+dependency first · index revision 1
+
+Proposal b919415863c5
+Layer 1 · 1 file
+a.go
+Selected
+
+Ordered against recorded inter-file dependencies under the chosen strategy
+
+0 prerequisite batchs · 0 candidate tests
+
+Review API compatibility for this change.
+
+Dependency evidence
+Layer 2 · 2 files
+Cycle group
+b.go
+c.go
+
+Recorded file dependency cycle requires one coordinated review group
+
+1 prerequisite batch · 0 candidate tests
+
+Review API compatibility for this change.
+
+Dependency evidence
+Layer 2 · 1 file
+d.go
+
+Ordered against recorded inter-file dependencies under the chosen strategy
+
+1 prerequisite batch · 0 candidate tests
+
+Review API compatibility for this change.
+
+Dependency evidence
+Layer 3 · 1 file
+t_test.go
+
+Ordered against recorded inter-file dependencies under the chosen strategy
+
+1 prerequisite batch · 1 candidate test
+
+Review API compatibility for this change.
+
+Dependency evidence
+
+This is a review proposal over recorded facts; it does not apply edits, schedule tasks or validate a migration.
+
+Unknown/dynamic/external dependencies and bounded neighborhoods can omit affected code.
+
+Dependency order alone cannot preserve API compatibility; signatures, renames, moves and removals need explicit compatibility review.
+
+Cycle groups require coordinated review; an atomic group is not a filesystem transaction.
+
+Test-named symbols are candidates only; no coverage or executed test evidence is attached.
+
+Project analysis complete
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 120000ms exceeded.
+Call log:
+[2m  - waiting for locator('.shenscope-panel').locator('.migration-summary').getByText('4 batches · 1 cycle group', { exact: true }) to be visible[22m
+
+    at /workspace/ShenScope/ide/test/native_smoke.mjs:260:107 {
+  log: [
+    "  - waiting for locator('.shenscope-panel').locator('.migration-summary').getByText('4 batches · 1 cycle group', { exact: true }) to be visible"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

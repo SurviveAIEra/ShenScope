@@ -1,0 +1,11 @@
+Precompiling ShenScope...
+   7303.9 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 7 seconds. 39 already precompiled.
+Test Summary:                                                        | Pass  Total  Time
+Shared iterative graph condensation matches independent reachability |   23     23  2.9s
+Test Summary:                                                    | Pass  Total   Time
+Migration batches preserve dependency order, cycles and evidence |   26     26  15.4s
+Test Summary:                                 | Pass  Total  Time
+Migration limits and CLI intent remain strict |   12     12  0.5s
+Test Summary:                                      | Pass  Total  Time
+Parent-owned analyzer graph evidence and freshness |   24     24  5.2s

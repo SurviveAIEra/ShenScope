@@ -126,3 +126,14 @@ Coverage excludes bulk/protected changes and reports shallow/capped/unindexed
 history; no rename lineage, causal coupling, calibrated defect rate or model
 request is inferred. Selected review spans the seven primary agents plus the
 existing Serena/Aider intelligence references; lockfile paths identify it.
+
+## Migration checkpoint 022
+
+Migration produces a read-only review proposal over a fixed indexed graph with
+cycle groups, selectable dependency/caller ordering, source/relation evidence,
+candidate tests, compatibility flags and explicit partial coverage. Architecture
+shares the iterative SCC implementation. Four actual project-data backends, CLI,
+scoped RPC and both editor clients exercise the same Julia logic. Applying edits,
+durable execution and executed-test proof remain separate requirements. Cold
+Core initialization exceeded client limits in concurrent validation; raw failures
+and successful serial verification are retained, with boot measurement next.

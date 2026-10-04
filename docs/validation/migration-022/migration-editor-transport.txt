@@ -1,0 +1,29 @@
+
+> shenscope-editor-tooling@0.1.0 test
+> node --test test/*.test.mjs
+
+✖ Node editor transport talks to real Julia Core with scoped approvals and Unicode (122600.674798ms)
+✔ Malformed child framing closes transport and rejects pending requests (91.172996ms)
+✔ Disposal terminates an owned child that ignores shutdown and SIGTERM (4062.731713ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 127013.2008
+
+✖ failing tests:
+
+test at test/transport.test.mjs:16:1
+✖ Node editor transport talks to real Julia Core with scoped approvals and Unicode (122600.674798ms)
+  Error: Core request timed out
+      at Timeout._onTimeout (file:///workspace/ShenScope/editors/dist/rpcClient.mjs:69:16)
+      at listOnTimeout (node:internal/timers:635:17)
+      at process.processTimers (node:internal/timers:571:7)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

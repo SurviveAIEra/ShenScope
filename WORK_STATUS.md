@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 16,694 authored Julia Core code lines across 154 files;
-CLI/TUI add 857 lines and are counted separately. This is 6.6776% of the
-minimum line target, leaving 233,306 lines. These are early implementations,
+Latest cloc 2.11 count: 17,038 authored Julia Core code lines across 160 files;
+CLI/TUI add 878 lines and are counted separately. This is 6.8152% of the
+minimum line target, leaving 232,962 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -381,3 +381,24 @@ Scope: docs/core/git_history.md. Nested/external Git metadata, rename lineage,
 calibrated risk and Windows/installed distribution remain pending. Development
 continues with Migration analysis, graph evidence, runtime/security and remaining
 requirements. The 250,000 authored Core-line target remains active and unmet.
+
+Migration checkpoint 022: fixed graph/revision/fingerprint proposals, iterative
+SCC shared with Architecture, deterministic dependency/caller layers, cycle
+groups, strict bounds, relation/test evidence and compatibility review flags.
+Depth-boundary omissions now correctly mark ordinary traversal and analyzer
+snapshots partial. CPU analysis checkpoints yield to other Julia Tasks.
+
+Validation: focused Core 136 assertions (112 new, 24 prior), affected existing
+199, four actual project-data backends, saved-graph CLI/scoped RPC with process/
+network/persistence denied, editor check/build, final Workbench typecheck and
+final package payload equality pass. Both actual native/independent VSIX GUI
+flows validate cycles/evidence, order, partial depth and source opening without
+planning-time process/model calls. Concurrent native and Node/Core initialization
+exceeded 120-second startup limits; failed logs remain retained. Serial native
+and all three Node transport tests pass; serial initialized milestone was
+74,567 ms, an observation rather than a controlled performance result.
+Evidence: docs/validation/migration-checkpoint-022.json. Proposal limits are in
+docs/core/migration.md; plans do not edit, schedule or execute tests. Development
+continues immediately with measured boot/precompile work, security/runtime and
+remaining requirements. The 250,000 authored Core-line target remains active
+and unmet.

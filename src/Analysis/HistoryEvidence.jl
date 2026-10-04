@@ -9,6 +9,7 @@ end
 function history_analysis_checkpoint(ctx::RuntimeContext)
     check_cancelled(ctx.cancellation)
     lock(ctx.budget.mutex) do; check_budget(ctx.budget); end
+    yield()
     nothing
 end
 

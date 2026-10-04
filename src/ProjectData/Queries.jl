@@ -32,8 +32,16 @@ function graph_traverse(state::ProjectState,seeds::AbstractVector;direction=:rev
         parent=Dict{SymbolId,Tuple{SymbolId,String}}();cursor=1;truncated=false
         while cursor<=length(queue)
             ctx!==nothing && check_cancelled(ctx.cancellation)
-            id=queue[cursor];cursor+=1;depth[id]>=max_depth && continue
+            id=queue[cursor];cursor+=1
             adjacency=direction==:reverse ? state.reverse : state.forward
+            if depth[id]>=max_depth
+                truncated |= any(edge_id -> begin
+                    edge=state.relations[edge_id]
+                    next=direction==:reverse ? edge.src : edge.dst
+                    edge.kind in kinds && !haskey(depth,next)
+                end,get(adjacency,id,Set{String}()))
+                continue
+            end
             for edge_id in sort!(collect(get(adjacency,id,Set{String}())))
                 edge=state.relations[edge_id];edge.kind in kinds || continue
                 next=direction==:reverse ? edge.src : edge.dst

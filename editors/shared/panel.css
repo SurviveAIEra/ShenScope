@@ -263,6 +263,10 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .history-commit-evidence { margin: 10px 0; font-size: 11px; }
 .history-commit-evidence summary { cursor: pointer; color: var(--vscode-textLink-foreground); }
 .history-commit-evidence code, .history-commit-evidence small { display: block; margin-top: 6px; overflow-wrap: anywhere; }
+.history-analysis-bound select { box-sizing: border-box; width: 100%; min-width: 0; padding: 6px; border: 1px solid var(--vscode-dropdown-border, #555); border-radius: 4px; color: var(--vscode-dropdown-foreground); background: var(--vscode-dropdown-background); }
+.migration-file { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
+.migration-file small { color: var(--vscode-descriptionForeground); }
+.migration-relation { display: grid; gap: 6px; padding: 10px 0; border-top: 1px solid var(--vscode-widget-border, #444); overflow-wrap: anywhere; }
 .model-route-receipt[data-outcome=failed] > strong { color: var(--vscode-editorWarning-foreground, #e5bd63); }
 .model-role-choice { max-width: 95px; min-width: 60px; padding: 3px 5px; font-size: 11px; color: var(--vscode-dropdown-foreground, var(--vscode-input-foreground)); background: var(--vscode-dropdown-background, var(--vscode-input-background)); border: 1px solid var(--vscode-dropdown-border, var(--vscode-widget-border)); border-radius: 5px; }
 .model-route-credentials { margin-top: 12px; }

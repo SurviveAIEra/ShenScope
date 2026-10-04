@@ -10,6 +10,7 @@ export interface PanelBridge {
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, text = '', className = ''): HTMLElementTagNameMap[K] {
     const node = document.createElement(tag); node.textContent = text; node.className = className; return node;
 }
+function countLabel(count: number, singular: string, plural = singular + 's'): string { return `${count} ${count === 1 ? singular : plural}`; }
 function icon(name: string): SVGSVGElement {
     const paths: Record<string, string> = {
         scope: 'M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M8 12l3 3 5-6',
@@ -53,6 +54,9 @@ export class ShenScopePanel {
     private projectHistoryLimit = 128;
     private projectBulkThreshold = 32;
     private projectMinimumSupport = 2;
+    private projectMigrationKind = 'signature';
+    private projectMigrationOrder = 'dependency_first';
+    private projectMigrationDepth = 8;
     private projectWatch: any;
     private projectWatchAutomatic = false;
     private projectWatchViews = new Map<string, any>();
@@ -985,6 +989,19 @@ export class ShenScopePanel {
         const paths = this.field('Files to analyze (comma separated)', '', this.content); paths.placeholder = 'src/main.go';
         const actions = el('div', '', 'analysis-actions');
         actions.append(this.button('Impact', () => this.startProject('impact', paths.value)), this.button('Test candidates', () => this.startProject('test_selection', paths.value)), this.button('Architecture', () => this.startProject('architecture'))); this.content.append(actions);
+        const migration = el('section', '', 'info-card migration-controls'); migration.append(el('h3', 'Migration plan'), el('p', 'Propose dependency batches for the selected files. Review the evidence before changing code.', 'view-description'));
+        const migrationFields = el('div', '', 'history-analysis-bounds');
+        for (const [title, value, options, update] of [
+            ['Migration change', this.projectMigrationKind, [['signature', 'API signature'], ['rename', 'Rename API'], ['remove', 'Remove API'], ['move', 'Move code'], ['behavior', 'Behavior change']], (next: string) => { this.projectMigrationKind = next; }],
+            ['Migration order', this.projectMigrationOrder, [['dependency_first', 'Dependencies first'], ['callers_first', 'Callers first']], (next: string) => { this.projectMigrationOrder = next; }],
+        ] as const) {
+            const label = el('label', '', 'history-analysis-bound'); const select = el('select'); select.setAttribute('aria-label', title);
+            for (const [key, text] of options) { const option = el('option', text); option.value = key; option.selected = key === value; select.append(option); }
+            select.addEventListener('change', () => update(select.value)); label.append(el('span', title), select); migrationFields.append(label);
+        }
+        const depthLabel = el('label', '', 'history-analysis-bound'); const depth = el('input'); depth.type = 'number'; depth.min = '0'; depth.max = '32'; depth.value = String(this.projectMigrationDepth); depth.setAttribute('aria-label', 'Migration depth');
+        depth.addEventListener('change', () => { const value = Number(depth.value); if (Number.isInteger(value) && value >= 0 && value <= 32) { this.projectMigrationDepth = value; } else { depth.value = String(this.projectMigrationDepth); } }); depthLabel.append(el('span', 'Dependency depth'), depth); migrationFields.append(depthLabel);
+        migration.append(migrationFields, this.button('Plan migration', () => this.startProject('migration', paths.value))); this.content.append(migration);
         const history = el('section', '', 'info-card history-analysis-controls');
         history.append(el('h3', 'Commit evidence'), el('p', 'Find files that change together or rank files for review using local Git history.', 'view-description'));
         const bounds = el('div', '', 'history-analysis-bounds');
@@ -1002,6 +1019,20 @@ export class ShenScopePanel {
         history.append(bounds, historyActions); this.content.append(history);
         if (this.projectResult?.analyzer) {
             const result = this.projectResult; this.content.append(el('h3', result.analyzer.replaceAll('_', ' '), 'analysis-title'));
+            if (result.analyzer === 'migration') {
+                const summary = el('section', '', 'info-card migration-summary'); summary.append(el('strong', `${countLabel(result.total_steps, 'batch', 'batches')} · ${countLabel(result.cycle_groups, 'cycle group')}`), el('p', `${result.order.replaceAll('_', ' ')} · index revision ${result.revision}`), el('small', 'Proposal ' + result.plan_id.slice(0, 12)));
+                if (result.truncated) { summary.append(el('span', 'Partial proposal', 'badge')); } this.content.append(summary);
+                for (const step of result.steps ?? []) {
+                    const card = el('section', '', 'info-card migration-batch'); card.dataset.batchId = step.id;
+                    card.append(el('h3', `Layer ${step.layer} · ${countLabel(step.files.length, 'file')}`)); if (step.atomic_group) { card.append(el('span', 'Cycle group', 'badge')); }
+                    for (const file of step.files) { const row = el('div', '', 'migration-file'); row.append(this.button(file.path, () => this.bridge.openFile(file.path), 'source-link')); if (file.seed) { row.append(el('small', 'Selected')); } card.append(row); }
+                    card.append(el('p', step.reason), el('small', `${countLabel(step.depends_on.length, 'prerequisite batch', 'prerequisite batches')} · ${countLabel(step.test_candidates.length, 'candidate test')}`));
+                    if (step.compatibility_review_required) { card.append(el('p', 'Review API compatibility for this change.', 'view-description')); }
+                    const evidence = el('details', '', 'history-commit-evidence migration-relations'); evidence.append(el('summary', 'Dependency evidence'));
+                    for (const dependency of step.dependencies ?? []) { const row = el('div', '', 'migration-relation'); row.append(el('strong', dependency.source_file + ' → ' + dependency.target_file)); for (const relation of dependency.evidence) { row.append(this.button(`${relation.location.file}:${relation.location.start_line}`, () => this.bridge.openFile(relation.location.file, relation.location.start_line), 'source-link'), el('small', relation.kind + ' · ' + relation.provenance)); } evidence.append(row); }
+                    card.append(evidence); this.content.append(card);
+                }
+            }
             if (result.coverage?.head) {
                 const evidence = el('section', '', 'info-card history-coverage');
                 evidence.append(el('strong', 'History ' + result.coverage.head.slice(0, 12)), el('p', `${result.coverage.commits_scanned} first-parent commits · ${result.coverage.bulk_commits_excluded} bulk commits excluded · index revision ${result.revision}`));
@@ -1037,7 +1068,8 @@ export class ShenScopePanel {
     private async startProject(action: string, paths = ''): Promise<void> {
         if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title: 'Project analysis' }); this.sessionId = session.id; }
         const history = ['git_cochange', 'risk'].includes(action) ? { history_limit: this.projectHistoryLimit, bulk_threshold: this.projectBulkThreshold, minimum_support: this.projectMinimumSupport } : {};
-        const result = await this.bridge.request('project/start', { session_id: this.sessionId, backend: this.projectBackend, action, paths: paths.split(/[\n,]/).map(path => path.trim()).filter(Boolean), ...history });
+        const migration = action === 'migration' ? { change_kind: this.projectMigrationKind, order: this.projectMigrationOrder, max_depth: this.projectMigrationDepth } : {};
+        const result = await this.bridge.request('project/start', { session_id: this.sessionId, backend: this.projectBackend, action, paths: paths.split(/[\n,]/).map(path => path.trim()).filter(Boolean), ...history, ...migration });
         if (!this.completedProjectJobs.has(result.job_id)) { this.projectJob = result.job_id; this.setStatus('Analyzing project…'); }
         await this.renderTab();
     }

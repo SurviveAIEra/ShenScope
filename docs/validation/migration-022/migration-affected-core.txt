@@ -1,0 +1,22 @@
+Test Summary:                                            | Pass  Total  Time
+Git history strict framing, capacities and path identity |   44     44  0.1s
+Test Summary:                                         | Pass  Total  Time
+History evidence ranking remains bounded and explicit |    8      8  3.1s
+Test Summary:                                                                      | Pass  Total   Time
+Real Git history preserves NUL paths, binaries, empty commits and shallow coverage |   21     21  21.5s
+Test Summary:                                                                      | Pass  Total   Time
+Co-change and review risk join a fixed project revision with exact commit evidence |   17     17  32.0s
+Test Summary:                                                                        | Pass  Total  Time
+History approval boundaries reject declaration changes, expired waits and moved HEAD |    6      6  1.8s
+Test Summary:                                                       | Pass  Total   Time
+Agent tool calling preserves contract evidence without loading code |    4      4  52.2s
+Test Summary:                                                        | Pass  Total  Time
+Julia interface contracts, ambiguity evidence and world-age boundary |   19     19  1.3s
+Test Summary:                                                                     | Pass  Total   Time
+Compiler diagnostics use listed targets, bounded output and independent processes |   23     23  17.2s
+Test Summary:                                                                  | Pass  Total  Time
+CLI navigation encodes one owned cursor or symbol with bounded evidence paging |   12     12  0.3s
+Test Summary:                                                         | Pass  Total  Time
+CLI history filters preserve indexed seed identity and integer limits |    5      5  0.0s
+Test Summary:                                                | Pass  Total   Time
+Project RPC lifecycle, approvals and responsive cancellation |   40     40  34.7s

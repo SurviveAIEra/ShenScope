@@ -58,27 +58,8 @@ function analyze(::ArchitectureAnalyzer,state::ProjectState,request::AbstractDic
             src=state.symbols[edge.src].location.file;dst=state.symbols[edge.dst].location.file;src==dst && continue
             push!(forward[src],dst);push!(reverse[dst],src)
         end
-        # Iterative Kosaraju avoids recursive stack growth on large dependency chains.
-        visited=Set{String}();order=String[]
-        for seed in sort!(collect(keys(forward)))
-            seed in visited && continue;stack=Tuple{String,Bool}[(seed,false)]
-            while !isempty(stack)
-                check_cancelled(ctx.cancellation);node,finish=pop!(stack)
-                if finish;push!(order,node);continue;end
-                node in visited && continue;push!(visited,node);push!(stack,(node,true))
-                for next in sort!(collect(forward[node]);rev=true);!(next in visited) && push!(stack,(next,false));end
-            end
-        end
-        empty!(visited);cycles=Vector{String}[]
-        for seed in reverse!(order)
-            seed in visited && continue;component=String[];queue=[seed]
-            while !isempty(queue)
-                node=pop!(queue);node in visited && continue;push!(visited,node);push!(component,node)
-                append!(queue,sort!(collect(reverse[node])))
-            end
-            length(component)>1 && push!(cycles,sort!(component))
-        end
-        sort!(cycles;by=first)
+        cycles=[group for group in strongly_connected_groups(forward,reverse;
+            checkpoint=()->project_storage_checkpoint(ctx)) if length(group)>1]
         hubs=sort!([Dict("file"=>path,"incoming_files"=>length(reverse[path]),"outgoing_files"=>length(forward[path])) for path in keys(forward)];
             by=x->(-x["incoming_files"],x["file"]))
         Dict("analyzer"=>"architecture","revision"=>state.revision,"cycles"=>cycles,"hubs"=>hubs[1:min(length(hubs),100)],
