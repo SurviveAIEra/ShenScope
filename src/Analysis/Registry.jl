@@ -1,3 +1,15 @@
+mutable struct AnalyzerJob
+    id::String
+    action::String
+    context::RuntimeContext
+    status::Symbol
+    result::Any
+    error::Union{Nothing,String}
+    task::Union{Nothing,Task}
+    finished_at::Float64
+    result_bytes::Int
+end
+
 mutable struct AnalyzerRecord
     definition::AnalyzerDefinition
     owner::String
@@ -17,12 +29,13 @@ mutable struct AnalyzerManager
     max_records::Int
     max_bytes::Int
     max_running::Int
+    jobs::Dict{String,AnalyzerJob}
 end
 
 function AnalyzerManager(;max_records=128,max_bytes=32 * 1024^2,max_running=4)
     1 <= max_records <= 1024 && 1024 <= max_bytes <= 128 * 1024^2 && 1 <= max_running <= 16 ||
         throw(ArgumentError("Invalid analyzer registry limits"))
-    AnalyzerManager(Dict(),Dict(),ProcessManager(;max_handles=max_running),ReentrantLock(),max_records,max_bytes,max_running)
+    AnalyzerManager(Dict(),Dict(),ProcessManager(;max_handles=max_running),ReentrantLock(),max_records,max_bytes,max_running,Dict())
 end
 
 analyzer_scope(ctx::RuntimeContext,name::String) = (ctx.session_id,ctx.root,name)
@@ -120,7 +133,13 @@ function remove_analyzer!(manager::AnalyzerManager,name::AbstractString,ctx::Run
 end
 
 function cleanup_analyzers!(manager::AnalyzerManager;session_id=nothing)
+    pending = Task[]
     lock(manager.mutex) do
+        for job in values(manager.jobs)
+            session_id !== nothing && job.context.session_id != session_id && continue
+            cancel!(job.context.cancellation,"Analyzer service closed")
+            job.task !== nothing && job.task !== current_task() && push!(pending,job.task)
+        end
         for (key,record) in collect(manager.records)
             session_id !== nothing && record.owner != session_id && continue
             for token in values(record.running);cancel!(token,"Analyzer registry closed");end
@@ -128,6 +147,12 @@ function cleanup_analyzers!(manager::AnalyzerManager;session_id=nothing)
         end
         for scope in collect(keys(manager.selected))
             (session_id === nothing || first(scope) == session_id) && delete!(manager.selected,scope)
+        end
+    end
+    for task in pending;try wait(task) catch end;end
+    lock(manager.mutex) do
+        for (key,job) in collect(manager.jobs)
+            (session_id === nothing || job.context.session_id == session_id) && delete!(manager.jobs,key)
         end
     end
     nothing

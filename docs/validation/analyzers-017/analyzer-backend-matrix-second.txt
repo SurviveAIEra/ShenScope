@@ -1,0 +1,2 @@
+Test Summary:                                           | Pass  Total     Time
+One isolated analyzer across four real project backends |  133    133  1m07.5s

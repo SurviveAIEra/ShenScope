@@ -210,3 +210,24 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .watch-changes { margin-top: 12px; font-size: 12px; }
 .watch-file { display: grid; grid-template-columns: 70px minmax(0, 1fr); align-items: baseline; gap: 8px; margin-top: 6px; }
 .watch-file .source-link { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+:is(.analyzer-card, .analyzer-isolation, .analyzer-output, .analyzer-archive) {
+    border: 1px solid var(--vscode-panel-border, #ffffff20); border-radius: 9px; padding: 14px; margin: 12px 0;
+    background: var(--vscode-editor-background, #18181b);
+}
+.analyzer-card-heading, .analyzer-actions, .analyzer-version, .analyzer-operation { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.analyzer-card-heading h3 { flex: 1; margin: 0; }
+.analyzer-badge { border-radius: 20px; padding: 2px 8px; font-size: 11px; background: var(--vscode-badge-background, #383842); color: var(--vscode-badge-foreground, #fff); }
+.analyzer-actions { margin-top: 12px; }
+.analyzer-version { padding: 10px 0; border-bottom: 1px solid var(--vscode-panel-border, #ffffff20); }
+.analyzer-version:last-child { border-bottom: 0; }
+.analyzer-version strong { min-width: 100px; }
+.analyzer-registration { margin: 18px 0; }
+.analyzer-registration summary { cursor: pointer; padding: 8px 0; font-weight: 600; }
+.analyzer-code, .analyzer-source { font-family: var(--vscode-editor-font-family, monospace); line-height: 1.5; font-size: 12px; tab-size: 4; }
+.analyzer-source { overflow: auto; max-height: 320px; padding: 12px; border-radius: 6px; background: var(--vscode-textCodeBlock-background, #ffffff08); white-space: pre; }
+.analyzer-candidate { padding: 12px 0; border-top: 1px solid var(--vscode-panel-border, #ffffff20); }
+.analyzer-candidate > small { display: block; color: var(--vscode-descriptionForeground, #a1a1aa); margin: 6px 0; }
+.analyzer-candidate details { margin-top: 8px; }
+.analyzer-evidence { font-family: var(--vscode-editor-font-family, monospace); font-size: 11px; overflow-wrap: anywhere; }
+.analyzer-validation-pass { color: var(--vscode-testing-iconPassed, #73c991); }
+.analyzer-operation { padding: 10px; border-radius: 6px; background: var(--vscode-editor-inactiveSelectionBackground, #ffffff0a); }

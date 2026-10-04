@@ -54,7 +54,8 @@ function atomic_write(path::AbstractString, content::AbstractString; mode=0o600)
     return path
 end
 
-function store_lock(f::Function, path::AbstractString)
+function store_lock(f::Function, path::AbstractString;checkpoint=()->nothing)
+    checkpoint()
     mkpath(dirname(path))
     open(path * ".lock","a+") do io
         chmod(path * ".lock",0o600)
@@ -68,18 +69,21 @@ function store_lock(f::Function, path::AbstractString)
                 code=ccall((:GetLastError,"kernel32"),UInt32,())
                 code==33 || throw(ShenScopeError(:storage,"Journal lock failed"))
                 time()<deadline || throw(ShenScopeError(:storage,"Journal lock timeout"))
+                checkpoint()
                 sleep(0.005)
             end
         elseif Sys.isunix()
             while ccall(:flock,Cint,(Cint,Cint),fd(io),6)!=0
                 Base.Libc.errno() in (11,35) || throw(ShenScopeError(:storage,"Journal lock failed"))
                 time()<deadline || throw(ShenScopeError(:storage,"Journal lock timeout"))
+                checkpoint()
                 sleep(0.005)
             end
         else
             throw(ShenScopeError(:platform,"Cross-process locking is unavailable"))
         end
         try
+            checkpoint()
             return f()
         finally
             if Sys.iswindows()

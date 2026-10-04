@@ -103,7 +103,7 @@ function run_isolated_compute(ctx::RuntimeContext, source::AbstractString, input
     payload = canonical(request) * "\n"
     ncodeunits(payload) <= limits.input_bytes || throw(ShenScopeError(:capacity, "Compute inputs exceed capacity"))
     bounded_json_object(payload; maximum=limits.input_bytes, max_depth=32, max_nodes=250_000, error_code=:arguments)
-    target = canonical(Dict("source_sha256" => source_hash, "input_sha256" => digest(payload),
+    target = canonical(Dict("source_sha256" => source_hash, "input_sha256" => digest(canonical(request["inputs"])),
         "launcher_sha256"=>launcher_hash,"limits" => compute_limits_dict(limits)))
     authorize!(ctx, :read, "analysis.compute", ctx.root; reason="Read explicit analyzer input data")
     authorize!(ctx, :dynamic, "analysis.compute", target; reason="Compile analyzer source in an isolated Julia child")

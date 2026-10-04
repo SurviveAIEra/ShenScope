@@ -48,7 +48,20 @@ translated, and no full upstream synthesis is claimed.
 Handoff V3 sections 12.3/14.6 and IDE continuation V3 sections 19/34/35 govern
 these contracts. Historical claims of six analyzers and Linux seccomp evidence
 are not imported as current results. Checkpoint 016 records runnable evidence;
-graph provenance, archive/promotion/rollback and dedicated editor controls follow.
+graph provenance, archive/promotion/rollback and dedicated editor controls are
+implemented in checkpoint 017 and validated separately.
+
+Checkpoint 017 extends those selected observations with independent Julia
+implementation: detached backend-neutral graph snapshots, parent-owned fact
+identity/provenance, external-fixture receipts, immutable JSON version manifests,
+separate CAS active-pointer revisions, fresh validation on promotion/rollback,
+bounded asynchronous job ownership and shared native/VSIX controls. Kimi's
+generation/lease observation informs ownership and explicit publication; Qwen's
+separate reload stages inform admission versus selection. The archive schema,
+CAS policy and graph evidence constraints are ShenScope's own design derived
+from Handoff V3 section 12.3 and continuation V3 sections 19/34/35, not translated
+upstream implementations. Package lifecycle, general tool isolation, trusted
+persistent Julia REPL integration and full upstream synthesis remain incomplete.
 
 | Primary agent | Actual source observation | Independent Julia behavior and verification | Material work still missing |
 |---|---|---|---|

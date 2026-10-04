@@ -70,6 +70,14 @@ export class ShenScopePanel {
     private contextStarting = false;
     private contextResult?: { action: string; result: any };
     private completedContextJobs = new Set<string>();
+    private analyzersJob?: string;
+    private analyzersStarting = false;
+    private analyzersResult?: { action: string; result: any };
+    private completedAnalyzerJobs = new Set<string>();
+    private analyzerName = '';
+    private analyzerSourcePath = '';
+    private analyzerArchiveOffsets = { project: 0, user: 0 };
+    private analyzerTests = '[{"name":"empty graph","data":{"symbols":[],"relations":[],"seed_ids":[],"truncated":false},"request":{},"expected":{"candidates":[],"notes":[],"truncated":false}}]';
     constructor(private readonly root: HTMLElement, private readonly bridge: PanelBridge) {
         root.classList.add('shenscope-panel');
         const header = el('header', '', 'panel-header'); const brand = el('div', '', 'brand'); const mark = el('span', '', 'brand-mark'); mark.append(icon('scope')); brand.append(mark, el('strong', 'ShenScope'));
@@ -79,7 +87,7 @@ export class ShenScopePanel {
             const button = this.button(label, () => this.selectTab(name), 'nav-button', glyph); this.navigation.set(name, button); nav.append(button);
         }
         const more = el('select', '', 'more-views'); more.setAttribute('aria-label', 'More views');
-        for (const name of ['More', 'Settings', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context']) { const option = el('option', name); option.value = name; more.append(option); }
+        for (const name of ['More', 'Settings', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context', 'Analyzers']) { const option = el('option', name); option.value = name; more.append(option); }
         more.addEventListener('change', () => { if (more.value !== 'More') { void this.guard(() => this.selectTab(more.value)); } more.value = 'More'; }); nav.append(more);
         this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite'); this.notice.setAttribute('role', 'alert'); this.notice.hidden = true;
         root.append(header, nav, this.notice, this.approvals, this.content, this.status);
@@ -115,8 +123,8 @@ export class ShenScopePanel {
     private setStatus(text: string): void { this.status.textContent = text; this.status.classList.toggle('running', this.active); }
     private async selectTab(name: string): Promise<void> { this.tab = name; await this.renderTab(); }
     private async newConversation(): Promise<void> {
-        if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy()) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
-        this.sessionId = undefined; this.contextResult = undefined; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
+        if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
+        this.sessionId = undefined; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
         const distance = this.transcript.scrollHeight - this.transcript.scrollTop - this.transcript.clientHeight;
@@ -139,11 +147,12 @@ export class ShenScopePanel {
     private updateActions(): void {
         if (!this.sendButton || !this.cancelButton) { return; } const label = this.active ? 'Send guidance' : 'Send message';
         this.sendButton.setAttribute('aria-label', label); this.sendButton.title = `${label} (Ctrl / ⌘ Enter)`;
-        this.sendButton.disabled = !this.config || !this.composer.value.trim() || !!this.hooksJob || this.hooksStarting || !!this.contextJob || this.contextStarting; this.cancelButton.hidden = !this.active;
+        this.sendButton.disabled = !this.config || !this.composer.value.trim() || !!this.hooksJob || this.hooksStarting || !!this.contextJob || this.contextStarting || !!this.analyzersJob || this.analyzersStarting; this.cancelButton.hidden = !this.active;
         this.composer.placeholder = this.active ? 'Guide the running task…' : 'Ask, plan, or build something…';
     }
     private async send(): Promise<void> {
         await this.guard(async () => {
+            if (this.analyzersJob || this.analyzersStarting) { throw new Error('Finish or cancel the analyzer operation before sending a message.'); }
             const prompt = this.composer.value.trim(); if (!prompt || !this.config) { return; } this.notice.hidden = true;
             if (this.active && this.sessionId) { await this.bridge.request('agent/steer', { session_id: this.sessionId, prompt }); this.addMessage('steering', prompt); this.composer.value = ''; this.updateActions(); return; }
             if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title: prompt.slice(0, 100) }); this.sessionId = session.id; }
@@ -171,6 +180,7 @@ export class ShenScopePanel {
         if (this.tab === 'Skills' && this.capabilities.skills) { await this.skills(revision); return; }
         if (this.tab === 'Hooks' && this.capabilities.hooks) { await this.hooks(revision); return; }
         if (this.tab === 'Context' && this.capabilities.context_checkpoints) { await this.contextView(revision); return; }
+        if (this.tab === 'Analyzers' && this.capabilities.dynamic_analyzers) { await this.analyzersView(revision); return; }
         this.content.append(el('h2', this.tab === 'Intelligence' ? 'Project intelligence' : this.tab, 'view-title'));
         if (this.tab === 'Tools') {
             const tools = await this.bridge.request('tools/list'); if (revision !== this.renderRevision) { return; }
@@ -197,8 +207,8 @@ export class ShenScopePanel {
             if (!sessions.length) { list.append(el('p', 'Your conversations will appear here.', 'empty-text')); }
             for (const session of sessions) {
                 const row = el('article', '', 'session-card'); const open = this.button(session.title, async () => {
-                    if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy()) { throw new Error('Finish the current task before switching conversations.'); }
-                    const openingRevision = this.renderRevision; this.sessionId = session.id; this.contextResult = undefined;
+                    if (this.analyzersBusy()) { throw new Error('Finish the current task before switching conversations.'); }
+                    const openingRevision = this.renderRevision; this.sessionId = session.id; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 };
                     const full = await this.bridge.request('sessions/get', { session_id: session.id });
                     if (this.sessionId !== full.id) { return; }
                     this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren();
@@ -298,6 +308,119 @@ export class ShenScopePanel {
         }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
     }
     private contextBusy(): boolean { return this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob; }
+    private analyzersBusy(): boolean { return this.contextBusy() || !!this.analyzersJob || this.analyzersStarting; }
+    private async startAnalyzer(action: string, args: Record<string, unknown> = {}): Promise<void> {
+        if (this.analyzersBusy()) { throw new Error('Finish or cancel the current operation before working with analyzers.'); }
+        this.analyzersStarting = true; this.analyzersResult = undefined;
+        if (this.tab === 'Analyzers') { for (const button of Array.from(this.content.querySelectorAll('button'))) { button.disabled = true; } }
+        try {
+            const session_id = await this.ensureSession('Project analyzers');
+            const result = await this.bridge.request('analyzers/start', { session_id, action, ...args });
+            if (!this.completedAnalyzerJobs.has(result.job_id)) { this.analyzersJob = result.job_id; this.setStatus('Working with the analyzer…'); }
+        } finally { this.analyzersStarting = false; this.updateActions(); }
+        if (this.tab === 'Analyzers') { await this.renderTab(); }
+    }
+    private async analyzersView(revision: number): Promise<void> {
+        const session_id = await this.ensureSession('Project analyzers');
+        const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Analyzers'));
+        const refresh = this.button('Refresh analyzers', async () => { await this.renderTab(); }); refresh.disabled = this.analyzersBusy(); heading.append(refresh);
+        this.content.append(heading, el('p', 'Review Julia analysis code, check it against independent fixtures, and run it on indexed project facts.', 'view-description'));
+        if (this.analyzersJob || this.analyzersStarting) {
+            const running = el('section', '', 'analyzer-operation'); running.append(el('span', 'Analyzer operation in progress', 'running-label'));
+            if (this.analyzersJob) { running.append(this.button('Cancel analyzer operation', async () => { await this.bridge.request('analyzers/cancel_job', { session_id, job_id: this.analyzersJob }); })); }
+            this.content.append(running);
+        }
+        let catalog: any;
+        try { catalog = await this.bridge.request('analyzers/query', { session_id, project_offset: this.analyzerArchiveOffsets.project, user_offset: this.analyzerArchiveOffsets.user }); }
+        catch { catalog = this.analyzersResult?.action === 'catalog' ? this.analyzersResult.result : undefined; }
+        if (revision !== this.renderRevision) { return; }
+        if (!catalog) { const load = this.button('Load analyzer catalog', () => this.startAnalyzer('catalog')); load.disabled = this.analyzersBusy(); this.content.append(load); return; }
+        const isolation = el('section', '', 'analyzer-isolation');
+        isolation.append(el('strong', catalog.platform.dependency_available ? 'Isolated Julia computation available' : 'Isolated computation unavailable'),
+            el('p', 'Runs receive explicit data. Filesystem access, networking and additional processes are restricted. Every process checks enforcement before loading your code.', 'view-description'));
+        this.content.append(isolation);
+        const backendLabel = el('label', 'Project index', 'field'); const backend = el('select'); backend.setAttribute('aria-label', 'Analyzer project backend');
+        for (const [value, label] of [['tree_sitter', 'Tree-sitter'], ['go_ast', 'Go AST'], ['codegraph', 'CodeGraph'], ['typescript', 'TypeScript compiler']]) {
+            const index = (catalog.project_backends ?? []).find((item: any) => item.backend === value);
+            const option = el('option', `${label}${index ? ` · ${index.symbols} symbols · revision ${index.revision}` : ' · index required'}`);
+            option.value = value; option.selected = value === this.projectBackend; backend.append(option);
+        }
+        backend.disabled = this.analyzersBusy(); backend.addEventListener('change', () => { this.projectBackend = backend.value; void this.guard(() => this.renderTab()); }); backendLabel.append(backend); this.content.append(backendLabel);
+        const indexed = (catalog.project_backends ?? []).some((item: any) => item.backend === this.projectBackend);
+        if (!indexed) { this.content.append(this.button('Open project index', () => this.selectTab('Intelligence'))); }
+        const entries = catalog.session?.analyzers ?? [];
+        if (!entries.length) { this.content.append(el('p', 'No custom analyzers in this conversation. Register code below or restore an archived version.', 'empty-text')); }
+        for (const entry of entries) {
+            const definition = entry.definition; const card = el('section', '', 'analyzer-card'); const title = el('div', '', 'analyzer-card-heading');
+            title.append(el('h3', definition.name), el('span', entry.selected ? 'Selected' : 'Candidate', 'analyzer-badge')); card.append(title);
+            card.append(el('p', definition.description || 'Session-scoped Julia analyzer', 'view-description'),
+                el('small', `${definition.version.slice(0, 12)} · ${definition.test_count} external fixtures · ${entry.validation?.passed ? 'validated' : 'validation required'}`));
+            if (entry.failure) { card.append(el('p', entry.failure, 'validation-error')); }
+            const args = { name: definition.name, version: definition.version }; const actions = el('div', '', 'analyzer-actions');
+            const buttons = [this.button('Review code', () => this.startAnalyzer('inspect', args)),
+                this.button('Validate fixtures', () => this.startAnalyzer('validate', args)),
+                this.button('Run on project', () => this.startAnalyzer('run', { ...args, backend: this.projectBackend, request: { max_candidates: 100 } }), 'primary-button'),
+                this.button('Archive version', () => this.startAnalyzer('archive', { ...args, scope: 'project' }))];
+            const active = catalog.project_active?.[definition.name];
+            buttons.push(this.button('Promote to project', () => this.startAnalyzer('promote', { ...args, scope: 'project', expected_pointer: active?.pointer_revision ?? 0 })));
+            if (!entry.selected) { buttons.push(this.button('Select version', () => this.startAnalyzer('select', args))); }
+            for (const button of buttons) { button.disabled = this.analyzersBusy(); actions.append(button); }
+            buttons[2].disabled ||= !indexed || !catalog.platform.dependency_available || !definition.test_count;
+            buttons[1].disabled ||= !catalog.platform.dependency_available || !definition.test_count;
+            buttons[4].disabled ||= !catalog.platform.dependency_available || !definition.test_count;
+            card.append(actions); this.content.append(card);
+        }
+        const admission = el('details', '', 'analyzer-registration'); admission.append(el('summary', 'Register Julia analyzer code'));
+        const name = this.field('Analyzer name', this.analyzerName, admission); name.placeholder = 'my_analysis'; name.addEventListener('input', () => { this.analyzerName = name.value; });
+        const source = this.field('Source file in this workspace', this.analyzerSourcePath, admission); source.placeholder = 'analysis/my_analysis.jl'; source.addEventListener('input', () => { this.analyzerSourcePath = source.value; });
+        admission.append(el('p', 'Define analyze(data, request) and selftest(). Project runs return candidates with symbol IDs, scores, confidence and relation evidence.', 'view-description'));
+        const testsLabel = el('label', 'External fixtures · JSON array', 'field'); const tests = el('textarea', '', 'analyzer-code'); tests.rows = 6; tests.value = this.analyzerTests; tests.setAttribute('aria-label', 'External analyzer fixtures'); tests.addEventListener('input', () => { this.analyzerTests = tests.value; }); testsLabel.append(tests); admission.append(testsLabel);
+        const register = this.button('Register candidate', async () => {
+            const fixtures = JSON.parse(tests.value); if (!Array.isArray(fixtures)) { throw new Error('External fixtures must be a JSON array.'); }
+            await this.startAnalyzer('register', { name: name.value.trim(), source_path: source.value.trim(), tests: fixtures });
+        }, 'primary-button'); register.disabled = this.analyzersBusy(); admission.append(register); this.content.append(admission);
+        for (const [scope, archive] of [['project', catalog.project_archive], ['user', catalog.user_archive]] as const) {
+            const versions = archive?.versions ?? []; if (!archive?.total) { continue; }
+            const section = el('section', '', 'analyzer-archive'); section.append(el('h3', scope === 'project' ? 'Project archive' : 'User archive'));
+            section.append(el('small', `${archive.total} archived versions · ${Math.ceil(archive.retained_bytes / 1024)} KiB retained`));
+            for (const version of versions) {
+                const row = el('div', '', 'analyzer-version'); const identity = { name: version.definition.name, version: version.definition.version, scope };
+                row.append(el('strong', version.definition.name), el('code', version.definition.version.slice(0, 12)), el('span', version.active ? 'Active' : 'Archived', 'analyzer-badge'));
+                const review = this.button('Review archived code', () => this.startAnalyzer('archive_inspect', identity));
+                const restore = this.button('Restore to conversation', () => this.startAnalyzer('restore', identity));
+                const rollback = this.button('Roll back to this version', () => this.startAnalyzer('rollback', { ...identity, expected_pointer: version.pointer?.pointer_revision ?? 0 }));
+                for (const button of [review, restore, rollback]) { button.disabled = this.analyzersBusy(); row.append(button); }
+                rollback.disabled ||= version.active || !catalog.platform.dependency_available;
+                section.append(row);
+            }
+            if (archive.offset > 0) { const previous = this.button('Previous archive page', async () => { this.analyzerArchiveOffsets[scope] = Math.max(0, archive.offset - 50); await this.renderTab(); }); previous.disabled = this.analyzersBusy(); section.append(previous); }
+            if (archive.next_offset !== null) { const next = this.button('Next archive page', async () => { this.analyzerArchiveOffsets[scope] = archive.next_offset; await this.renderTab(); }); next.disabled = this.analyzersBusy(); section.append(next); }
+            this.content.append(section);
+        }
+        const result = this.analyzersResult; if (!result || result.action === 'catalog') { return; }
+        const output = el('section', '', 'analyzer-output'); output.append(el('h3', 'Analyzer result'));
+        const data = result.result;
+        const code = data.source ?? (['archive_inspect'].includes(result.action) ? data.definition?.source : undefined);
+        if (typeof code === 'string') { output.append(el('pre', code, 'analyzer-source')); }
+        const fixtures = data.tests ?? data.definition?.tests;
+        if (Array.isArray(fixtures)) { const tests = el('details'); tests.append(el('summary', `${fixtures.length} independent fixtures`), el('pre', JSON.stringify(fixtures, null, 2), 'analyzer-source')); output.append(tests); }
+        const validation = data.validation ?? (result.action === 'validate' ? data : undefined);
+        if (validation) { output.append(el('p', `${validation.passed ? 'External fixtures passed' : 'External fixture mismatch'} · ${validation.external_tests?.count ?? 0} cases`, validation.passed ? 'analyzer-validation-pass' : 'validation-error')); }
+        if (data.pointer) { output.append(el('p', `Active version updated · revision ${data.pointer.pointer_revision}`, 'view-description')); }
+        if (Array.isArray(data.candidates)) {
+            output.append(el('p', `${data.candidates.length} candidates · revision ${data.revision}${data.truncated ? ' · limited snapshot' : ''}`, 'view-description'));
+            for (const candidate of data.candidates) {
+                const item = el('article', '', 'analyzer-candidate'); item.append(el('strong', candidate.symbol.qualified_name), el('p', candidate.reason),
+                    el('small', `Score ${candidate.score.toFixed(2)} · confidence ${candidate.confidence.toFixed(2)} · generated hypothesis`),
+                    this.button(`${candidate.symbol.location.file}:${candidate.symbol.location.start_line}`, () => this.bridge.openFile(candidate.symbol.location.file, candidate.symbol.location.start_line), 'source-link'));
+                const evidence = el('details'); evidence.append(el('summary', `${candidate.relation_evidence.length} recorded relations`));
+                for (const edge of candidate.relation_evidence) { evidence.append(el('p', `${edge.kind} · ${edge.provenance} · ${edge.location.file}:${edge.location.start_line}`, 'analyzer-evidence')); }
+                item.append(evidence); output.append(item);
+            }
+            for (const note of data.limitations ?? []) { output.append(el('p', note, 'view-description')); }
+        } else if (!code && !validation) { output.append(el('p', data.archived ? 'Version archived.' : data.pointer ? `Active version updated · revision ${data.pointer.pointer_revision}` : 'Operation complete.', 'view-description')); }
+        this.content.append(output);
+    }
     private async startContext(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.contextBusy()) { throw new Error('Finish or cancel the current operation before working with context.'); }
         this.contextStarting = true; this.contextResult = undefined;
@@ -845,6 +968,14 @@ export class ShenScopePanel {
             if (params.kind === 'project_watch_updated') { this.setStatus('Project index updated'); }
             else if (params.kind === 'project_watch_error') { this.setStatus('Index update needs attention'); }
             return;
+        }
+        if (params.kind === 'analyzers_job_completed' || params.kind === 'analyzers_job_failed') {
+            this.completedAnalyzerJobs.add(payload.job_id); while (this.completedAnalyzerJobs.size > 64) { this.completedAnalyzerJobs.delete(this.completedAnalyzerJobs.values().next().value!); }
+            if (this.analyzersJob === payload.job_id) { this.analyzersJob = undefined; }
+            for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }
+            if (params.kind === 'analyzers_job_completed') { this.analyzersResult = { action: payload.action, result: payload.result }; this.setStatus('Analyzer operation complete'); }
+            else { this.analyzersResult = undefined; this.notice.textContent = payload.error ?? 'Analyzer operation failed'; this.notice.hidden = false; this.setStatus(payload.status === 'cancelled' ? 'Analyzer operation cancelled' : 'Analyzer operation failed'); }
+            if (this.tab === 'Analyzers') { void this.guard(() => this.renderTab()); } this.updateActions(); return;
         }
         if (params.kind === 'context_job_completed' || params.kind === 'context_job_failed') {
             this.completedContextJobs.add(payload.job_id); while (this.completedContextJobs.size > 64) { this.completedContextJobs.delete(this.completedContextJobs.values().next().value!); }

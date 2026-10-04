@@ -34,7 +34,8 @@ function parse_cli(args::Vector{String})
     flags=Dict{String,Any}();positionals=String[]
     valued=Set(["--root","--state-dir","--config","--profile","--session","--script","--backend",
         "--symbol","--column-unit","--limit","--offset","--revision","--sha256","--minimum-savings",
-        "--poll-seconds","--quiet-seconds","--duration","--watch-file-limit","--watch-byte-limit"])
+        "--poll-seconds","--quiet-seconds","--duration","--watch-file-limit","--watch-byte-limit",
+        "--scope","--expected-pointer"])
     switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints"])
     i=1
     while i<=length(args)

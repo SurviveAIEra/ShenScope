@@ -56,11 +56,72 @@ cancellation tokens and shared budgets; cancellation leaves the owning agent
 context active. Removing a running candidate requires cancellation first.
 Permission checks cover read, dynamic-code admission and process execution.
 
-The `analyzers` model tool exposes status, register, list, inspect, validate,
-evaluate, select, remove and cancel. Explicit JSON data evaluation is present.
-Project graph projection/evidence validation, archival persistence, promotion,
-rollback and dedicated RPC/editor controls are the next implementation stage;
-this checkpoint does not claim those features or general host-tool isolation.
+The `analyzers` model tool also exposes catalog, graph run, archive, versions,
+archive inspection, restore, promotion, rollback and pointer history. Read,
+dynamic-code and persistence approvals remain independent. This compute profile
+does not supply general host-tool isolation.
+
+## Indexed project inputs and grounded results
+
+`IsolatedJuliaAnalyzer` implements the ordinary `AbstractAnalyzer` interface.
+It receives bounded, detached JSON facts from the selected Go AST, Tree-sitter,
+CodeGraph or TypeScript compiler backend. Requests can select paths/symbols,
+direction and depth. Whole graphs above the requested capacity require explicit
+seeds; bounded projections report their scope and truncation. The parent binds
+revision, project fingerprint, backend, file hashes and actual fact identities.
+
+Graph results contain `candidates`, optional `notes` and `truncated`. A candidate
+contains exactly `symbol_id`, `score`, `confidence`, `reason` and `evidence`.
+Scores/confidence must be finite numbers in [0, 1]; evidence lists known relation
+IDs connected to that candidate. Empty evidence allows confidence zero only.
+Confidence cannot exceed the minimum confidence of its recorded evidence.
+An optional seed-connectivity requirement uses undirected indexed adjacency.
+Unknown IDs, invented locations, disconnected evidence and additional candidate
+fields are rejected. The parent attaches original locations and provenance and
+checks that the indexed revision/fingerprint still match before publication.
+
+Reasons, scores and conclusions remain generated hypotheses. Connectivity and
+confidence bounds are consistency checks, not proof of algorithm correctness or
+runtime behavior. Facts describe the indexed snapshot; saved files can change
+without a refreshed index. The result explicitly records these limitations.
+
+## Immutable archives and active pointers
+
+Project archives are bound to the canonical workspace within the configured
+Core state directory. User archives belong to that state directory and can be
+restored into another project explicitly. Both contain immutable JSON manifests
+with source/tests/limits, their hashes and historical receipts. No Core source
+files or complete project directories are copied. Retention has hard version and
+byte capacities; automatic pruning and version deletion are not implemented.
+
+Archiving does not require a passing validation and does not select that version.
+Restoring registers a session candidate and never trusts an archived receipt as
+current execution validation. Promotion and rollback run external fixtures in a
+fresh isolated child, then request persistence approval and atomically compare
+the expected active-pointer revision before publication. Conflicting pointers
+reject publication. Failed validation cannot replace an active version.
+Rollback selects an archived immutable version; it does not erase Julia methods
+or modify the trusted Core. Pointer history records separate logical revisions,
+previous versions, fixture identity, source identity and the Core version.
+Contended archive transactions check cancellation, budgets and revoked policy
+while waiting and after lock acquisition.
+
+## RPC and editor controls
+
+`analyzers/query` returns read-authorized metadata and paged archives. Mutations
+and computations start with `analyzers/start`; `analyzers/job` polls retained
+results and `analyzers/cancel_job` cancels only the owning conversation's child
+context. Completed/failed events carry the same job identity. Registry/job
+retention and output sizes are bounded. Active operations block configuration
+replacement and starting another agent run in that conversation. Configuration
+replacement and shutdown drain owned resources and clear session candidates.
+
+Both editor clients share the Analyzers view: indexed backend availability,
+session candidates and selected versions, source/external-fixture inspection,
+validation, grounded project results and file navigation, immutable archives,
+CAS promotion/rollback and pending-operation cancellation. Unsupported isolation
+is visible and execution controls are disabled. These controls use Julia RPC;
+the clients do not run custom analyzer source.
 
 ## CLI
 
@@ -70,11 +131,27 @@ shenscope analyzers validate DEFINITION.json --root /path/to/project \
   --allow-dynamic --allow-process
 shenscope analyzers evaluate DEFINITION.json INPUT.json --root /path/to/project \
   --allow-dynamic --allow-process
+shenscope analyzers archive DEFINITION.json --allow-dynamic --allow-persistence
+shenscope analyzers promote DEFINITION.json --expected-pointer 0 \
+  --allow-dynamic --allow-process --allow-persistence
+shenscope analyzers versions NAME --scope project
+shenscope analyzers inspect NAME VERSION
+shenscope analyzers history NAME
+shenscope analyzers run DEFINITION.json --backend go_ast \
+  --allow-dynamic --allow-process
+shenscope analyzers run-archive NAME VERSION --backend go_ast \
+  --allow-dynamic --allow-process
+shenscope analyzers rollback NAME VERSION --expected-pointer 1 \
+  --allow-dynamic --allow-process --allow-persistence
 ```
 
 CLI reads bounded workspace-confined definitions and inputs, registers a
 candidate for that invocation, runs the same implementation, prints JSON and
-cleans the registry. Validation exits with code 1 when external fixtures fail.
+cleans the registry. `run`/`run-archive` use an existing index; index it with
+`shenscope project build` first. Their optional final request JSON supplies graph
+limits/seeds, rather than arbitrary input data. `restore NAME [VERSION]` defaults
+to the active archived version. Archive pagination uses `--offset`/`--limit`.
+Validation exits with code 1 when external fixtures fail.
 Source symlinks and protected paths are rejected. The fixture example under
 `examples/analyzers` is excluded from authored Core line counts.
 
@@ -87,3 +164,11 @@ descriptor inheritance, running cancellation, output flooding and external
 fixture disagreement. The full affected suite exercises the shared in-memory
 JSON parser and tool registration. No live-model quality claim follows from
 these local process tests.
+
+Additional graph, archive, backend, RPC and CLI tests are in
+`test/unit/analyzer_graph.jl`, `test/unit/analyzers_protocol.jl`,
+`test/integration/analyzer_archive.jl`, `test/integration/analyzer_backends.jl`
+and `test/integration/analyzer_cli.jl`. `ide/test/native_smoke.mjs --analyzers-only`
+checks the native window, and its `--vsix` variant checks the independent webview.
+Checkpoint evidence distinguishes successful final runs from earlier failed
+test attempts; it does not infer Windows, installed-package or live-model results.

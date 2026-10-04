@@ -106,6 +106,8 @@ function idle_session(server::CoreServer,params::AbstractDict)
     haskey(server.runs,session.id) && throw(ShenScopeError(:session,"Session has an active run"))
     context_jobs_running(server_context_tool(server).manager; session_id=session.id) &&
         throw(ShenScopeError(:context_busy, "Finish this conversation's context operation first"))
+    analyzer_jobs_running(server_analyzers_tool(server).manager;session_id=session.id) &&
+        throw(ShenScopeError(:analysis,"Finish this conversation's analyzer operation first"))
     return session
 end
 
@@ -114,6 +116,8 @@ function start_agent!(server::CoreServer,params::AbstractDict)
     haskey(server.runs,session.id) && throw(ShenScopeError(:session,"Session has an active run"))
     context_jobs_running(server_context_tool(server).manager; session_id=session.id) &&
         throw(ShenScopeError(:context_busy, "Finish this conversation's context operation before starting the agent"))
+    analyzer_jobs_running(server_analyzers_tool(server).manager;session_id=session.id) &&
+        throw(ShenScopeError(:analysis,"Finish this conversation's analyzer operation before starting the agent"))
     skillsmanager=server_skills_tool(server).manager
     lock(skillsmanager.mutex) do
         any(job->job.status==:running && job.context.session_id==session.id,values(skillsmanager.jobs)) &&
@@ -170,6 +174,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     server.initialized || throw(RPCFault(-32002,"Initialize first"))
     server.stopping && method!="shutdown" && throw(RPCFault(-32003,"Server is stopping"))
     startswith(method,"project/") && return project_rpc(server,method,params)
+    startswith(method,"analyzers/") && return analyzers_rpc(server,method,params)
     startswith(method,"tasks/") && return tasks_rpc(server,method,params)
     startswith(method,"mcp/") && return mcp_rpc(server,method,params)
     startswith(method,"skills/") && return skills_rpc(server,method,params)
@@ -188,6 +193,8 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
         isempty(server.runs) || throw(ShenScopeError(:config,"Finish active runs before changing configuration"))
         context_jobs_running(server_context_tool(server).manager) &&
             throw(ShenScopeError(:config, "Finish context operations before changing configuration"))
+        analyzer_jobs_running(server_analyzers_tool(server).manager) &&
+            throw(ShenScopeError(:config,"Finish analyzer operations before changing configuration"))
         taskmanager = server_task_tool(server).manager
         lock(taskmanager.mutex) do
             any(job -> job.status == :running, values(taskmanager.jobs)) &&
@@ -220,7 +227,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
         value isa AbstractDict || throw(RPCFault(-32602,"Configuration object required"))
         expected=rpc_string(params,"expected_sha256";max_bytes=64)
         revision=save_config!(Dict{String,Any}(value);path=server.config_file,expected_sha256=expected,
-            before_write=()->begin;cleanup_mcp!(mcpmanager);cleanup_skills!(skillsmanager);cleanup_hooks!(hooksmanager);cleanup_context!(server_context_tool(server).manager);end)
+            before_write=()->begin;cleanup_mcp!(mcpmanager);cleanup_skills!(skillsmanager);cleanup_hooks!(hooksmanager);cleanup_context!(server_context_tool(server).manager);cleanup_analyzers!(server_analyzers_tool(server).manager);end)
         server.config=load_config(;path=server.config_file)
         mcpmanager.specs=mcp_specs_from_config(server.config)
         skillsmanager.config=skill_config(server.config)

@@ -1,0 +1,1 @@
+PASS: VSIX webview, actual analyzer registration, source/external fixture review, isolated fixture validation, graph evidence/file navigation, immutable archive, two CAS promotions, fresh-validation rollback and cancellation of a pending approval

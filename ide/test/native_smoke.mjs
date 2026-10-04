@@ -33,6 +33,7 @@ const skillsOnly = process.argv.includes('--skills-only');
 const hooksOnly = process.argv.includes('--hooks-only');
 const contextOnly = process.argv.includes('--context-only');
 const semanticOnly = process.argv.includes('--semantic-only');
+const analyzersOnly = process.argv.includes('--analyzers-only');
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
 const userSkillRoot = skillsOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-skills-')) : undefined;
@@ -97,6 +98,19 @@ if (semanticOnly) {
     await writeFile(join(root, 'greeter.ts'), "export interface Greeter { greet(name: string): string; }\nexport class English implements Greeter { greet(name: string): string { return 'Hello ' + name; } }\n");
     await writeFile(join(root, 'main.ts'), "import { English } from './greeter';\nexport function TestGreet(): string { const agent = new English(); return agent.greet('中😀'); }\nexport const wrong: number = 'type error';\n");
 }
+let analyzerSource;
+let analyzerFixtures;
+if (analyzersOnly) {
+    analyzerSource = (await readFile(join(project, 'test/fixtures/analyzer_programs.jl'), 'utf8')).match(/const INCOMING_ANALYZER_SOURCE = raw"""\n([\s\S]*?)"""/)[1];
+    const a = 'a'.repeat(32); const b = 'b'.repeat(32); const edge = 'c'.repeat(64);
+    const notes = ['Incoming relation counts over supplied facts'];
+    analyzerFixtures = [
+        { name: 'empty graph', data: { symbols: [], relations: [], seed_ids: [], truncated: false }, request: {}, expected: { candidates: [], notes, truncated: false } },
+        { name: 'one incoming dependency', data: { symbols: [{ id: a }, { id: b }], relations: [{ id: edge, src: a, dst: b, confidence: 0.5 }], truncated: false }, request: {},
+            expected: { candidates: [{ symbol_id: b, score: 1, confidence: 0.5, reason: '1 incoming recorded relations', evidence: [edge] }], notes, truncated: false } },
+    ];
+    await writeFile(join(root, 'incoming.jl'), analyzerSource);
+}
 await mkdir(join(root, 'user-data', 'User'), { recursive: true });
 await writeFile(join(root, 'user-data', 'User', 'settings.json'), JSON.stringify({
     'shenscope.juliaPath': '/workspace/toolchains/julia-1.11.7/bin/julia',
@@ -137,7 +151,7 @@ try {
     }
     await panel.getByText('Ready · native-fixture', { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -166,6 +180,83 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (analyzersOnly) {
+        await panel.getByRole('button', { name: 'Project', exact: true }).click();
+        await panel.getByRole('combobox', { name: 'Project backend' }).selectOption('go_ast');
+        await panel.getByRole('button', { name: 'Index project', exact: true }).click();
+        await approve(panel, 'project.index · persistence');
+        await approve(panel, 'project.backend · process');
+        await panel.getByRole('button', { name: 'Refresh index', exact: true }).waitFor({ timeout: 120_000 });
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Analyzers');
+        await panel.getByRole('combobox', { name: 'Analyzer project backend' }).selectOption('go_ast');
+        const register = async fixtures => {
+            const form = panel.locator('.analyzer-registration'); await form.locator('summary').click();
+            await form.getByRole('textbox', { name: 'Analyzer name', exact: true }).fill('incoming');
+            await form.getByRole('textbox', { name: 'Source file in this workspace', exact: true }).fill('incoming.jl');
+            await form.getByRole('textbox', { name: 'External analyzer fixtures', exact: true }).fill(JSON.stringify(fixtures));
+            await form.getByRole('button', { name: 'Register candidate', exact: true }).click();
+            await approve(panel, 'analysis.register · dynamic');
+            await panel.getByText('Analyzer operation complete', { exact: true }).waitFor();
+            await waitEnabled(panel.getByRole('button', { name: 'Refresh analyzers', exact: true }));
+        };
+        await register(analyzerFixtures);
+        const first = panel.locator('.analyzer-card').first();
+        const firstPrefix = (await first.locator('small').textContent()).split(' · ')[0];
+        await first.getByRole('button', { name: 'Review code', exact: true }).click();
+        await panel.locator('.analyzer-source').filter({ hasText: 'function analyze' }).waitFor();
+        await panel.getByText('2 independent fixtures', { exact: true }).waitFor();
+        await waitEnabled(first.getByRole('button', { name: 'Validate fixtures', exact: true }));
+        await first.getByRole('button', { name: 'Validate fixtures', exact: true }).click();
+        await approve(panel, 'analysis.compute · dynamic'); await approve(panel, 'analysis.compute · process');
+        await panel.getByText('External fixtures passed · 2 cases', { exact: true }).waitFor({ timeout: 120_000 });
+        await waitEnabled(first.getByRole('button', { name: 'Run on project', exact: true }));
+        await first.getByRole('button', { name: 'Run on project', exact: true }).click();
+        await approve(panel, 'analysis.compute · dynamic'); await approve(panel, 'analysis.compute · process');
+        const candidates = panel.locator('.analyzer-candidate'); await candidates.first().waitFor({ timeout: 120_000 });
+        assert.ok(await candidates.count() > 0);
+        await candidates.first().locator('summary').click();
+        await candidates.first().locator('.analyzer-evidence').first().waitFor();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-analyzers-results.png`) });
+        await candidates.first().getByRole('button', { name: 'sample.go:2', exact: true }).click();
+        await page.locator('.monaco-editor .view-lines').filter({ hasText: 'func Greet' }).waitFor();
+        await waitEnabled(first.getByRole('button', { name: 'Archive version', exact: true }));
+        await first.getByRole('button', { name: 'Archive version', exact: true }).click();
+        await approve(panel, 'analysis.archive · persistence');
+        await panel.getByText('Version archived.', { exact: true }).waitFor();
+        await waitEnabled(first.getByRole('button', { name: 'Promote to project', exact: true }));
+        await first.getByRole('button', { name: 'Promote to project', exact: true }).click();
+        await approve(panel, 'analysis.promote · persistence');
+        await panel.getByText('Active version updated · revision 1', { exact: true }).waitFor({ timeout: 120_000 });
+        const updated = analyzerSource.replace('Incoming relation counts over supplied facts', 'Incoming graph facts reviewed');
+        const updatedFixtures = structuredClone(analyzerFixtures); for (const test of updatedFixtures) { test.expected.notes = ['Incoming graph facts reviewed']; }
+        await writeFile(join(root, 'incoming.jl'), updated);
+        await waitEnabled(panel.getByRole('button', { name: 'Refresh analyzers', exact: true }));
+        await register(updatedFixtures);
+        const candidate = panel.locator('.analyzer-card').filter({ hasText: 'Candidate' });
+        await candidate.first().waitFor({ timeout: 60_000 });
+        assert.equal(await candidate.count(), 1);
+        await candidate.getByRole('button', { name: 'Promote to project', exact: true }).click();
+        await approve(panel, 'analysis.compute · dynamic'); await approve(panel, 'analysis.compute · process');
+        await approve(panel, 'analysis.promote · persistence');
+        await panel.getByText('Active version updated · revision 2', { exact: true }).waitFor({ timeout: 120_000 });
+        const old = panel.locator('.analyzer-version').filter({ hasText: firstPrefix });
+        await waitEnabled(old.getByRole('button', { name: 'Roll back to this version', exact: true }));
+        await old.getByRole('button', { name: 'Roll back to this version', exact: true }).click();
+        await approve(panel, 'analysis.rollback · persistence');
+        await panel.getByText('Active version updated · revision 3', { exact: true }).waitFor({ timeout: 120_000 });
+        assert.equal(await old.getByText('Active', { exact: true }).count(), 1);
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-analyzers-versions.png`) });
+        await panel.locator('.analyzer-registration summary').click();
+        await panel.getByRole('textbox', { name: 'Analyzer name', exact: true }).fill('cancel_candidate');
+        await panel.getByRole('button', { name: 'Register candidate', exact: true }).click();
+        await panel.locator('.permission-card').filter({ hasText: 'analysis.register · dynamic' }).waitFor();
+        await panel.getByRole('button', { name: 'Cancel analyzer operation', exact: true }).click();
+        await panel.getByText('Analyzer operation cancelled', { exact: true }).waitFor({ timeout: 60_000 });
+        assert.equal(await panel.locator('.permission-card').count(), 0);
+        assert.equal(await panel.locator('.analyzer-card').filter({ hasText: 'cancel_candidate' }).count(), 0);
+        assert.equal(requests.length, 0, 'Custom graph computations do not call the model');
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual analyzer registration, source/external fixture review, isolated fixture validation, graph evidence/file navigation, immutable archive, two CAS promotions, fresh-validation rollback and cancellation of a pending approval`);
     }
     if (semanticOnly) {
         await panel.getByRole('button', { name: 'Project', exact: true }).click();

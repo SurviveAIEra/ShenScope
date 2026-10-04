@@ -55,8 +55,16 @@ include("Runtime/ComputeProcess.jl")
 include("Analysis/Definitions.jl")
 include("Analysis/Registry.jl")
 include("Analysis/ExternalTests.jl")
-include("Tools/Analyzers.jl")
+include("Analysis/ArchiveTypes.jl")
+include("Analysis/ArchiveManifests.jl")
+include("Analysis/ArchivePointers.jl")
+include("Analysis/ArchiveLifecycle.jl")
+include("Analysis/GraphSnapshots.jl")
+include("Analysis/GraphEvidence.jl")
+include("Analysis/GraphRuntime.jl")
 include("Tools/Project.jl")
+include("Tools/Analyzers.jl")
+include("Analysis/Jobs.jl")
 include("Extensions/Contracts.jl")
 include("Extensions/CompilerDiagnostics.jl")
 include("Tools/Diagnostics.jl")
@@ -118,6 +126,7 @@ include("Protocol/MCP.jl")
 include("Protocol/Skills.jl")
 include("Protocol/Hooks.jl")
 include("Protocol/Context.jl")
+include("Protocol/Analyzers.jl")
 
 export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
     dispatch_rpc, serve_stdio, stop_server!, capability_manifest
@@ -136,6 +145,9 @@ export compact_project!, project_fingerprint
 export ComputeLimits, AnalyzerTestCase, AnalyzerDefinition, AnalyzerManager, AnalyzersTool,
     register_analyzer!, analyzer_list, analyzer_inspect, select_analyzer!, remove_analyzer!,
     validate_analyzer!, evaluate_analyzer!, cancel_analyzer!, cleanup_analyzers!, run_isolated_compute
+export IsolatedJuliaAnalyzer, AnalyzerArchive, analyzer_archive, archive_analyzer!,
+    analyzer_archive_list, analyzer_archive_inspect, restore_analyzer!, promote_analyzer!,
+    rollback_analyzer!, analyzer_archive_history
 export ProjectWatchOptions, ProjectWatch, start_project_watch, stop_project_watch!,
     project_watch_status, refresh_project_watch!
 

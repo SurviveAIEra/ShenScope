@@ -35,3 +35,40 @@ end
         @test filesize(j.path)==2048
     end
 end
+
+@testset "Contended journal locks check cancellation and release after failed checkpoints" begin
+    mktempdir() do root
+        path = joinpath(root,"transaction")
+        ready = Channel{Bool}(1);release = Channel{Bool}(1)
+        holder = @async ShenScope.store_lock(path) do
+            put!(ready,true);take!(release)
+        end
+        take!(ready)
+        token = CancellationToken();checks = Ref(0);executed = Ref(false)
+        waiter = @async try
+            ShenScope.store_lock(path;checkpoint=()->begin;checks[] += 1;check_cancelled(token);end) do
+                executed[] = true
+            end
+            nothing
+        catch error
+            error
+        end
+        try
+            @test timedwait(()->checks[] >= 2,5;pollint=0.01) == :ok
+            cancel!(token,"Cancel a pending storage transaction")
+            @test timedwait(()->istaskdone(waiter),5;pollint=0.01) == :ok
+            @test fetch(waiter) isa ShenScopeError
+            @test !executed[]
+        finally
+            put!(release,true);wait(holder)
+        end
+        calls = Ref(0)
+        @test_throws ShenScopeError ShenScope.store_lock(path;checkpoint=()->begin
+            calls[] += 1
+            calls[] == 2 && throw(ShenScopeError(:permission,"Revoked after lock acquisition"))
+        end) do
+            error("Callback must not run")
+        end
+        @test ShenScope.store_lock(()->:released,path) == :released
+    end
+end

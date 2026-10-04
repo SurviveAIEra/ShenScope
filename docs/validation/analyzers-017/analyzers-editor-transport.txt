@@ -1,0 +1,24 @@
+
+> shenscope-editor-tooling@0.1.0 test
+> node --test test/*.test.mjs
+
+✔ Node editor transport talks to real Julia Core with scoped approvals and Unicode (103660.835483ms)
+ℹ Core initialized: 83257 ms
+ℹ Edit approved: 101272 ms
+ℹ Archive approved: 101510 ms
+ℹ Conversation and artifact verified: 102178 ms
+✔ Malformed child framing closes transport and rejects pending requests (105.32818ms)
+✔ Disposal terminates an owned child that ignores shutdown and SIGTERM (4095.433946ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 107987.433925
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

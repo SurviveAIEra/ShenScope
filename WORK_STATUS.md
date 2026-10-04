@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 13,086 authored Julia Core code lines across 114 files;
-CLI/TUI add 741 lines and are counted separately. This is 5.2344% of the
-minimum line target, leaving 236,914 lines. These are early implementations,
+Latest cloc 2.11 count: 13,807 authored Julia Core code lines across 123 files;
+CLI/TUI add 784 lines and are counted separately. This is 5.5228% of the
+minimum line target, leaving 236,193 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -271,3 +271,28 @@ Next: project-backed dynamic analysis with parent-owned evidence/confidence,
 source archives and CAS promotion/rollback, async RPC and both IDE clients.
 Continue remaining model/runtime/session/MCP/tool work toward 250,000 Core LOC;
 this tested checkpoint is not completion of the whole request.
+
+Graph analyzer checkpoint 017: one isolated Julia analyzer runs on Go AST,
+Tree-sitter, real CodeGraph and TypeScript compiler facts. Parent-owned bounded
+snapshots bind revision/fingerprint, locations, evidence IDs and provenance;
+confidence/connectivity checks reject invented or disconnected evidence. Scores
+and reasons remain generated hypotheses about indexed facts. Immutable bounded
+project/user JSON archives retain source/tests without Core modification. Scoped
+restore never adopts an old receipt as current validation. Fresh external tests
+and expected pointer CAS guard promotion/rollback and retained pointer history.
+Owned asynchronous RPC and CLI operations share cancellation, permissions and
+budgets. Both actual editor clients expose source/fixture review, graph results,
+file navigation, archival, two promotions, rollback and pending-approval cancel.
+
+Validation: affected Core 13,926 assertions / 123 testsets (12,050 coordinate
+properties; 1,876 other assertions), plus 16 separate CLI assertions; the
+standalone four-backend matrix passes 133 overlapping assertions. Editor
+check/build, three Node transport tests, full Workbench typecheck and both real
+GUI flows pass. VSIX bytes match final authored Core/client sources. Evidence
+is in docs/validation/graph-analyzers-checkpoint-017.json, including failed
+attempts and the exact loaded-harness distinction. No installed-VSIX, Windows,
+live-model quality or large-project performance result is inferred. Archive
+automatic pruning and general host-tool isolation remain incomplete. Work
+continues with model discovery/counting/routing, runtime worker profiles and
+remaining analysis, session, tool and extension capabilities. The minimum Core
+size goal remains unmet.

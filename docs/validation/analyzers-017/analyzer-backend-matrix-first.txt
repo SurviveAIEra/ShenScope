@@ -1,0 +1,33 @@
+Precompiling ShenScope...
+   6094.3 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 6 seconds. 39 already precompiled.
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/analyzer_backends.jl:1
+One isolated analyzer across four real project backends: Error During Test at /workspace/ShenScope/test/integration/analyzer_backends.jl:1
+  Got exception outside of a @test
+  MethodError: no method matching build!(::ProjectState, ::GoASTBackend, ::RuntimeContext)
+  The function `build!` exists, but no method is defined for this combination of argument types.
+
+  Closest candidates are:
+    build!(!Matched::AbstractProjectDataBackend, !Matched::RuntimeContext)
+     @ ShenScope /workspace/ShenScope/src/ProjectData/State.jl:267
+
+  Stacktrace:
+   [1] (::var"#1#7")(root::String)
+     @ Main /workspace/ShenScope/test/integration/analyzer_backends.jl:14
+   [2] mktempdir(fn::var"#1#7", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [3] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [4] macro expansion
+     @ /workspace/ShenScope/test/integration/analyzer_backends.jl:2 [inlined]
+   [5] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [6] top-level scope
+     @ /workspace/ShenScope/test/integration/analyzer_backends.jl:2
+   [7] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [8] top-level scope
+     @ none:1
+Test Summary:                                           | Error  Total   Time
+One isolated analyzer across four real project backends |     1      1  13.9s

@@ -1,0 +1,17 @@
+ERROR: LoadError: Some tests did not pass: 23 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/analyzer_graph.jl:17
+Parent-owned analyzer graph evidence and freshness: Error During Test at /workspace/ShenScope/test/unit/analyzer_graph.jl:47
+  Test threw exception
+  Expression: (contract_report(IsolatedJuliaAnalyzer))["complete"]
+  KeyError: key "complete" not found
+  Stacktrace:
+   [1] getindex(h::Dict{String, Any}, key::String)
+     @ Base ./dict.jl:477
+   [2] macro expansion
+     @ /workspace/ShenScope/test/unit/analyzer_graph.jl:47 [inlined]
+   [3] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [4] (::var"#2#3")(root::String)
+     @ Main /workspace/ShenScope/test/unit/analyzer_graph.jl:47
+Test Summary:                                      | Pass  Error  Total   Time
+Parent-owned analyzer graph evidence and freshness |   23      1     24  13.8s

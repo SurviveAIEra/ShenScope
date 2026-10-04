@@ -82,5 +82,10 @@ Isolated compute checkpoint 016 adds source observations for all seven primary
 agents and Kaimon/AgentREPL/JuliaMCP. Actual Linux x86_64 seccomp and descriptor/
 mapping restrictions, strict bounded IPC, cancellation/revocation, World Age
 reflection and external test comparison are verified. Candidates remain session
-scoped. General host-tool sandbox, graph provenance, archival promotion/rollback,
-Windows security and dedicated editor analyzer controls remain pending.
+scoped. Checkpoint 017 connects a single isolated analyzer to four actual graph
+backends, validates parent-owned evidence, persists immutable project/user
+archives, revalidates CAS promotion/rollback, and supplies scoped asynchronous
+RPC, CLI and shared native/VSIX controls. General host-tool sandbox, Windows
+security, automatic archive pruning and package/extension lifecycle remain
+pending. These selected implementations do not establish comprehensive upstream
+synthesis or completion of the 250,000-line Core gate.
