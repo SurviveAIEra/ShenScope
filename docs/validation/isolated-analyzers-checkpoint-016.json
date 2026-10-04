@@ -1,0 +1,144 @@
+{
+  "checkpoint": 16,
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "platform": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "julia": "1.11.7",
+    "threads": 4
+  },
+  "features": [
+    "default-deny synchronized compute seccomp",
+    "bounded isolated Julia IPC and cleanup",
+    "external test comparison",
+    "session analyzer versions",
+    "agent tool and CLI"
+  ],
+  "limits": [
+    "General host tools still use HostSandbox",
+    "Archive/promotion/rollback and graph provenance pending",
+    "Dedicated analyzer RPC/editor controls pending",
+    "Windows/macOS unavailable; aarch64 unverified",
+    "Virtual-address-space cap is not an RSS quota",
+    "External fixtures do not prove general correctness"
+  ],
+  "validation": {
+    "core_regression": {
+      "passed": 13676,
+      "testsets": 115,
+      "coordinate_property_assertions": 12050,
+      "other_assertions": 1626
+    },
+    "isolated_analyzer_targeted": {
+      "passed": 163,
+      "testsets": 6
+    },
+    "final_mapping_unit": {
+      "passed": 43,
+      "testsets": 2
+    },
+    "editor_transport": {
+      "passed": 3
+    },
+    "cli": {
+      "external_fixtures": 2,
+      "evaluation_verified": true,
+      "selftest_true_external_mismatch_exit_code": 1
+    }
+  },
+  "size": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 114,
+      "blank": 707,
+      "comment": 118,
+      "code": 13086
+    },
+    "cli_tui": {
+      "nFiles": 9,
+      "blank": 17,
+      "comment": 6,
+      "code": 741
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 236914,
+    "line_target_percent": 5.2344,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "vsix": {
+    "bytes": 312199,
+    "sha256": "8172d40644f31c11a34122b2f2ee131d4a30ae6ab8ab654aeaf50ab19a31b1ee",
+    "entries": 140,
+    "core_payload_files": 131,
+    "source_and_helpers_exact": true,
+    "installed_vsix_tested": false
+  },
+  "repository_discovery": {
+    "applications": 1,
+    "dependencies": 45,
+    "unknown": 0,
+    "strict_walk_complete": true
+  },
+  "storage": {
+    "one_main_checkout": true,
+    "directory_backups_created": 0,
+    "large_builds": false
+  },
+  "evidence": [
+    {
+      "path": "docs/validation/compute-016/core-regression.txt",
+      "sha256": "089a1a6c67fd176494db9fa778bbf8642e8df7063e1a400595b86282ac34e281",
+      "bytes": 28302
+    },
+    {
+      "path": "docs/validation/compute-016/isolated-analyzers.txt",
+      "sha256": "d62bbf54c6e3013e06595da98445fb936ca71f78e4871860056e57ade7b0bb06",
+      "bytes": 918
+    },
+    {
+      "path": "docs/validation/compute-016/mapping-audit.txt",
+      "sha256": "21a2ff8cada0c3d456883038d539919dfe976d2ae9375e2eb4278ec23310e2b0",
+      "bytes": 286
+    },
+    {
+      "path": "docs/validation/compute-016/actual-filter.txt",
+      "sha256": "6435649c56a03893429e754cd2012b84fbad26d35aa3c1edeaedc1755dfd47ab",
+      "bytes": 1421
+    },
+    {
+      "path": "docs/validation/compute-016/editor-transport.txt",
+      "sha256": "05b14dbb3a71fbd37d2f37624565c957849ff5f322de1c46950300aadd00243a",
+      "bytes": 813
+    },
+    {
+      "path": "docs/validation/compute-016/vsix-package.txt",
+      "sha256": "b8e8f514f9af0d7eaa143ad6955de997fc4cd7a2ece314fbfaa1499d124d234d",
+      "bytes": 824
+    },
+    {
+      "path": "docs/validation/compute-016/repository-discovery.txt",
+      "sha256": "005e6abb3bc75ef6e744591646d58f8673a3647ab53c0b1021259524483f6213",
+      "bytes": 84
+    },
+    {
+      "path": "docs/validation/compute-016/cli-evaluate.txt",
+      "sha256": "a9d9370089d7b67889b03ef8dfeccd9e95af00a37e04cbd56a7918fcaa509cbe",
+      "bytes": 2766
+    },
+    {
+      "path": "docs/validation/compute-016/cli-validation-rejected.txt",
+      "sha256": "4d7f05b0f05d0830ea8e64af082c793a034fc85e84423e9d82ad4e57dc4f654e",
+      "bytes": 2320
+    }
+  ]
+}

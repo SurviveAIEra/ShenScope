@@ -1,0 +1,19 @@
+{
+  "name": "symbol_counts",
+  "description": "Count explicitly supplied symbol facts by kind, with optional kind filtering.",
+  "source": "function analyze(data, request)\n    allowed = Set(get(request, \"kinds\", String[]))\n    counts = Dict{String,Int}()\n    for symbol in data[\"symbols\"]\n        kind = symbol[\"kind\"]\n        isempty(allowed) || kind in allowed || continue\n        counts[kind] = get(counts, kind, 0) + 1\n    end\n    Dict(\"counts_by_kind\" => counts, \"selected_symbols\" => sum(values(counts); init=0))\nend\nselftest() = analyze(Dict(\"symbols\" => []), Dict())[\"selected_symbols\"] == 0",
+  "tests": [
+    {
+      "name": "empty facts",
+      "data": {"symbols": []},
+      "request": {},
+      "expected": {"counts_by_kind": {}, "selected_symbols": 0}
+    },
+    {
+      "name": "kind selection",
+      "data": {"symbols": [{"kind": "file"}, {"kind": "function"}, {"kind": "function"}]},
+      "request": {"kinds": ["function"]},
+      "expected": {"counts_by_kind": {"function": 2}, "selected_symbols": 2}
+    }
+  ]
+}

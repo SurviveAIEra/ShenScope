@@ -85,7 +85,9 @@ utcstamp() = Dates.format(now(UTC), dateformat"yyyy-mm-ddTHH:MM:SS.sss") * "Z"
 plain(x::JSON3.Object) = Dict{String,Any}(String(k) => plain(v) for (k,v) in pairs(x))
 plain(x::JSON3.Array) = Any[plain(v) for v in x]
 plain(x) = x
-parsejson(s) = plain(JSON3.read(s))
+parsejson(s::AbstractString) = plain(JSON3.read(codeunits(s)))
+parsejson(s::AbstractVector{UInt8}) = plain(JSON3.read(s))
+parsejson(s::IO) = parsejson(read(s))
 
 function canonical(x)
     if x isa AbstractDict

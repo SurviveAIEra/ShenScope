@@ -28,6 +28,28 @@ Revisions, repository URLs, licenses and inspected paths are pinned in
 `reference_lockfile.json`. Test names below refer to executable repository tests.
 The listed behavior covers specific observations, not all upstream advantages.
 
+## Isolated analyzer checkpoint source observations
+
+Checkpoint 016 revisits all seven primary agents and the Julia-specific
+references. These are selected source reviews. No implementation is copied or
+translated, and no full upstream synthesis is claimed.
+
+| Source read | Design observation | Independent implementation or remaining difference |
+|---|---|---|
+| Codex `linux-sandbox/src/landlock.rs` | Filesystem enforcement, synchronized seccomp and no-new-privileges are OS concerns | Compute-specific default-deny seccomp after trusted bootstrap, descriptor/mapping audit and direct-call tests; workspace-write tool isolation remains pending |
+| OpenCode `plugin/loader.ts` | Resolution, compatibility, loading and operational failure have separate stages | Candidate registration, method contract, selftest, external validation and evaluation are distinct; installable package lifecycle is pending |
+| DeepSeek `fs-sandbox/src/containment.ts` | Canonical paths and filesystem identity matter | Bounded confined source reads, symlink rejection and launcher/source identity checks; platform-specific filesystem sandbox policy remains pending |
+| Pi `coding-agent/examples/extensions/sandbox/index.ts` | Extension execution combines OS restrictions with timeout, cancellation and output ownership | Owned bounded compute process, linked cancellation and shared budget; arbitrary extension commands are not covered by this compute profile |
+| Kimi `runtime/runtimeUnitHost.ts`, `runtimeRegistry.ts` | Generations stage publication and own resources through retirement | Session-owned candidate versions, explicit selection and bounded in-flight leases; full generation draining/package lifecycle is pending |
+| ZCode `core/src/repl/node-repl-session.ts`, `contracts/src/tools/eval-workflow-snippet.ts` | Generated producer metadata is untrusted; snippets have explicit source and output contracts | Parent-owned identity, independent fixture comparison, strict frames and untrusted timing labels; richer REPL/browser features remain pending |
+| Qwen `cli/src/config/extension-runtime-reload.ts`, `execution-sandbox-settings.ts` | Reload phases and operator sandbox policy have explicit semantics | Registration does not replace selected code; failed isolation rejects evaluation; general tool policy and package reload remain pending |
+| Kaimon `src/kaimon_eval.jl`; AgentREPL `src/tools.jl`; JuliaMCP `src/tool_handlers.jl` | Evaluation requires bounded output and explicit worker/runtime contracts | Child Module with `invokelatest`, structured results and kernel restrictions; persistent trusted REPL introspection is a separate extension surface |
+
+Handoff V3 sections 12.3/14.6 and IDE continuation V3 sections 19/34/35 govern
+these contracts. Historical claims of six analyzers and Linux seccomp evidence
+are not imported as current results. Checkpoint 016 records runnable evidence;
+graph provenance, archive/promotion/rollback and dedicated editor controls follow.
+
 | Primary agent | Actual source observation | Independent Julia behavior and verification | Material work still missing |
 |---|---|---|---|
 | Codex | `core/src/guardian/request_budget.rs` estimates assembled history, instructions and tool metadata; `ext/agent-message-board/src/api.rs` separates durable acceptance from read acknowledgement, scopes caller membership and bounds paging | `Models/Requests.jl` estimates assembled requests; `Security/Budgets.jl` shares reservations; parent/child identity and concurrent accounting tests in `unit/foundation.jl`; workflow scope and bounded detached pages in `unit/tasks.jl` | Real OS sandbox integration, full approval modes, retained-evidence restoration, message-board subscriptions/tombstones and mature TUI workflow |

@@ -11,9 +11,12 @@ include("Runtime/UTF8.jl")
 include("Security/Budgets.jl")
 include("Security/Permissions.jl")
 include("Runtime/Context.jl")
+include("Security/ComputeLimits.jl")
+include("Security/ComputeSeccomp.jl")
 include("Security/Files.jl")
 include("Storage/Journal.jl")
 include("Storage/JSON.jl")
+include("Security/ComputeProtocol.jl")
 include("Storage/AtomicStreams.jl")
 include("Storage/Staging.jl")
 include("Storage/JournalStream.jl")
@@ -47,6 +50,12 @@ include("ProjectData/WatchSnapshots.jl")
 include("ProjectData/WatchBatches.jl")
 include("ProjectData/WatchRuntime.jl")
 include("Analysis/Builtin.jl")
+include("Analysis/IsolatedWorker.jl")
+include("Runtime/ComputeProcess.jl")
+include("Analysis/Definitions.jl")
+include("Analysis/Registry.jl")
+include("Analysis/ExternalTests.jl")
+include("Tools/Analyzers.jl")
 include("Tools/Project.jl")
 include("Extensions/Contracts.jl")
 include("Extensions/CompilerDiagnostics.jl")
@@ -124,6 +133,9 @@ export SymbolId, SourceRange, SourceMap, CodeSymbol, Relation, FileFacts, CallRe
     graph_snapshot, graph_search, graph_traverse, ProjectTool, ImpactAnalyzer,
     TestSelectionAnalyzer, ArchitectureAnalyzer, analyze, analyzer_name, requirements
 export compact_project!, project_fingerprint
+export ComputeLimits, AnalyzerTestCase, AnalyzerDefinition, AnalyzerManager, AnalyzersTool,
+    register_analyzer!, analyzer_list, analyzer_inspect, select_analyzer!, remove_analyzer!,
+    validate_analyzer!, evaluate_analyzer!, cancel_analyzer!, cleanup_analyzers!, run_isolated_compute
 export ProjectWatchOptions, ProjectWatch, start_project_watch, stop_project_watch!,
     project_watch_status, refresh_project_watch!
 
@@ -177,6 +189,7 @@ include("CLI/MCP.jl")
 include("CLI/Skills.jl")
 include("CLI/Hooks.jl")
 include("CLI/Context.jl")
+include("CLI/Analyzers.jl")
 include("CLI/TUI.jl")
 main(args=ARGS)=cli_main(args)
 

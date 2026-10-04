@@ -13,6 +13,7 @@ jobs:
         with:
           version: '1.11'
       - uses: julia-actions/cache@v2
+      - run: sudo apt-get update && sudo apt-get install -y libseccomp2
       - run: julia --project=. -e 'using Pkg; Pkg.instantiate()'
       - run: julia --startup-file=no --threads=4 --project=. test/runtests.jl
       - run: python test/integration/tui_pty.py

@@ -20,7 +20,7 @@ function bounded_json_object(raw::AbstractString; maximum=1024 * 1024, max_depth
                 after = index + 1
                 while after <= length(bytes) && bytes[after] in (0x20, 0x09, 0x0a, 0x0d); after += 1; end
                 if !isempty(containers) && containers[end] == 0x7b && after <= length(bytes) && bytes[after] == 0x3a
-                    key = try String(JSON3.read(String(copy(bytes[quote_start:index])))) catch; reject("Invalid JSON object key") end
+                    key = try String(JSON3.read(copy(bytes[quote_start:index]))) catch; reject("Invalid JSON object key") end
                     key in fields[end] && reject("Duplicate JSON object fields are not allowed")
                     push!(fields[end], key)
                 end

@@ -150,10 +150,12 @@ end
 
 function capability_manifest()
     Dict("agent"=>true,"streaming_protocols"=>["openai_chat","openai_responses","anthropic","gemini","ollama"],
-        "tools"=>["read","search","edit","write","patch","process","git","memory","project","diagnostics","tasks","mcp","skills","hooks","context"],"session_journal"=>true,"memory"=>true,
+        "tools"=>["read","search","edit","write","patch","process","git","memory","project","diagnostics","analyzers","tasks","mcp","skills","hooks","context"],"session_journal"=>true,"memory"=>true,
         "permission_approvals"=>true,"config_profiles"=>true,"os_isolation"=>false,
         "mcp"=>true,"mcp_transports"=>["stdio","streamable_http"],"skills"=>true,"hooks"=>true,"project_intelligence"=>true,
-        "durable_tasks"=>true,"dynamic_analyzers"=>false,"context_checkpoints"=>true,"context_recovery"=>true)
+        "durable_tasks"=>true,"dynamic_analyzers"=>true,"context_checkpoints"=>true,"context_recovery"=>true,
+        "isolated_compute"=>Dict("dependency_available"=>compute_seccomp_available(),"backend"=>"linux-seccomp-compute-v1",
+            "enforcement_checked_per_child"=>true,"host_tools_isolated"=>false))
 end
 
 function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
@@ -329,6 +331,7 @@ function stop_server!(server::CoreServer)
     cleanup_context!(server_context_tool(server).manager)
     for tool in server.tools
         tool isa ProjectTool && cleanup_projects!(tool.manager)
+        tool isa AnalyzersTool && cleanup_analyzers!(tool.manager)
         tool isa ProcessTool || continue
         for id in keys(server.contexts);cleanup_processes!(tool.manager,id);end
     end

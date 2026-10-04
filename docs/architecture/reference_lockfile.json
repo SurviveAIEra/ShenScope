@@ -20,7 +20,8 @@
       "codex-rs/core/src/tools/handlers/tool_search.rs",
       "codex-rs/core/src/tools/handlers/tool_search_spec.rs",
       "codex-rs/core/src/unified_exec/async_watcher.rs",
-      "codex-rs/app-server/src/fs_watch.rs"
+      "codex-rs/app-server/src/fs_watch.rs",
+      "codex-rs/linux-sandbox/src/landlock.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -48,7 +49,8 @@
       "packages/opencode/src/lsp/client.ts",
       "packages/opencode/src/tool/lsp.ts",
       "packages/app/src/context/file/watcher.ts",
-      "packages/schema/src/filesystem-watcher.ts"
+      "packages/schema/src/filesystem-watcher.ts",
+      "packages/opencode/src/plugin/loader.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -80,7 +82,8 @@
       "packages/lsp/lsp-stdio/src/framing.ts",
       "docs/subsystems/lsp.md",
       "packages/fs/fs/src/index.ts",
-      "packages/fs/fs-local/src/index.ts"
+      "packages/fs/fs-local/src/index.ts",
+      "packages/fs/fs-sandbox/src/containment.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -108,7 +111,8 @@
       "packages/coding-agent/src/core/compaction/compaction.ts",
       "packages/coding-agent/src/core/compaction/utils.ts",
       "packages/coding-agent/src/core/tools/read.ts",
-      "packages/coding-agent/src/utils/fs-watch.ts"
+      "packages/coding-agent/src/utils/fs-watch.ts",
+      "packages/coding-agent/examples/extensions/sandbox/index.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -135,7 +139,9 @@
       "packages/agent-core-v2/src/workspace/workspaceInstructions/workspaceInstructionsService.ts",
       "packages/agent-core-v2/src/agent/tools/os/read/read.ts",
       "packages/minidb/src/snapshot.ts",
-      "packages/agent-core-v2/src/app/watch/configSection.ts"
+      "packages/agent-core-v2/src/app/watch/configSection.ts",
+      "packages/agent-core-v2/src/runtime/runtimeUnitHost.ts",
+      "packages/agent-core-v2/src/runtime/runtimeRegistry.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -159,7 +165,9 @@
       "apps/zcode-cli/packages/core/src/compact/microcompact.ts",
       "apps/zcode-cli/packages/core/src/tool/read-file-state.ts",
       "packages/services/src/fileWatcher/fileWatcher.ts",
-      "packages/services/src/fileWatcher/fileWatcherService.ts"
+      "packages/services/src/fileWatcher/fileWatcherService.ts",
+      "apps/zcode-cli/packages/core/src/repl/node-repl-session.ts",
+      "apps/zcode-cli/packages/contracts/src/tools/eval-workflow-snippet.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -185,7 +193,9 @@
       "packages/core/src/lsp/LspResponseNormalizer.ts",
       "packages/core/src/lsp/native-lsp-service.ts",
       "packages/core/src/managed-runtime/managed-session-record-sink.ts",
-      "packages/cli/src/config/lsp-config-watcher.ts"
+      "packages/cli/src/config/lsp-config-watcher.ts",
+      "packages/cli/src/config/extension-runtime-reload.ts",
+      "packages/cli/src/config/execution-sandbox-settings.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -352,7 +362,8 @@
     "inspected_paths": [
       "README.md",
       "src/mcp_protocol.jl",
-      "src/watcher.jl"
+      "src/watcher.jl",
+      "src/tool_handlers.jl"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -367,7 +378,8 @@
     "license": "MIT",
     "inspected_paths": [
       "README.md",
-      "src/security.jl"
+      "src/security.jl",
+      "src/kaimon_eval.jl"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -382,7 +394,8 @@
     "license": "Apache-2.0",
     "inspected_paths": [
       "README.md",
-      "src/worker.jl"
+      "src/worker.jl",
+      "src/tools.jl"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

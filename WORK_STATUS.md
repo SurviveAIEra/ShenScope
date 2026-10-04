@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 12,201 authored Julia Core code lines across 105 files;
-CLI/TUI add 702 lines and are counted separately. This is 4.8804% of the
-minimum line target, leaving 237,799 lines. These are early implementations,
+Latest cloc 2.11 count: 13,086 authored Julia Core code lines across 114 files;
+CLI/TUI add 741 lines and are counted separately. This is 5.2344% of the
+minimum line target, leaving 236,914 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -34,7 +34,7 @@ Workbench/shared-process overlay passes the complete upstream client typecheck
 and a real GUI HTTP/tool/approval/file-write test with extensions disabled.
 This is a development desktop runtime, not a completed desktop distribution.
 Full built-in-extension packaging and Windows installer validation are pending.
-MCP integration is now verified below; real OS isolation remains unfinished.
+MCP integration and isolated compute are verified below; general host-tool OS isolation remains unfinished.
 Core remains far below the 250,000-line delivery target.
 
 Storage hardening: atomic replacement now uses OS replacement primitives;
@@ -248,3 +248,26 @@ complete bounded HTTP error reads when headers/body arrive in separate packets.
 No installed-VSIX, Windows, large-project or live-model result is inferred.
 Work continues with OS-isolated Julia analyzers, selftests, archival/promotion
 and runtime integration. The minimum Core size goal remains unmet.
+
+Isolated analyzer checkpoint 016: actual Linux x86_64 synchronized seccomp with
+no-new-privileges, inherited-descriptor closure, descriptor/shared-mapping audit,
+CPU/address-space/output/time bounds and owned cleanup. Dynamic code is only
+delivered after trusted bootstrap enforcement. Direct open/write/socket/exec/
+fork/unlink/rename/mkdir/dup/tracing/cross-process signal calls are denied.
+Latest-world reflection and invocation solve Julia dynamic method admission.
+External fixtures are compared by Core; self-reported selftest alone is not
+validation. Versioned registrations are session scoped, bounded and explicitly
+selected. Agent tool and CLI use the same implementation.
+
+Validation: affected Core 13,676 passing assertions across 115 testsets, including
+12,050 coordinate property checks and 1,626 other assertions. Final targeted
+isolation/registry/external-test suites pass 163 assertions; final shared-map
+unit run passes 43 (overlapping) assertions. Three actual editor transport tests
+pass. CLI compares two external fixtures and evaluates symbol-kind facts. VSIX
+includes byte-identical authored Core/helpers; installed-package and Windows
+validation are not claimed. Evidence: isolated-analyzers-checkpoint-016.json.
+
+Next: project-backed dynamic analysis with parent-owned evidence/confidence,
+source archives and CAS promotion/rollback, async RPC and both IDE clients.
+Continue remaining model/runtime/session/MCP/tool work toward 250,000 Core LOC;
+this tested checkpoint is not completion of the whole request.

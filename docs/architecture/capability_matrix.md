@@ -77,3 +77,10 @@ source reads and freshness; no LSP subsystem is invented for them. Journal/cache
 compaction and saved-source watching are verified in checkpoints 014/015. Large
 graph evidence, multi-project/other-language semantics, rename and native Problems
 integration remain pending.
+
+Isolated compute checkpoint 016 adds source observations for all seven primary
+agents and Kaimon/AgentREPL/JuliaMCP. Actual Linux x86_64 seccomp and descriptor/
+mapping restrictions, strict bounded IPC, cancellation/revocation, World Age
+reflection and external test comparison are verified. Candidates remain session
+scoped. General host-tool sandbox, graph provenance, archival promotion/rollback,
+Windows security and dedicated editor analyzer controls remain pending.

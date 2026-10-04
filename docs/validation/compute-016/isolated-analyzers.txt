@@ -1,0 +1,15 @@
+Precompiling ShenScope...
+   8011.1 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 8 seconds. 39 already precompiled.
+Test Summary:                            | Pass  Total  Time
+Compute limits and strict in-memory JSON |   39     39  5.2s
+Test Summary:                             | Pass  Total   Time
+Analyzer definitions and session registry |   39     39  17.1s
+Test Summary:                         | Pass  Total   Time
+Actual Julia compute kernel isolation |   36     36  11.4s
+Test Summary:                             | Pass  Total   Time
+Compute rejection, capacity and lifecycle |   28     28  48.3s
+Test Summary:                                                | Pass  Total   Time
+Inherited descriptors, running cancellation and output flood |    9      9  24.3s
+Test Summary:                               | Pass  Total   Time
+External analyzer tests are checked by Core |   12     12  23.2s
