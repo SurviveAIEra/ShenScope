@@ -246,3 +246,29 @@ tests cover the selected behavior. These remain partial reviews and small Linux
 evidence, not a complete synthesis of every upstream advantage or a performance
 claim. Native retry/backpressure enhancements and larger projects remain future
 research. The Core target is still unmet.
+
+
+## Provider directory and counting synthesis
+
+Checkpoint 018 reviews selected source sections in every primary agent, at the
+revisions recorded in `reference_lockfile.json`. This is additional partial
+source evidence, not a claim that each project has been comprehensively read.
+All directory, HTTP, counting and ownership code is independently authored Julia.
+
+| Primary source | Observed design | ShenScope implementation | Remaining scope |
+|---|---|---|---|
+| Codex `context/world_state/model_catalog.rs` | Bounded stable catalogs and display eligibility should not rewrite prior context | Directory discovery is explicit and never replaces configured selection or history | Picker eligibility and historical shown-catalog integration |
+| OpenCode `provider/provider.ts` model schema | Provider identity, wire configuration, feature declarations and limits are separate fields | Protocol/source identity and field provenance; input/context/output limits separate | Provider presets, transforms, pricing and routing |
+| DeepSeek Harness `llm-pi-ai/src/catalog.ts` | Strict/deferred validation, field overrides and duplicate-ID invalidation | Per-entry diagnostics, duplicate invalidation including malformed duplicates, atomic page publication | Deferred profile activation and effective override resolution |
+| Pi `models-store.ts`, `models.ts` | Snapshot ownership, check time/ETag, effective credentials and abort signals | Conversation/source/credential-scoped snapshots, single-page validators and cancellation | Durable cache, configurable listing strategies and import/export |
+| Kimi `modelsDevImport.ts` | Imported endpoint/model declarations retain reasons and explicit capability metadata | Unknown capabilities stay unknown; no name-based capability or cost guesses | Reviewed catalog import and provider dialect policies |
+| ZCode `runtime/model-selection.ts` | Provider/model/options belong to an explicit selection value | Configured model and discovered directory remain separate immutable reports | Role routing and selected-option compatibility |
+| Qwen `model-catalog-refresh.ts` | Bundled/remote freshness, normalized conflicts, positive limits and absent modality semantics | Bounded TTL cache, invalid-ID exclusion, finite positive declared capacities | Bundled catalog reconciliation and multimodal declarations |
+
+Actual Anthropic/Gemini token-count bodies are built from the same Core request
+assemblers as inference, with immutable logical-request credentials. Other
+protocols receive a clearly labeled local heuristic when `auto` is used; 404 is
+an explicit fallback, while auth/malformed/transport failures remain visible.
+Counts are not inference usage or evidence of tokenizer/billing exactness.
+Core API and both actual editor clients exercise owned jobs and permissions.
+See `docs/core/models.md` and checkpoint 018 validation for precise evidence.

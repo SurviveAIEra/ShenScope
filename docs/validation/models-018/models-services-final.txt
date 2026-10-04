@@ -1,0 +1,79 @@
+Precompiling ShenScope...
+   6483.2 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 7 seconds. 39 already precompiled.
+[ Info: Listening on: 127.0.0.1:38361, thread id: 1
+[ Info: Server on 127.0.0.1:38361 closing
+[ Info: Listening on: 127.0.0.1:45763, thread id: 2
+[ Info: Server on 127.0.0.1:45763 closing
+[ Info: Listening on: 127.0.0.1:35059, thread id: 1
+[ Info: Server on 127.0.0.1:35059 closing
+[ Info: Listening on: 127.0.0.1:43019, thread id: 2
+[ Info: Server on 127.0.0.1:43019 closing
+[ Info: Listening on: 127.0.0.1:45925, thread id: 1
+[ Info: Server on 127.0.0.1:45925 closing
+[ Info: Listening on: 127.0.0.1:34857, thread id: 1
+[ Info: Server on 127.0.0.1:34857 closing
+[ Info: Listening on: 127.0.0.1:33463, thread id: 1
+[ Info: Server on 127.0.0.1:33463 closing
+[ Info: Listening on: 127.0.0.1:36103, thread id: 1
+[ Info: Server on 127.0.0.1:36103 closing
+[ Info: Listening on: 127.0.0.1:36549, thread id: 1
+[ Info: Server on 127.0.0.1:36549 closing
+[ Info: Listening on: 127.0.0.1:45319, thread id: 1
+[ Info: Server on 127.0.0.1:45319 closing
+[ Info: Listening on: 127.0.0.1:45419, thread id: 1
+[ Info: Server on 127.0.0.1:45419 closing
+[ Info: Listening on: 127.0.0.1:46765, thread id: 2
+[ Info: Server on 127.0.0.1:46765 closing
+[ Info: Listening on: 127.0.0.1:33935, thread id: 1
+[ Info: Server on 127.0.0.1:33935 closing
+[ Info: Listening on: 127.0.0.1:39303, thread id: 1
+[ Info: Server on 127.0.0.1:39303 closing
+[ Info: Listening on: 127.0.0.1:42483, thread id: 2
+[ Info: Server on 127.0.0.1:42483 closing
+[ Info: Listening on: 127.0.0.1:46779, thread id: 2
+[ Info: Server on 127.0.0.1:46779 closing
+[ Info: Listening on: 127.0.0.1:41945, thread id: 1
+[ Info: Server on 127.0.0.1:41945 closing
+[ Info: Listening on: 127.0.0.1:46349, thread id: 1
+[ Info: Server on 127.0.0.1:46349 closing
+[ Info: Listening on: 127.0.0.1:41443, thread id: 1
+[ Info: Server on 127.0.0.1:41443 closing
+[ Info: Listening on: 127.0.0.1:38603, thread id: 4
+arguments: arguments.limit is out of range
+input: --offset requires a nonnegative integer
+permission: Path escapes workspace
+arguments: arguments.mode has an unsupported value
+catalog: Model is not in this conversation's catalog
+arguments: JSON source is incomplete
+[ Info: Server on 127.0.0.1:38603 closing
+Test Summary:                                                                            | Pass  Total  Time
+Bounded JSON encoding matches canonical wire data and rejects before unbounded traversal |   96     96  3.2s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  2.6s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  1.4s
+Test Summary:                                                             | Pass  Total  Time
+Provider catalog fields preserve unknowns, provenance and conflicting IDs |   40     40  4.7s
+Test Summary:                                                                    | Pass  Total  Time
+Token-count inputs validate roles/tools and estimate without reading credentials |   12     12  7.1s
+Test Summary:                                                            | Pass  Total   Time
+Real model catalog protocols snapshot credentials and confine every page |   55     55  10.4s
+Test Summary:                                                                  | Pass  Total  Time
+Catalog TTL, ETag validation, failure preservation, ownership and cancellation |   15     15  1.1s
+Test Summary:                                                                      | Pass  Total  Time
+Real provider token-count bodies preserve actual input and one credential snapshot |   17     17  1.5s
+Test Summary:                                                                       | Pass  Total  Time
+Token-count API does not hide authentication, malformed counts or missing endpoints |    5      5  0.5s
+Test Summary:                                                     | Pass  Total  Time
+Model services bound declared/chunked bodies and reject redirects |    9      9  0.5s
+Test Summary:                                                               | Pass  Total  Time
+Model service blocked reads retire on cancellation, revocation and deadline |   18     18  3.2s
+Test Summary:                                                                      | Pass  Total  Time
+Single refresh approval covers pages and scope checks prevent reusing it elsewhere |    4      4  0.5s
+Test Summary:                                                                               | Pass  Total  Time
+Catalog capacity failure preserves the prior snapshot and scoped cleanup preserves siblings |    8      8  1.0s
+Test Summary:                                                            | Pass  Total   Time
+Model RPC owns operations, approvals, caches and configuration lifecycle |   40     40  32.8s
+Test Summary:                                                       | Pass  Total   Time
+Model CLI uses bounded explicit input and honest stateless catalogs |   13     13  23.4s

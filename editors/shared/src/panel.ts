@@ -77,6 +77,13 @@ export class ShenScopePanel {
     private analyzerName = '';
     private analyzerSourcePath = '';
     private analyzerArchiveOffsets = { project: 0, user: 0 };
+    private modelsJob?: string;
+    private modelsStarting = false;
+    private modelsResult?: { action: string; result: any };
+    private completedModelJobs = new Set<string>();
+    private modelsOffset = 0;
+    private modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
+    private modelCountMode = 'auto';
     private analyzerTests = '[{"name":"empty graph","data":{"symbols":[],"relations":[],"seed_ids":[],"truncated":false},"request":{},"expected":{"candidates":[],"notes":[],"truncated":false}}]';
     constructor(private readonly root: HTMLElement, private readonly bridge: PanelBridge) {
         root.classList.add('shenscope-panel');
@@ -87,7 +94,7 @@ export class ShenScopePanel {
             const button = this.button(label, () => this.selectTab(name), 'nav-button', glyph); this.navigation.set(name, button); nav.append(button);
         }
         const more = el('select', '', 'more-views'); more.setAttribute('aria-label', 'More views');
-        for (const name of ['More', 'Settings', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context', 'Analyzers']) { const option = el('option', name); option.value = name; more.append(option); }
+        for (const name of ['More', 'Settings', 'Models', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context', 'Analyzers']) { const option = el('option', name); option.value = name; more.append(option); }
         more.addEventListener('change', () => { if (more.value !== 'More') { void this.guard(() => this.selectTab(more.value)); } more.value = 'More'; }); nav.append(more);
         this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite'); this.notice.setAttribute('role', 'alert'); this.notice.hidden = true;
         root.append(header, nav, this.notice, this.approvals, this.content, this.status);
@@ -124,6 +131,7 @@ export class ShenScopePanel {
     private async selectTab(name: string): Promise<void> { this.tab = name; await this.renderTab(); }
     private async newConversation(): Promise<void> {
         if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
+        this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
         this.sessionId = undefined; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
@@ -147,11 +155,12 @@ export class ShenScopePanel {
     private updateActions(): void {
         if (!this.sendButton || !this.cancelButton) { return; } const label = this.active ? 'Send guidance' : 'Send message';
         this.sendButton.setAttribute('aria-label', label); this.sendButton.title = `${label} (Ctrl / ⌘ Enter)`;
-        this.sendButton.disabled = !this.config || !this.composer.value.trim() || !!this.hooksJob || this.hooksStarting || !!this.contextJob || this.contextStarting || !!this.analyzersJob || this.analyzersStarting; this.cancelButton.hidden = !this.active;
+        this.sendButton.disabled = !this.config || !this.composer.value.trim() || !!this.hooksJob || this.hooksStarting || !!this.contextJob || this.contextStarting || !!this.analyzersJob || this.analyzersStarting || !!this.modelsJob || this.modelsStarting; this.cancelButton.hidden = !this.active;
         this.composer.placeholder = this.active ? 'Guide the running task…' : 'Ask, plan, or build something…';
     }
     private async send(): Promise<void> {
         await this.guard(async () => {
+            if (this.modelsJob || this.modelsStarting) { throw new Error('Finish or cancel the model operation before sending a message.'); }
             if (this.analyzersJob || this.analyzersStarting) { throw new Error('Finish or cancel the analyzer operation before sending a message.'); }
             const prompt = this.composer.value.trim(); if (!prompt || !this.config) { return; } this.notice.hidden = true;
             if (this.active && this.sessionId) { await this.bridge.request('agent/steer', { session_id: this.sessionId, prompt }); this.addMessage('steering', prompt); this.composer.value = ''; this.updateActions(); return; }
@@ -181,6 +190,7 @@ export class ShenScopePanel {
         if (this.tab === 'Hooks' && this.capabilities.hooks) { await this.hooks(revision); return; }
         if (this.tab === 'Context' && this.capabilities.context_checkpoints) { await this.contextView(revision); return; }
         if (this.tab === 'Analyzers' && this.capabilities.dynamic_analyzers) { await this.analyzersView(revision); return; }
+        if (this.tab === 'Models' && this.capabilities.model_catalog) { await this.modelsView(revision); return; }
         this.content.append(el('h2', this.tab === 'Intelligence' ? 'Project intelligence' : this.tab, 'view-title'));
         if (this.tab === 'Tools') {
             const tools = await this.bridge.request('tools/list'); if (revision !== this.renderRevision) { return; }
@@ -195,7 +205,7 @@ export class ShenScopePanel {
             }
             const details = el('details', '', 'diagnostics'); details.append(el('summary', 'Runtime details'), el('pre', JSON.stringify(runtime, null, 2))); this.content.append(details); return;
         }
-        const capability: Record<string, string> = { Intelligence: 'project_intelligence', MCP: 'mcp', Skills: 'skills', Hooks: 'hooks' };
+        const capability: Record<string, string> = { Intelligence: 'project_intelligence', MCP: 'mcp', Skills: 'skills', Hooks: 'hooks', Models: 'model_catalog' };
         const card = el('section', '', 'empty-state'); card.append(icon(this.tab === 'Intelligence' ? 'graph' : 'tool'), el('h3', this.capabilities[capability[this.tab]] ? 'Available' : 'Coming together'), el('p', this.capabilities[capability[this.tab]] ? 'Connected to this workspace.' : 'This capability is still in development. You can keep working in Chat.')); this.content.append(card);
     }
     private async history(revision: number): Promise<void> {
@@ -208,6 +218,7 @@ export class ShenScopePanel {
             for (const session of sessions) {
                 const row = el('article', '', 'session-card'); const open = this.button(session.title, async () => {
                     if (this.analyzersBusy()) { throw new Error('Finish the current task before switching conversations.'); }
+                    this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
                     const openingRevision = this.renderRevision; this.sessionId = session.id; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 };
                     const full = await this.bridge.request('sessions/get', { session_id: session.id });
                     if (this.sessionId !== full.id) { return; }
@@ -307,7 +318,64 @@ export class ShenScopePanel {
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
         }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
     }
-    private contextBusy(): boolean { return this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob; }
+    private contextBusy(): boolean { return this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || !!this.modelsJob || this.modelsStarting; }
+    private modelsBusy(): boolean { return this.contextBusy() || !!this.analyzersJob || this.analyzersStarting; }
+    private async startModels(action: string, args: Record<string, unknown> = {}): Promise<void> {
+        if (this.modelsBusy()) { throw new Error('Finish or cancel the current operation before working with models.'); }
+        this.modelsStarting = true; this.modelsResult = undefined;
+        if (this.tab === 'Models') { for (const button of Array.from(this.content.querySelectorAll('button'))) { button.disabled = true; } }
+        this.updateActions();
+        try {
+            const session_id = await this.ensureSession('Model catalog');
+            const response = await this.bridge.request('models/start', { session_id, action, ...args });
+            if (!this.completedModelJobs.has(response.job_id)) { this.modelsJob = response.job_id; this.setStatus('Working with the model…'); }
+        } finally { this.modelsStarting = false; this.updateActions(); }
+        if (this.tab === 'Models') { await this.renderTab(); }
+    }
+    private async modelsView(revision: number): Promise<void> {
+        const session_id = await this.ensureSession('Model catalog');
+        const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Models'));
+        const refresh = this.button('Refresh provider models', () => this.startModels('refresh', { force: true }), 'primary-button'); refresh.disabled = this.modelsBusy(); heading.append(refresh); this.content.append(heading);
+        this.content.append(el('p', 'Browse models reported by your provider and measure an explicit request before using it.', 'view-description'));
+        if (this.modelsJob || this.modelsStarting) {
+            const operation = el('section', '', 'model-operation'); operation.append(el('span', 'Model operation in progress', 'running-label'));
+            if (this.modelsJob) { operation.append(this.button('Cancel model operation', async () => { await this.bridge.request('models/cancel_job', { session_id, job_id: this.modelsJob }); })); } this.content.append(operation);
+        }
+        let snapshot: any;
+        try { snapshot = await this.bridge.request('models/query', { session_id, offset: this.modelsOffset }); }
+        catch { if (this.modelsResult?.action === 'list') { snapshot = { catalog: this.modelsResult.result, status: { count_modes: ['auto', 'estimate'] } }; } }
+        if (revision !== this.renderRevision) { return; }
+        if (!snapshot) { const load = this.button('Load model catalog', () => this.startModels('list')); load.disabled = this.modelsBusy(); this.content.append(load); return; }
+        const catalog = snapshot.catalog; const configured = catalog.configured;
+        const selected = el('section', '', 'model-card configured-model'); selected.append(el('span', 'Configured model', 'model-source'), el('h3', configured.id), el('small', this.config.provider.name));
+        selected.append(el('p', `${configured.context_window.toLocaleString()} context · ${configured.max_output.toLocaleString()} maximum output`, 'view-description')); this.content.append(selected);
+        if (catalog.failure) { this.content.append(el('p', catalog.failure, 'validation-error')); }
+        const directory = el('section', '', 'model-directory'); directory.append(el('h3', `Provider directory · ${catalog.total} models`));
+        directory.append(el('p', catalog.checked_at ? `${catalog.fresh ? 'Current cache' : 'Refresh recommended'} · checked ${catalog.checked_at}` : 'Refresh to load the provider directory.', 'view-description'));
+        for (const model of catalog.models ?? []) {
+            const card = el('article', '', 'model-card'); card.append(el('h4', model.name), el('code', model.id, 'model-id'));
+            const details = el('div', '', 'model-properties');
+            for (const [label, value] of [['Context', model.context_window], ['Input limit', model.max_input], ['Output limit', model.max_output]] as const) { const row = el('div'); row.append(el('span', label), el('span', value === null ? 'Not provided' : Number(value).toLocaleString())); details.append(row); }
+            for (const [key, label] of [['tools', 'Tool support'], ['reasoning', 'Reasoning'], ['vision', 'Images']]) { const row = el('div'); const value = model.features[key]; row.append(el('span', label), el('span', value === null ? 'Not provided' : value ? 'Reported supported' : 'Reported unsupported')); details.append(row); }
+            card.append(details); const inspect = this.button('Inspect model metadata', () => this.startModels('inspect', { model: model.id })); inspect.disabled = this.modelsBusy(); card.append(inspect); directory.append(card);
+        }
+        if (catalog.offset > 0) { const previous = this.button('Previous model page', async () => { this.modelsOffset = Math.max(0, catalog.offset - 50); await this.renderTab(); }); previous.disabled = this.modelsBusy(); directory.append(previous); }
+        if (catalog.next_offset !== null) { const next = this.button('Next model page', async () => { this.modelsOffset = catalog.next_offset; await this.renderTab(); }); next.disabled = this.modelsBusy(); directory.append(next); }
+        if (catalog.diagnostics?.length) { const diagnostics = el('details'); diagnostics.append(el('summary', `${catalog.diagnostics.length} model metadata issues`)); for (const item of catalog.diagnostics) { diagnostics.append(el('p', `${item.model_id ?? 'Entry'}: ${item.message}`, 'view-description')); } directory.append(diagnostics); }
+        const clear = this.button('Clear cached models', () => this.startModels('clear')); clear.disabled = this.modelsBusy(); directory.append(clear); this.content.append(directory);
+        const form = el('details', '', 'model-count-form'); form.append(el('summary', 'Measure a request'));
+        form.append(el('p', 'Enter the messages and tool schemas to measure. The configured model is used; this request does not generate a response.', 'view-description'));
+        const field = el('label', 'Request · JSON', 'field'); const request = el('textarea', '', 'model-request'); request.rows = 6; request.value = this.modelRequestText; request.setAttribute('aria-label', 'Model request to count'); request.addEventListener('input', () => { this.modelRequestText = request.value; }); field.append(request); form.append(field);
+        const modeField = el('label', 'Counting method', 'field'); const mode = el('select'); mode.setAttribute('aria-label', 'Model token counting method');
+        for (const [value, label] of [['auto', 'Automatic'], ['estimate', 'Local estimate'], ['provider', 'Provider token count']]) { if (!(snapshot.status.count_modes ?? []).includes(value)) { continue; } const option = el('option', label); option.value = value; option.selected = value === this.modelCountMode; mode.append(option); }
+        mode.addEventListener('change', () => { this.modelCountMode = mode.value; }); modeField.append(mode); form.append(modeField);
+        const count = this.button('Measure input tokens', () => this.startModels('count', { request: JSON.parse(request.value), mode: mode.value }), 'primary-button'); count.disabled = this.modelsBusy(); form.append(count); this.content.append(form);
+        if (this.modelsResult?.action === 'count') {
+            const report = this.modelsResult.result; const result = el('section', '', 'model-count-result'); result.append(el('h3', report.source === 'provider_api' ? 'Provider token count' : 'Estimated input'), el('strong', `${report.input_tokens.toLocaleString()} input tokens`, 'model-token-total'));
+            result.append(el('p', `${report.requested_output.toLocaleString()} output requested · ${report.within_configured_capacity ? 'Fits configured limits' : 'Exceeds configured limits'}`, report.within_configured_capacity ? 'analyzer-validation-pass' : 'validation-error'));
+            for (const message of [...report.capacity_violations, ...(report.limitations ?? []), ...(report.fallback_reason ? [report.fallback_reason] : [])]) { result.append(el('p', message, 'view-description')); } this.content.append(result);
+        } else if (this.modelsResult?.action === 'inspect') { const result = el('section', '', 'model-metadata'); result.append(el('h3', 'Model metadata'), el('pre', JSON.stringify(this.modelsResult.result, null, 2), 'analyzer-source')); this.content.append(result); }
+    }
     private analyzersBusy(): boolean { return this.contextBusy() || !!this.analyzersJob || this.analyzersStarting; }
     private async startAnalyzer(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.analyzersBusy()) { throw new Error('Finish or cancel the current operation before working with analyzers.'); }
@@ -976,6 +1044,17 @@ export class ShenScopePanel {
             if (params.kind === 'analyzers_job_completed') { this.analyzersResult = { action: payload.action, result: payload.result }; this.setStatus('Analyzer operation complete'); }
             else { this.analyzersResult = undefined; this.notice.textContent = payload.error ?? 'Analyzer operation failed'; this.notice.hidden = false; this.setStatus(payload.status === 'cancelled' ? 'Analyzer operation cancelled' : 'Analyzer operation failed'); }
             if (this.tab === 'Analyzers') { void this.guard(() => this.renderTab()); } this.updateActions(); return;
+        }
+        if (params.kind === 'models_job_completed' || params.kind === 'models_job_failed') {
+            this.completedModelJobs.add(payload.job_id); while (this.completedModelJobs.size > 64) { this.completedModelJobs.delete(this.completedModelJobs.values().next().value!); }
+            if (this.modelsJob === payload.job_id) { this.modelsJob = undefined; }
+            for (const card of Array.from(this.approvals.children)) {
+                const element = card as HTMLElement;
+                if (element.dataset.traceId === params.trace_id || (payload.permission_ids ?? []).includes(element.dataset.requestId)) { card.remove(); }
+            }
+            if (params.kind === 'models_job_completed') { this.modelsResult = { action: payload.action, result: payload.result }; this.setStatus('Model operation complete'); }
+            else { this.modelsResult = undefined; this.notice.textContent = payload.error ?? 'Model operation failed'; this.notice.hidden = false; this.setStatus(payload.status === 'cancelled' ? 'Model operation cancelled' : 'Model operation failed'); }
+            if (this.tab === 'Models') { void this.guard(() => this.renderTab()); } this.updateActions(); return;
         }
         if (params.kind === 'context_job_completed' || params.kind === 'context_job_failed') {
             this.completedContextJobs.add(payload.job_id); while (this.completedContextJobs.size > 64) { this.completedContextJobs.delete(this.completedContextJobs.values().next().value!); }

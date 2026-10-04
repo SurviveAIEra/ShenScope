@@ -1,0 +1,74 @@
+[ Info: Listening on: 127.0.0.1:42087, thread id: 1
+[ Info: Server on 127.0.0.1:42087 closing
+[ Info: Listening on: 127.0.0.1:42007, thread id: 4
+[ Info: Server on 127.0.0.1:42007 closing
+[ Info: Listening on: 127.0.0.1:45031, thread id: 2
+[ Info: Server on 127.0.0.1:45031 closing
+[ Info: Listening on: 127.0.0.1:39397, thread id: 2
+[ Info: Server on 127.0.0.1:39397 closing
+[ Info: Listening on: 127.0.0.1:41619, thread id: 3
+[ Info: Server on 127.0.0.1:41619 closing
+[ Info: Listening on: 127.0.0.1:38425, thread id: 1
+[ Info: Server on 127.0.0.1:38425 closing
+[ Info: Listening on: 127.0.0.1:39717, thread id: 1
+[ Info: Server on 127.0.0.1:39717 closing
+[ Info: Listening on: 127.0.0.1:45313, thread id: 1
+[ Info: Server on 127.0.0.1:45313 closing
+[ Info: Listening on: 127.0.0.1:39433, thread id: 1
+[ Info: Server on 127.0.0.1:39433 closing
+[ Info: Listening on: 127.0.0.1:37219, thread id: 1
+[ Info: Server on 127.0.0.1:37219 closing
+[ Info: Listening on: 127.0.0.1:39335, thread id: 3
+[ Info: Server on 127.0.0.1:39335 closing
+[ Info: Listening on: 127.0.0.1:38435, thread id: 3
+[ Info: Server on 127.0.0.1:38435 closing
+[ Info: Listening on: 127.0.0.1:46427, thread id: 1
+[ Info: Server on 127.0.0.1:46427 closing
+[ Info: Listening on: 127.0.0.1:34005, thread id: 1
+[ Info: Server on 127.0.0.1:34005 closing
+[ Info: Listening on: 127.0.0.1:42139, thread id: 1
+[ Info: Server on 127.0.0.1:42139 closing
+[ Info: Listening on: 127.0.0.1:41771, thread id: 1
+[ Info: Server on 127.0.0.1:41771 closing
+[ Info: Listening on: 127.0.0.1:43773, thread id: 1
+[ Info: Server on 127.0.0.1:43773 closing
+ERROR: LoadError: Some tests did not pass: 3 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/model_service_failures.jl:65
+Test Summary:                                                            | Pass  Total   Time
+Real model catalog protocols snapshot credentials and confine every page |   55     55  17.9s
+Test Summary:                                                                  | Pass  Total  Time
+Catalog TTL, ETag validation, failure preservation, ownership and cancellation |   15     15  1.5s
+Test Summary:                                                                      | Pass  Total  Time
+Real provider token-count bodies preserve actual input and one credential snapshot |   17     17  6.3s
+Test Summary:                                                                       | Pass  Total  Time
+Token-count API does not hide authentication, malformed counts or missing endpoints |    5      5  0.9s
+Test Summary:                                                     | Pass  Total  Time
+Model services bound declared/chunked bodies and reject redirects |    9      9  0.5s
+Test Summary:                                                               | Pass  Total  Time
+Model service blocked reads retire on cancellation, revocation and deadline |   18     18  3.4s
+Single refresh approval covers pages and scope checks prevent reusing it elsewhere: Test Failed at /workspace/ShenScope/test/integration/model_service_failures.jl:77
+  Expression: count((==)(:read), approved) == 1 && count((==)(:network), approved) == 1
+
+Stacktrace:
+  [1] macro expansion
+    @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+  [2] (::var"#59#63"{String, Vector{Symbol}})(endpoint::String)
+    @ Main /workspace/ShenScope/test/integration/model_service_failures.jl:77
+  [3] model_service_fixture(f::var"#59#63"{String, Vector{Symbol}}, handler::Function; stream::Bool)
+    @ Main /workspace/ShenScope/test/fixtures/model_services.jl:7
+  [4] model_service_fixture
+    @ /workspace/ShenScope/test/fixtures/model_services.jl:3 [inlined]
+  [5] #58
+    @ /workspace/ShenScope/test/integration/model_service_failures.jl:68 [inlined]
+  [6] mktempdir(fn::var"#58#62", parent::String; prefix::String)
+    @ Base.Filesystem ./file.jl:819
+  [7] mktempdir(fn::Function, parent::String)
+    @ Base.Filesystem ./file.jl:815
+  [8] macro expansion
+    @ /workspace/ShenScope/test/integration/model_service_failures.jl:66 [inlined]
+  [9] macro expansion
+    @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [10] top-level scope
+    @ /workspace/ShenScope/test/integration/model_service_failures.jl:66
+Test Summary:                                                                      | Pass  Fail  Total  Time
+Single refresh approval covers pages and scope checks prevent reusing it elsewhere |    3     1      4  2.0s

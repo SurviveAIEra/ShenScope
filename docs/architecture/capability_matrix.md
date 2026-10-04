@@ -89,3 +89,10 @@ RPC, CLI and shared native/VSIX controls. General host-tool sandbox, Windows
 security, automatic archive pruning and package/extension lifecycle remain
 pending. These selected implementations do not establish comprehensive upstream
 synthesis or completion of the 250,000-line Core gate.
+
+Model-services checkpoint 018 adds selected primary-source catalog observations
+for all seven main agents. Implemented scope is bounded five-protocol discovery,
+conversation/credential ownership, actual Anthropic/Gemini request counting,
+labeled local estimates and shared tool/CLI/RPC/editor interfaces. Persistent
+catalogs, exact tokenizers, model-role routing, circuit breakers and reviewed
+imports remain pending. See `docs/core/models.md` and the checkpoint evidence.

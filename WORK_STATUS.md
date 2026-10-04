@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 13,807 authored Julia Core code lines across 123 files;
-CLI/TUI add 784 lines and are counted separately. This is 5.5228% of the
-minimum line target, leaving 236,193 lines. These are early implementations,
+Latest cloc 2.11 count: 14,900 authored Julia Core code lines across 133 files;
+CLI/TUI add 824 lines and are counted separately. This is 5.96% of the
+minimum line target, leaving 235,100 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -296,3 +296,24 @@ automatic pruning and general host-tool isolation remain incomplete. Work
 continues with model discovery/counting/routing, runtime worker profiles and
 remaining analysis, session, tool and extension capabilities. The minimum Core
 size goal remains unmet.
+
+Model services checkpoint 018: bounded real model directories for five protocols,
+API-declared/unknown capability provenance, conversation/source/credential cache
+identity, paged atomic snapshots, TTL and correct single-page ETag validators.
+Actual Anthropic/Gemini token-count bodies and explicitly labeled local estimates
+share inference request assembly. Count results are not inference usage or
+billing receipts. Owned async jobs enforce scope/capacity/cancellation, config
+barriers, credential invalidation and nested permission ownership. The same
+services are available through tool, CLI, RPC and both actual IDE clients.
+
+Validation: affected Core 14,297 passing assertions; focused
+model services 355 assertions overlap that suite. Editor check/build, three
+Node/Core transport tests, full Workbench typecheck and actual native/VSIX GUI
+flows pass. Final VSIX byte equality is checked against all authored payload
+sources/assets. See docs/validation/model-services-checkpoint-018.json and
+docs/core/models.md. Failed attempts, the interrupted nested-approval diagnosis
+and one native concurrent-start timeout are retained. Catalog persistence,
+exact tokenizers, role routing, circuit breakers, live-provider checks and full
+desktop distribution remain pending. Development immediately continues with
+model request retry/health policy and the remaining agent/project/runtime scope.
+The minimum 250,000 Core lines remain an active, unmet delivery constraint.

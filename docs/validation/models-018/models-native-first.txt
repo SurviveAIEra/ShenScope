@@ -1,0 +1,65 @@
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Settings
+Models
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+Execution was cancelled
+Approval needed
+
+openai-compatible · network
+
+127.0.0.1
+
+Model catalog API request
+
+Allow once
+Allow session
+Deny
+Models
+Refresh provider models
+
+Browse models reported by your provider and measure an explicit request before using it.
+
+Configured model
+native-fixture
+openai-compatible
+
+128,000 context · 8,192 maximum output
+
+Execution was cancelled
+
+Provider directory · 0 models
+
+Refresh to load the provider directory.
+
+Clear cached models
+Measure a request
+Model operation cancelled
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+1 !== 0
+
+    at file:///workspace/ShenScope/ide/test/native_smoke.mjs:233:16 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

@@ -86,7 +86,7 @@ dispatch_ambiguities(;kwargs...)=dispatch_ambiguities(interface_functions();kwar
 
 function interface_catalog()
     types=DataType[ReadTool,SearchTool,EditTool,WriteTool,PatchTool,ProcessTool,GitTool,MemoryTool,ProjectTool,
-        HTTPProvider,MockProvider,GoASTBackend,TreeSitterBackend,CodeGraphBackend,TypeScriptSemanticBackend,ImpactAnalyzer,TestSelectionAnalyzer,ArchitectureAnalyzer,IsolatedJuliaAnalyzer,AnalyzersTool]
+        HTTPProvider,MockProvider,GoASTBackend,TreeSitterBackend,CodeGraphBackend,TypeScriptSemanticBackend,ImpactAnalyzer,TestSelectionAnalyzer,ArchitectureAnalyzer,IsolatedJuliaAnalyzer,AnalyzersTool,ModelsTool]
     isdefined(@__MODULE__,:DiagnosticsTool) && push!(types,DiagnosticsTool)
     contract_report.(types)
 end

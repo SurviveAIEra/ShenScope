@@ -34,6 +34,7 @@ const hooksOnly = process.argv.includes('--hooks-only');
 const contextOnly = process.argv.includes('--context-only');
 const semanticOnly = process.argv.includes('--semantic-only');
 const analyzersOnly = process.argv.includes('--analyzers-only');
+const modelsOnly = process.argv.includes('--models-only');
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
 const userSkillRoot = skillsOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-skills-')) : undefined;
@@ -42,7 +43,15 @@ const xvfb = spawn('/workspace/toolchains/xvfb/usr/bin/Xvfb', [display, '-screen
 const requests = [];
 const fixture = createServer(async (request, response) => {
     const chunks = []; for await (const chunk of request) { chunks.push(chunk); }
-    const body = JSON.parse(Buffer.concat(chunks).toString()); requests.push(body);
+    const raw = Buffer.concat(chunks).toString();
+    if (modelsOnly) {
+        const body = raw ? JSON.parse(raw) : undefined;
+        requests.push({ method: request.method, target: request.url, body });
+        response.writeHead(200, { 'Content-Type': 'application/json', ETag: '"model-fixture"' });
+        response.end(JSON.stringify(request.method === 'GET' ? { data: [{ id: 'catalog-first', display_name: 'First catalog model' }, { id: 'catalog-second', display_name: 'Second catalog model' }] } : { input_tokens: 17 }));
+        return;
+    }
+    const body = JSON.parse(raw); requests.push(body);
     if (contextOnly) {
         const input = JSON.parse(body.messages.find(message => message.role === 'user').content);
         const source = input.sources[0];
@@ -61,6 +70,9 @@ await new Promise(resolve => fixture.listen(0, '127.0.0.1', resolve));
 const port = fixture.address().port;
 const config = join(root, 'config.toml');
 await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[permissions]\nnetwork = 'allow'\nedit = 'ask'\n${skillsOnly ? `[skills]\nproject_roots = ['.shenscope/skills']\nuser_roots = ['${userSkillRoot}']\n` : ''}`);
+if (modelsOnly) {
+    await writeFile(config, `[provider]\nprotocol = 'anthropic'\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[permissions]\nnetwork = 'ask'\nedit = 'ask'\n`);
+}
 if (contextOnly) {
     await writeFile(config, (await readFile(config, 'utf8')) + `read = 'ask'\npersistence = 'ask'\n[context]\nuser_files = ['${join(userContextRoot, 'user.md')}']\n`);
     await writeFile(join(userContextRoot, 'user.md'), 'CONTEXT USER INSTRUCTION');
@@ -151,7 +163,7 @@ try {
     }
     await panel.getByText('Ready · native-fixture', { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -180,6 +192,48 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (modelsOnly) {
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Models');
+        await panel.getByText('Provider directory · 0 models', { exact: true }).waitFor();
+        await panel.getByRole('button', { name: 'Refresh provider models', exact: true }).click();
+        await approve(panel, 'openai-compatible · network', 'Allow once');
+        await panel.getByText('Provider directory · 2 models', { exact: true }).waitFor();
+        const cards = panel.locator('.model-directory .model-card');
+        assert.equal(await cards.count(), 2);
+        assert.ok((await cards.first().innerText()).includes('Not provided'));
+        assert.equal(await panel.locator('.configured-model h3').textContent(), 'native-fixture');
+        await waitEnabled(cards.first().getByRole('button', { name: 'Inspect model metadata', exact: true }));
+        await cards.first().getByRole('button', { name: 'Inspect model metadata', exact: true }).click();
+        await panel.getByRole('heading', { name: 'Model metadata', exact: true }).waitFor();
+        assert.ok((await panel.locator('.model-metadata').innerText()).includes('provider_api'));
+        const form = panel.locator('.model-count-form');
+        await form.locator('summary').click();
+        await form.getByRole('textbox', { name: 'Model request to count', exact: true }).fill(JSON.stringify({ messages: [{ role: 'user', text: 'Measure 中文😀' }], max_output: 64 }));
+        await form.getByRole('combobox', { name: 'Model token counting method', exact: true }).selectOption('provider');
+        await waitEnabled(form.getByRole('button', { name: 'Measure input tokens', exact: true }));
+        await form.getByRole('button', { name: 'Measure input tokens', exact: true }).click();
+        await approve(panel, 'openai-compatible · network', 'Allow once');
+        await panel.getByText('17 input tokens', { exact: true }).waitFor();
+        assert.equal(requests.length, 2);
+        assert.equal(requests[0].method, 'GET'); assert.equal(requests[0].target, '/models?limit=100');
+        assert.equal(requests[1].target, '/messages/count_tokens');
+        assert.equal(requests[1].body.model, 'native-fixture');
+        assert.equal(requests[1].body.messages[0].content[0].text, 'Measure 中文😀');
+        await panel.locator('.model-count-result').scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-models-count.png`) });
+        await waitEnabled(panel.getByRole('button', { name: 'Clear cached models', exact: true }));
+        await panel.getByRole('button', { name: 'Clear cached models', exact: true }).click();
+        await panel.getByText('Provider directory · 0 models', { exact: true }).waitFor();
+        await waitEnabled(panel.getByRole('button', { name: 'Refresh provider models', exact: true }));
+        await panel.getByRole('button', { name: 'Refresh provider models', exact: true }).click();
+        await panel.locator('.permission-card').filter({ hasText: 'openai-compatible · network' }).waitFor();
+        await panel.getByRole('button', { name: 'Cancel model operation', exact: true }).click();
+        await panel.getByText('Model operation cancelled', { exact: true }).waitFor();
+        assert.equal(await panel.locator('.permission-card').count(), 0);
+        assert.equal(requests.length, 2);
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-models-cancel.png`) });
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual provider directory, unknown capacity metadata, configured-model preservation, request token-count API, allow-once permissions, cache clearing and cancellation before network I/O`);
     }
     if (analyzersOnly) {
         await panel.getByRole('button', { name: 'Project', exact: true }).click();

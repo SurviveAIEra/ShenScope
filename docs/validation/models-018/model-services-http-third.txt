@@ -1,0 +1,279 @@
+Precompiling ShenScope...
+   6516.3 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 7 seconds. 39 already precompiled.
+[ Info: Listening on: 127.0.0.1:36035, thread id: 2
+[ Info: Server on 127.0.0.1:36035 closing
+[ Info: Listening on: 127.0.0.1:39317, thread id: 1
+[ Info: Server on 127.0.0.1:39317 closing
+[ Info: Listening on: 127.0.0.1:39171, thread id: 1
+[ Info: Server on 127.0.0.1:39171 closing
+[ Info: Listening on: 127.0.0.1:44999, thread id: 2
+[ Info: Server on 127.0.0.1:44999 closing
+[ Info: Listening on: 127.0.0.1:33071, thread id: 1
+[ Info: Server on 127.0.0.1:33071 closing
+[ Info: Listening on: 127.0.0.1:44527, thread id: 1
+[ Info: Server on 127.0.0.1:44527 closing
+[ Info: Listening on: 127.0.0.1:45627, thread id: 1
+┌ Error: handle_connection handler error.
+│
+│ ===========================
+│ HTTP Error message:
+│
+│ ERROR: ArgumentError: AbstractDict(kv): kv needs to be an iterator of 2-tuples or pairs
+│ Stacktrace:
+│   [1] _throw_dict_kv_error()
+│     @ Base ./abstractdict.jl:587
+│   [2] grow_to!(dest::Dict{Any, Any}, itr::String)
+│     @ Base ./abstractdict.jl:599
+│   [3] dict_with_eltype
+│     @ ./abstractdict.jl:639 [inlined]
+│   [4] Dict
+│     @ ./dict.jl:117 [inlined]
+│   [5] (::var"#28#33"{Vector{String}, Vector{Dict{String, Any}}, Symbol})(request::HTTP.Messages.Request)
+│     @ Main /workspace/ShenScope/test/integration/model_services.jl:93
+│   [6] (::HTTP.Handlers.var"#1#2"{var"#28#33"{Vector{String}, Vector{Dict{String, Any}}, Symbol}})(stream::HTTP.Streams.Stream{HTTP.Messages.Request, HTTP.Connections.Connection{TCPSocket}})
+│     @ HTTP.Handlers /workspace/julia-depot/packages/HTTP/Y97L1/src/Handlers.jl:58
+│   [7] #invokelatest#2
+│     @ ./essentials.jl:1055 [inlined]
+│   [8] invokelatest
+│     @ ./essentials.jl:1052 [inlined]
+│   [9] handle_connection(f::Function, c::HTTP.Connections.Connection{TCPSocket}, listener::HTTP.Servers.Listener{Nothing, Sockets.TCPServer}, readtimeout::Int64, access_log::Nothing, verbose::Bool)
+│     @ HTTP.Servers /workspace/julia-depot/packages/HTTP/Y97L1/src/Servers.jl:469
+│  [10] (::HTTP.Servers.var"#16#17"{HTTP.Handlers.var"#1#2"{var"#28#33"{Vector{String}, Vector{Dict{String, Any}}, Symbol}}, HTTP.Servers.Listener{Nothing, Sockets.TCPServer}, Set{HTTP.Connections.Connection}, Int64, Nothing, ReentrantLock, Bool, Base.Semaphore, HTTP.Connections.Connection{TCPSocket}})()
+│     @ HTTP.Servers /workspace/julia-depot/packages/HTTP/Y97L1/src/Servers.jl:401
+│   request =
+│    HTTP.Messages.Request:
+│    """
+│    POST /messages/count_tokens HTTP/1.1
+│    Accept: application/json
+│    anthropic-version: 2023-06-01
+│    x-api-key: count-first-fixture
+│    Content-Type: application/json
+│    Host: 127.0.0.1:45627
+│    User-Agent: HTTP.jl/1.11.7
+│    Accept-Encoding: gzip
+│    Transfer-Encoding: chunked
+│
+│    """
+└ @ HTTP.Servers /workspace/julia-depot/packages/HTTP/Y97L1/src/Servers.jl:484
+[ Info: Server on 127.0.0.1:45627 closing
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/model_services.jl:85
+Test Summary:                                                            | Pass  Total   Time
+Real model catalog protocols snapshot credentials and confine every page |   55     55  19.1s
+Test Summary:                                                                  | Pass  Total  Time
+Catalog TTL, ETag validation, failure preservation, ownership and cancellation |   15     15  1.3s
+Real provider token-count bodies preserve actual input and one credential snapshot: Error During Test at /workspace/ShenScope/test/integration/model_services.jl:85
+  Got exception outside of a @test
+  server: Model endpoint returned HTTP 500
+  Stacktrace:
+    [1] model_service_json(provider::HTTPProvider, request::ShenScope.ModelServiceRequest, ctx::RuntimeContext; max_bytes::Int64, allow_not_modified::Bool, authorization::Nothing)
+      @ ShenScope /workspace/ShenScope/src/Models/ServiceTransport.jl:91
+    [2] model_service_json
+      @ /workspace/ShenScope/src/Models/ServiceTransport.jl:1 [inlined]
+    [3] count_model_tokens(provider::HTTPProvider, request::ModelRequest, ctx::RuntimeContext; mode::Symbol)
+      @ ShenScope /workspace/ShenScope/src/Models/TokenCounts.jl:107
+    [4] count_model_tokens
+      @ /workspace/ShenScope/src/Models/TokenCounts.jl:85 [inlined]
+    [5] (::var"#25#30"{String, Base.RefValue{Int64}, Base.RefValue{String}, Vector{String}, Vector{Dict{String, Any}}, Symbol})(endpoint::String)
+      @ Main /workspace/ShenScope/test/integration/model_services.jl:100
+    [6] model_service_fixture(f::var"#25#30"{String, Base.RefValue{Int64}, Base.RefValue{String}, Vector{String}, Vector{Dict{String, Any}}, Symbol}, handler::Function; stream::Bool)
+      @ Main /workspace/ShenScope/test/fixtures/model_services.jl:7
+    [7] model_service_fixture
+      @ /workspace/ShenScope/test/fixtures/model_services.jl:3 [inlined]
+    [8] #24
+      @ /workspace/ShenScope/test/integration/model_services.jl:89 [inlined]
+    [9] mktempdir(fn::var"#24#29"{Symbol}, parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+   [10] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+   [11] macro expansion
+      @ /workspace/ShenScope/test/integration/model_services.jl:87 [inlined]
+   [12] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [13] top-level scope
+      @ /workspace/ShenScope/test/integration/model_services.jl:86
+   [14] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [15] top-level scope
+      @ none:1
+
+  caused by: HTTP.RequestError:
+  HTTP.Request:
+  HTTP.Messages.Request:
+  """
+  POST /messages/count_tokens HTTP/1.1
+  Accept: application/json
+  anthropic-version: 2023-06-01
+  x-api-key: count-first-fixture
+  Content-Type: application/json
+  Host: 127.0.0.1:45627
+  User-Agent: HTTP.jl/1.11.7
+  Accept-Encoding: gzip
+  Transfer-Encoding: chunked
+
+  [Message Body was streamed]"""Underlying error:
+  server: Model endpoint returned HTTP 500
+  Stacktrace:
+    [1] (::HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}})(req::HTTP.Messages.Request; proxy::Nothing, socket_type::Type, socket_type_tls::Nothing, readtimeout::Int64, connect_timeout::Int64, logerrors::Bool, logtag::Nothing, closeimmediately::Bool, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, decompress::Nothing, verbose::Int64, status_exception::Bool})
+      @ HTTP.ConnectionRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ConnectionRequest.jl:143
+    [2] connections
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ConnectionRequest.jl:60 [inlined]
+    [3] (::HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}})(req::HTTP.Messages.Request; retry::Bool, retries::Int64, retry_delays::ExponentialBackOff, retry_check::Function, retry_non_idempotent::Bool, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, decompress::Nothing, verbose::Int64, readtimeout::Int64, connect_timeout::Int64, status_exception::Bool})
+      @ HTTP.RetryRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RetryRequest.jl:35
+    [4] manageretries
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RetryRequest.jl:30 [inlined]
+    [5] (::HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}})(req::HTTP.Messages.Request; cookies::Bool, cookiejar::HTTP.Cookies.CookieJar, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, decompress::Nothing, verbose::Int64, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.CookieRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/CookieRequest.jl:42
+    [6] (::HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}})(req::HTTP.Messages.Request; iofunction::Function, decompress::Nothing, basicauth::Bool, detect_content_type::Bool, canonicalize_headers::Bool, kw::@Kwargs{verbose::Int64, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.HeadersRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/HeadersRequest.jl:71
+    [7] defaultheaders
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/HeadersRequest.jl:14 [inlined]
+    [8] (::HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}})(req::HTTP.Messages.Request; redirect::Bool, redirect_limit::Int64, redirect_method::Nothing, forwardheaders::Bool, response_stream::Nothing, kw::@Kwargs{verbose::Int64, iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.RedirectRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RedirectRequest.jl:17
+    [9] redirects
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RedirectRequest.jl:14 [inlined]
+   [10] (::HTTP.MessageRequest.var"#makerequest#3"{HTTP.MessageRequest.var"#makerequest#1#4"{HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}}}})(method::String, url::URIs.URI, headers::Vector{Pair{String, String}}, body::Nothing; copyheaders::Bool, response_stream::Nothing, http_version::HTTP.Strings.HTTPVersion, verbose::Int64, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool, redirect::Bool})
+      @ HTTP.MessageRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/MessageRequest.jl:35
+   [11] makerequest
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/MessageRequest.jl:24 [inlined]
+   [12] request(stack::HTTP.MessageRequest.var"#makerequest#3"{HTTP.MessageRequest.var"#makerequest#1#4"{HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}}}}, method::String, url::String, h::Vector{Pair{String, String}}, b::Nothing, q::Nothing; headers::Vector{Pair{String, String}}, body::Nothing, query::Nothing, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool, redirect::Bool})
+      @ HTTP /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:465
+   [13] #request#20
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:323 [inlined]
+   [14] request
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:321 [inlined]
+   [15] open
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:587 [inlined]
+   [16] model_service_json(provider::HTTPProvider, request::ShenScope.ModelServiceRequest, ctx::RuntimeContext; max_bytes::Int64, allow_not_modified::Bool, authorization::Nothing)
+      @ ShenScope /workspace/ShenScope/src/Models/ServiceTransport.jl:21
+   [17] model_service_json
+      @ /workspace/ShenScope/src/Models/ServiceTransport.jl:1 [inlined]
+   [18] count_model_tokens(provider::HTTPProvider, request::ModelRequest, ctx::RuntimeContext; mode::Symbol)
+      @ ShenScope /workspace/ShenScope/src/Models/TokenCounts.jl:107
+   [19] count_model_tokens
+      @ /workspace/ShenScope/src/Models/TokenCounts.jl:85 [inlined]
+   [20] (::var"#25#30"{String, Base.RefValue{Int64}, Base.RefValue{String}, Vector{String}, Vector{Dict{String, Any}}, Symbol})(endpoint::String)
+      @ Main /workspace/ShenScope/test/integration/model_services.jl:100
+   [21] model_service_fixture(f::var"#25#30"{String, Base.RefValue{Int64}, Base.RefValue{String}, Vector{String}, Vector{Dict{String, Any}}, Symbol}, handler::Function; stream::Bool)
+      @ Main /workspace/ShenScope/test/fixtures/model_services.jl:7
+   [22] model_service_fixture
+      @ /workspace/ShenScope/test/fixtures/model_services.jl:3 [inlined]
+   [23] #24
+      @ /workspace/ShenScope/test/integration/model_services.jl:89 [inlined]
+   [24] mktempdir(fn::var"#24#29"{Symbol}, parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+   [25] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+   [26] macro expansion
+      @ /workspace/ShenScope/test/integration/model_services.jl:87 [inlined]
+   [27] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [28] top-level scope
+      @ /workspace/ShenScope/test/integration/model_services.jl:86
+   [29] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [30] top-level scope
+      @ none:1
+
+  caused by: server: Model endpoint returned HTTP 500
+  Stacktrace:
+    [1] (::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI})(stream::HTTP.Streams.Stream{HTTP.Messages.Response, HTTP.Connections.Connection{TCPSocket}})
+      @ ShenScope /workspace/ShenScope/src/Models/ServiceTransport.jl:56
+    [2] macro expansion
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/StreamRequest.jl:73 [inlined]
+    [3] macro expansion
+      @ ./task.jl:498 [inlined]
+    [4] streamlayer(stream::HTTP.Streams.Stream{HTTP.Messages.Response, HTTP.Connections.Connection{TCPSocket}}; iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, decompress::Nothing, logerrors::Bool, logtag::Nothing, timedout::ConcurrentUtilities.TimedOut{HTTP.Messages.Response}, sse_callback::Nothing, kw::@Kwargs{verbose::Int64})
+      @ HTTP.StreamRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/StreamRequest.jl:39
+    [5] streamlayer
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/StreamRequest.jl:21 [inlined]
+    [6] (::HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}})(stream::HTTP.Streams.Stream{HTTP.Messages.Response, HTTP.Connections.Connection{TCPSocket}}; status_exception::Bool, timedout::ConcurrentUtilities.TimedOut{HTTP.Messages.Response}, logerrors::Bool, logtag::Nothing, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, decompress::Nothing, verbose::Int64})
+      @ HTTP.ExceptionRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ExceptionRequest.jl:14
+    [7] exceptions
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ExceptionRequest.jl:13 [inlined]
+    [8] #2
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/TimeoutRequest.jl:22 [inlined]
+    [9] macro expansion
+      @ /workspace/julia-depot/packages/ConcurrentUtilities/cxrmA/src/try_with_timeout.jl:92 [inlined]
+   [10] (::ConcurrentUtilities.var"#2#4"{HTTP.Messages.Response, Channel{HTTP.Messages.Response}, HTTP.TimeoutRequest.var"#2#5"{Bool, Nothing, @Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, decompress::Nothing, verbose::Int64, status_exception::Bool}, HTTP.Streams.Stream{HTTP.Messages.Response, HTTP.Connections.Connection{TCPSocket}}, HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}, Timer})()
+      @ ConcurrentUtilities /workspace/julia-depot/packages/ConcurrentUtilities/cxrmA/src/ConcurrentUtilities.jl:10
+  Stacktrace:
+    [1] try_yieldto(undo::typeof(Base.ensure_rescheduled))
+      @ Base ./task.jl:958
+    [2] wait()
+      @ Base ./task.jl:1022
+    [3] wait(c::Base.GenericCondition{ReentrantLock}; first::Bool)
+      @ Base ./condition.jl:130
+    [4] wait
+      @ ./condition.jl:125 [inlined]
+    [5] take_unbuffered(c::Channel{HTTP.Messages.Response})
+      @ Base ./channels.jl:510
+    [6] take!
+      @ ./channels.jl:487 [inlined]
+    [7] try_with_timeout(f::Function, timeout::Int64, ::Type{HTTP.Messages.Response})
+      @ ConcurrentUtilities /workspace/julia-depot/packages/ConcurrentUtilities/cxrmA/src/try_with_timeout.jl:99
+    [8] (::HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}})(stream::HTTP.Streams.Stream{HTTP.Messages.Response, HTTP.Connections.Connection{TCPSocket}}; readtimeout::Int64, logerrors::Bool, logtag::Nothing, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, decompress::Nothing, verbose::Int64, status_exception::Bool})
+      @ HTTP.TimeoutRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/TimeoutRequest.jl:21
+    [9] (::HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}})(req::HTTP.Messages.Request; proxy::Nothing, socket_type::Type, socket_type_tls::Nothing, readtimeout::Int64, connect_timeout::Int64, logerrors::Bool, logtag::Nothing, closeimmediately::Bool, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, decompress::Nothing, verbose::Int64, status_exception::Bool})
+      @ HTTP.ConnectionRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ConnectionRequest.jl:122
+   [10] connections
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/ConnectionRequest.jl:60 [inlined]
+   [11] (::HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}})(req::HTTP.Messages.Request; retry::Bool, retries::Int64, retry_delays::ExponentialBackOff, retry_check::Function, retry_non_idempotent::Bool, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, decompress::Nothing, verbose::Int64, readtimeout::Int64, connect_timeout::Int64, status_exception::Bool})
+      @ HTTP.RetryRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RetryRequest.jl:35
+   [12] manageretries
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RetryRequest.jl:30 [inlined]
+   [13] (::HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}})(req::HTTP.Messages.Request; cookies::Bool, cookiejar::HTTP.Cookies.CookieJar, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, decompress::Nothing, verbose::Int64, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.CookieRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/CookieRequest.jl:42
+   [14] (::HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}})(req::HTTP.Messages.Request; iofunction::Function, decompress::Nothing, basicauth::Bool, detect_content_type::Bool, canonicalize_headers::Bool, kw::@Kwargs{verbose::Int64, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.HeadersRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/HeadersRequest.jl:71
+   [15] defaultheaders
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/HeadersRequest.jl:14 [inlined]
+   [16] (::HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}})(req::HTTP.Messages.Request; redirect::Bool, redirect_limit::Int64, redirect_method::Nothing, forwardheaders::Bool, response_stream::Nothing, kw::@Kwargs{verbose::Int64, iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool})
+      @ HTTP.RedirectRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RedirectRequest.jl:17
+   [17] redirects
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/RedirectRequest.jl:14 [inlined]
+   [18] (::HTTP.MessageRequest.var"#makerequest#3"{HTTP.MessageRequest.var"#makerequest#1#4"{HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}}}})(method::String, url::URIs.URI, headers::Vector{Pair{String, String}}, body::Nothing; copyheaders::Bool, response_stream::Nothing, http_version::HTTP.Strings.HTTPVersion, verbose::Int64, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool, redirect::Bool})
+      @ HTTP.MessageRequest /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/MessageRequest.jl:35
+   [19] makerequest
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/clientlayers/MessageRequest.jl:24 [inlined]
+   [20] request(stack::HTTP.MessageRequest.var"#makerequest#3"{HTTP.MessageRequest.var"#makerequest#1#4"{HTTP.RedirectRequest.var"#redirects#3"{HTTP.RedirectRequest.var"#redirects#1#4"{HTTP.HeadersRequest.var"#defaultheaders#2"{HTTP.HeadersRequest.var"#defaultheaders#1#3"{HTTP.CookieRequest.var"#managecookies#4"{HTTP.CookieRequest.var"#managecookies#1#5"{HTTP.RetryRequest.var"#manageretries#3"{HTTP.RetryRequest.var"#manageretries#1#4"{HTTP.ConnectionRequest.var"#connections#4"{HTTP.ConnectionRequest.var"#connections#1#5"{HTTP.TimeoutRequest.var"#timeouts#3"{HTTP.TimeoutRequest.var"#timeouts#1#4"{HTTP.ExceptionRequest.var"#exceptions#2"{HTTP.ExceptionRequest.var"#exceptions#1#3"{typeof(HTTP.StreamRequest.streamlayer)}}}}}}}}}}}}}}}}, method::String, url::String, h::Vector{Pair{String, String}}, b::Nothing, q::Nothing; headers::Vector{Pair{String, String}}, body::Nothing, query::Nothing, kw::@Kwargs{iofunction::ShenScope.var"#280#284"{Int64, Bool, HTTPProvider, ShenScope.ModelServiceRequest, RuntimeContext, Base.RefValue{Any}, Symbol, Float64, URIs.URI}, readtimeout::Int64, connect_timeout::Int64, retry::Bool, status_exception::Bool, redirect::Bool})
+      @ HTTP /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:465
+   [21] #request#20
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:323 [inlined]
+   [22] request
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:321 [inlined]
+   [23] open
+      @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:587 [inlined]
+   [24] model_service_json(provider::HTTPProvider, request::ShenScope.ModelServiceRequest, ctx::RuntimeContext; max_bytes::Int64, allow_not_modified::Bool, authorization::Nothing)
+      @ ShenScope /workspace/ShenScope/src/Models/ServiceTransport.jl:21
+   [25] model_service_json
+      @ /workspace/ShenScope/src/Models/ServiceTransport.jl:1 [inlined]
+   [26] count_model_tokens(provider::HTTPProvider, request::ModelRequest, ctx::RuntimeContext; mode::Symbol)
+      @ ShenScope /workspace/ShenScope/src/Models/TokenCounts.jl:107
+   [27] count_model_tokens
+      @ /workspace/ShenScope/src/Models/TokenCounts.jl:85 [inlined]
+   [28] (::var"#25#30"{String, Base.RefValue{Int64}, Base.RefValue{String}, Vector{String}, Vector{Dict{String, Any}}, Symbol})(endpoint::String)
+      @ Main /workspace/ShenScope/test/integration/model_services.jl:100
+   [29] model_service_fixture(f::var"#25#30"{String, Base.RefValue{Int64}, Base.RefValue{String}, Vector{String}, Vector{Dict{String, Any}}, Symbol}, handler::Function; stream::Bool)
+      @ Main /workspace/ShenScope/test/fixtures/model_services.jl:7
+   [30] model_service_fixture
+      @ /workspace/ShenScope/test/fixtures/model_services.jl:3 [inlined]
+   [31] #24
+      @ /workspace/ShenScope/test/integration/model_services.jl:89 [inlined]
+   [32] mktempdir(fn::var"#24#29"{Symbol}, parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+   [33] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+   [34] macro expansion
+      @ /workspace/ShenScope/test/integration/model_services.jl:87 [inlined]
+   [35] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [36] top-level scope
+      @ /workspace/ShenScope/test/integration/model_services.jl:86
+   [37] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [38] top-level scope
+      @ none:1
+Test Summary:                                                                      | Error  Total  Time
+Real provider token-count bodies preserve actual input and one credential snapshot |     1      1  9.0s

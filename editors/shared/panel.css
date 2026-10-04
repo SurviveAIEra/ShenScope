@@ -231,3 +231,14 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .analyzer-evidence { font-family: var(--vscode-editor-font-family, monospace); font-size: 11px; overflow-wrap: anywhere; }
 .analyzer-validation-pass { color: var(--vscode-testing-iconPassed, #73c991); }
 .analyzer-operation { padding: 10px; border-radius: 6px; background: var(--vscode-editor-inactiveSelectionBackground, #ffffff0a); }
+.model-card, .model-count-result, .model-metadata { margin: 12px 0; padding: 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--raised); }
+.model-card h3, .model-card h4 { margin: 4px 0 8px; overflow-wrap: anywhere; }
+.model-source { font-size: 11px; color: var(--muted); }
+.model-id, .model-request { font-family: var(--vscode-editor-font-family, monospace); font-size: 11px; overflow-wrap: anywhere; }
+.model-properties { display: grid; gap: 5px; margin: 12px 0; font-size: 11px; }
+.model-properties > div { display: flex; gap: 10px; justify-content: space-between; }
+.model-properties > div > span:first-child { color: var(--muted); }
+.model-count-form { margin: 16px 0; padding-top: 12px; border-top: 1px solid var(--border); }
+.model-count-form summary { cursor: pointer; }
+.model-token-total { display: block; margin: 12px 0; font-size: 22px; font-weight: 600; }
+.model-operation { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 0; }

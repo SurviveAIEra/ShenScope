@@ -35,7 +35,7 @@ function parse_cli(args::Vector{String})
     valued=Set(["--root","--state-dir","--config","--profile","--session","--script","--backend",
         "--symbol","--column-unit","--limit","--offset","--revision","--sha256","--minimum-savings",
         "--poll-seconds","--quiet-seconds","--duration","--watch-file-limit","--watch-byte-limit",
-        "--scope","--expected-pointer"])
+        "--scope","--expected-pointer","--count-mode"])
     switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints"])
     i=1
     while i<=length(args)
@@ -96,7 +96,7 @@ function cli_main(args=ARGS)
     end
     if isempty(args) || args==["--help"]
         println("ShenScope — Open coding intelligence for serious codebases.")
-        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | tasks ACTION | mcp ACTION | skills ACTION | hooks ACTION | context ACTION | analyzers ACTION | diagnostics ACTION | doctor | serve --stdio")
+        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | tasks ACTION | mcp ACTION | skills ACTION | hooks ACTION | context ACTION | analyzers ACTION | models ACTION | diagnostics ACTION | doctor | serve --stdio")
         println("Options: --root PATH --state-dir PATH --config PATH --profile NAME --session ID --json")
         println("Explicit permissions: --allow-edit --allow-process --allow-network --allow-persistence --allow-dynamic --allow-mcp")
         println("Offline protocol fixture: --script JSON_FILE")
@@ -120,6 +120,7 @@ function cli_main(args=ARGS)
         command=="hooks" && return cli_hooks_command(positional,flags,config,state_dir)
         command=="context" && return cli_context_command(positional,flags,config,state_dir)
         command=="analyzers" && return cli_analyzers_command(positional,flags,config,state_dir)
+        command=="models" && return cli_models_command(positional,flags,config,state_dir)
         if command=="tasks"
             length(positional)>=2 || throw(ShenScopeError(:input,"Task action required"))
             policy=permissions_from_config(config)
@@ -215,6 +216,7 @@ function cli_main(args=ARGS)
                     tool isa HooksTool && cleanup_hooks!(tool.manager)
                     tool isa ContextTool && cleanup_context!(tool.manager)
                     tool isa AnalyzersTool && cleanup_analyzers!(tool.manager)
+                    tool isa ModelsTool && cleanup_model_catalogs!(tool.manager)
                     tool isa ProcessTool && cleanup_processes!(tool.manager,id)
                     tool isa TaskTool && cleanup_tasks!(tool.manager)
                 end

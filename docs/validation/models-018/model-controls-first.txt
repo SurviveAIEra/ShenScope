@@ -1,0 +1,238 @@
+
+======================================================================================
+Information request received. A stacktrace will print followed by a 1.0 second profile
+======================================================================================
+
+cmd: /workspace/toolchains/julia-1.11.7/bin/julia 69611 running 1 of 5
+
+signal (10): User defined signal 1
+unknown function (ip: 0x7f6e310f99ec)
+unknown function (ip: 0x7f6e310ee667)
+unknown function (ip: 0x7f6e310eec8b)
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+jl_parallel_gc_threadfun at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/scheduler.c:148
+unknown function (ip: 0x7f6e310f1b7a)
+unknown function (ip: 0x7f6e3116f7f7)
+unknown function (ip: (nil))
+unknown function (ip: 0x7f6e310f99ec)
+unknown function (ip: 0x7f6e310ee667)
+unknown function (ip: 0x7f6e310eec8b)
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/scheduler.c:584
+poptask at ./task.jl:1012
+wait at ./task.jl:1021
+task_done_hook at ./task.jl:694
+jfptr_task_done_hook_66680.1 at /workspace/toolchains/julia-1.11.7/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/julia.h:2157 [inlined]
+jl_finish_task at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/task.c:319
+start_task at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/task.c:1213
+unknown function (ip: (nil))
+unknown function (ip: 0x7f6e310f99ec)
+unknown function (ip: 0x7f6e310ee667)
+unknown function (ip: 0x7f6e310eec8b)
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/scheduler.c:584
+poptask at ./task.jl:1012
+wait at ./task.jl:1021
+task_done_hook at ./task.jl:694
+jfptr_task_done_hook_66680.1 at /workspace/toolchains/julia-1.11.7/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/julia.h:2157 [inlined]
+jl_finish_task at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/task.c:319
+start_task at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/task.c:1213
+unknown function (ip: (nil))
+unknown function (ip: 0x7f6e310f99ec)
+unknown function (ip: 0x7f6e310ee667)
+unknown function (ip: 0x7f6e310eec8b)
+pthread_cond_wait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/scheduler.c:584
+poptask at ./task.jl:1012
+wait at ./task.jl:1021
+task_done_hook at ./task.jl:694
+jfptr_task_done_hook_66680.1 at /workspace/toolchains/julia-1.11.7/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/julia.h:2157 [inlined]
+jl_finish_task at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/task.c:319
+start_task at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/task.c:1213
+unknown function (ip: (nil))
+unknown function (ip: 0x7f6e310f99ee)
+unknown function (ip: 0x7f6e310ee667)
+unknown function (ip: 0x7f6e310ee6ac)
+epoll_pwait at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+uv__io_poll at /workspace/srcdir/libuv/src/unix/linux.c:1404
+uv_run at /workspace/srcdir/libuv/src/unix/core.c:430
+ijl_task_get_next at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/scheduler.c:522
+poptask at ./task.jl:1012
+wait at ./task.jl:1021
+#wait#733 at ./condition.jl:130
+wait at ./condition.jl:125 [inlined]
+_trywait at ./asyncevent.jl:145
+wait at ./asyncevent.jl:162 [inlined]
+sleep at ./asyncevent.jl:272 [inlined]
+server_approval at /workspace/ShenScope/src/Protocol/Server.jl:68
+#1902 at /workspace/ShenScope/src/Protocol/Server.jl:82
+unknown function (ip: 0x7f6e021b3a22)
+#authorize!#46 at /workspace/ShenScope/src/Runtime/Context.jl:51
+authorize! at /workspace/ShenScope/src/Runtime/Context.jl:42 [inlined]
+authorize_model_service! at /workspace/ShenScope/src/Models/ServiceRequests.jl:24
+#refresh_model_catalog!#309 at /workspace/ShenScope/src/Models/CatalogCache.jl:118
+refresh_model_catalog! at /workspace/ShenScope/src/Models/CatalogCache.jl:98
+unknown function (ip: 0x7f6e021bb4a2)
+execute at /workspace/ShenScope/src/Tools/Models.jl:38
+#2255 at /workspace/ShenScope/src/Protocol/Models.jl:27 [inlined]
+#73 at /workspace/ShenScope/src/Runtime/OwnedOperations.jl:97
+with at ./scopedvalues.jl:269
+with_context at /workspace/ShenScope/src/Runtime/Context.jl:31 [inlined]
+#72 at /workspace/ShenScope/src/Runtime/OwnedOperations.jl:94
+unknown function (ip: 0x7f6e021aed96)
+jl_apply at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/julia.h:2157 [inlined]
+start_task at /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/src/task.c:1202
+unknown function (ip: (nil))
+
+==============================================================
+Profile collected. A report will print at the next yield point
+==============================================================
+
+Precompiling ShenScope...
+   5612.5 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 6 seconds. 39 already precompiled.
+[ Info: Listening on: 127.0.0.1:41115, thread id: 4
+[ Info: Server on 127.0.0.1:41115 closing
+[ Info: Listening on: 127.0.0.1:42617, thread id: 1
+[ Info: Server on 127.0.0.1:42617 closing
+[ Info: Listening on: 127.0.0.1:37311, thread id: 3
+[ Info: Server on 127.0.0.1:37311 closing
+[ Info: Listening on: 127.0.0.1:39797, thread id: 1
+[ Info: Server on 127.0.0.1:39797 closing
+[ Info: Listening on: 127.0.0.1:34565, thread id: 1
+[ Info: Server on 127.0.0.1:34565 closing
+[ Info: Listening on: 127.0.0.1:39663, thread id: 1
+[ Info: Server on 127.0.0.1:39663 closing
+[ Info: Listening on: 127.0.0.1:34207, thread id: 2
+[ Info: Server on 127.0.0.1:34207 closing
+[ Info: Listening on: 127.0.0.1:33325, thread id: 1
+[ Info: Server on 127.0.0.1:33325 closing
+[ Info: Listening on: 127.0.0.1:34289, thread id: 1
+[ Info: Server on 127.0.0.1:34289 closing
+[ Info: Listening on: 127.0.0.1:44901, thread id: 1
+┌ Warning: There were no samples collected in one or more groups.
+│ This may be due to idle threads, or you may need to run your
+│ program longer (perhaps by running it multiple times),
+│ or adjust the delay between samples with `Profile.init()`.
+└ @ Profile /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Profile/src/Profile.jl:1240
+Overhead ╎ [+additional indent] Count File:Line; Function
+=========================================================
+Thread 1 Task 0x00007f6dcbf58e20 Total snapshots: 390. Utilization: 0%
+   ╎390 …time/OwnedOperations.jl:94; (::ShenScope.var"#72#82"{ShenScope.var"#22…
+   ╎ 390 …src/Runtime/Context.jl:31; with_context
+   ╎  390 @Base/scopedvalues.jl:269; with(::ShenScope.var"#73#83"{ShenScope.var…
+   ╎   390 …me/OwnedOperations.jl:97; (::ShenScope.var"#73#83"{ShenScope.var"#2…
+   ╎    390 …rc/Protocol/Models.jl:27; #2255
+   ╎     390 …e/src/Tools/Models.jl:38; execute(tool::ModelsTool, args::Dict{St…
+   ╎    ╎ 390 …dels/CatalogCache.jl:98; kwcall(::@NamedTuple{force::Bool, max_p…
+   ╎    ╎  390 …els/CatalogCache.jl:118; refresh_model_catalog!(manager::ModelC…
+   ╎    ╎   390 …/ServiceRequests.jl:24; authorize_model_service!(provider::HTT…
+   ╎    ╎    390 …/Runtime/Context.jl:42; authorize!
+   ╎    ╎     390 …/Runtime/Context.jl:51; authorize!(ctx::RuntimeContext, cate…
+   ╎    ╎    ╎ 390 …Protocol/Server.jl:82; (::ShenScope.var"#1902#1904"{CoreSer…
+   ╎    ╎    ╎  390 …Protocol/Server.jl:68; server_approval(server::CoreServer,…
+   ╎    ╎    ╎   390 …ase/asyncevent.jl:272; sleep
+   ╎    ╎    ╎    390 …ase/asyncevent.jl:162; wait
+   ╎    ╎    ╎     390 …se/asyncevent.jl:145; _trywait(t::Timer)
+   ╎    ╎    ╎    ╎ 390 …ase/condition.jl:125; wait
+  1╎    ╎    ╎    ╎  1   …se/condition.jl:127; wait(c::Base.GenericCondition{Ba…
+   ╎    ╎    ╎    ╎  389 …se/condition.jl:130; wait(c::Base.GenericCondition{Ba…
+   ╎    ╎    ╎    ╎   389 @Base/task.jl:1021; wait()
+388╎    ╎    ╎    ╎    389 @Base/task.jl:1012; poptask(W::Base.IntrusiveLinkedL…
+
+Thread 2 Task 0x00007f6dc5d633a0 Total snapshots: 390. Utilization: 0%
+   ╎390 @Base/task.jl:694; task_done_hook(t::Task)
+   ╎ 390 @Base/task.jl:1021; wait()
+389╎  390 @Base/task.jl:1012; poptask(W::Base.IntrusiveLinkedListSynchronized{T…
+
+Thread 3 Task 0x00007f6e297f01a0 Total snapshots: 390. Utilization: 0%
+   ╎390 @Base/task.jl:694; task_done_hook(t::Task)
+   ╎ 390 @Base/task.jl:1021; wait()
+389╎  390 @Base/task.jl:1012; poptask(W::Base.IntrusiveLinkedListSynchronized{T…
+
+Thread 4 Task 0x00007f6dcc730650 Total snapshots: 390. Utilization: 0%
+   ╎390 @Base/task.jl:694; task_done_hook(t::Task)
+   ╎ 390 @Base/task.jl:1021; wait()
+389╎  390 @Base/task.jl:1012; poptask(W::Base.IntrusiveLinkedListSynchronized{T…
+
+Thread 5 Task 0x00007f6e297f4010 Total snapshots: 390. Utilization: 100%
+
+[ Info: Server on 127.0.0.1:44901 closing
+ERROR: LoadError: Some tests did not pass: 38 passed, 2 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/models_protocol.jl:13
+Test Summary:                                                     | Pass  Total  Time
+Model services bound declared/chunked bodies and reject redirects |    9      9  9.5s
+Test Summary:                                                               | Pass  Total  Time
+Model service blocked reads retire on cancellation, revocation and deadline |   18     18  3.4s
+Test Summary:                                                                      | Pass  Total  Time
+Single refresh approval covers pages and scope checks prevent reusing it elsewhere |    4      4  6.6s
+Test Summary:                                                                               | Pass  Total  Time
+Catalog capacity failure preserves the prior snapshot and scoped cleanup preserves siblings |    8      8  2.3s
+Model RPC owns operations, approvals, caches and configuration lifecycle: Test Failed at /workspace/ShenScope/test/unit/models_protocol.jl:3
+  Expression: timedwait((()->begin
+                #= /workspace/ShenScope/test/unit/models_protocol.jl:3 =#
+                (manager.jobs[id]).status != :running
+            end), timeout; pollint = 0.01) == :ok
+   Evaluated: timed_out == ok
+
+Stacktrace:
+  [1] macro expansion
+    @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+  [2] await_model_job(server::CoreServer, id::String; timeout::Int64)
+    @ Main /workspace/ShenScope/test/unit/models_protocol.jl:3
+  [3] await_model_job(server::CoreServer, id::String)
+    @ Main /workspace/ShenScope/test/unit/models_protocol.jl:1
+  [4] macro expansion
+    @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+  [5] (::var"#41#46"{String, Vector{String}, Base.RefValue{Int64}})(endpoint::String)
+    @ Main /workspace/ShenScope/test/unit/models_protocol.jl:70
+  [6] model_service_fixture(f::var"#41#46"{String, Vector{String}, Base.RefValue{Int64}}, handler::Function; stream::Bool)
+    @ Main /workspace/ShenScope/test/fixtures/model_services.jl:7
+  [7] model_service_fixture
+    @ /workspace/ShenScope/test/fixtures/model_services.jl:3 [inlined]
+  [8] #40
+    @ /workspace/ShenScope/test/unit/models_protocol.jl:16 [inlined]
+  [9] mktempdir(fn::var"#40#45", parent::String; prefix::String)
+    @ Base.Filesystem ./file.jl:819
+ [10] mktempdir(fn::Function, parent::String)
+    @ Base.Filesystem ./file.jl:815
+ [11] macro expansion
+    @ /workspace/ShenScope/test/unit/models_protocol.jl:14 [inlined]
+ [12] macro expansion
+    @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [13] top-level scope
+    @ /workspace/ShenScope/test/unit/models_protocol.jl:14
+Model RPC owns operations, approvals, caches and configuration lifecycle: Test Failed at /workspace/ShenScope/test/unit/models_protocol.jl:70
+  Expression: (await_model_job(server, pending["job_id"])).status == :cancelled
+   Evaluated: failed == cancelled
+
+Stacktrace:
+  [1] macro expansion
+    @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+  [2] (::var"#41#46"{String, Vector{String}, Base.RefValue{Int64}})(endpoint::String)
+    @ Main /workspace/ShenScope/test/unit/models_protocol.jl:70
+  [3] model_service_fixture(f::var"#41#46"{String, Vector{String}, Base.RefValue{Int64}}, handler::Function; stream::Bool)
+    @ Main /workspace/ShenScope/test/fixtures/model_services.jl:7
+  [4] model_service_fixture
+    @ /workspace/ShenScope/test/fixtures/model_services.jl:3 [inlined]
+  [5] #40
+    @ /workspace/ShenScope/test/unit/models_protocol.jl:16 [inlined]
+  [6] mktempdir(fn::var"#40#45", parent::String; prefix::String)
+    @ Base.Filesystem ./file.jl:819
+  [7] mktempdir(fn::Function, parent::String)
+    @ Base.Filesystem ./file.jl:815
+  [8] macro expansion
+    @ /workspace/ShenScope/test/unit/models_protocol.jl:14 [inlined]
+  [9] macro expansion
+    @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [10] top-level scope
+    @ /workspace/ShenScope/test/unit/models_protocol.jl:14
+Test Summary:                                                            | Pass  Fail  Total     Time
+Model RPC owns operations, approvals, caches and configuration lifecycle |   38     2     40  5m36.5s

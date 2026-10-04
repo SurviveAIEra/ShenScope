@@ -134,6 +134,7 @@ function cleanup_executor!(executor::WorkExecutor, session_id::String)
         tool isa SkillsTool && cleanup_skills!(tool.manager; session_id)
         tool isa HooksTool && cleanup_hooks!(tool.manager; session_id)
         tool isa ContextTool && cleanup_context!(tool.manager; session_id)
+        tool isa ModelsTool && release_model_catalog_session!(tool.manager,session_id)
     end
     nothing
 end

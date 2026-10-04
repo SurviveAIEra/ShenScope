@@ -1,0 +1,1 @@
+PASS: VSIX webview, actual provider directory, unknown capacity metadata, configured-model preservation, request token-count API, allow-once permissions, cache clearing and cancellation before network I/O

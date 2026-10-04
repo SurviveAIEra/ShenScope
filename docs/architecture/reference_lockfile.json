@@ -21,7 +21,8 @@
       "codex-rs/core/src/tools/handlers/tool_search_spec.rs",
       "codex-rs/core/src/unified_exec/async_watcher.rs",
       "codex-rs/app-server/src/fs_watch.rs",
-      "codex-rs/linux-sandbox/src/landlock.rs"
+      "codex-rs/linux-sandbox/src/landlock.rs",
+      "codex-rs/core/src/context/world_state/model_catalog.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -50,7 +51,8 @@
       "packages/opencode/src/tool/lsp.ts",
       "packages/app/src/context/file/watcher.ts",
       "packages/schema/src/filesystem-watcher.ts",
-      "packages/opencode/src/plugin/loader.ts"
+      "packages/opencode/src/plugin/loader.ts",
+      "packages/opencode/src/provider/provider.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -83,7 +85,8 @@
       "docs/subsystems/lsp.md",
       "packages/fs/fs/src/index.ts",
       "packages/fs/fs-local/src/index.ts",
-      "packages/fs/fs-sandbox/src/containment.ts"
+      "packages/fs/fs-sandbox/src/containment.ts",
+      "packages/llm/llm-pi-ai/src/catalog.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -112,7 +115,9 @@
       "packages/coding-agent/src/core/compaction/utils.ts",
       "packages/coding-agent/src/core/tools/read.ts",
       "packages/coding-agent/src/utils/fs-watch.ts",
-      "packages/coding-agent/examples/extensions/sandbox/index.ts"
+      "packages/coding-agent/examples/extensions/sandbox/index.ts",
+      "packages/ai/src/models-store.ts",
+      "packages/ai/src/models.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -141,7 +146,8 @@
       "packages/minidb/src/snapshot.ts",
       "packages/agent-core-v2/src/app/watch/configSection.ts",
       "packages/agent-core-v2/src/runtime/runtimeUnitHost.ts",
-      "packages/agent-core-v2/src/runtime/runtimeRegistry.ts"
+      "packages/agent-core-v2/src/runtime/runtimeRegistry.ts",
+      "packages/agent-core-v2/src/app/kosongConfig/modelsDevImport.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -167,7 +173,8 @@
       "packages/services/src/fileWatcher/fileWatcher.ts",
       "packages/services/src/fileWatcher/fileWatcherService.ts",
       "apps/zcode-cli/packages/core/src/repl/node-repl-session.ts",
-      "apps/zcode-cli/packages/contracts/src/tools/eval-workflow-snippet.ts"
+      "apps/zcode-cli/packages/contracts/src/tools/eval-workflow-snippet.ts",
+      "apps/zcode-cli/packages/core/src/runtime/model-selection.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -195,7 +202,8 @@
       "packages/core/src/managed-runtime/managed-session-record-sink.ts",
       "packages/cli/src/config/lsp-config-watcher.ts",
       "packages/cli/src/config/extension-runtime-reload.ts",
-      "packages/cli/src/config/execution-sandbox-settings.ts"
+      "packages/cli/src/config/execution-sandbox-settings.ts",
+      "packages/core/src/models/model-catalog-refresh.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

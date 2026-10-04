@@ -48,7 +48,10 @@ function authorize!(ctx::RuntimeContext, category::Symbol, tool::AbstractString,
     decision == Allow && return nothing
     emit!(ctx,:permission_request,Dict("id"=>request.id,"category"=>String(category),
         "tool"=>request.tool,"target"=>request.target,"reason"=>request.reason))
-    answer = ctx.approve(request)
+    # Approval callbacks must observe the context that requested the action.
+    # A nested service can have its own cancellation token while sharing its
+    # parent's callback, ledger and permission policy.
+    answer = with_context(ctx) do;ctx.approve(request);end
     check_cancelled(ctx.cancellation)
     answer in (:once,:session) || throw(ShenScopeError(:permission,"Operation not approved"))
     if answer == :session

@@ -11,11 +11,13 @@ include("Runtime/UTF8.jl")
 include("Security/Budgets.jl")
 include("Security/Permissions.jl")
 include("Runtime/Context.jl")
+include("Runtime/OwnedOperations.jl")
 include("Security/ComputeLimits.jl")
 include("Security/ComputeSeccomp.jl")
 include("Security/Files.jl")
 include("Storage/Journal.jl")
 include("Storage/JSON.jl")
+include("Storage/BoundedJSON.jl")
 include("Security/ComputeProtocol.jl")
 include("Storage/AtomicStreams.jl")
 include("Storage/Staging.jl")
@@ -28,7 +30,14 @@ include("Models/Errors.jl")
 include("Models/Delivery.jl")
 include("Models/Streaming.jl")
 include("Models/HTTP.jl")
+include("Models/CatalogTypes.jl")
+include("Models/ServiceRequests.jl")
+include("Models/ServiceTransport.jl")
+include("Models/CatalogParsing.jl")
+include("Models/CatalogCache.jl")
+include("Models/TokenCounts.jl")
 include("Tools/Schema.jl")
+include("Tools/Models.jl")
 include("Tools/Files.jl")
 include("Tools/Processes.jl")
 include("Memory/Store.jl")
@@ -127,6 +136,7 @@ include("Protocol/Skills.jl")
 include("Protocol/Hooks.jl")
 include("Protocol/Context.jl")
 include("Protocol/Analyzers.jl")
+include("Protocol/Models.jl")
 
 export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
     dispatch_rpc, serve_stdio, stop_server!, capability_manifest
@@ -148,6 +158,9 @@ export ComputeLimits, AnalyzerTestCase, AnalyzerDefinition, AnalyzerManager, Ana
 export IsolatedJuliaAnalyzer, AnalyzerArchive, analyzer_archive, archive_analyzer!,
     analyzer_archive_list, analyzer_archive_inspect, restore_analyzer!, promote_analyzer!,
     rollback_analyzer!, analyzer_archive_history
+export ModelDescriptor, ModelCatalogManager, ModelsTool, model_descriptor_dict,
+    model_catalog_view, refresh_model_catalog!, count_model_tokens, model_request_from_dict,
+    OperationManager, start_operation!, owned_operation, close_operations!, bounded_canonical_json
 export ProjectWatchOptions, ProjectWatch, start_project_watch, stop_project_watch!,
     project_watch_status, refresh_project_watch!
 
@@ -202,6 +215,7 @@ include("CLI/Skills.jl")
 include("CLI/Hooks.jl")
 include("CLI/Context.jl")
 include("CLI/Analyzers.jl")
+include("CLI/Models.jl")
 include("CLI/TUI.jl")
 main(args=ARGS)=cli_main(args)
 

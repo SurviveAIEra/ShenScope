@@ -9,4 +9,5 @@ export const PANEL_RPC_METHODS = Object.freeze([
     'hooks/start', 'hooks/query', 'hooks/job', 'hooks/cancel_job',
     'context/start', 'context/query', 'context/job', 'context/cancel_job',
     'analyzers/start', 'analyzers/query', 'analyzers/job', 'analyzers/cancel_job',
+    'models/start', 'models/query', 'models/job', 'models/cancel_job',
 ]);

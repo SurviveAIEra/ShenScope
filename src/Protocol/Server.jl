@@ -154,10 +154,11 @@ end
 
 function capability_manifest()
     Dict("agent"=>true,"streaming_protocols"=>["openai_chat","openai_responses","anthropic","gemini","ollama"],
-        "tools"=>["read","search","edit","write","patch","process","git","memory","project","diagnostics","analyzers","tasks","mcp","skills","hooks","context"],"session_journal"=>true,"memory"=>true,
+        "tools"=>["read","search","edit","write","patch","process","git","memory","project","diagnostics","analyzers","models","tasks","mcp","skills","hooks","context"],"session_journal"=>true,"memory"=>true,
         "permission_approvals"=>true,"config_profiles"=>true,"os_isolation"=>false,
         "mcp"=>true,"mcp_transports"=>["stdio","streamable_http"],"skills"=>true,"hooks"=>true,"project_intelligence"=>true,
         "durable_tasks"=>true,"dynamic_analyzers"=>true,"context_checkpoints"=>true,"context_recovery"=>true,
+        "model_catalog"=>true,"model_counting"=>true,
         "isolated_compute"=>Dict("dependency_available"=>compute_seccomp_available(),"backend"=>"linux-seccomp-compute-v1",
             "enforcement_checked_per_child"=>true,"host_tools_isolated"=>false))
 end
@@ -175,6 +176,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     server.stopping && method!="shutdown" && throw(RPCFault(-32003,"Server is stopping"))
     startswith(method,"project/") && return project_rpc(server,method,params)
     startswith(method,"analyzers/") && return analyzers_rpc(server,method,params)
+    startswith(method,"models/") && return models_rpc(server,method,params)
     startswith(method,"tasks/") && return tasks_rpc(server,method,params)
     startswith(method,"mcp/") && return mcp_rpc(server,method,params)
     startswith(method,"skills/") && return skills_rpc(server,method,params)
@@ -195,6 +197,8 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
             throw(ShenScopeError(:config, "Finish context operations before changing configuration"))
         analyzer_jobs_running(server_analyzers_tool(server).manager) &&
             throw(ShenScopeError(:config,"Finish analyzer operations before changing configuration"))
+        operations_running(server_models_tool(server).manager.operations) &&
+            throw(ShenScopeError(:config,"Finish model service operations before changing configuration"))
         taskmanager = server_task_tool(server).manager
         lock(taskmanager.mutex) do
             any(job -> job.status == :running, values(taskmanager.jobs)) &&
@@ -229,6 +233,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
         revision=save_config!(Dict{String,Any}(value);path=server.config_file,expected_sha256=expected,
             before_write=()->begin;cleanup_mcp!(mcpmanager);cleanup_skills!(skillsmanager);cleanup_hooks!(hooksmanager);cleanup_context!(server_context_tool(server).manager);cleanup_analyzers!(server_analyzers_tool(server).manager);end)
         server.config=load_config(;path=server.config_file)
+        reset_models_tool!(server_models_tool(server),server.config)
         mcpmanager.specs=mcp_specs_from_config(server.config)
         skillsmanager.config=skill_config(server.config)
         hooksmanager.config=hook_config(server.config)
@@ -244,6 +249,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
         lock(server.mutex) do
             isempty(value) ? delete!(server.credentials,variable) : (server.credentials[variable]=value)
         end
+        invalidate_model_catalogs!(server_models_tool(server).manager;reason="Model credentials changed")
         return Dict("configured"=>!isempty(value))
     elseif method=="credentials/status"
         variable=rpc_string(params,"variable";default=server.config["provider"]["key_env"],max_bytes=128)
@@ -339,6 +345,7 @@ function stop_server!(server::CoreServer)
     for tool in server.tools
         tool isa ProjectTool && cleanup_projects!(tool.manager)
         tool isa AnalyzersTool && cleanup_analyzers!(tool.manager)
+        tool isa ModelsTool && cleanup_model_catalogs!(tool.manager)
         tool isa ProcessTool || continue
         for id in keys(server.contexts);cleanup_processes!(tool.manager,id);end
     end
