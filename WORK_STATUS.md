@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 16,041 authored Julia Core code lines across 146 files;
-CLI/TUI add 845 lines and are counted separately. This is 6.4164% of the
-minimum line target, leaving 233,959 lines. These are early implementations,
+Latest cloc 2.11 count: 16,694 authored Julia Core code lines across 154 files;
+CLI/TUI add 857 lines and are counted separately. This is 6.6776% of the
+minimum line target, leaving 233,306 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -361,3 +361,23 @@ native-history conversion and installed-package/desktop/Windows validation remai
 pending. Development continues immediately with evidence-backed Git history,
 co-change/risk analysis and the remaining Core/runtime/security scope. The
 250,000 authored Core-line goal remains active and unmet.
+
+Git history checkpoint 021: bounded local first-parent snapshots, strict NUL
+numstat parsing, full HEAD pin/revalidation, shallow/lookahead/output coverage,
+protected/bulk exclusions, exact project-revision joins and commit evidence.
+GitCochange and Risk share Julia scoring and bounded result retention across
+the Project tool, CLI, conversation-owned RPC jobs and both IDE clients.
+
+Validation: combined focused 135, final Core 96 and affected existing 143
+assertions pass; 124 unique new history assertions, overlaps not added twice.
+Editor check/build, three real Node/Core transport tests, final full Workbench
+typecheck and final VSIX payload equality pass. Both actual native/independent
+VSIX development GUI flows verify Go AST indexing, five argv-bound approvals,
+exact commit disclosures, co-change/risk metrics and native source opening
+without model requests. The final Core reason wording now accurately supports
+a custom one-commit minimum; final leaf tests validate that correction.
+Evidence and failed attempts: docs/validation/git-history-checkpoint-021.json.
+Scope: docs/core/git_history.md. Nested/external Git metadata, rename lineage,
+calibrated risk and Windows/installed distribution remain pending. Development
+continues with Migration analysis, graph evidence, runtime/security and remaining
+requirements. The 250,000 authored Core-line target remains active and unmet.

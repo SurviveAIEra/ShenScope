@@ -323,3 +323,26 @@ circuits and private conversation receipts support both actual editor clients,
 CLI and RPC. This is explicit routing, not an automatic model-quality ranking or
 evidence of faster/cheaper live inference. See `docs/core/model_routing.md` and
 checkpoint 020 validation for precise evidence and remaining scope.
+# Git history and evidence analysis — checkpoint 021
+
+Selected source review precedes independent implementation. Codex's
+`utils/git-discovery` emphasizes bounded probe ownership; ShenScope uses the
+existing conversation-owned project job and local process lifecycle. OpenCode's
+typed repository/change/error interfaces inform explicit snapshot geometry.
+DeepSeek Harness's workspace-changes runner supplies design questions around
+timeouts, cancellation, stdout loss and environment scrubbing; its snapshot
+copy workflow is not used. Pi's bash lifecycle is reviewed for cancellation
+and timeout behavior; ShenScope Git uses argv rather than shell commands.
+Kimi's work-tree geometry illustrates Git-directory pointers, which this first
+scope rejects rather than following external metadata. ZCode's Git service
+interfaces distinguish typed read results and changes. Qwen's review wrapper
+motivates fresh environment capture and config/discovery guards; its disposable
+worktree flow is not used.
+
+Serena's separate commit/staged/unstaged observations reinforce explicit history
+coverage. Aider's definition/reference ranking illustrates evidence-driven file
+selection; no PageRank implementation is copied or translated. ShenScope's
+co-change support, exact-path project join and declared review heuristic are
+independent Julia implementations with full commit evidence and explicit limits.
+All seven primary agent reviews remain partial; this checkpoint does not claim
+complete synthesis, calibrated risk or model-quality improvements.

@@ -39,6 +39,16 @@ function cli_project_arguments(positional::Vector{String}, flags::AbstractDict)
             parsed===nothing && throw(ShenScopeError(:input,"Project $key must be an integer"))
             args[key]=parsed
         end
+    elseif action in ("git_cochange","risk")
+        args["paths"]=positional[3:end]
+        haskey(flags,"--symbol") && (args["symbols"]=[flags["--symbol"]])
+        for (option,key) in (("--history-limit","history_limit"),("--bulk-threshold","bulk_threshold"),
+                ("--minimum-support","minimum_support"),("--limit","limit"),("--revision","revision"))
+            haskey(flags,option) || continue
+            parsed=tryparse(Int,flags[option])
+            parsed===nothing && throw(ShenScopeError(:input,"Project $key must be an integer"))
+            args[key]=parsed
+        end
     elseif action=="search"
         args["query"]=join(positional[3:end]," ")
     else

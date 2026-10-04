@@ -36,6 +36,7 @@ const semanticOnly = process.argv.includes('--semantic-only');
 const analyzersOnly = process.argv.includes('--analyzers-only');
 const modelsOnly = process.argv.includes('--models-only');
 const routingOnly = process.argv.includes('--routing-only');
+const historyOnly = process.argv.includes('--history-only');
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
@@ -130,6 +131,23 @@ if (skillsOnly) {
 }
 await writeFile(join(root, 'README.md'), 'Native sidebar test workspace\n');
 await writeFile(join(root, 'sample.go'), 'package fixture\nfunc Greet() int { return 1 }\nfunc TestGreet() int { return Greet() }\n');
+let historyCommits;
+if (historyOnly) {
+    await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\nprocess = 'ask'\nnetwork = 'deny'\npersistence = 'allow'\n`);
+    const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')));
+    const git = (...args) => execFileSync('git', ['-c', 'user.name=GUI Fixture', '-c', 'user.email=fixture@example.invalid', ...args], { cwd: root, env: { ...env, GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: '/dev/null' }, timeout: 10_000 }).toString().trim();
+    git('init', '--object-format=sha1', '--initial-branch=main');
+    await writeFile(join(root, 'buddy.go'), 'package fixture\nfunc Buddy() int { return Greet() }\n');
+    await writeFile(join(root, 'other.go'), 'package fixture\nfunc Other() int { return 1 }\n');
+    historyCommits = [];
+    for (let index = 0; index < 4; index++) {
+        if (index > 0) {
+            await writeFile(join(root, 'buddy.go'), `package fixture\nfunc Buddy() int { return Greet() + ${index} }\n`);
+            await writeFile(join(root, index === 2 ? 'other.go' : 'sample.go'), index === 2 ? 'package fixture\nfunc Other() int { return 2 }\n' : `package fixture\nfunc Greet() int { return ${index + 1} }\nfunc TestGreet() int { return Greet() }\n`);
+        }
+        git('add', '--', 'sample.go', 'buddy.go', 'other.go'); git('commit', '--no-gpg-sign', '-m', 'fixture change'); historyCommits.push(git('rev-parse', 'HEAD'));
+    }
+}
 if (semanticOnly) {
     await writeFile(join(root, 'greeter.ts'), "export interface Greeter { greet(name: string): string; }\nexport class English implements Greeter { greet(name: string): string { return 'Hello ' + name; } }\n");
     await writeFile(join(root, 'main.ts'), "import { English } from './greeter';\nexport function TestGreet(): string { const agent = new English(); return agent.greet('中😀'); }\nexport const wrong: number = 'type error';\n");
@@ -187,7 +205,7 @@ try {
     }
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -216,6 +234,43 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (historyOnly) {
+        await panel.getByRole('button', { name: 'Project', exact: true }).click();
+        await panel.getByRole('combobox', { name: 'Project backend' }).selectOption('go_ast');
+        await panel.getByRole('button', { name: 'Index project', exact: true }).click();
+        await panel.locator('.permission-card').first().getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 60_000 });
+        await panel.getByRole('button', { name: 'Refresh index', exact: true }).waitFor({ timeout: 120_000 });
+        await panel.getByRole('textbox', { name: 'Files to analyze (comma separated)' }).fill('sample.go');
+        await panel.getByRole('spinbutton', { name: 'Bulk file threshold', exact: true }).fill('2');
+        await panel.getByRole('spinbutton', { name: 'Bulk file threshold', exact: true }).blur();
+        const analyze = async (button, title) => {
+            await panel.getByRole('button', { name: button, exact: true }).click();
+            let approved = 0; const deadline = Date.now() + 120_000;
+            while (Date.now() < deadline && !await panel.locator('.analysis-title').filter({ hasText: title }).count()) {
+                const card = panel.locator('.permission-card').first();
+                if (await card.count()) { const requestId = await card.getAttribute('data-request-id'); const fixed = panel.locator(`.permission-card[data-request-id="${requestId}"]`); assert.match(await fixed.innerText(), /git.history · process/); await fixed.getByRole('button', { name: 'Allow once', exact: true }).click(); approved++; await fixed.waitFor({ state: 'detached' }); }
+                else { await new Promise(resolve => setTimeout(resolve, 50)); }
+            }
+            await panel.locator('.analysis-title').filter({ hasText: title }).waitFor({ timeout: 1000 }); assert.equal(approved, 5);
+            assert.equal(requests.length, 0, 'Local history analysis sends no provider request');
+        };
+        await analyze('Git co-change', 'git cochange');
+        await panel.locator('.history-candidate').getByRole('button', { name: 'buddy.go', exact: true }).waitFor();
+        await panel.getByText('Score 0.400 · 2 shared commits', { exact: true }).waitFor();
+        await panel.locator('.history-commit-evidence > summary').click();
+        assert.equal(await panel.locator('.history-commit-evidence code').first().textContent(), historyCommits[3]);
+        await panel.locator('.history-coverage').scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-git-cochange.png`) });
+        await panel.locator('.history-candidate').getByRole('button', { name: 'buddy.go', exact: true }).click();
+        await page.locator('.monaco-editor .view-lines').filter({ hasText: 'func Buddy' }).waitFor();
+        await panel.getByRole('textbox', { name: 'Files to analyze (comma separated)' }).fill('sample.go');
+        await analyze('Review priority', 'risk');
+        await panel.locator('.history-candidate').getByRole('button', { name: 'sample.go', exact: true }).waitFor();
+        await panel.getByText('2 observed changes · +2 / −2 lines · 1 dependent files', { exact: true }).waitFor();
+        await panel.locator('.history-coverage').scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-git-risk.png`) });
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual local Git history approvals, commit-linked co-change/risk results, evidence controls and native source opening without model requests`);
     }
     if (routingOnly) {
         await panel.getByRole('combobox', { name: 'More views' }).selectOption('Models');

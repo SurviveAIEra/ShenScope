@@ -1,0 +1,113 @@
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Settings
+Models
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+Project intelligence
+
+Explore symbols and trace the evidence behind affected code and test candidates.
+
+Tree-sitter
+Go AST
+CodeGraph
+TypeScript compiler
+Refresh index
+3
+Files
+7
+Symbols
+6
+Relations
+1
+Revision
+
+Last indexed snapshot. Refresh after changes. Call links use syntax evidence and may miss dynamic or unresolved calls.
+
+File changes
+Off
+Update index automatically
+
+Watch saved files and configuration. Approvals still apply to index updates.
+
+Watch file changes
+Index storage · 4.9 KiB
+Buddy
+function · buddy.go:2
+TestGreet
+function · sample.go:3
+Greet
+function · sample.go:2
+Other
+function · other.go:2
+buddy.go
+file · buddy.go:1
+sample.go
+file · sample.go:1
+other.go
+file · other.go:1
+Show diagnostics
+Files to analyze (comma separated)
+Impact
+Test candidates
+Architecture
+Commit evidence
+
+Find files that change together or rank files for review using local Git history.
+
+Commits
+Bulk file threshold
+Minimum shared commits
+Git co-change
+Review priority
+Git Cochange
+History 5fd513717f7a
+
+4 first-parent commits · 1 bulk commits excluded · index revision 1
+
+buddy.go
+Score 0.400 · 2 shared commits
+Commit evidence
+
+Changed with an indexed seed in multiple retained non-bulk first-parent commits
+
+Commit co-occurrence and line churn are observations, not proof of coupling, defects or test coverage.
+
+Only local first-parent commit history is read; side-branch commits and uncommitted changes are not independently analyzed.
+
+Shallow history, commit/output limits and excluded bulk changes limit coverage; omitted evidence is never reconstructed.
+
+Renames are recorded as deletion and addition; historical identities are not followed across renamed paths.
+
+Current indexed facts are joined by exact file path and revision; their contents are not asserted to match Git HEAD.
+
+Configured heuristic scores and support confidence are not calibrated defect probabilities.
+
+Project analysis complete
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Error: strict mode violation: locator('.shenscope-panel').getByRole('button', { name: 'buddy.go', exact: true }) resolved to 2 elements:
+    1) <button type="button" title="buddy.go" class="source-link" aria-label="buddy.go">…</button> aka getByRole('button', { name: 'buddy.go' }).first()
+    2) <button type="button" title="buddy.go" class="source-link" aria-label="buddy.go">…</button> aka locator('section').filter({ hasText: 'buddy.goScore 0.400 · 2' }).getByLabel('buddy.go')
+
+Call log:
+[2m  - waiting for locator('.shenscope-panel').getByRole('button', { name: 'buddy.go', exact: true }) to be visible[22m
+
+    at /workspace/ShenScope/ide/test/native_smoke.mjs:259:76 {
+  log: [
+    "  - waiting for locator('.shenscope-panel').getByRole('button', { name: 'buddy.go', exact: true }) to be visible"
+  ]
+}
+
+Node.js v24.19.0

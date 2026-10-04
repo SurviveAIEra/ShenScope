@@ -1,0 +1,48 @@
+Precompiling ShenScope...
+   6551.4 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 7 seconds. 39 already precompiled.
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/git_history.jl:1
+Test Summary:                                            | Pass  Total  Time
+Git history strict framing, capacities and path identity |   44     44  0.1s
+Test Summary:                                         | Pass  Total  Time
+History evidence ranking remains bounded and explicit |    8      8  1.7s
+Real Git history preserves NUL paths, binaries, empty commits and shallow coverage: Error During Test at /workspace/ShenScope/test/integration/git_history.jl:1
+  Got exception outside of a @test
+  MethodError: no method matching Cmd(::Vector{String}; dir::String)
+  This method may not support any kwargs.
+
+  Closest candidates are:
+    Cmd(::Vector{<:AbstractString}) got unsupported keyword argument "dir"
+     @ Base cmd.jl:18
+    Cmd(!Matched::Cmd; ignorestatus, env, dir, cpus, detach, windows_verbatim, windows_hide)
+     @ Base cmd.jl:23
+    Cmd(!Matched::Cmd, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any) got unsupported keyword argument "dir"
+     @ Base cmd.jl:20
+    ...
+
+  Stacktrace:
+    [1] history_fixture_git(::String, ::String, ::Vararg{String}; capture::Bool, environment::Dict{String, String})
+      @ Main /workspace/ShenScope/test/fixtures/git_history.jl:19
+    [2] history_fixture_git(::String, ::String, ::Vararg{String})
+      @ Main /workspace/ShenScope/test/fixtures/git_history.jl:16
+    [3] history_fixture_repository(root::String)
+      @ Main /workspace/ShenScope/test/fixtures/git_history.jl:30
+    [4] (::var"#11#16")(root::String)
+      @ Main /workspace/ShenScope/test/integration/git_history.jl:3
+    [5] mktempdir(fn::var"#11#16", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [6] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [7] macro expansion
+      @ /workspace/ShenScope/test/integration/git_history.jl:2 [inlined]
+    [8] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+    [9] top-level scope
+      @ /workspace/ShenScope/test/integration/git_history.jl:2
+   [10] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [11] top-level scope
+      @ none:1
+Test Summary:                                                                      | Error  Total  Time
+Real Git history preserves NUL paths, binaries, empty commits and shallow coverage |     1      1  1.8s

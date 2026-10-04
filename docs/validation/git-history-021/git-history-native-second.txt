@@ -1,0 +1,1 @@
+PASS: native Workbench with extensions disabled, actual local Git history approvals, commit-linked co-change/risk results, evidence controls and native source opening without model requests

@@ -257,6 +257,12 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .model-route-excluded { padding: 10px 0; border-top: 1px solid var(--vscode-widget-border, #444); }
 .model-route-excluded p { margin: 5px 0 0; }
 .model-route-receipt[data-outcome=success] > strong { color: var(--vscode-testing-iconPassed, #73c991); }
+.history-analysis-bounds { display: grid; gap: 10px; margin: 12px 0; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+.history-analysis-bound { display: grid; gap: 5px; color: var(--vscode-descriptionForeground); font-size: 11px; }
+.history-analysis-bound input { box-sizing: border-box; width: 100%; padding: 6px; border: 1px solid var(--vscode-input-border, #555); border-radius: 4px; color: var(--vscode-input-foreground); background: var(--vscode-input-background); }
+.history-commit-evidence { margin: 10px 0; font-size: 11px; }
+.history-commit-evidence summary { cursor: pointer; color: var(--vscode-textLink-foreground); }
+.history-commit-evidence code, .history-commit-evidence small { display: block; margin-top: 6px; overflow-wrap: anywhere; }
 .model-route-receipt[data-outcome=failed] > strong { color: var(--vscode-editorWarning-foreground, #e5bd63); }
 .model-role-choice { max-width: 95px; min-width: 60px; padding: 3px 5px; font-size: 11px; color: var(--vscode-dropdown-foreground, var(--vscode-input-foreground)); background: var(--vscode-dropdown-background, var(--vscode-input-background)); border: 1px solid var(--vscode-dropdown-border, var(--vscode-widget-border)); border-radius: 5px; }
 .model-route-credentials { margin-top: 12px; }

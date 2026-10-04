@@ -1,0 +1,21 @@
+arguments: arguments.history_limit is out of range
+arguments: arguments.minimum_support is out of range
+arguments: Git co-change analysis requires indexed paths or symbols
+Test Summary:                                            | Pass  Total  Time
+Git history strict framing, capacities and path identity |   44     44  0.1s
+Test Summary:                                         | Pass  Total  Time
+History evidence ranking remains bounded and explicit |    8      8  1.5s
+Test Summary:                                                                      | Pass  Total  Time
+Real Git history preserves NUL paths, binaries, empty commits and shallow coverage |   21     21  6.9s
+Test Summary:                                                                      | Pass  Total   Time
+Co-change and review risk join a fixed project revision with exact commit evidence |   16     16  14.5s
+Test Summary:                                                                        | Pass  Total  Time
+History approval boundaries reject declaration changes, expired waits and moved HEAD |    6      6  0.7s
+Test Summary:                                                                  | Pass  Total  Time
+CLI navigation encodes one owned cursor or symbol with bounded evidence paging |   12     12  1.0s
+Test Summary:                                                         | Pass  Total  Time
+CLI history filters preserve indexed seed identity and integer limits |    5      5  0.0s
+Test Summary:                                                         | Pass  Total     Time
+Project RPC owns history jobs, exact approvals and child cancellation |   14     14  1m03.0s
+Test Summary:                                                            | Pass  Total   Time
+CLI history evidence uses validated limits and a real saved parser index |    9      9  38.5s

@@ -1,0 +1,13 @@
+Precompiling ShenScope...
+   8482.1 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 9 seconds. 39 already precompiled.
+Test Summary:                                            | Pass  Total  Time
+Git history strict framing, capacities and path identity |   44     44  0.1s
+Test Summary:                                         | Pass  Total  Time
+History evidence ranking remains bounded and explicit |    8      8  1.5s
+Test Summary:                                                                      | Pass  Total  Time
+Real Git history preserves NUL paths, binaries, empty commits and shallow coverage |   21     21  6.6s
+Test Summary:                                                                      | Pass  Total   Time
+Co-change and review risk join a fixed project revision with exact commit evidence |   17     17  20.5s
+Test Summary:                                                                        | Pass  Total  Time
+History approval boundaries reject declaration changes, expired waits and moved HEAD |    6      6  0.8s

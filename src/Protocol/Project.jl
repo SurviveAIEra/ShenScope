@@ -26,7 +26,7 @@ function project_rpc(server::CoreServer,method::String,params::AbstractDict)
     elseif method=="project/start"
         session=idle_session(server,params)
         args=Dict{String,Any}(key=>value for (key,value) in params if key!="session_id")
-        validate_schema(args,tool_schema(tool));args["action"] in ("build","update","compact","impact","test_selection","architecture") ||
+        validate_schema(args,tool_schema(tool));args["action"] in ("build","update","compact","impact","test_selection","architecture","git_cochange","risk") ||
             throw(RPCFault(-32602,"Use project/query for read operations"))
         name=get(args,"backend","tree_sitter")
         owner=get(server.contexts,session.id,nothing)

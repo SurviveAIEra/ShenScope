@@ -1,0 +1,22 @@
+Test Summary:                         | Pass  Total  Time
+Cancellation tree and dynamic context |    7      7  1.9s
+Test Summary:                                | Pass  Total  Time
+Concurrent budget reservation and accounting |    9      9  2.1s
+Test Summary:                             | Pass  Total  Time
+Permission decisions and path containment |    7      7  1.1s
+Test Summary:                                      | Pass  Total  Time
+Durable journal, torn tails and revision conflicts |    6      6  4.3s
+Test Summary:                                   | Pass  Total  Time
+Session reconstruction and unknown side effects |   11     11  7.4s
+Test Summary:                                                       | Pass  Total   Time
+Agent tool calling preserves contract evidence without loading code |    4      4  44.8s
+Test Summary:                                                        | Pass  Total  Time
+Julia interface contracts, ambiguity evidence and world-age boundary |   19     19  1.4s
+Test Summary:                                                                     | Pass  Total   Time
+Compiler diagnostics use listed targets, bounded output and independent processes |   23     23  16.8s
+Test Summary:                                                                  | Pass  Total  Time
+CLI navigation encodes one owned cursor or symbol with bounded evidence paging |   12     12  0.3s
+Test Summary:                                                         | Pass  Total  Time
+CLI history filters preserve indexed seed identity and integer limits |    5      5  0.1s
+Test Summary:                                                | Pass  Total   Time
+Project RPC lifecycle, approvals and responsive cancellation |   40     40  39.1s

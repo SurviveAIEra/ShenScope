@@ -12,14 +12,17 @@ struct ProjectTool <: AbstractTool
 end
 ProjectTool()=ProjectTool(ProjectManager())
 tool_name(::ProjectTool)="project"
-tool_description(::ProjectTool)="Index source with a real parser backend, search symbols and compute evidence-bearing impact/test/architecture candidates."
+tool_description(::ProjectTool)="Index source, navigate recorded facts and compute impact, tests, architecture, local Git co-change and review-priority evidence."
 execution_mode(::ProjectTool)=:exclusive
 tool_schema(::ProjectTool)=object_schema(Dict(
-    "action"=>Dict("type"=>"string","enum"=>["build","update","compact","status","search","impact","test_selection","architecture",
+    "action"=>Dict("type"=>"string","enum"=>["build","update","compact","status","search","impact","test_selection","architecture","git_cochange","risk",
         "definitions","references","hover","incoming_calls","outgoing_calls","implementations","diagnostics"]),
     "backend"=>Dict("type"=>"string","enum"=>["tree_sitter","go_ast","codegraph","typescript"]),
     "paths"=>Dict("type"=>"array","maxItems"=>10000,"items"=>string_schema(;max=4096)),
     "query"=>string_schema(;max=4096),"limit"=>integer_schema(1,1000),"offset"=>integer_schema(0,100000),
+    "symbols"=>Dict("type"=>"array","maxItems"=>128,"items"=>string_schema(;max=32)),
+    "history_limit"=>integer_schema(1,512),"bulk_threshold"=>integer_schema(2,512),"minimum_support"=>integer_schema(1,512),
+    "history_timeout"=>Dict("type"=>"number","minimum"=>0.05,"maximum"=>600),
     "symbol_id"=>string_schema(;max=32),"file"=>string_schema(;max=4096),"line"=>integer_schema(1,8*1024*1024),
     "column"=>integer_schema(1,8*1024*1024),"column_unit"=>Dict("type"=>"string","enum"=>["utf8_byte","utf16"]),
     "revision"=>integer_schema(0),"sha256"=>string_schema(;max=64),"include_declarations"=>Dict("type"=>"boolean"),
@@ -80,7 +83,9 @@ function execute_project(tool::ProjectTool,args::AbstractDict,ctx::RuntimeContex
     authorize!(ctx,:read,"project.query",ctx.root)
     action=="status" && return project_status(state)
     action=="search" && return graph_search(state,get(args,"query","");limit=get(args,"limit",50),offset=get(args,"offset",0))
-    analyzer=action=="impact" ? ImpactAnalyzer() : action=="test_selection" ? TestSelectionAnalyzer() : action=="architecture" ? ArchitectureAnalyzer() : nothing
+    analyzer=action=="impact" ? ImpactAnalyzer() : action=="test_selection" ? TestSelectionAnalyzer() :
+        action=="architecture" ? ArchitectureAnalyzer() : action=="git_cochange" ? GitCochangeAnalyzer() :
+        action=="risk" ? RiskAnalyzer() : nothing
     analyzer===nothing && throw(ShenScopeError(:arguments,"Unknown project action"))
     analyze(analyzer,state,args,ctx)
 end

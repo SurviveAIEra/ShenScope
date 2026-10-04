@@ -21,3 +21,17 @@
         @test_throws ShenScopeError arguments(values)
     end
 end
+
+@testset "CLI history filters preserve indexed seed identity and integer limits" begin
+    values=["project","git_cochange","中文.jl","--history-limit","7","--bulk-threshold","2","--minimum-support","3","--limit","4","--revision","2"]
+    positional,flags=ShenScope.parse_cli(values)
+    arguments=ShenScope.cli_project_arguments(positional,flags)
+    ShenScope.validate_tool_arguments(ProjectTool(),arguments)
+    @test arguments["paths"]==["中文.jl"] && arguments["history_limit"]==7 && arguments["minimum_support"]==3
+    @test arguments["bulk_threshold"]==2 && arguments["limit"]==4 && arguments["revision"]==2
+    for option in ("--history-limit","--bulk-threshold","--minimum-support")
+        @test_throws ShenScopeError begin
+            p,f=ShenScope.parse_cli(["project","risk",option,"x"]);ShenScope.cli_project_arguments(p,f)
+        end
+    end
+end

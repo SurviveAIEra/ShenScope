@@ -50,6 +50,9 @@ export class ShenScopePanel {
     private projectBackend = 'tree_sitter';
     private projectJob?: string;
     private projectResult: any;
+    private projectHistoryLimit = 128;
+    private projectBulkThreshold = 32;
+    private projectMinimumSupport = 2;
     private projectWatch: any;
     private projectWatchAutomatic = false;
     private projectWatchViews = new Map<string, any>();
@@ -982,14 +985,45 @@ export class ShenScopePanel {
         const paths = this.field('Files to analyze (comma separated)', '', this.content); paths.placeholder = 'src/main.go';
         const actions = el('div', '', 'analysis-actions');
         actions.append(this.button('Impact', () => this.startProject('impact', paths.value)), this.button('Test candidates', () => this.startProject('test_selection', paths.value)), this.button('Architecture', () => this.startProject('architecture'))); this.content.append(actions);
+        const history = el('section', '', 'info-card history-analysis-controls');
+        history.append(el('h3', 'Commit evidence'), el('p', 'Find files that change together or rank files for review using local Git history.', 'view-description'));
+        const bounds = el('div', '', 'history-analysis-bounds');
+        for (const [title, value, minimum, maximum, update] of [
+            ['Commits', this.projectHistoryLimit, 1, 512, (next: number) => { this.projectHistoryLimit = next; }],
+            ['Bulk file threshold', this.projectBulkThreshold, 2, 512, (next: number) => { this.projectBulkThreshold = next; }],
+            ['Minimum shared commits', this.projectMinimumSupport, 1, 512, (next: number) => { this.projectMinimumSupport = next; }],
+        ] as const) {
+            const label = el('label', '', 'history-analysis-bound'); const input = el('input'); input.type = 'number'; input.min = String(minimum); input.max = String(maximum); input.value = String(value); input.setAttribute('aria-label', title);
+            input.addEventListener('change', () => { const next = Number(input.value); if (Number.isInteger(next) && next >= minimum && next <= maximum) { update(next); } else { input.value = String(value); } });
+            label.append(el('span', title), input); bounds.append(label);
+        }
+        const historyActions = el('div', '', 'analysis-actions');
+        historyActions.append(this.button('Git co-change', () => this.startProject('git_cochange', paths.value)), this.button('Review priority', () => this.startProject('risk', paths.value)));
+        history.append(bounds, historyActions); this.content.append(history);
         if (this.projectResult?.analyzer) {
             const result = this.projectResult; this.content.append(el('h3', result.analyzer.replaceAll('_', ' '), 'analysis-title'));
+            if (result.coverage?.head) {
+                const evidence = el('section', '', 'info-card history-coverage');
+                evidence.append(el('strong', 'History ' + result.coverage.head.slice(0, 12)), el('p', `${result.coverage.commits_scanned} first-parent commits · ${result.coverage.bulk_commits_excluded} bulk commits excluded · index revision ${result.revision}`));
+                if (result.coverage.shallow || result.coverage.limit_reached || result.truncated) { evidence.append(el('span', 'Partial coverage', 'badge')); }
+                this.content.append(evidence);
+            }
             for (const candidate of result.candidates ?? []) {
                 const symbol = candidate.symbol; const card = el('section', '', 'info-card');
-                card.append(this.button(symbol.name, () => this.bridge.openFile(symbol.location.file, symbol.location.start_line), 'source-link'), el('p', candidate.reason), el('small', `${symbol.location.file}:${symbol.location.start_line} · confidence ${Math.round(candidate.confidence * 100)}%`)); this.content.append(card);
+                if (symbol) { card.append(this.button(symbol.name, () => this.bridge.openFile(symbol.location.file, symbol.location.start_line), 'source-link'), el('small', `${symbol.location.file}:${symbol.location.start_line} · confidence ${Math.round(candidate.confidence * 100)}%`)); }
+                else if (candidate.file) {
+                    card.classList.add('history-candidate'); card.dataset.historyFile = candidate.file;
+                    card.append(this.button(candidate.file, () => this.bridge.openFile(candidate.file), 'source-link'), el('small', `Score ${candidate.score.toFixed(3)} · ${candidate.review_priority ? candidate.review_priority + ' review priority' : candidate.joint_commits + ' shared commits'}`));
+                    if (candidate.metrics) { card.append(el('p', `${candidate.metrics.non_bulk_commits} observed changes · +${candidate.metrics.added_lines} / −${candidate.metrics.removed_lines} lines · ${candidate.metrics.incoming_files} dependent files`, 'view-description')); }
+                    const details = el('details', '', 'history-commit-evidence'); details.append(el('summary', 'Commit evidence'));
+                    for (const commit of candidate.evidence ?? []) { details.append(el('code', commit.commit), el('small', `${commit.changed_files} files · ${new Date(commit.committed_at * 1000).toISOString().slice(0, 10)}`)); }
+                    if (!candidate.evidence?.length) { details.append(el('p', 'No retained non-bulk commit evidence for this file.')); }
+                    card.append(details);
+                }
+                card.append(el('p', candidate.reason)); this.content.append(card);
             }
             for (const cycle of result.cycles ?? []) { const card = el('section', '', 'info-card'); card.append(el('h3', 'Dependency cycle')); for (const path of cycle) { card.append(this.button(path, () => this.bridge.openFile(path), 'source-link')); } this.content.append(card); }
-            if (result.candidates?.length === 0 || result.cycles?.length === 0) { this.content.append(el('p', 'No candidates found in the recorded relations.', 'empty-text')); }
+            if (result.candidates?.length === 0 || result.cycles?.length === 0) { this.content.append(el('p', result.coverage?.head ? 'No candidates meet the retained history and evidence filters.' : 'No candidates found in the recorded relations.', 'empty-text')); }
             for (const limit of result.limitations ?? []) { this.content.append(el('p', limit, 'view-description')); }
         }
         await search();
@@ -1002,7 +1036,8 @@ export class ShenScopePanel {
     }
     private async startProject(action: string, paths = ''): Promise<void> {
         if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title: 'Project analysis' }); this.sessionId = session.id; }
-        const result = await this.bridge.request('project/start', { session_id: this.sessionId, backend: this.projectBackend, action, paths: paths.split(/[\n,]/).map(path => path.trim()).filter(Boolean) });
+        const history = ['git_cochange', 'risk'].includes(action) ? { history_limit: this.projectHistoryLimit, bulk_threshold: this.projectBulkThreshold, minimum_support: this.projectMinimumSupport } : {};
+        const result = await this.bridge.request('project/start', { session_id: this.sessionId, backend: this.projectBackend, action, paths: paths.split(/[\n,]/).map(path => path.trim()).filter(Boolean), ...history });
         if (!this.completedProjectJobs.has(result.job_id)) { this.projectJob = result.job_id; this.setStatus('Analyzing project…'); }
         await this.renderTab();
     }

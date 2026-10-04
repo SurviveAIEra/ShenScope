@@ -116,3 +116,13 @@ clients share this policy. Agent prompt roles, reviewed imports, persistent flee
 state, adaptive quality/latency/cost routing and native-history conversion remain
 pending. See `docs/core/model_routing.md`; role/source configuration is not a
 claim of complete multi-agent feature parity or live-model quality improvement.
+# Git evidence checkpoint 021
+
+GitCochange and Risk now use bounded local first-parent numstat history joined
+to a fixed indexed revision. Julia supplies typed parsing, admission, exact
+commit evidence, support regularization and declared review heuristics. CLI,
+asynchronous conversation-owned RPC and both editor clients share that Core.
+Coverage excludes bulk/protected changes and reports shallow/capped/unindexed
+history; no rename lineage, causal coupling, calibrated defect rate or model
+request is inferred. Selected review spans the seven primary agents plus the
+existing Serena/Aider intelligence references; lockfile paths identify it.

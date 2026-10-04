@@ -1,0 +1,36 @@
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/git_history.jl:1
+Test Summary:                                            | Pass  Total  Time
+Git history strict framing, capacities and path identity |   44     44  0.1s
+Test Summary:                                         | Pass  Total  Time
+History evidence ranking remains bounded and explicit |    8      8  1.5s
+Real Git history preserves NUL paths, binaries, empty commits and shallow coverage: Error During Test at /workspace/ShenScope/test/integration/git_history.jl:1
+  Got exception outside of a @test
+  MethodError: no method matching git_history_version(::SubString{String})
+  The function `git_history_version` exists, but no method is defined for this combination of argument types.
+
+  Closest candidates are:
+    git_history_version(!Matched::String)
+     @ ShenScope /workspace/ShenScope/src/Git/HistoryProcess.jl:68
+
+  Stacktrace:
+   [1] git_history_snapshot(ctx::RuntimeContext; limits::GitHistoryLimits)
+     @ ShenScope /workspace/ShenScope/src/Git/HistorySnapshot.jl:6
+   [2] (::var"#11#16")(root::String)
+     @ Main /workspace/ShenScope/test/integration/git_history.jl:5
+   [3] mktempdir(fn::var"#11#16", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [4] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [5] macro expansion
+     @ /workspace/ShenScope/test/integration/git_history.jl:2 [inlined]
+   [6] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [7] top-level scope
+     @ /workspace/ShenScope/test/integration/git_history.jl:2
+   [8] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [9] top-level scope
+     @ none:1
+Test Summary:                                                                      | Error  Total  Time
+Real Git history preserves NUL paths, binaries, empty commits and shallow coverage |     1      1  5.1s

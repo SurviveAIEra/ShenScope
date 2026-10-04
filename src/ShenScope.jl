@@ -71,7 +71,15 @@ include("ProjectData/WatchTypes.jl")
 include("ProjectData/WatchSnapshots.jl")
 include("ProjectData/WatchBatches.jl")
 include("ProjectData/WatchRuntime.jl")
+include("Git/HistoryTypes.jl")
+include("Git/HistoryRepository.jl")
+include("Git/HistoryProcess.jl")
+include("Git/HistoryParsing.jl")
+include("Git/HistorySnapshot.jl")
 include("Analysis/Builtin.jl")
+include("Analysis/HistoryEvidence.jl")
+include("Analysis/Cochange.jl")
+include("Analysis/Risk.jl")
 include("Analysis/IsolatedWorker.jl")
 include("Runtime/ComputeProcess.jl")
 include("Analysis/Definitions.jl")
@@ -165,6 +173,8 @@ export SymbolId, SourceRange, SourceMap, CodeSymbol, Relation, FileFacts, CallRe
     graph_snapshot, graph_search, graph_traverse, ProjectTool, ImpactAnalyzer,
     TestSelectionAnalyzer, ArchitectureAnalyzer, analyze, analyzer_name, requirements
 export compact_project!, project_fingerprint
+export GitHistoryLimits, GitHistoryChange, GitHistoryCommit, GitHistorySnapshot,
+    git_history_snapshot, git_history_coverage, GitCochangeAnalyzer, RiskAnalyzer
 export ComputeLimits, AnalyzerTestCase, AnalyzerDefinition, AnalyzerManager, AnalyzersTool,
     register_analyzer!, analyzer_list, analyzer_inspect, select_analyzer!, remove_analyzer!,
     validate_analyzer!, evaluate_analyzer!, cancel_analyzer!, cleanup_analyzers!, run_isolated_compute
