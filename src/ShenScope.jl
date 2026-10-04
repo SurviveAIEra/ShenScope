@@ -14,6 +14,9 @@ include("Runtime/Context.jl")
 include("Security/Files.jl")
 include("Storage/Journal.jl")
 include("Storage/JSON.jl")
+include("Storage/AtomicStreams.jl")
+include("Storage/Staging.jl")
+include("Storage/JournalStream.jl")
 include("Storage/Versioned.jl")
 include("Context/Sessions.jl")
 include("Models/Provider.jl")
@@ -36,6 +39,9 @@ include("ProjectData/CompilerConfig.jl")
 include("ProjectData/TypeScript.jl")
 include("ProjectData/Queries.jl")
 include("ProjectData/Navigation.jl")
+include("ProjectData/Fingerprints.jl")
+include("ProjectData/Replay.jl")
+include("ProjectData/Compaction.jl")
 include("Analysis/Builtin.jl")
 include("Tools/Project.jl")
 include("Extensions/Contracts.jl")
@@ -112,6 +118,7 @@ export SymbolId, SourceRange, SourceMap, CodeSymbol, Relation, FileFacts, CallRe
     GoASTBackend, TypeScriptSemanticBackend, backend_capabilities, backend_close!, build!, update!, load_project,
     graph_snapshot, graph_search, graph_traverse, ProjectTool, ImpactAnalyzer,
     TestSelectionAnalyzer, ArchitectureAnalyzer, analyze, analyzer_name, requirements
+export compact_project!, project_fingerprint
 
 export ProviderConfig, HTTPProvider, MockProvider, provider_name, capabilities,
     response, prepare_request, stream_chat, estimate_request_tokens, SSEDecoder,

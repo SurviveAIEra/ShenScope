@@ -627,6 +627,11 @@ export class ShenScopePanel {
         }
         const semantic = status.capabilities?.calls === 'semantic';
         this.content.append(metrics, el('p', semantic ? 'Compiler snapshot. Refresh after edits. Static resolution does not prove the target of every runtime call.' : 'Last indexed snapshot. Refresh after changes. Call links use syntax evidence and may miss dynamic or unresolved calls.', 'view-description'));
+        const cache = el('details', '', 'project-cache'); cache.append(el('summary', 'Index storage · ' + this.formatBytes(status.persistent_bytes ?? 0)),
+            el('p', 'Store current index facts to reclaim space used by older index revisions.', 'view-description'),
+            this.button('Compact index history', () => this.startProject('compact'), 'secondary-button'));
+        if (this.projectResult?.compacted !== undefined) { cache.open = true; cache.append(el('p', this.projectResult.compacted ? 'Reclaimed ' + this.formatBytes(this.projectResult.saved_bytes) + '.' : 'The current index already uses less space than a replacement snapshot.', 'view-description')); }
+        this.content.append(cache);
         if (semantic) {
             const quality = el('div', '', 'compiler-status'); quality.append(el('span', 'TypeScript 5.9.2', 'badge'),
                 el('span', String(status.diagnostics ?? 0) + ' diagnostics'), el('span', String(status.unresolved_semantic_calls ?? 0) + ' unresolved calls'));
@@ -706,6 +711,12 @@ export class ShenScopePanel {
             for (const limit of result.limitations ?? []) { this.content.append(el('p', limit, 'view-description')); }
         }
         await search();
+    }
+    private formatBytes(value: unknown): string {
+        const bytes = typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : 0;
+        if (bytes < 1024) { return Math.round(bytes) + ' B'; }
+        if (bytes < 1024 * 1024) { return (bytes / 1024).toFixed(1) + ' KiB'; }
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MiB';
     }
     private async startProject(action: string, paths = ''): Promise<void> {
         if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title: 'Project analysis' }); this.sessionId = session.id; }

@@ -1,0 +1,20 @@
+Test Summary:                                                        |  Pass  Total  Time
+Compiler UTF-16 positions normalize to validated UTF-8 source ranges | 12050  12050  0.3s
+Test Summary:                                                             | Pass  Total  Time
+Compiler JSONC preserves literals and rejects ambiguous or excessive data |   13     13  0.3s
+Test Summary:                                                            | Pass  Total  Time
+Compiler configuration inheritance, source scope and post-read integrity |   17     17  5.7s
+Test Summary:                                               | Pass  Total  Time
+Compiler globs have bounded segment and recursive semantics |    6      6  0.0s
+Test Summary:                                                                                    | Pass  Total   Time
+Actual TypeScript checker resolves aliases, methods, overloads and diagnostics without execution |   55     55  53.4s
+Test Summary:                                                             | Pass  Total  Time
+Compiler 1/5/20-file deltas match full facts and preserve symbol identity |   43     43  8.1s
+Test Summary:                                                              | Pass  Total  Time
+Parser transport bounds blocked pipes, failed framing and command approval |   41     41  2.3s
+Test Summary:                                                                 | Pass  Total  Time
+Actual compiler frames cannot forge ownership, coordinates, edges or identity |   20     20  1.4s
+Test Summary:                                                                    | Pass  Total  Time
+Inherited compiler aliases resolve against effective baseUrl or declaring config |    9      9  1.6s
+Test Summary:                                                                           | Pass  Total  Time
+Real compiler cache compaction preserves navigation, diagnostics and subsequent updates |    8      8  2.7s

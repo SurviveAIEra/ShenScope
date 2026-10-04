@@ -18,7 +18,8 @@
       "codex-rs/core/src/compact_token_budget.rs",
       "codex-rs/core/src/context_manager/history.rs",
       "codex-rs/core/src/tools/handlers/tool_search.rs",
-      "codex-rs/core/src/tools/handlers/tool_search_spec.rs"
+      "codex-rs/core/src/tools/handlers/tool_search_spec.rs",
+      "codex-rs/core/src/unified_exec/async_watcher.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -44,7 +45,9 @@
       "packages/core/src/session/compaction.ts",
       "packages/core/src/instruction-context.ts",
       "packages/opencode/src/lsp/client.ts",
-      "packages/opencode/src/tool/lsp.ts"
+      "packages/opencode/src/tool/lsp.ts",
+      "packages/app/src/context/file/watcher.ts",
+      "packages/schema/src/filesystem-watcher.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -74,7 +77,9 @@
       "packages/compaction/compaction/src/index.ts",
       "packages/compaction/compaction-tool-result-pruner/src/index.ts",
       "packages/lsp/lsp-stdio/src/framing.ts",
-      "docs/subsystems/lsp.md"
+      "docs/subsystems/lsp.md",
+      "packages/fs/fs/src/index.ts",
+      "packages/fs/fs-local/src/index.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -101,7 +106,8 @@
       "packages/coding-agent/src/core/extensions/types.ts",
       "packages/coding-agent/src/core/compaction/compaction.ts",
       "packages/coding-agent/src/core/compaction/utils.ts",
-      "packages/coding-agent/src/core/tools/read.ts"
+      "packages/coding-agent/src/core/tools/read.ts",
+      "packages/coding-agent/src/utils/fs-watch.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -126,7 +132,9 @@
       "packages/agent-core-v2/src/human/compaction/controller.ts",
       "packages/agent-core-v2/src/agent/fullCompaction/contextRecovery.ts",
       "packages/agent-core-v2/src/workspace/workspaceInstructions/workspaceInstructionsService.ts",
-      "packages/agent-core-v2/src/agent/tools/os/read/read.ts"
+      "packages/agent-core-v2/src/agent/tools/os/read/read.ts",
+      "packages/minidb/src/snapshot.ts",
+      "packages/agent-core-v2/src/app/watch/configSection.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -172,7 +180,8 @@
       "packages/core/src/services/chatCompressionService.ts",
       "packages/core/src/config/rulesDiscovery.ts",
       "packages/core/src/lsp/LspResponseNormalizer.ts",
-      "packages/core/src/lsp/native-lsp-service.ts"
+      "packages/core/src/lsp/native-lsp-service.ts",
+      "packages/core/src/managed-runtime/managed-session-record-sink.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -338,7 +347,8 @@
     "license": "MIT",
     "inspected_paths": [
       "README.md",
-      "src/mcp_protocol.jl"
+      "src/mcp_protocol.jl",
+      "src/watcher.jl"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

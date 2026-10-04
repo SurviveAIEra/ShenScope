@@ -194,8 +194,13 @@ try {
         await panel.getByRole('button', { name: 'Show diagnostics', exact: true }).click();
         await panel.locator('.navigation-entry').filter({ hasText: '2322' }).waitFor();
         await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-semantic-diagnostics.png`) });
+        await panel.locator('.project-cache summary').click();
+        await panel.getByRole('button', { name: 'Compact index history', exact: true }).click();
+        await panel.getByRole('button', { name: 'Refresh index', exact: true }).waitFor({ timeout: 60_000 });
+        await panel.getByText('The current index already uses less space than a replacement snapshot.', { exact: true }).waitFor();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project-cache.png`) });
         assert.equal(requests.length, 0, 'Compiler navigation must not call the model');
-        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual TypeScript checker indexing, permissions, type, definitions, references, calls, diagnostics and source navigation`);
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual TypeScript checker indexing, permissions, type, definitions, references, calls, diagnostics, source navigation and cache compaction`);
     }
     if (mcpOnly) {
         await panel.getByRole('combobox', { name: 'More views' }).selectOption('MCP');

@@ -1,0 +1,39 @@
+Precompiling ShenScope...
+    ShenScope Being precompiled by another process (pid: 52884, pidfile: /workspace/julia-depot/compiled/v1.11/ShenScope/aMBxt_0KQtR.ji.pidfile)
+   4087.4 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 4 seconds. 39 already precompiled.
+ERROR: LoadError: Some tests did not pass: 21 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/project_protocol.jl:1
+in expression starting at /workspace/ShenScope/test/project_data.jl:3
+Test Summary:                                                        | Pass  Total   Time
+Real parser backends share analyzers and 1/5/20-file rebuild oracles |   99     99  39.1s
+Test Summary:                                               | Pass  Total  Time
+Syntax ambiguity, cross-file invalidation, cycles and scope |    9      9  0.8s
+Project RPC lifecycle, approvals and responsive cancellation: Error During Test at /workspace/ShenScope/test/unit/project_protocol.jl:1
+  Got exception outside of a @test
+  permission: Approval already answered
+  Stacktrace:
+    [1] (::ShenScope.var"#1474#1490"{CoreServer, Symbol, String})()
+      @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:285
+    [2] lock(f::ShenScope.var"#1474#1490"{CoreServer, Symbol, String}, l::ReentrantLock)
+      @ Base ./lock.jl:232
+    [3] dispatch_rpc(server::CoreServer, method::String, params::Dict{String, String})
+      @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:281
+    [4] (::var"#28#32")(root::String)
+      @ Main /workspace/ShenScope/test/unit/project_protocol.jl:51
+    [5] mktempdir(fn::var"#28#32", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [6] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [7] macro expansion
+      @ /workspace/ShenScope/test/unit/project_protocol.jl:2 [inlined]
+    [8] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+    [9] top-level scope
+      @ /workspace/ShenScope/test/unit/project_protocol.jl:2
+   [10] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [11] top-level scope
+      @ /workspace/ShenScope/test/project_data.jl:3
+Test Summary:                                                | Pass  Error  Total   Time
+Project RPC lifecycle, approvals and responsive cancellation |   21      1     22  26.7s

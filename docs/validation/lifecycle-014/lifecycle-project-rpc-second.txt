@@ -1,0 +1,5 @@
+Precompiling ShenScope...
+   5944.3 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 6 seconds. 39 already precompiled.
+Test Summary:                                                | Pass  Total     Time
+Project RPC lifecycle, approvals and responsive cancellation |   40     40  1m10.6s

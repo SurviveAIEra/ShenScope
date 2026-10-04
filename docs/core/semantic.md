@@ -106,7 +106,8 @@ limit. Request waits include blocked input pipes, cancellation, permission
 revocation and the shared soft wall-clock budget. Linux helpers own process
 groups; Windows descendant ownership remains unverified. Query pages are capped
 at 3 MiB; completed RPC results and job retention are bounded. Project journals
-retain their existing 128 MiB limit; compaction/large-graph streaming is pending.
+retain their existing 128 MiB limit; derived history compaction/streaming replay
+are described in `project_storage.md`. Large-graph extraction remains pending.
 
 `test/semantic.jl` runs the real compiler, not fabricated semantic facts. It covers
 aliases, methods, implicit constructors, overload choice, type errors, dynamic

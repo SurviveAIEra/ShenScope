@@ -46,11 +46,12 @@ parser worker. External writers require a reload after conflict.
 
 Limits are explicit: 10,000 indexed files, 8 MiB per source, 32 MiB helper frames,
 bounded helper stderr and timeout, and 128 MiB per backend journal. A limit
-failure preserves the committed state. Journal compaction, file watching,
-and large-project streaming remain unfinished. The compiler semantic backend
+failure preserves the committed state. File watching and large-project streaming
+remain unfinished. Explicit derived-journal compaction and streaming replay are
+described in [project_storage.md](project_storage.md). The compiler semantic backend
 and its narrower 24 MiB source-snapshot limit are described in `semantic.md`.
-Use a new explicitly selected state directory when a journal reaches capacity;
-the application does not automatically delete older user state.
+Compact obsolete index transactions when a journal reaches capacity. A snapshot
+that exceeds capacity requires a different indexing scope; facts are not discarded.
 
 CodeGraph's database is a disposable, adapter-owned derived cache. It is closed
 and removed on normal worker exit. A marker identifies abandoned cache directories

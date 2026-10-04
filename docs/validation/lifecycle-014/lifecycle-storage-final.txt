@@ -1,0 +1,19 @@
+Precompiling ShenScope...
+   5107.4 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 6 seconds. 39 already precompiled.
+Test Summary:                                                                        | Pass  Total   Time
+Compaction cancellation, expired budgets and post-approval denial preserve the cache |    7      7  11.6s
+Test Summary:                                                               | Pass  Total   Time
+Actual Julia process replacement fences a stale parent without losing facts |    5      5  12.6s
+Test Summary:                                                                          | Pass  Total  Time
+Killed snapshot writer leaves the published file intact and one identifiable temporary |    7      7  2.6s
+Test Summary:                                                                 | Pass  Total  Time
+Bounded atomic streams publish once and discard incomplete or rejected output |   15     15  0.5s
+Test Summary:                                                                            | Pass  Total  Time
+Streaming journal validates framing without accumulating history or repairing corruption |   16     16  0.7s
+Test Summary:                                                                   | Pass  Total  Time
+Project compaction retains revision/facts and fences stale writers and recovery |   26     26  4.8s
+Test Summary:                                                                  | Pass  Total  Time
+Staging reclamation preserves live, foreign, symlinked and malformed artifacts |    8      8  0.3s
+Test Summary:                                            | Pass  Total  Time
+Empty committed snapshot and metadata survive round trip |    4      4  0.1s

@@ -193,3 +193,6 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .shenscope-panel .project-inspection .view-heading { gap:8px; }
 .shenscope-panel .project-inspection .icon-button { flex-shrink:0; }
 .shenscope-panel .panel-content, .shenscope-panel .symbol-results, .shenscope-panel .semantic-type { scrollbar-width:thin; scrollbar-color:var(--vscode-scrollbarSlider-background,#666) transparent; }
+.shenscope-panel .project-cache { margin:10px 0 16px; padding:9px 11px; border:1px solid var(--border); border-radius:7px; font-size:11px; }
+.shenscope-panel .project-cache summary { cursor:pointer; color:var(--muted); }
+.shenscope-panel .project-cache p { font-size:11px; }

@@ -16,13 +16,14 @@ mutable struct ProjectState
     journal_sequence::Int
     mutex::ReentrantLock
     metadata::Dict{String,Any}
+    journal_identity::Union{Nothing,JournalFileIdentity}
 end
 function ProjectState(ctx::RuntimeContext,backend::AbstractProjectDataBackend)
     caps=backend_capabilities(backend)
     path=joinpath(ctx.state_dir,"projects",digest(ctx.root),digest(caps.name)*".jsonl")
     ProjectState(ctx.root,caps.name,caps,Dict{String,FileFacts}(),Dict{SymbolId,CodeSymbol}(),Dict{String,Relation}(),
         Dict{SymbolId,Set{String}}(),Dict{SymbolId,Set{String}}(),Dict{String,Set{SymbolId}}(),Dict{String,Set{String}}(),
-        Dict{String,Set{String}}(),0,Journal(path),0,0,ReentrantLock(),Dict{String,Any}())
+        Dict{String,Set{String}}(),0,Journal(path),0,0,ReentrantLock(),Dict{String,Any}(),nothing)
 end
 struct ProjectDelta
     revision::Int
@@ -120,7 +121,7 @@ end
 
 const SOURCE_LANGUAGES=Dict(".py"=>"python",".go"=>"go",".ts"=>"typescript",".tsx"=>"tsx",
     ".js"=>"javascript",".jsx"=>"javascript",".rs"=>"rust",".java"=>"java",".jl"=>"julia")
-const INDEX_IGNORES=Set([".git","node_modules","vendor","dist","build",".local",".venv","__pycache__","target"])
+const INDEX_IGNORES=Set([".git","node_modules","vendor","dist","build",".local",".venv","__pycache__","target",ATOMIC_STAGING_DIRECTORY])
 function project_paths(ctx::RuntimeContext,caps::BackendCapabilities;limit=10000)
     paths=String[]
     for (directory,dirs,files) in walkdir(ctx.root;follow_symlinks=false)
@@ -154,6 +155,9 @@ function source_documents(ctx::RuntimeContext,paths::AbstractVector; maximum_byt
 end
 
 function validate_facts(state::ProjectState,changes::Dict{String,Union{Nothing,FileFacts}})
+    remaining=length(state.files)-count(path->haskey(state.files,path),keys(changes))
+    remaining+count(value->value!==nothing,values(changes))<=10000 ||
+        throw(ShenScopeError(:graph,"Indexed project file capacity exceeded"))
     existing(id)=haskey(state.symbols,id) && !haskey(changes,state.symbols[id].location.file)
     identities=Set{SymbolId}()
     for (path,facts) in changes
@@ -199,14 +203,14 @@ function persist_delta!(state::ProjectState,changes::Dict{String,Union{Nothing,F
     state.journal_bytes+sum(ncodeunits,frames)<=MAX_PROJECT_JOURNAL_BYTES ||
         throw(ShenScopeError(:graph,"Project cache limit reached; use a new explicit state directory"))
     store_lock(state.journal.path) do
-        observed=isfile(state.journal.path) ? filesize(state.journal.path) : 0
-        observed==state.journal_bytes || throw(ShenScopeError(:conflict,"Project cache changed; reload before updating"))
+        verify_project_journal(state)
         mkpath(dirname(state.journal.path))
         open(state.journal.path,"a") do io
             chmod(state.journal.path,0o600);foreach(frame->write(io,frame),frames);flush(io);sync_file(io)
         end
+        state.journal_bytes+=sum(ncodeunits,frames);state.journal_sequence+=length(records)
+        state.journal_identity=journal_file_identity(state.journal.path)
     end
-    state.journal_bytes+=sum(ncodeunits,frames);state.journal_sequence+=length(records)
 end
 
 function update!(backend::AbstractProjectDataBackend,state::ProjectState,paths::AbstractVector,ctx::RuntimeContext;full=false)
@@ -262,32 +266,14 @@ function build!(backend::AbstractProjectDataBackend,ctx::RuntimeContext)
     update!(backend,state,project_paths(ctx,state.capabilities),ctx;full=true);state
 end
 
-function load_project(backend::AbstractProjectDataBackend,ctx::RuntimeContext)
+function load_project(backend::AbstractProjectDataBackend,ctx::RuntimeContext;authorized=false)
+    authorized || authorize!(ctx,:read,"project.cache",ctx.root;reason="Read persistent project index facts")
+    permission_decision(ctx.permissions,PermissionRequest("project-cache-read",:read,"project.cache",ctx.root,"Read project cache"))!=Deny ||
+        throw(ShenScopeError(:permission,"Project cache reads are denied"))
     state=ProjectState(ctx,backend)
-    store_lock(state.journal.path) do
-        isfile(state.journal.path) && filesize(state.journal.path)>MAX_PROJECT_JOURNAL_BYTES &&
-            throw(ShenScopeError(:graph,"Project cache exceeds the supported size limit"))
-        records=journal_records(state.journal;repair_tail=true)
-        pending=Dict{String,Union{Nothing,FileFacts}}();target=0;committed=0;metadata=Dict{String,Any}()
-        for (index,record) in enumerate(records)
-            kind=record["kind"]
-            if kind=="project_begin"
-                target==0 && record["root"]==ctx.root && record["backend"]==state.backend && record["revision"]==state.revision+1 ||
-                    throw(ShenScopeError(:storage,"Invalid project transaction header"))
-                target=record["revision"];empty!(pending);metadata=project_metadata(get(record,"metadata",state.metadata))
-            elseif kind=="project_file"
-                target!=0 && !haskey(pending,record["path"]) || throw(ShenScopeError(:storage,"Invalid project file record"))
-                pending[record["path"]]=record["facts"]===nothing ? nothing : facts_from(record["facts"])
-            elseif kind=="project_commit"
-                target!=0 && record["revision"]==target && record["files"]==length(pending) || throw(ShenScopeError(:storage,"Invalid project commit"))
-                validate_facts(state,pending);install_facts!(state,pending);state.revision=target;state.metadata=metadata;target=0;committed=index
-            else;throw(ShenScopeError(:storage,"Unknown project record"));end
-        end
-        # Incomplete transactions are not visible. Reframe only on recovery,
-        # never as a routine incremental update or repository backup.
-        committed<length(records) && atomic_write(state.journal.path,journal_frames(records[1:committed]))
-        state.journal_sequence=committed;state.journal_bytes=isfile(state.journal.path) ? filesize(state.journal.path) : 0
-    end
+    replay_project!(state,ctx)
+    permission_decision(ctx.permissions,PermissionRequest("project-cache-publish",:read,"project.cache",ctx.root,"Publish cached facts"))!=Deny ||
+        throw(ShenScopeError(:permission,"Project cache reads were denied before publication"))
     state
 end
 function graph_snapshot(state::ProjectState)

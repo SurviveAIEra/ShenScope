@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 11,184 authored Julia Core code lines across 94 files;
-CLI/TUI add 629 lines and are counted separately. This is 4.4736% of the
-minimum line target, leaving 238,816 lines. These are early implementations,
+Latest cloc 2.11 count: 11,622 authored Julia Core code lines across 100 files;
+CLI/TUI add 639 lines and are counted separately. This is 4.6488% of the
+minimum line target, leaving 238,378 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -54,7 +54,7 @@ characters/bigrams and atomic import/export. Nonblocking cross-process locks
 fix worker starvation under concurrent writes. Broad affected suite: 204 passing
 assertions (32 new memory assertions). `docs/core/memory.md` describes limits.
 
-Next: project watchers and journal/cache lifecycle; durable tasks/MCP;
+Next: stable-batch project watchers; durable tasks/MCP;
 Julia extensions/diagnostics and isolated analyzers; measured release preparation.
 
 Editor UI checkpoint: compact primary navigation, anchored composer, starter
@@ -72,7 +72,7 @@ oracles agree on a 21-file fixture; 108 integration assertions pass. Protocol
 ownership/reload/deny/capacity tests pass. The Project view is connected to Core
 jobs and approvals in both editor clients. Detailed limits and commands are in
 `docs/core/project_data.md`. Syntax call links remain heuristic; CodeGraph has
-global relink/export cost; compiler semantics, watcher/compaction and large-graph
+global relink/export cost; compiler semantics and cache compaction are verified below; watcher and large-graph
 evidence are pending. No Julia performance or live-model quality claim is made.
 
 Julia diagnostics: concrete extension contract reflection, bounded actual
@@ -211,3 +211,19 @@ docs/validation/context-checkpoint-012.json. Estimates are not exact tokenizers;
 model citations do not prove summary prose; no OS isolation, instruction watcher,
 history compaction, media slimming or live-model quality is claimed. Next:
 compiler-semantic project backend and Julia analysis/runtime requirements.
+
+Project index lifecycle checkpoint 014: streaming replay validates one bounded
+frame at a time. Atomic compaction retains complete current facts, metadata and
+logical revision. Physical file identity fences stale cross-process writers.
+Private owner descriptors allow reclamation of proven-dead Linux staging files;
+live/foreign/unclassified files are retained. Recovery requires Persistence.
+The tool/CLI/RPC and both editor Project views expose explicit compaction.
+
+Validation: broad affected Core 13,427 assertions / 103 testsets before the final
+recovery-permission guard; final focused storage 88 / 8; real TypeScript
+compiler/CLI compaction 11; semantic integration 12,262 (including 12,050 position
+properties); legacy graph oracles 108; final project RPC 40. Editor build/check,
+three Node transport tests, full Workbench check and both actual GUI clients pass.
+Raw evidence and source hashes: docs/validation/project-lifecycle-checkpoint-014.json.
+No large-graph memory or Windows durability claim. Work continues immediately
+with scoped watching, quiet-window change batches and shared editor feedback.

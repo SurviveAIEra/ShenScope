@@ -172,3 +172,25 @@ the fourth backend. Real compiler/transport/RPC tests and both editor clients
 verify the documented path. Compiler checking remains global after input changes;
 the small-fixture oracle establishes correctness, not competitive performance.
 See `docs/core/semantic.md` and checkpoint 013 for precise limits/evidence.
+
+## Derived index lifecycle and change monitoring
+
+Checkpoint 014 applies bounded partial reviews of the following source sections.
+They inform storage and the next watcher milestone; they are not copied or
+translated. Conversation compaction and process observation are distinguished
+from project graph storage and filesystem observation.
+
+| Source | Observed behavior | Independent Core consequence | Remaining scope |
+|---|---|---|---|
+| Kimi `minidb/src/snapshot.ts` | Live-entry snapshots, cooperative yielding, byte chunks and complete writes | Stream one current project snapshot, cap output, verify write progress, preserve logical revision | Large-graph memory/durability measurements |
+| Qwen `managed-session-record-sink.ts` | Compacted range and activation sequence applied at commit | Commit publication remains the visibility boundary for derived facts | Conversation archive integration is separate |
+| ZCode `read-file-state.ts` | Latest observed source ownership and freshness | Physical journal identity fences stale writers even at unchanged logical revision | Watched editor mutations |
+| Pi `utils/fs-watch.ts` | Explicit close/error handling and failed-start/retry behavior | Next watcher needs owned resources and observable failure/stop | Watch implementation pending after checkpoint 014 |
+| OpenCode file watcher and filesystem event schema | Normalized add/change/delete paths, cache invalidation and loaded directory refresh | Next watcher coalesces scoped changes and exposes dirty state to both clients | Watched source and configuration integration |
+| DeepSeek `fs` and `fs-local` | Provider-scoped containment, readiness/error/abort lifecycle | Monitor hints must preserve Core workspace ownership and cancellation | Recursive change convergence and lifecycle tests |
+| Codex `unified_exec/async_watcher.rs` | Bounded event delivery, cancellation and notification registration | Bounded wakeups and owned cancellation inform the next worker | This source observes process output, not files |
+| JuliaMCP `watcher.jl` | Recursive snapshots and quiet-window batches | Next graph watcher advances its applied baseline only after a successful transaction | Stable batches, syntax failures and native hint validation |
+
+Checkpoint 014 verifies streaming replay, atomic compaction, stale-writer fencing,
+hard-killed staging cleanup and actual compiler/CLI/RPC/editor flows. It does not
+establish watcher functionality, Windows durability or large-project performance.

@@ -13,7 +13,7 @@ tool_name(::ProjectTool)="project"
 tool_description(::ProjectTool)="Index source with a real parser backend, search symbols and compute evidence-bearing impact/test/architecture candidates."
 execution_mode(::ProjectTool)=:exclusive
 tool_schema(::ProjectTool)=object_schema(Dict(
-    "action"=>Dict("type"=>"string","enum"=>["build","update","status","search","impact","test_selection","architecture",
+    "action"=>Dict("type"=>"string","enum"=>["build","update","compact","status","search","impact","test_selection","architecture",
         "definitions","references","hover","incoming_calls","outgoing_calls","implementations","diagnostics"]),
     "backend"=>Dict("type"=>"string","enum"=>["tree_sitter","go_ast","codegraph","typescript"]),
     "paths"=>Dict("type"=>"array","maxItems"=>10000,"items"=>string_schema(;max=4096)),
@@ -21,6 +21,7 @@ tool_schema(::ProjectTool)=object_schema(Dict(
     "symbol_id"=>string_schema(;max=32),"file"=>string_schema(;max=4096),"line"=>integer_schema(1,8*1024*1024),
     "column"=>integer_schema(1,8*1024*1024),"column_unit"=>Dict("type"=>"string","enum"=>["utf8_byte","utf16"]),
     "revision"=>integer_schema(0),"sha256"=>string_schema(;max=64),"include_declarations"=>Dict("type"=>"boolean"),
+    "force"=>Dict("type"=>"boolean"),"minimum_savings"=>integer_schema(0,128*1024*1024),
     "category"=>Dict("type"=>"string","enum"=>["error","warning","suggestion","message"]));required=["action"])
 function project_backend!(manager::ProjectManager,name::String)
     get!(manager.backends,name) do
@@ -41,7 +42,7 @@ function execute(tool::ProjectTool,args::AbstractDict,ctx::RuntimeContext)
         candidate=ProjectState(ctx,backend)
         if isfile(candidate.journal.path)
             authorize!(ctx,:read,"project.cache",ctx.root)
-            state=load_project(backend,ctx)
+            state=load_project(backend,ctx;authorized=true)
             lock(manager.mutex) do;manager.states[key]=state;end
         end
     end
@@ -53,6 +54,8 @@ function execute(tool::ProjectTool,args::AbstractDict,ctx::RuntimeContext)
     state===nothing && throw(ShenScopeError(:graph,"Build this workspace index first"))
     state.root==ctx.root || throw(ShenScopeError(:permission,"Project state belongs to another workspace"))
     action=="update" && return delta_dict(update!(backend,state,get(args,"paths",String[]),ctx))
+    action=="compact" && return compact_project!(state,ctx;expected_revision=get(args,"revision",nothing),
+        minimum_savings=get(args,"minimum_savings",1),force=get(args,"force",false))
     action in PROJECT_NAVIGATION_ACTIONS && return project_navigation(state,args,ctx)
     authorize!(ctx,:read,"project.query",ctx.root)
     action=="status" && return project_status(state)

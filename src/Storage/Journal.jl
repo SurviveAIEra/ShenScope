@@ -10,6 +10,17 @@ function sync_file(io::IOStream)
     end
 end
 
+function sync_directory(path::AbstractString)
+    Sys.isunix() || return
+    directory=ccall(:open,Cint,(Cstring,Cint),path,0)
+    directory>=0 || throw(ShenScopeError(:storage,"Cannot open directory for flush"))
+    try
+        ccall(:fsync,Cint,(Cint,),directory)==0 || throw(ShenScopeError(:storage,"Directory flush failed"))
+    finally
+        ccall(:close,Cint,(Cint,),directory)
+    end
+end
+
 function atomic_replace(source::AbstractString,destination::AbstractString)
     if Sys.iswindows()
         src=vcat(transcode(UInt16,String(source)),UInt16(0))
@@ -19,13 +30,8 @@ function atomic_replace(source::AbstractString,destination::AbstractString)
     elseif Sys.isunix()
         ccall(:rename,Cint,(Cstring,Cstring),source,destination)==0 ||
             throw(ShenScopeError(:storage,"Atomic file replacement failed"))
-        directory=ccall(:open,Cint,(Cstring,Cint),dirname(destination),0)
-        directory>=0 || throw(ShenScopeError(:storage,"Cannot open parent directory for flush"))
-        try
-            ccall(:fsync,Cint,(Cint,),directory)==0 || throw(ShenScopeError(:storage,"Directory flush failed"))
-        finally
-            ccall(:close,Cint,(Cint,),directory)
-        end
+        sync_directory(dirname(destination))
+        dirname(source)==dirname(destination) || sync_directory(dirname(source))
     else
         throw(ShenScopeError(:platform,"Atomic replacement is unavailable"))
     end

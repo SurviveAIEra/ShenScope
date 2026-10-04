@@ -43,6 +43,21 @@
             status=dispatch_rpc(server,"project/query",Dict("backend"=>"go_ast"))
             @test status["files"]==1
             @test manager.backends["go_ast"].worker.process===nothing
+            compact=dispatch_rpc(server,"project/start",Dict("session_id"=>id,"backend"=>"go_ast","action"=>"compact","force"=>true))
+            compact_id=compact["job_id"]
+            deadline=time()+30
+            while dispatch_rpc(server,"project/job",Dict("session_id"=>id,"job_id"=>compact_id))["status"]=="running" && time()<deadline
+                for request in collect(keys(server.approvals))
+                    request in answered && continue
+                    dispatch_rpc(server,"permissions/respond",Dict("session_id"=>id,"request_id"=>request,"decision"=>"once"))
+                    push!(answered,request)
+                end
+                sleep(0.02)
+            end
+            compact_result=dispatch_rpc(server,"project/job",Dict("session_id"=>id,"job_id"=>compact_id))
+            @test compact_result["status"]=="complete" && compact_result["result"]["compacted"]
+            @test dispatch_rpc(server,"project/query",Dict("backend"=>"go_ast"))["revision"]==status["revision"]
+            @test manager.backends["go_ast"].worker.process===nothing
             server.config["permissions"]["read"]="deny"
             @test_throws ShenScopeError dispatch_rpc(server,"project/query",Dict("backend"=>"go_ast"))
             @test dispatch_rpc(server,"project/query",Dict("backend"=>"go_ast","session_id"=>id))["files"]==1

@@ -20,7 +20,7 @@ for the current source tree.
 | FFI, cfunction/embedding | Reuse native parsers/libraries; isolate compiler/backend helpers | Native durable storage APIs and real parser/database adapters verified; hostile-input OS isolation pending |
 | Mmap, lazy iterators/AbstractArray, sparse arrays, SIMD | Bound memory, stream/query graph subsets and update local adjacency | Pending large-graph evidence; no synthetic duplicate-edge scale claims |
 | Logging scopes, Profile/Profile.Allocs, Test | Trace operations; compiler/performance evidence before optimization/promotion | Structured scoped events and meaningful tests present; profiling pending |
-| GC, finalizers, WeakRef | Bounded caches with explicit external-resource cleanup | Explicit process cleanup and graph journal/frame limits present; large-project cache management pending |
+| GC, finalizers, WeakRef | Bounded caches with explicit external-resource cleanup | Explicit process cleanup, streamed frame replay and current-fact journal compaction verified on Linux; large-project cache measurements pending |
 | File watching, timers/conditions/events, LibGit2 | Changes feed batched graph deltas and invalidate dependent queries | Git CLI present; watcher/history adapters pending |
 | Distributed/RemoteChannel, GPU | Optional later execution backends with capability negotiation | Pending, outside the initial verified path |
 

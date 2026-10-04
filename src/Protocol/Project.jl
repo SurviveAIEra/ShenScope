@@ -25,7 +25,7 @@ function project_rpc(server::CoreServer,method::String,params::AbstractDict)
     elseif method=="project/start"
         session=idle_session(server,params)
         args=Dict{String,Any}(key=>value for (key,value) in params if key!="session_id")
-        validate_schema(args,tool_schema(tool));args["action"] in ("build","update","impact","test_selection","architecture") ||
+        validate_schema(args,tool_schema(tool));args["action"] in ("build","update","compact","impact","test_selection","architecture") ||
             throw(RPCFault(-32602,"Use project/query for read operations"))
         name=get(args,"backend","tree_sitter")
         owner=get(server.contexts,session.id,nothing)
@@ -84,7 +84,7 @@ function project_rpc(server::CoreServer,method::String,params::AbstractDict)
                 context=RuntimeContext(server.root;state_dir=server.state_dir,permissions=policy)
                 candidate=ProjectState(context,backend)
                 if isfile(candidate.journal.path)
-                    current=load_project(backend,context);manager.states[key]=current
+                    current=load_project(backend,context;authorized=true);manager.states[key]=current
                 end
             end
             current

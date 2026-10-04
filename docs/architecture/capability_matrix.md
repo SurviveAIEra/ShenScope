@@ -1,5 +1,11 @@
 # Cross-project capability inventory
 
+Checkpoint 014 adds bounded current-fact journal snapshots, streaming replay,
+physical cache identity checks and owned staging reclamation. Actual Linux
+compiler/CLI/RPC and both editor clients validate compaction; watchers, Windows
+runtime checks and large-graph measurements remain pending. The source synthesis
+records observations from all seven primary agents plus JuliaMCP for this domain.
+
 This inventory covers every named research checkout together. It prevents a
 module-only comparison from overlooking workflow, UX, interoperability and
 operational strengths. Each row is a research direction, not a claim that every

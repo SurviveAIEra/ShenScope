@@ -1,0 +1,2 @@
+Test Summary:                                                                           | Pass  Total     Time
+Real compiler cache compaction preserves navigation, diagnostics and subsequent updates |   11     11  1m25.4s

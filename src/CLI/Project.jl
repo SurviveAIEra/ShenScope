@@ -30,6 +30,15 @@ function cli_project_arguments(positional::Vector{String}, flags::AbstractDict)
         end
         haskey(flags,"--sha256") && (args["sha256"]=flags["--sha256"])
         get(flags,"--exclude-declarations",false) && (args["include_declarations"]=false)
+    elseif action=="compact"
+        length(positional)==2 || throw(ShenScopeError(:input,"Use project compact without source paths"))
+        get(flags,"--force",false) && (args["force"]=true)
+        for (option,key) in (("--revision","revision"),("--minimum-savings","minimum_savings"))
+            haskey(flags,option) || continue
+            parsed=tryparse(Int,flags[option])
+            parsed===nothing && throw(ShenScopeError(:input,"Project $key must be an integer"))
+            args[key]=parsed
+        end
     elseif action=="search"
         args["query"]=join(positional[3:end]," ")
     else
