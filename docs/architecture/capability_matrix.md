@@ -143,3 +143,11 @@ and a temporary offline metadata precompile workload. Fresh-process real Node
 transport is validated separately from cache-generation cost and the still-cold
 first agent turn. See `../core/startup.md`. PackageCompiler/sysimage, installed
 distribution and Windows performance remain unverified.
+
+Checkpoint 024 adds root-owned memory collections, strict journal replay,
+Unicode lexical witnesses/BM25F, bounded partial indexes, snapshot pagination,
+versioned note editing/history and owned asynchronous jobs. Seven primary
+source observations are recorded in `reference_synthesis.md`; their review
+remains partial. CLI/TUI and both IDE clients share the Julia implementation.
+Embeddings, independently verified file citations, legacy session migration,
+secure erasure and general host-tool isolation remain open capabilities.

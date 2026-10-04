@@ -1,0 +1,1 @@
+Installed minimal native overlay; no checkout duplication.

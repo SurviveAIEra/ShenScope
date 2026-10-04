@@ -387,3 +387,23 @@ generation from new-process readiness. A first agent turn remains substantially
 slower than initialization. See `../core/startup.md` and checkpoint 023 evidence;
 no upstream code or bootstrap implementation is translated. PackageCompiler,
 clean-machine/installed distribution and cross-platform timings remain pending.
+
+## Scoped memory checkpoint source observations
+
+Checkpoint 024 read selected portions of all seven primary checkouts. No row
+claims a complete repository review, code reuse or a line-by-line translation.
+
+| Project / inspected path | Observation | Independent Julia behavior |
+| --- | --- | --- |
+| Codex `codex-rs/protocol/src/memory_citation.rs` | Citation carries source range/note and rollout identity | Stored version/hash/snapshot citations and original UTF-8 lexical witness spans; file fact verification remains pending |
+| OpenCode `packages/core/src/instruction-context.ts` | Instruction context tracks its boundary and registry ownership | Explicit root/state/owner/namespace checks and immutable snapshot identity |
+| DeepSeek Harness `packages/compaction/compaction-tool-result-pruner/src/types.ts` | Bounded replacement text retains source/replacement sequence accounting | Character-clipped excerpts, bounded evidence lists and explicit omissions while durable versions remain available |
+| Pi `packages/durable/src/harness/compaction.ts` | Compaction captures a kept boundary and request/context state | Pagination pins the captured query, scope, snapshot and expiry time |
+| Kimi Code `packages/minidb/src/memory-guard.ts` | Retention policy accounts for bytes, TTL and capacity | Bounded snapshot/index input, bounded four-entry LRU, expiry visibility and disclosed partial coverage |
+| ZCode `apps/zcode-cli/packages/core/src/memory/origin-session.ts` | Origin-session metadata is stamped with confined file handling | Declared origin session and source/reference fields with root proof and safe journal path checks |
+| Qwen Code `integrations/external-context/src/memory-content.ts` | Content validation bounds Unicode text and rejects malformed surrogate input | UTF-8 validation, bounded text/metadata, exact witness coordinates and editor source disclosures |
+
+The combined design uses Julia-owned journal validation, CAS, lexical BM25F and
+conversation-owned jobs across CLI/TUI/native/VSIX. Scores are lexical relevance;
+source declarations are not verified truth. Namespace admission and fact writes
+are separate journals. General OS isolation and semantic memory remain pending.

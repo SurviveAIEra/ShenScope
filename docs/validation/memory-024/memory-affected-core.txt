@@ -1,0 +1,35 @@
+Test Summary:                                               | Pass  Total   Time
+Asynchronous task protocol, approvals and session ownership |   13     13  25.0s
+Test Summary:                                                | Pass  Total  Time
+Task jobs block config replacement and drain owned processes |    5      5  2.9s
+Precompiling ShenScope...
+  55258.3 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 55 seconds. 39 already precompiled.
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/context_protocol.jl:46
+in expression starting at /workspace/ShenScope/.local/test_memory_affected.jl:6
+Test Summary:                                                         | Pass  Total  Time
+Context RPC ownership, permissions, asynchronous cancellation and CAS |   16     16  3.6s
+Manual context checkpoints are shared by RPC and subsequent agent runs: Error During Test at /workspace/ShenScope/test/unit/context_protocol.jl:46
+  Got exception outside of a @test
+  UndefVarError: `context_fixture` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] (::var"#19#23")(root::String)
+     @ Main /workspace/ShenScope/test/unit/context_protocol.jl:53
+   [2] mktempdir(fn::var"#19#23", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [3] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [4] macro expansion
+     @ /workspace/ShenScope/test/unit/context_protocol.jl:47 [inlined]
+   [5] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [6] top-level scope
+     @ /workspace/ShenScope/test/unit/context_protocol.jl:47
+   [7] include
+     @ ./sysimg.jl:38 [inlined]
+   [8] top-level scope
+     @ /workspace/ShenScope/.local/test_memory_affected.jl:7
+Test Summary:                                                          | Error  Total  Time
+Manual context checkpoints are shared by RPC and subsequent agent runs |     1      1  1.5s

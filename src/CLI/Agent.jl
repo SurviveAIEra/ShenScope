@@ -36,7 +36,8 @@ function cli_agent_command(positional,flags,config,state_dir)
                 tool isa HooksTool && cleanup_hooks!(tool.manager)
                 tool isa ContextTool && cleanup_context!(tool.manager)
                 tool isa AnalyzersTool && cleanup_analyzers!(tool.manager)
-                tool isa ModelsTool && cleanup_models_tool!(tool)
+            tool isa ModelsTool && cleanup_models_tool!(tool)
+            tool isa MemoryTool && cleanup_memory!(tool.manager)
                 tool isa ProcessTool && cleanup_processes!(tool.manager,id)
             end
         end

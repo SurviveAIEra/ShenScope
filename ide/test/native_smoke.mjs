@@ -14,6 +14,14 @@ async function waitEnabled(locator, timeout = 60_000) {
     }
     throw new Error('Expected operation controls to become enabled');
 }
+async function waitCount(locator, count, timeout = 60_000) {
+    const deadline = Date.now() + timeout;
+    while (Date.now() < deadline) {
+        if (await locator.count() === count) { return; }
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    assert.equal(await locator.count(), count, 'Expected the completed page to render');
+}
 async function approve(panel, action, decision = 'Allow session') {
     const pending = panel.locator('.permission-card').filter({ hasText: action }).first();
     await pending.waitFor({ timeout: 60_000 });
@@ -38,6 +46,7 @@ const modelsOnly = process.argv.includes('--models-only');
 const routingOnly = process.argv.includes('--routing-only');
 const historyOnly = process.argv.includes('--history-only');
 const migrationOnly = process.argv.includes('--migration-only');
+const memoryOnly = process.argv.includes('--memory-only');
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
@@ -132,6 +141,15 @@ if (skillsOnly) {
 }
 await writeFile(join(root, 'README.md'), 'Native sidebar test workspace\n');
 await writeFile(join(root, 'sample.go'), 'package fixture\nfunc Greet() int { return 1 }\nfunc TestGreet() int { return Greet() }\n');
+if (memoryOnly) {
+    await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'ask'\nprocess = 'deny'\nnetwork = 'deny'\n`);
+    const seed = `using ShenScope
+ctx=RuntimeContext(ARGS[1];state_dir=joinpath(ARGS[1],"state"),session_id="memory-fixture",permissions=PermissionPolicy(;rules=Dict(:persistence=>Allow)))
+for i in 1:19
+    memory_put!(memory_store(ctx),"seed-"*lpad(string(i),2,'0'),"Saved fixture note "*string(i),ctx;expected_version=0,title="Seed note "*string(i),tags=["fixture"])
+end`;
+    execFileSync('/workspace/toolchains/julia-1.11.7/bin/julia', ['--startup-file=no', `--project=${project}`, '-e', seed, root], { env: { ...process.env, JULIA_DEPOT_PATH: '/workspace/julia-depot' }, timeout: 180_000 });
+}
 let historyCommits;
 if (migrationOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\nprocess = 'ask'\nnetwork = 'deny'\npersistence = 'allow'\n`);
@@ -216,7 +234,7 @@ try {
     }
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -245,6 +263,80 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (memoryOnly) {
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Memory');
+        await panel.getByText('19 saved notes', { exact: true }).waitFor({ timeout: 120_000 });
+        const create = async (key, title, content, tags) => {
+            const editor = panel.locator('.memory-editor');
+            if (!(await editor.evaluate(node => node.open))) { await editor.locator('summary').click(); }
+            await editor.getByRole('textbox', { name: 'Memory key', exact: true }).fill(key);
+            await editor.getByRole('textbox', { name: 'Memory title', exact: true }).fill(title);
+            await editor.getByRole('textbox', { name: 'Memory tags', exact: true }).fill(tags);
+            await editor.getByRole('textbox', { name: 'Memory content', exact: true }).fill(content);
+            await editor.getByRole('button', { name: 'Save note', exact: true }).click();
+            await approve(panel, 'memory.put · persistence', 'Allow once');
+            await panel.getByText('Saved note · version 1', { exact: true }).waitFor({ timeout: 120_000 });
+        };
+        await create('graph', '中文代码图', 'Julia 中文代码图 reviewed evidence', 'core,julia');
+        await panel.getByRole('button', { name: 'New note', exact: true }).click();
+        await create('companion', 'Review companion', 'Independent review note', 'core');
+        await panel.getByRole('textbox', { name: 'Search memory', exact: true }).fill('代码图');
+        await panel.getByRole('textbox', { name: 'Memory tag filter', exact: true }).fill('core');
+        await panel.getByRole('button', { name: 'Search notes', exact: true }).click();
+        await panel.getByText('1 matching note', { exact: true }).waitFor({ timeout: 120_000 });
+        const note = panel.locator('.memory-result[data-memory-key="graph"]');
+        await note.getByText('User supplied', { exact: true }).waitFor();
+        await note.locator('.memory-evidence > summary').click();
+        assert.ok((await note.innerText()).includes('Content checksum:'));
+        assert.ok((await note.innerText()).includes('This records the stored source and lexical match.'));
+        await note.scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-memory-evidence.png`) });
+        await note.getByRole('button', { name: 'Read and edit note', exact: true }).click();
+        const content = panel.getByRole('textbox', { name: 'Memory content', exact: true });
+        await waitEnabled(content);
+        assert.equal(await content.inputValue(), 'Julia 中文代码图 reviewed evidence');
+        await content.fill('Julia 中文代码图 updated evidence');
+        await panel.getByRole('button', { name: 'Save note', exact: true }).click();
+        await approve(panel, 'memory.put · persistence', 'Allow once');
+        await panel.getByText('Saved note · version 2', { exact: true }).waitFor({ timeout: 120_000 });
+        await panel.getByRole('button', { name: 'New note', exact: true }).click();
+        const collection = panel.getByRole('textbox', { name: 'Memory namespace', exact: true });
+        await collection.fill('scratch'); await collection.press('Tab');
+        await panel.getByText('0 saved notes', { exact: true }).waitFor({ timeout: 120_000 });
+        await create('graph', 'Separate collection', 'Other collection 中文', 'other');
+        await panel.getByRole('button', { name: 'New note', exact: true }).click();
+        const back = panel.getByRole('textbox', { name: 'Memory namespace', exact: true });
+        await back.fill('default'); await back.press('Tab');
+        await panel.getByText('21 saved notes', { exact: true }).waitFor({ timeout: 120_000 });
+        await panel.getByRole('button', { name: 'Refresh memory', exact: true }).click();
+        await panel.getByText('21 matching notes', { exact: true }).waitFor({ timeout: 120_000 });
+        await panel.getByRole('button', { name: 'Next memory page', exact: true }).click();
+        await panel.getByRole('button', { name: 'Next memory page', exact: true }).waitFor({ state: 'detached', timeout: 120_000 });
+        await waitCount(panel.locator('.memory-result'), 1);
+        await panel.getByRole('button', { name: 'Refresh memory', exact: true }).click();
+        const companion = panel.locator('.memory-result[data-memory-key="companion"]');
+        await companion.getByRole('button', { name: 'Read and edit note', exact: true }).click();
+        await waitEnabled(panel.getByRole('button', { name: 'Delete note', exact: true }));
+        await panel.getByRole('button', { name: 'Delete note', exact: true }).click();
+        await approve(panel, 'memory.delete · persistence', 'Allow once');
+        await panel.getByText('Note deleted. Retained history remains available.', { exact: true }).waitFor({ timeout: 120_000 });
+        await panel.getByText('20 saved notes', { exact: true }).waitFor();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-memory-managed.png`) });
+        const verify = `using ShenScope
+ctx=RuntimeContext(ARGS[1];state_dir=joinpath(ARGS[1],"state"),permissions=PermissionPolicy(;rules=Dict(:read=>Allow)))
+default=memory_store(ctx);scratch=memory_store(ctx;namespace="scratch")
+@assert memory_get(default,"graph",ctx)["version"]==2
+@assert memory_get(default,"graph",ctx)["value"]["content"]=="Julia 中文代码图 updated evidence"
+@assert memory_get(scratch,"graph",ctx)["version"]==1
+@assert memory_get(default,"companion",ctx)===nothing
+@assert length(memory_history(default,"companion",ctx))==2
+@assert memory_namespaces(ctx)["namespaces"]==["default","scratch"]
+println("memory durable proof verified")`;
+        execFileSync('/workspace/toolchains/julia-1.11.7/bin/julia', ['--startup-file=no', `--project=${project}`, '-e', verify, root], { env: { ...process.env, JULIA_DEPOT_PATH: '/workspace/julia-depot' }, timeout: 120_000 });
+        assert.equal(requests.length, 0, 'Memory CRUD and lexical retrieval make no model request');
+        assert.equal(await panel.locator('.permission-card').count(), 0);
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual persistence approvals, Chinese evidence, CAS edit, independent same-key collections, pinned pagination, deletion/history and durable Julia verification without model requests`);
     }
     if (migrationOnly) {
         await panel.getByRole('button', { name: 'Project', exact: true }).click();

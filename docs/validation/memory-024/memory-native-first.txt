@@ -1,0 +1,88 @@
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Settings
+Models
+Memory
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+Memory
+
+Save notes, preferences and findings. Inspect their source before relying on a match.
+
+Scope
+This workspace
+This conversation
+Across projects
+Collection
+21 saved notes
+0 expired · 0 deleted
+Search notes
+1 matching note
+中文代码图
+v1
+graph
+User supplied
+core
+julia
+
+Julia 中文代码图 reviewed evidence
+
+Matched: 代 · 代码 · 图 · 码 · 码图
+Match and source evidence
+
+Lexical match score: 4.804
+
+Declared source: No reference supplied
+
+Content checksum: 307bae7f1f46422f82f46ad82e8b6d013303418694da05d9b78219f0f399073f
+Stored record checksum: 1dd31ef9d89b2cf66d14b69e2814a90e71980753514a8e06b68bdfad9e66efa7
+代 · 0.961 · 1 matching records
+代码 · 0.961 · 1 matching records
+图 · 0.961 · 1 matching records
+码 · 0.961 · 1 matching records
+码图 · 0.961 · 1 matching records
+
+This records the stored source and lexical match. It does not verify the claim.
+
+Read and edit note
+Note history
+Edit saved note
+Key
+Title
+Tags
+Reference
+Content
+Save note
+Delete note
+New note
+Saving and deletion require persistence permission. Updates check the version you opened.
+Memory operation complete
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'Independent review note'
+- 'Julia 中文代码图 reviewed evidence'
+
+    at file:///workspace/ShenScope/ide/test/native_smoke.mjs:290:16 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'Independent review note',
+  expected: 'Julia 中文代码图 reviewed evidence',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

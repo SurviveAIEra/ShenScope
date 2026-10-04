@@ -37,7 +37,9 @@ function parse_cli(args::Vector{String})
         "--poll-seconds","--quiet-seconds","--duration","--watch-file-limit","--watch-byte-limit",
         "--scope","--expected-pointer","--count-mode","--model-role","--model-profile",
         "--history-limit","--bulk-threshold","--minimum-support","--change-kind","--order",
-        "--max-depth","--max-files","--max-symbols","--max-relations","--minimum-confidence"])
+        "--max-depth","--max-files","--max-symbols","--max-relations","--minimum-confidence",
+        "--namespace","--title","--tags","--expected-version","--match","--sort","--cursor",
+        "--expected-snapshot","--snippet-chars","--tags-all","--tags-any","--sources"])
     switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints"])
     i=1
     while i<=length(args)
@@ -98,7 +100,7 @@ function cli_main(args=ARGS)
     end
     if isempty(args) || args==["--help"]
         println("ShenScope — Open coding intelligence for serious codebases.")
-        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | tasks ACTION | mcp ACTION | skills ACTION | hooks ACTION | context ACTION | analyzers ACTION | models ACTION | diagnostics ACTION | doctor | serve --stdio")
+        println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | tasks ACTION | mcp ACTION | skills ACTION | hooks ACTION | context ACTION | memory ACTION | analyzers ACTION | models ACTION | diagnostics ACTION | doctor | serve --stdio")
         println("Options: --root PATH --state-dir PATH --config PATH --profile NAME --session ID --json")
         println("Explicit permissions: --allow-edit --allow-process --allow-network --allow-persistence --allow-dynamic --allow-mcp")
         println("Offline protocol fixture: --script JSON_FILE")
@@ -108,6 +110,8 @@ function cli_main(args=ARGS)
         println("Project history: project git_cochange|risk [FILE ...] --history-limit N --bulk-threshold N --minimum-support N --limit N")
         println("Project migration: project migration FILE ... --change-kind signature|rename|remove|move|behavior --order dependency_first|callers_first --max-depth N")
         println("Project changes: project watch --backend NAME [--automatic] [--poll-seconds N] [--duration N]")
+        println("Memory: memory retrieve QUERY --namespace NAME --scope workspace|session|user --tags-all TAGS --match any|all")
+        println("Memory write: memory put KEY CONTENT_FILE --expected-version N [--allow-persistence]")
         return 0
     end
     try

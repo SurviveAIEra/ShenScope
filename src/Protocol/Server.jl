@@ -108,6 +108,8 @@ end
 function idle_session(server::CoreServer,params::AbstractDict)
     session=server_session(server,params)
     haskey(server.runs,session.id) && throw(ShenScopeError(:session,"Session has an active run"))
+    operations_running(server_memory_tool(server).manager.operations;session_id=session.id) &&
+        throw(ShenScopeError(:memory_busy,"Finish this conversation's memory operation first"))
     context_jobs_running(server_context_tool(server).manager; session_id=session.id) &&
         throw(ShenScopeError(:context_busy, "Finish this conversation's context operation first"))
     analyzer_jobs_running(server_analyzers_tool(server).manager;session_id=session.id) &&
@@ -118,6 +120,8 @@ end
 function start_agent!(server::CoreServer,params::AbstractDict)
     session=server_session(server,params)
     haskey(server.runs,session.id) && throw(ShenScopeError(:session,"Session has an active run"))
+    operations_running(server_memory_tool(server).manager.operations;session_id=session.id) &&
+        throw(ShenScopeError(:memory_busy,"Finish this conversation's memory operation first"))
     context_jobs_running(server_context_tool(server).manager; session_id=session.id) &&
         throw(ShenScopeError(:context_busy, "Finish this conversation's context operation before starting the agent"))
     analyzer_jobs_running(server_analyzers_tool(server).manager;session_id=session.id) &&
@@ -162,7 +166,7 @@ end
 
 function capability_manifest()
     Dict("agent"=>true,"streaming_protocols"=>["openai_chat","openai_responses","anthropic","gemini","ollama"],
-        "tools"=>["read","search","edit","write","patch","process","git","memory","project","diagnostics","analyzers","models","tasks","mcp","skills","hooks","context"],"session_journal"=>true,"memory"=>true,
+        "tools"=>["read","search","edit","write","patch","process","git","memory","project","diagnostics","analyzers","models","tasks","mcp","skills","hooks","context"],"session_journal"=>true,"memory"=>true,"memory_namespaces"=>true,"memory_retrieval_evidence"=>true,
         "permission_approvals"=>true,"config_profiles"=>true,"os_isolation"=>false,
         "mcp"=>true,"mcp_transports"=>["stdio","streamable_http"],"skills"=>true,"hooks"=>true,"project_intelligence"=>true,
         "durable_tasks"=>true,"dynamic_analyzers"=>true,"context_checkpoints"=>true,"context_recovery"=>true,
@@ -187,6 +191,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     startswith(method,"project/") && return Base.invokelatest(project_rpc,server,method,params)
     startswith(method,"analyzers/") && return Base.invokelatest(analyzers_rpc,server,method,params)
     startswith(method,"models/") && return Base.invokelatest(models_rpc,server,method,params)
+    startswith(method,"memory/") && return Base.invokelatest(memory_rpc,server,method,params)
     startswith(method,"tasks/") && return Base.invokelatest(tasks_rpc,server,method,params)
     startswith(method,"mcp/") && return Base.invokelatest(mcp_rpc,server,method,params)
     startswith(method,"skills/") && return Base.invokelatest(skills_rpc,server,method,params)
@@ -237,11 +242,13 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
             (any(job->job.status==:running,values(hooksmanager.jobs)) || !isempty(hooksmanager.active)) &&
                 throw(ShenScopeError(:config,"Finish Hook operations before changing configuration"))
         end
+        operations_running(server_memory_tool(server).manager.operations) &&
+            throw(ShenScopeError(:config,"Finish memory operations before changing configuration"))
         value=get(params,"value",nothing)
         value isa AbstractDict || throw(RPCFault(-32602,"Configuration object required"))
         expected=rpc_string(params,"expected_sha256";max_bytes=64)
         revision=save_config!(Dict{String,Any}(value);path=server.config_file,expected_sha256=expected,
-            before_write=()->begin;cleanup_mcp!(mcpmanager);cleanup_skills!(skillsmanager);cleanup_hooks!(hooksmanager);cleanup_context!(server_context_tool(server).manager);cleanup_analyzers!(server_analyzers_tool(server).manager);end)
+            before_write=()->begin;cleanup_mcp!(mcpmanager);cleanup_skills!(skillsmanager);cleanup_hooks!(hooksmanager);cleanup_context!(server_context_tool(server).manager);cleanup_analyzers!(server_analyzers_tool(server).manager);cleanup_memory!(server_memory_tool(server).manager);end)
         server.config=load_config(;path=server.config_file)
         reset_models_tool!(server_models_tool(server),server.config)
         mcpmanager.specs=mcp_specs_from_config(server.config)
@@ -358,6 +365,7 @@ function stop_server!(server::CoreServer)
         tool isa ProjectTool && cleanup_projects!(tool.manager)
         tool isa AnalyzersTool && cleanup_analyzers!(tool.manager)
         tool isa ModelsTool && cleanup_models_tool!(tool)
+        tool isa MemoryTool && cleanup_memory!(tool.manager)
         tool isa ProcessTool || continue
         for id in keys(server.contexts);cleanup_processes!(tool.manager,id);end
     end

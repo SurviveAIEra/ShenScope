@@ -88,6 +88,15 @@ export class ShenScopePanel {
     private modelsStarting = false;
     private modelsResult?: { action: string; result: any };
     private completedModelJobs = new Set<string>();
+    private memoryJob?: string;
+    private memoryStarting = false;
+    private memoryResult?: { action: string; result: any };
+    private completedMemoryJobs = new Set<string>();
+    private memoryScope = 'workspace';
+    private memoryNamespace = 'default';
+    private memoryQuery = '';
+    private memoryTags = '';
+    private memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 };
     private modelsOffset = 0;
     private modelsProfile = '';
     private modelPlanRole = '';
@@ -104,7 +113,7 @@ export class ShenScopePanel {
             const button = this.button(label, () => this.selectTab(name), 'nav-button', glyph); this.navigation.set(name, button); nav.append(button);
         }
         const more = el('select', '', 'more-views'); more.setAttribute('aria-label', 'More views');
-        for (const name of ['More', 'Settings', 'Models', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context', 'Analyzers']) { const option = el('option', name); option.value = name; more.append(option); }
+        for (const name of ['More', 'Settings', 'Models', 'Memory', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context', 'Analyzers']) { const option = el('option', name); option.value = name; more.append(option); }
         more.addEventListener('change', () => { if (more.value !== 'More') { void this.guard(() => this.selectTab(more.value)); } more.value = 'More'; }); nav.append(more);
         this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite'); this.notice.setAttribute('role', 'alert'); this.notice.hidden = true;
         root.append(header, nav, this.notice, this.approvals, this.content, this.status);
@@ -149,7 +158,7 @@ export class ShenScopePanel {
         if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
         this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
         this.modelsProfile = ''; this.modelPlanRole = '';
-        this.sessionId = undefined; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
+        this.sessionId = undefined; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
         const distance = this.transcript.scrollHeight - this.transcript.scrollTop - this.transcript.clientHeight;
@@ -214,6 +223,7 @@ export class ShenScopePanel {
         if (this.tab === 'Skills' && this.capabilities.skills) { await this.skills(revision); return; }
         if (this.tab === 'Hooks' && this.capabilities.hooks) { await this.hooks(revision); return; }
         if (this.tab === 'Context' && this.capabilities.context_checkpoints) { await this.contextView(revision); return; }
+        if (this.tab === 'Memory' && this.capabilities.memory_retrieval_evidence) { await this.memoryView(revision); return; }
         if (this.tab === 'Analyzers' && this.capabilities.dynamic_analyzers) { await this.analyzersView(revision); return; }
         if (this.tab === 'Models' && this.capabilities.model_catalog) { await this.modelsView(revision); return; }
         this.content.append(el('h2', this.tab === 'Intelligence' ? 'Project intelligence' : this.tab, 'view-title'));
@@ -245,7 +255,7 @@ export class ShenScopePanel {
                     if (this.analyzersBusy()) { throw new Error('Finish the current task before switching conversations.'); }
                     this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
                     this.modelsProfile = ''; this.modelPlanRole = '';
-                    const openingRevision = this.renderRevision; this.sessionId = session.id; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 };
+                    const openingRevision = this.renderRevision; this.sessionId = session.id; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 };
                     const full = await this.bridge.request('sessions/get', { session_id: session.id });
                     if (this.sessionId !== full.id) { return; }
                     this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren();
@@ -344,7 +354,7 @@ export class ShenScopePanel {
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
         }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
     }
-    private contextBusy(): boolean { return this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || !!this.modelsJob || this.modelsStarting; }
+    private contextBusy(): boolean { return !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || !!this.modelsJob || this.modelsStarting; }
     private modelsBusy(): boolean { return this.contextBusy() || !!this.analyzersJob || this.analyzersStarting; }
     private async startModels(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.modelsBusy()) { throw new Error('Finish or cancel the current operation before working with models.'); }
@@ -571,6 +581,78 @@ export class ShenScopePanel {
         } else if (!code && !validation) { output.append(el('p', data.archived ? 'Version archived.' : data.pointer ? `Active version updated · revision ${data.pointer.pointer_revision}` : 'Operation complete.', 'view-description')); }
         this.content.append(output);
     }
+    private async startMemory(action: string, args: Record<string, unknown> = {}): Promise<void> {
+        if (this.analyzersBusy()) { throw new Error('Finish or cancel the current operation before working with memory.'); }
+        this.memoryStarting = true; this.memoryResult = undefined;
+        if (this.tab === 'Memory') { for (const control of Array.from(this.content.querySelectorAll<HTMLButtonElement | HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('button,input,textarea,select'))) { control.disabled = true; } }
+        this.updateActions();
+        try {
+            const session_id = await this.ensureSession('Saved memory');
+            const result = await this.bridge.request('memory/start', { session_id, action, scope: this.memoryScope, namespace: this.memoryNamespace, ...args });
+            if (!this.completedMemoryJobs.has(result.job_id)) { this.memoryJob = result.job_id; this.setStatus('Working with saved memory…'); }
+        } finally { this.memoryStarting = false; this.updateActions(); if (this.tab === 'Memory') { await this.renderTab(); } }
+    }
+    private async memoryView(revision: number): Promise<void> {
+        const session_id = await this.ensureSession('Saved memory'); let inventory: any;
+        try { inventory = await this.bridge.request('memory/query', { session_id, scope: this.memoryScope, namespace: this.memoryNamespace }); } catch { inventory = undefined; }
+        if (revision !== this.renderRevision) { return; }
+        const heading = el('div', '', 'section-heading'); heading.append(el('h2', 'Memory'), this.button('Refresh memory', () => this.startMemory('list', { sort: 'updated' }), 'icon-button', 'history'));
+        this.content.append(heading, el('p', 'Save notes, preferences and findings. Inspect their source before relying on a match.', 'view-description'));
+        const busy = this.analyzersBusy(); const scopeFields = el('div', '', 'memory-scope-fields');
+        const scopeLabel = el('label'); const scope = el('select'); scope.setAttribute('aria-label', 'Memory scope'); scope.disabled = busy;
+        for (const [value, title] of [['workspace', 'This workspace'], ['session', 'This conversation'], ['user', 'Across projects']]) { const option = el('option', title); option.value = value; scope.append(option); } scope.value = this.memoryScope;
+        const changeScope = () => { this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; void this.guard(() => this.renderTab()); };
+        scope.addEventListener('change', () => { this.memoryScope = scope.value; changeScope(); }); scopeLabel.append(el('span', 'Scope'), scope);
+        const namespaceLabel = el('label'); const namespace = el('input'); namespace.value = this.memoryNamespace; namespace.maxLength = 64; namespace.setAttribute('aria-label', 'Memory namespace'); namespace.disabled = busy;
+        namespace.addEventListener('change', () => { this.memoryNamespace = namespace.value.trim() || 'default'; changeScope(); }); namespaceLabel.append(el('span', 'Collection'), namespace);
+        scopeFields.append(scopeLabel, namespaceLabel); this.content.append(scopeFields);
+        if (inventory) {
+            const stats = el('section', '', 'info-card memory-inventory'); stats.append(el('strong', countLabel(inventory.live, 'saved note')), el('span', `${inventory.expired} expired · ${inventory.deleted} deleted`, 'memory-muted'));
+            if (!inventory.complete) { stats.append(el('small', 'Inventory is partial. Narrow the collection before relying on these counts.')); } this.content.append(stats);
+        } else { const load = this.button('Load memory inventory', () => this.startMemory('status')); load.disabled = busy; this.content.append(load); }
+        if (this.memoryJob) { const pending = el('section', '', 'info-card'); pending.append(el('p', 'Working or waiting for your approval…'), this.button('Cancel memory operation', async () => { await this.bridge.request('memory/cancel_job', { session_id, job_id: this.memoryJob }); })); this.content.append(pending); }
+        const search = el('section', '', 'memory-search'); const query = el('input'); query.value = this.memoryQuery; query.placeholder = 'Search notes · +required -excluded "exact phrase"'; query.setAttribute('aria-label', 'Search memory'); query.disabled = busy;
+        query.addEventListener('input', () => { this.memoryQuery = query.value; }); const tags = el('input'); tags.value = this.memoryTags; tags.placeholder = 'Tags, comma separated'; tags.setAttribute('aria-label', 'Memory tag filter'); tags.disabled = busy; tags.addEventListener('input', () => { this.memoryTags = tags.value; });
+        const args = () => ({ query: this.memoryQuery, tags_all: this.memoryTags.split(',').map(value => value.trim()).filter(Boolean) });
+        const find = this.button('Search notes', () => this.startMemory('retrieve', args()), 'primary-button'); find.disabled = busy;
+        query.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); void this.guard(() => this.startMemory('retrieve', args())); } }); search.append(query, tags, find); this.content.append(search);
+        const result = this.memoryResult?.result; const action = this.memoryResult?.action;
+        if (result?.items && (action === 'retrieve' || action === 'list')) {
+            const summary = el('section', '', 'memory-result-summary'); summary.append(el('strong', countLabel(result.total_matches, 'matching note')));
+            if (!result.coverage.complete) { summary.append(el('p', 'Partial search coverage. Some records or terms exceed this view’s bounds.', 'memory-muted')); }
+            this.content.append(summary);
+            for (const item of result.items) {
+                const card = el('article', '', 'info-card memory-result'); card.dataset.memoryKey = item.key;
+                const title = el('div', '', 'memory-note-heading'); title.append(el('h3', item.title), el('span', `v${item.version}`, 'memory-version')); card.append(title, el('small', item.key, 'memory-muted'));
+                const provenance = el('div', '', 'memory-provenance'); const sources: Record<string, string> = { user: 'User supplied', agent: 'Agent generated', tool: 'Tool supplied', import: 'Imported' };
+                provenance.append(el('span', sources[item.source] ?? 'Deleted', 'memory-source')); if (item.expired) { provenance.append(el('span', 'Expired', 'memory-source')); }
+                for (const tag of item.tags) { provenance.append(el('span', tag, 'memory-tag')); } card.append(provenance, el('p', item.snippet.text, 'memory-snippet'));
+                if (item.matched_terms.length) { card.append(el('small', 'Matched: ' + item.matched_terms.slice(0, 8).join(' · '), 'memory-muted')); }
+                const evidence = el('details', '', 'memory-evidence'); evidence.append(el('summary', 'Match and source evidence'), el('p', 'Lexical match score: ' + Number(item.score).toFixed(3)));
+                evidence.append(el('p', 'Declared source: ' + (item.source_reference || 'No reference supplied')), el('small', 'Content checksum: ' + (item.content_sha256 ?? 'Deleted')), el('small', 'Stored record checksum: ' + item.sha256));
+                for (const term of item.contributions) { evidence.append(el('div', `${term.term} · ${Number(term.score).toFixed(3)} · ${term.document_frequency} matching records`, 'memory-term-evidence')); }
+                evidence.append(el('p', 'This records the stored source and lexical match. It does not verify the claim.', 'memory-muted')); card.append(evidence);
+                const controls = el('div', '', 'memory-note-actions'); const open = this.button('Read and edit note', () => this.startMemory('get', { key: item.key })); open.disabled = busy || item.deleted;
+                const history = this.button('Note history', () => this.startMemory('history', { key: item.key })); history.disabled = busy; controls.append(open, history); card.append(controls); this.content.append(card);
+            }
+            if (!result.items.length) { this.content.append(el('p', 'No notes matched this search.', 'empty-text')); }
+            if (result.next_cursor) {
+                const filters = Object.fromEntries(Object.entries(result.filters).filter(([, value]) => value !== null));
+                const next = this.button('Next memory page', () => this.startMemory(action!, { ...filters, sort: result.sort, limit: result.limit, snippet_chars: result.snippet_chars, ...(action === 'retrieve' ? { query: result.query, match: result.match } : {}), cursor: result.next_cursor })); next.disabled = busy; this.content.append(next);
+            }
+        } else if (action === 'history' && result?.items) {
+            const history = el('section', '', 'info-card memory-history'); history.append(el('h3', 'Retained note history'));
+            for (const entry of result.items) { const row = el('article'); row.append(el('strong', `Version ${entry.version}${entry.deleted ? ' · deleted' : ''}`), el('small', entry.updated), el('p', entry.value.content ?? 'Deletion marker')); history.append(row); } this.content.append(history);
+        } else if (action === 'put') { this.content.append(el('p', `Saved note · version ${result.version}`, 'memory-save-receipt')); }
+        else if (action === 'delete') { this.content.append(el('p', 'Note deleted. Retained history remains available.', 'memory-save-receipt')); }
+        else if (action === 'get' && !result?.entry) { this.content.append(el('p', 'This note is missing, deleted or expired.', 'empty-text')); }
+        const editor = el('details', '', 'info-card memory-editor'); editor.open = action === 'get' || this.memoryDraft.version > 0; editor.append(el('summary', this.memoryDraft.version ? 'Edit saved note' : 'Save a new note'));
+        const field = (label: string, key: 'key' | 'title' | 'tags' | 'reference') => { const wrapper = el('label'); const input = el('input'); input.value = this.memoryDraft[key]; input.setAttribute('aria-label', 'Memory ' + label.toLowerCase()); input.disabled = busy || (key === 'key' && this.memoryDraft.version > 0); input.addEventListener('input', () => { this.memoryDraft[key] = input.value; }); wrapper.append(el('span', label), input); editor.append(wrapper); };
+        field('Key', 'key'); field('Title', 'title'); field('Tags', 'tags'); field('Reference', 'reference'); const bodyLabel = el('label'); const body = el('textarea'); body.value = this.memoryDraft.content; body.rows = 6; body.maxLength = 65536; body.setAttribute('aria-label', 'Memory content'); body.disabled = busy; body.addEventListener('input', () => { this.memoryDraft.content = body.value; }); bodyLabel.append(el('span', 'Content'), body); editor.append(bodyLabel);
+        const controls = el('div', '', 'memory-note-actions'); const save = this.button('Save note', () => this.startMemory('put', { key: this.memoryDraft.key, title: this.memoryDraft.title || this.memoryDraft.key, content: this.memoryDraft.content, tags: this.memoryDraft.tags.split(',').map(value => value.trim()).filter(Boolean), source_reference: this.memoryDraft.reference, expected_version: this.memoryDraft.version }), 'primary-button'); save.disabled = busy; controls.append(save);
+        if (this.memoryDraft.version) { const remove = this.button('Delete note', () => this.startMemory('delete', { key: this.memoryDraft.key, expected_version: this.memoryDraft.version })); remove.disabled = busy; controls.append(remove); }
+        const clear = this.button('New note', async () => { this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.memoryResult = undefined; await this.renderTab(); }); clear.disabled = busy; controls.append(clear); editor.append(controls, el('small', 'Saving and deletion require persistence permission. Updates check the version you opened.', 'memory-muted')); this.content.append(editor);
+    }
     private async startContext(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.contextBusy()) { throw new Error('Finish or cancel the current operation before working with context.'); }
         this.contextStarting = true; this.contextResult = undefined;
@@ -654,7 +736,7 @@ export class ShenScopePanel {
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; await this.renderTab();
         }); save.disabled = this.contextBusy(); recovery.append(save); this.content.append(recovery);
     }
-    private hooksBusy(): boolean { return this.active || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.contextJob || this.contextStarting; }
+    private hooksBusy(): boolean { return !!this.memoryJob || this.memoryStarting || this.active || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.contextJob || this.contextStarting; }
     private async startHooks(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.hooksJob || this.hooksStarting) { throw new Error('Finish or cancel the current Hook operation.'); }
         this.hooksStarting = true;
@@ -1190,6 +1272,18 @@ export class ShenScopePanel {
             if (params.kind === 'analyzers_job_completed') { this.analyzersResult = { action: payload.action, result: payload.result }; this.setStatus('Analyzer operation complete'); }
             else { this.analyzersResult = undefined; this.notice.textContent = payload.error ?? 'Analyzer operation failed'; this.notice.hidden = false; this.setStatus(payload.status === 'cancelled' ? 'Analyzer operation cancelled' : 'Analyzer operation failed'); }
             if (this.tab === 'Analyzers') { void this.guard(() => this.renderTab()); } this.updateActions(); return;
+        }
+        if (params.kind === 'memory_job_completed' || params.kind === 'memory_job_failed') {
+            this.completedMemoryJobs.add(payload.job_id); while (this.completedMemoryJobs.size > 64) { this.completedMemoryJobs.delete(this.completedMemoryJobs.values().next().value!); }
+            if (this.memoryJob === payload.job_id) { this.memoryJob = undefined; }
+            for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }
+            if (params.kind === 'memory_job_completed') {
+                this.memoryResult = { action: payload.action, result: payload.result }; this.setStatus('Memory operation complete');
+                if (payload.action === 'get' && payload.result?.entry) { const entry = payload.result.entry; this.memoryDraft = { key: entry.key, title: entry.value.title, content: entry.value.content, tags: entry.value.tags.join(', '), reference: entry.value.source_reference ?? '', version: entry.version }; }
+                if (payload.action === 'put') { this.memoryDraft.version = payload.result.version; }
+                if (payload.action === 'delete') { this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; }
+            } else { this.notice.textContent = payload.error ?? 'Memory operation stopped'; this.notice.hidden = false; this.setStatus('Memory operation stopped'); }
+            this.updateActions(); if (this.tab === 'Memory') { void this.guard(() => this.renderTab()); } return;
         }
         if (params.kind === 'models_job_completed' || params.kind === 'models_job_failed') {
             this.completedModelJobs.add(payload.job_id); while (this.completedModelJobs.size > 64) { this.completedModelJobs.delete(this.completedModelJobs.values().next().value!); }

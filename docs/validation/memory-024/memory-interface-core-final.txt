@@ -1,0 +1,22 @@
+Test Summary:                                                         | Pass  Total  Time
+Context RPC ownership, permissions, asynchronous cancellation and CAS |   16     16  6.4s
+Test Summary:                                                          | Pass  Total   Time
+Manual context checkpoints are shared by RPC and subsequent agent runs |    8      8  20.1s
+Test Summary:                                                        | Pass  Total  Time
+Terminal rendering sanitizes control sequences and handles wide text |   16     16  0.6s
+{"kind":"session_started","payload":{"id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","provider":"mock"},"sequence":1,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.604Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+{"kind":"skills_reloaded","payload":{"count":0,"diagnostics":0,"generation":1,"truncated":false},"sequence":2,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.650Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+{"kind":"context_prepared","payload":{"checkpoint_id":null,"instruction_sources":0,"measure":{"byte_limit":262144,"context_window":128000,"envelope_bytes":15315,"estimated_tokens":5143,"fits":true,"input_limit":124928,"max_output":2048,"message_bytes":555,"options_bytes":2,"token_source":"byte_and_unicode_estimate","tools_bytes":14704,"wire_bytes":15315},"original_messages":1,"projected_messages":2,"pruned_results":0},"sequence":3,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.857Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+{"kind":"model_request","payload":{"context_attempt":0,"estimated_input_tokens":5143,"provider":"mock","request_sha256":"4ef38dde4d9e91fd7b1aac2da7ec000394f9ca6633139a1cf42cf8fc3fb7a587"},"sequence":4,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.859Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+{"kind":"text_delta","payload":{"text":"离"},"sequence":5,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.860Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+{"kind":"text_delta","payload":{"text":"线"},"sequence":6,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.860Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+{"kind":"text_delta","payload":{"text":"任"},"sequence":7,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.860Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+{"kind":"text_delta","payload":{"text":"务"},"sequence":8,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.860Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+{"kind":"text_delta","payload":{"text":"完"},"sequence":9,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.860Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+{"kind":"text_delta","payload":{"text":"成"},"sequence":10,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.860Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+{"kind":"usage","payload":{"input_tokens":0,"output_tokens":0},"sequence":11,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.860Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+{"kind":"session_completed","payload":{"budget":{"cost":0,"elapsed_seconds":0.290228626,"limits":{"max_cost":10,"max_seconds":3600,"max_steps":100,"max_tokens":1000000},"reported_cost":0,"reserved_cost":0,"reserved_tokens":0,"steps":1,"tokens":0},"text":"离线任务完成"},"sequence":12,"session_id":"436e16da-c1b5-4f28-92a1-29fb8698f9d4","timestamp":"2026-10-04T11:02:09.861Z","trace_id":"d55aceed-01da-4bb7-93e1-abe729d4594c"}
+Test Summary:                                    | Pass  Total  Time
+Headless CLI, offline task and session lifecycle |    9      9  2.9s
+Session: 436e16da-c1b5-4f28-92a1-29fb8698f9d4
+input: Unknown option --unknown

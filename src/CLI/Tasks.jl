@@ -43,6 +43,7 @@ function cli_tasks_command(positional,flags,config,state_dir)
     finally
         cleanup_tasks!(tool.manager)
         for entry in worker_tools;entry isa ModelsTool && cleanup_models_tool!(entry);end
+        for entry in worker_tools;entry isa MemoryTool && cleanup_memory!(entry.manager);end
     end
     return 0
 end

@@ -28,7 +28,8 @@
       "codex-rs/agent-roles/src/agent_role_config.rs",
       "codex-rs/utils/git-discovery/src/lib.rs",
       "codex-rs/protocol/src/plan_tool.rs",
-      "codex-rs/cli/src/main.rs"
+      "codex-rs/cli/src/main.rs",
+      "codex-rs/protocol/src/memory_citation.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -101,7 +102,8 @@
       "packages/experimental/agent-team/src/roster.ts",
       "packages/deliverables/workspace-changes/src/git.ts",
       "apps/cli/src/bin.ts",
-      "apps/desktop-host/src/cli.ts"
+      "apps/desktop-host/src/cli.ts",
+      "packages/compaction/compaction-tool-result-pruner/src/types.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -137,7 +139,8 @@
       "packages/coding-agent/src/core/model-config.ts",
       "packages/coding-agent/src/core/tools/bash.ts",
       "packages/coding-agent/src/core/tools/edit.ts",
-      "packages/coding-agent/src/cli.ts"
+      "packages/coding-agent/src/cli.ts",
+      "packages/durable/src/harness/compaction.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -174,7 +177,8 @@
       "packages/agent-core-v2/src/app/git/git.ts",
       "packages/agent-core-v2/src/app/git/workTree.ts",
       "packages/agent-core-v2/src/human/todo/tool.ts",
-      "apps/kimi-code/src/main.ts"
+      "apps/kimi-code/src/main.ts",
+      "packages/minidb/src/memory-guard.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -207,7 +211,8 @@
       "packages/services/src/git/git.ts",
       "packages/ui/src/ToolCallBlocks/renderers/plan-guidance.tsx",
       "apps/zcode-cli/packages/cli/src/main.ts",
-      "apps/zcode-cli/packages/cli/src/index.ts"
+      "apps/zcode-cli/packages/cli/src/index.ts",
+      "apps/zcode-cli/packages/core/src/memory/origin-session.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -242,7 +247,8 @@
       "packages/core/src/subagents/agent-frontmatter-schema.ts",
       "packages/cli/src/commands/review/lib/git.ts",
       "packages/cli/src/commands/review/plan-diff.ts",
-      "packages/cli/src/cli.ts"
+      "packages/cli/src/cli.ts",
+      "integrations/external-context/src/memory-content.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

@@ -1,0 +1,62 @@
+Test Summary:                                         | Pass  Total   Time
+Scoped memory, lexical retrieval and durable versions |   25     25  15.2s
+Test Summary:                                           | Pass  Total  Time
+Memory import validates every item before atomic commit |    7      7  1.1s
+Precompiling ShenScope...
+  55971.7 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 56 seconds. 39 already precompiled.
+Test Summary:                                                   | Pass  Total  Time
+Independent memory namespaces, capacity and workspace ownership |   26     26  1.4s
+Test Summary:                                               | Pass  Total  Time
+Memory corruption, source hashes and confined journal paths |   12     12  0.4s
+Test Summary:                                        | Pass  Total  Time
+Memory lexical grammar and UTF-8 witness coordinates |   39     39  0.6s
+Test Summary:                                                   | Pass  Total  Time
+Memory BM25F independent numeric oracle and declared provenance |   19     19  1.7s
+Test Summary:                                          | Pass  Total  Time
+Memory filtering, exact phrases, exclusions and expiry |   12     12  1.3s
+Test Summary:                                                   | Pass  Total  Time
+Pinned memory pagination, Unicode snippets and cache retirement |   13     13  0.7s
+Test Summary:                                                               | Pass  Total  Time
+Memory partial coverage remains explicit and cancellation publishes nothing |    6      6  0.2s
+Test Summary:                                                       | Pass  Total  Time
+Memory RPC approvals, CAS, scope, revocation and lifecycle barriers |   36     36  5.6s
+Test Summary:                                                        | Pass  Total  Time
+Memory CLI independently persists, filters and checks stale versions |   18     18  1.8s
+permission: Operation denied by policy
+input: --limit must be an integer
+memory: Memory version must be a nonnegative safe integer
+conflict: Object version changed
+input: Session memory requires --session
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.3s
+Test Summary:                                                    | Pass  Total  Time
+Protocol version, config ownership, secrets and session commands |   15     15  1.0s
+Test Summary:                                        | Pass  Total   Time
+Agent protocol permission ownership and cancellation |   13     13  22.8s
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/task_protocol.jl:10
+in expression starting at /workspace/ShenScope/.local/test_memory_final.jl:5
+Asynchronous task protocol, approvals and session ownership: Error During Test at /workspace/ShenScope/test/unit/task_protocol.jl:10
+  Got exception outside of a @test
+  UndefVarError: `read_work` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] (::var"#121#122")(root::String)
+     @ Main /workspace/ShenScope/test/unit/task_protocol.jl:17
+   [2] mktempdir(fn::var"#121#122", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [3] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [4] macro expansion
+     @ /workspace/ShenScope/test/unit/task_protocol.jl:11 [inlined]
+   [5] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [6] top-level scope
+     @ /workspace/ShenScope/test/unit/task_protocol.jl:11
+   [7] include
+     @ ./sysimg.jl:38 [inlined]
+   [8] top-level scope
+     @ /workspace/ShenScope/.local/test_memory_final.jl:8
+Test Summary:                                               | Error  Total  Time
+Asynchronous task protocol, approvals and session ownership |     1      1  1.7s

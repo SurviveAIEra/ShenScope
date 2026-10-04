@@ -53,7 +53,17 @@ include("Tools/Schema.jl")
 include("Tools/Models.jl")
 include("Tools/Files.jl")
 include("Tools/Processes.jl")
+include("Memory/Types.jl")
+include("Memory/Namespaces.jl")
 include("Memory/Store.jl")
+include("Memory/Records.jl")
+include("Memory/Tokens.jl")
+include("Memory/Options.jl")
+include("Memory/Index.jl")
+include("Memory/Ranking.jl")
+include("Memory/Pagination.jl")
+include("Memory/Retrieval.jl")
+include("Tools/Memory.jl")
 include("ProjectData/Types.jl")
 include("ProjectData/Locations.jl")
 include("ProjectData/JSONC.jl")
@@ -164,6 +174,7 @@ include("Protocol/Hooks.jl")
 include("Protocol/Context.jl")
 include("Protocol/Analyzers.jl")
 include("Protocol/Models.jl")
+include("Protocol/Memory.jl")
 
 export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
     dispatch_rpc, serve_stdio, stop_server!, capability_manifest
@@ -173,6 +184,9 @@ export core_tools, execute_batch, AgentControl, steer!, run_agent!, load_config,
 export VersionedStore, version_get, version_put!, version_list, version_history,
     MemoryStore, memory_store, memory_put!, memory_get, memory_search, memory_delete!,
     memory_export, memory_import!, lexical_tokens, MemoryTool
+export MemoryManager, MemorySnapshot, MemoryQuery, MemoryFilters, MemoryRetrievalOptions,
+    memory_namespace, memory_namespaces, memory_snapshot, memory_retrieve, memory_inventory,
+    memory_history, memory_query, memory_tokens, memory_build_index, cleanup_memory!
 export SymbolId, SourceRange, SourceMap, CodeSymbol, Relation, FileFacts, CallReference, SymbolOccurrence,
     BackendCapabilities, ProjectState, ProjectDelta, TreeSitterBackend, CodeGraphBackend,
     GoASTBackend, TypeScriptSemanticBackend, backend_capabilities, backend_close!, build!, update!, load_project,
@@ -258,13 +272,14 @@ include("CLI/Diagnostics.jl")
 include("CLI/Serve.jl")
 include("CLI/Doctor.jl")
 include("CLI/Agent.jl")
+include("CLI/Memory.jl")
 const CLI_COMMAND_HANDLERS = Dict{String,Function}(
     "mcp"=>cli_mcp_command, "skills"=>cli_skills_command, "hooks"=>cli_hooks_command,
     "context"=>cli_context_command, "analyzers"=>cli_analyzers_command,
     "models"=>cli_models_command, "tasks"=>cli_tasks_command,
     "diagnostics"=>cli_diagnostics_command, "project"=>cli_project_command,
     "serve"=>cli_serve_command, "doctor"=>cli_doctor_command,
-    "chat"=>cli_agent_command, "tui"=>cli_agent_command)
+    "chat"=>cli_agent_command, "tui"=>cli_agent_command, "memory"=>cli_memory_command)
 main(args=ARGS)=cli_main(args)
 
 include("Runtime/Precompile.jl")

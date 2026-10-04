@@ -1,0 +1,1 @@
+PASS: VSIX webview, actual persistence approvals, Chinese evidence, CAS edit, independent same-key collections, pinned pagination, deletion/history and durable Julia verification without model requests

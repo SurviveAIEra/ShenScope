@@ -1,0 +1,21 @@
+ERROR: LoadError: Some tests did not pass: 35 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/memory_protocol.jl:23
+Memory RPC approvals, CAS, scope, revocation and lifecycle barriers: Error During Test at /workspace/ShenScope/test/unit/memory_protocol.jl:66
+  Test threw exception
+  Expression: (dispatch_rpc(server, "memory/query", Dict("session_id" => foreign, "scope" => "session", "namespace" => "notes")))["live"] == 0
+  permission: Use memory/start for permissioned memory reads
+  Stacktrace:
+   [1] memory_rpc(server::CoreServer, method::String, params::Dict{String, String})
+     @ ShenScope /workspace/ShenScope/src/Protocol/Memory.jl:32
+   [2] #invokelatest#2
+     @ ./essentials.jl:1055 [inlined]
+   [3] invokelatest
+     @ ./essentials.jl:1052 [inlined]
+   [4] dispatch_rpc(server::CoreServer, method::String, params::Dict{String, String})
+     @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:194
+   [5] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [6] (::var"#18#21")(root::String)
+     @ Main /workspace/ShenScope/test/unit/memory_protocol.jl:66
+Test Summary:                                                       | Pass  Error  Total   Time
+Memory RPC approvals, CAS, scope, revocation and lifecycle barriers |   35      1     36  57.1s

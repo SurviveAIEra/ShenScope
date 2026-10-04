@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 17,093 authored Julia Core code lines across 161 files;
-CLI/TUI add 874 lines and are counted separately. This is 6.8372% of the
-minimum line target, leaving 232,907 lines. These are early implementations,
+Latest cloc 2.11 count: 18,134 authored Julia Core code lines across 172 files;
+CLI/TUI add 931 lines and are counted separately. This is 7.2536% of the
+minimum line target, leaving 231,866 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -423,3 +423,25 @@ docs/validation/startup-checkpoint-023.json and docs/core/startup.md.
 Development continues immediately with scoped memory retrieval/management,
 security/runtime and remaining requirements. PackageCompiler remains pending.
 The 250,000 authored Core-line target remains active and unmet.
+
+Memory checkpoint 024: independent collections with root/session ownership,
+strict journal validation, Unicode witnesses/BM25F, filters/phrases/expiry, bounded
+partial indexes, fixed-snapshot pagination and declared source/hash evidence.
+Julia-owned asynchronous jobs share permissions/budgets with agent work; CLI and
+both IDEs support versioned notes and retained history. Seven primary source
+observations extend the reference synthesis without copying upstream code.
+
+Validation: 316 distinct affected Core/interface assertions (181 new), three
+real Node/Core transport tests, editor check/build, final full Workbench typecheck
+and exact VSIX source/assets payload pass. Both actual native and independent
+VSIX development GUIs verify approvals, Chinese evidence, updates, namespace
+isolation, pagination, deletion and independent durable Julia history checks
+without model requests. Failed fixture loads and two GUI attempts are retained
+and corrected. Evidence: docs/validation/memory-checkpoint-024.json. Scope:
+docs/core/memory.md. Lexical/source evidence is not fact verification; bounded
+coverage is disclosed, namespace admission is separate from the fact transaction,
+legacy session-proof migration and secure erasure remain pending.
+
+Development continues immediately with general host-tool sandbox/security,
+runtime/state and remaining Julia-specific capabilities. The 250,000 authored
+Core-line target remains active and unmet.
