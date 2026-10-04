@@ -20,6 +20,9 @@ end
             common = ["--root",root,"--state-dir",joinpath(root,"state"),"--config",config]
             status,value = captured_models_cli(["models","status",common...],root)
             @test status == 0 && value["configured"]["id"] == "active"
+            status,value = captured_models_cli(["models","health",common...],root)
+            @test status == 0 && value["state"] == "closed" && !value["tracked"]
+            @test value["revision"] == 0 && !value["network_probe_performed"] && calls[] == 0
             status,value = captured_models_cli(["models","refresh",common...,"--allow-network","--offset","1","--limit","1"],root)
             @test status == 0 && value["total"] == 2 && value["models"][1]["id"] == "second"
             @test length(value["models"]) == 1 && value["offset"] == 1

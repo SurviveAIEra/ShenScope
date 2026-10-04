@@ -1,0 +1,41 @@
+Precompiling ShenScope...
+   6167.0 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 6 seconds. 39 already precompiled.
+[ Info: Listening on: 127.0.0.1:43395, thread id: 2
+[ Info: Server on 127.0.0.1:43395 closing
+[ Info: Listening on: 127.0.0.1:39459, thread id: 1
+[ Info: Server on 127.0.0.1:39459 closing
+[ Info: Listening on: 127.0.0.1:44169, thread id: 1
+[ Info: Server on 127.0.0.1:44169 closing
+[ Info: Listening on: 127.0.0.1:34699, thread id: 1
+[ Info: Server on 127.0.0.1:34699 closing
+[ Info: Listening on: 127.0.0.1:44747, thread id: 1
+[ Info: Server on 127.0.0.1:44747 closing
+[ Info: Listening on: 127.0.0.1:38011, thread id: 1
+[ Info: Server on 127.0.0.1:38011 closing
+[ Info: Listening on: 127.0.0.1:46621, thread id: 1
+[ Info: Server on 127.0.0.1:46621 closing
+[ Info: Listening on: 127.0.0.1:42255, thread id: 1
+[ Info: Server on 127.0.0.1:42255 closing
+[ Info: Listening on: 127.0.0.1:41873, thread id: 1
+[ Info: Server on 127.0.0.1:41873 closing
+[ Info: Listening on: 127.0.0.1:40639, thread id: 2
+[ Info: Server on 127.0.0.1:40639 closing
+[ Info: Listening on: 127.0.0.1:39157, thread id: 2
+[ Info: Server on 127.0.0.1:39157 closing
+[ Info: Listening on: 127.0.0.1:33321, thread id: 2
+[ Info: Server on 127.0.0.1:33321 closing
+Test Summary:                                   | Pass  Total  Time
+SSE Unicode fragmentation, multiline and limits |    3      3  0.8s
+Test Summary:                                             | Pass  Total   Time
+OpenAI-compatible real HTTP tool stream and native replay |    7      7  18.1s
+Test Summary:                             | Pass  Total  Time
+Anthropic signature and tool continuation |    5      5  3.6s
+Test Summary:                                        | Pass  Total  Time
+OpenAI Responses encrypted reasoning and call stream |    3      3  2.7s
+Test Summary:                      | Pass  Total  Time
+Gemini and Ollama native protocols |    5      5  5.6s
+Test Summary:                                                    | Pass  Total  Time
+Retry before delivery, no replay after delivery, malformed calls |    5      5  8.3s
+Test Summary:                                                                            | Pass  Total  Time
+Fragmented HTTP error envelopes classify only complete bounded structured context errors |   12     12  2.6s

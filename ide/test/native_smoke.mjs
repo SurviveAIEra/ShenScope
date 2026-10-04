@@ -41,12 +41,24 @@ const userSkillRoot = skillsOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-
 const display = vsix ? ':102' : ':101';
 const xvfb = spawn('/workspace/toolchains/xvfb/usr/bin/Xvfb', [display, '-screen', '0', '1280x900x24', '-nolisten', 'tcp'], { stdio: 'ignore' });
 const requests = [];
+let modelInferenceCalls = 0;
 const fixture = createServer(async (request, response) => {
     const chunks = []; for await (const chunk of request) { chunks.push(chunk); }
     const raw = Buffer.concat(chunks).toString();
     if (modelsOnly) {
         const body = raw ? JSON.parse(raw) : undefined;
         requests.push({ method: request.method, target: request.url, body });
+        if (request.url === '/messages') {
+            modelInferenceCalls++;
+            if (modelInferenceCalls === 1) {
+                response.writeHead(503, { 'Content-Type': 'application/json' }); response.end(JSON.stringify({ error: 'PROVIDER FAILURE FIXTURE' })); return;
+            }
+            const frames = [{ type: 'message_start', message: { usage: { input_tokens: 3 } } },
+                { type: 'content_block_start', index: 0, content_block: { type: 'text', text: '' } },
+                { type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text: 'Provider recovery verified 中文' } },
+                { type: 'content_block_stop', index: 0 }, { type: 'message_delta', delta: { stop_reason: 'end_turn' }, usage: { output_tokens: 5 } }, { type: 'message_stop' }];
+            response.writeHead(200, { 'Content-Type': 'text/event-stream' }); response.end(frames.map(frame => `data: ${JSON.stringify(frame)}\n\n`).join('')); return;
+        }
         response.writeHead(200, { 'Content-Type': 'application/json', ETag: '"model-fixture"' });
         response.end(JSON.stringify(request.method === 'GET' ? { data: [{ id: 'catalog-first', display_name: 'First catalog model' }, { id: 'catalog-second', display_name: 'Second catalog model' }] } : { input_tokens: 17 }));
         return;
@@ -71,7 +83,7 @@ const port = fixture.address().port;
 const config = join(root, 'config.toml');
 await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[permissions]\nnetwork = 'allow'\nedit = 'ask'\n${skillsOnly ? `[skills]\nproject_roots = ['.shenscope/skills']\nuser_roots = ['${userSkillRoot}']\n` : ''}`);
 if (modelsOnly) {
-    await writeFile(config, `[provider]\nprotocol = 'anthropic'\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[permissions]\nnetwork = 'ask'\nedit = 'ask'\n`);
+    await writeFile(config, `[provider]\nprotocol = 'anthropic'\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[provider.circuit]\nfailure_threshold = 1\ncooldown = 30.0\n[permissions]\nnetwork = 'ask'\nedit = 'ask'\npersistence = 'allow'\n`);
 }
 if (contextOnly) {
     await writeFile(config, (await readFile(config, 'utf8')) + `read = 'ask'\npersistence = 'ask'\n[context]\nuser_files = ['${join(userContextRoot, 'user.md')}']\n`);
@@ -233,7 +245,31 @@ try {
         assert.equal(await panel.locator('.permission-card').count(), 0);
         assert.equal(requests.length, 2);
         await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-models-cancel.png`) });
-        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual provider directory, unknown capacity metadata, configured-model preservation, request token-count API, allow-once permissions, cache clearing and cancellation before network I/O`);
+        await panel.getByRole('button', { name: 'Chat', exact: true }).click();
+        await panel.getByRole('textbox', { name: 'Message ShenScope', exact: true }).fill('Observe provider failure');
+        await panel.getByRole('button', { name: 'Send message', exact: true }).click();
+        await approve(panel, 'openai-compatible · network', 'Allow once');
+        await panel.locator('.status').filter({ hasText: 'Task failed' }).waitFor({ timeout: 120_000 });
+        assert.equal(modelInferenceCalls, 1);
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Models');
+        await panel.locator('.model-health[data-state="open"]').waitFor();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-models-health-open.png`) });
+        await panel.getByRole('button', { name: 'Reset provider health', exact: true }).click();
+        await approve(panel, 'models.health.reset · network', 'Allow once');
+        await panel.locator('.model-health[data-state="closed"]').waitFor();
+        await panel.getByText('No recent inference result.', { exact: true }).waitFor();
+        assert.equal(modelInferenceCalls, 1);
+        await panel.getByRole('button', { name: 'Chat', exact: true }).click();
+        await panel.getByRole('textbox', { name: 'Message ShenScope', exact: true }).fill('Verify recovery with an explicit request');
+        await panel.getByRole('button', { name: 'Send message', exact: true }).click();
+        await approve(panel, 'openai-compatible · network', 'Allow once');
+        await panel.getByText('Provider recovery verified 中文', { exact: true }).waitFor({ timeout: 120_000 });
+        await panel.locator('.status').filter({ hasText: 'Complete' }).waitFor();
+        assert.equal(modelInferenceCalls, 2);
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Models');
+        await panel.getByText('Last observed request succeeded.', { exact: true }).waitFor();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-models-health-recovered.png`) });
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual provider directory/count API, unknown metadata, allow-once permissions, cache/cancel, shared inference health, HTTP failure cooldown, scoped health reset without a probe and explicit verified recovery`);
     }
     if (analyzersOnly) {
         await panel.getByRole('button', { name: 'Project', exact: true }).click();

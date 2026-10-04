@@ -35,7 +35,7 @@ function cli_context_command(positional::Vector{String}, flags::AbstractDict, co
     finally
         for entry in tools
             entry isa ContextTool && cleanup_context!(entry.manager)
-            entry isa ModelsTool && cleanup_model_catalogs!(entry.manager)
+            entry isa ModelsTool && cleanup_models_tool!(entry)
             entry isa SkillsTool && cleanup_skills!(entry.manager)
             entry isa HooksTool && cleanup_hooks!(entry.manager)
             entry isa MCPControlTool && cleanup_mcp!(entry.manager)

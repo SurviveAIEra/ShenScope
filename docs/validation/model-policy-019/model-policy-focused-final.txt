@@ -1,0 +1,53 @@
+[ Info: Listening on: 127.0.0.1:43695, thread id: 1
+[ Info: Server on 127.0.0.1:43695 closing
+[ Info: Listening on: 127.0.0.1:35963, thread id: 1
+[ Info: Server on 127.0.0.1:35963 closing
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/model_retry_pipeline.jl:5
+Test Summary:                                                               | Pass  Total  Time
+Model retry policies reject terminal categories and unbounded configuration |   24     24  0.9s
+Test Summary:                                                               | Pass  Total  Time
+Provider retry headers are bounded, time-aware and never expose raw headers |   21     21  0.0s
+Test Summary:                                                                   | Pass  Total  Time
+Retry decisions preserve server floors, delivery and configured/deadline limits |   25     25  0.0s
+Test Summary:                                                                        | Pass  Total  Time
+Circuit epochs reject stale completion and allow exactly one explicit recovery probe |   21     21  2.4s
+Test Summary:                                                                     | Pass  Total  Time
+Concurrent recovery acquisition admits one probe and preserves every other caller |    5      5  0.5s
+Test Summary:                                                                  | Pass  Total  Time
+Circuit windows, neutral errors, disabled policy and global seats are distinct |   11     11  0.3s
+Test Summary:                                                                           | Pass  Total  Time
+Health metadata scopes credentials and resets with CAS without claiming a network probe |   13     13  4.3s
+Test Summary:                                                            | Pass  Total   Time
+Model RPC owns operations, approvals, caches and configuration lifecycle |   40     40  51.8s
+Test Summary:                                                                       | Pass  Total  Time
+Model health RPC reflects live runtime and enforces reset permission, CAS and scope |   25     25  0.9s
+Undelivered interrupted streams retry while delivered reasoning progress prevents replay: Error During Test at /workspace/ShenScope/test/integration/model_retry_pipeline.jl:5
+  Got exception outside of a @test
+  UndefVarError: `retry_fixture_provider` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+    [1] (::var"#51#57"{String, Vector{Tuple{Symbol, Any}}, Base.RefValue{Int64}, Symbol})(endpoint::String)
+      @ Main /workspace/ShenScope/test/integration/model_retry_pipeline.jl:15
+    [2] model_service_fixture(f::var"#51#57"{String, Vector{Tuple{Symbol, Any}}, Base.RefValue{Int64}, Symbol}, handler::Function; stream::Bool)
+      @ Main /workspace/ShenScope/test/fixtures/model_services.jl:7
+    [3] model_service_fixture
+      @ /workspace/ShenScope/test/fixtures/model_services.jl:3 [inlined]
+    [4] #50
+      @ /workspace/ShenScope/test/integration/model_retry_pipeline.jl:9 [inlined]
+    [5] mktempdir(fn::var"#50#56"{Symbol}, parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [6] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [7] macro expansion
+      @ /workspace/ShenScope/test/integration/model_retry_pipeline.jl:7 [inlined]
+    [8] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+    [9] top-level scope
+      @ /workspace/ShenScope/test/integration/model_retry_pipeline.jl:6
+   [10] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [11] top-level scope
+      @ none:1
+Test Summary:                                                                            | Error  Total  Time
+Undelivered interrupted streams retry while delivered reasoning progress prevents replay |     1      1  2.4s

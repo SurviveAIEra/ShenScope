@@ -67,6 +67,10 @@ function core_tools(; tasks = true, mcp = true, skills = true, hooks = true, con
     skills && push!(tools, SkillsTool(SkillManager(config)))
     hooks && push!(tools, HooksTool(HookManager(config;config_source,credential_lookup)))
     context && push!(tools, ContextTool(ContextManager(config)))
-    tasks && push!(tools, TaskTool(WorkExecutor(; tools)))
+    if tasks
+        model = only(tool for tool in tools if tool isa ModelsTool)
+        factory = ctx->HTTPProvider(model.provider.config,model.provider.credential_lookup;runtime=model.provider.runtime)
+        push!(tools,TaskTool(WorkExecutor(;tools,provider_factory=factory)))
+    end
     tools
 end

@@ -96,3 +96,13 @@ conversation/credential ownership, actual Anthropic/Gemini request counting,
 labeled local estimates and shared tool/CLI/RPC/editor interfaces. Persistent
 catalogs, exact tokenizers, model-role routing, circuit breakers and reviewed
 imports remain pending. See `docs/core/models.md` and the checkpoint evidence.
+
+Checkpoint 019 adds selected retry/selection observations for all seven primary
+agents. Julia implements strict retry advice, exact logical body/key snapshots,
+no retry after delivery, cancellable waits/reads and scoped bounded circuit
+health shared by agent and task factories. The actual native and extension
+clients show failure cooldown, explicit reset without probing and verified
+subsequent fixture inference. Role/fleet routing, persistent health, live-model
+checks and packaged desktop validation remain pending. See
+`docs/core/model_policy.md`; the bounded circuit implementation is independent,
+not a claim that every reference has the same circuit feature.

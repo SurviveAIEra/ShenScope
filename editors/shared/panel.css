@@ -242,3 +242,10 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .model-count-form summary { cursor: pointer; }
 .model-token-total { display: block; margin: 12px 0; font-size: 22px; font-weight: 600; }
 .model-operation { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 0; }
+.model-health { padding: 12px; margin: 12px 0; border: 1px solid var(--vscode-widget-border, #444); border-radius: 8px; background: var(--vscode-editor-background); }
+.model-health-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.model-health-heading h3 { margin: 0; }
+.model-health-state { font-size: 11px; padding: 3px 7px; border-radius: 4px; color: var(--vscode-descriptionForeground); background: var(--vscode-badge-background); }
+.model-health-state.open { color: var(--vscode-editorWarning-foreground, #e5bd63); }
+.model-health > small { display: block; color: var(--vscode-descriptionForeground); line-height: 1.5; margin-top: 8px; }
+.model-health-policy { margin: 10px 0; }

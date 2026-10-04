@@ -1,0 +1,1 @@
+PASS: native Workbench with extensions disabled, actual provider directory/count API, unknown metadata, allow-once permissions, cache/cancel, shared inference health, HTTP failure cooldown, scoped health reset without a probe and explicit verified recovery

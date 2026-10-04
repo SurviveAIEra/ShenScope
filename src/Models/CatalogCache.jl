@@ -35,11 +35,12 @@ function catalog_read_authorize!(ctx::RuntimeContext)
     catalog_read_checkpoint(ctx)
 end
 
-function model_catalog_view(manager::ModelCatalogManager,provider::HTTPProvider,ctx::RuntimeContext;offset=0,limit=50)
+function model_catalog_view(manager::ModelCatalogManager,provider::HTTPProvider,ctx::RuntimeContext;offset=0,limit=50,credentials=nothing)
     offset,limit = catalog_page_options(offset,limit)
     catalog_read_authorize!(ctx)
     source = catalog_key(provider,ctx)
-    key = CredentialSnapshot(provider.credential_lookup(provider.config.key_env))
+    key = credentials === nothing ? CredentialSnapshot(provider.credential_lookup(provider.config.key_env)) : credentials
+    key isa CredentialSnapshot || throw(ArgumentError("Catalog credentials must be a captured snapshot"))
     access = catalog_access_tag(manager,key)
     snapshot,failure = lock(manager.mutex) do
         deepcopy(get(manager.snapshots,source,nothing)),get(manager.failures,source,nothing)

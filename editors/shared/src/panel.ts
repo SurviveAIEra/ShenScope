@@ -349,6 +349,25 @@ export class ShenScopePanel {
         const catalog = snapshot.catalog; const configured = catalog.configured;
         const selected = el('section', '', 'model-card configured-model'); selected.append(el('span', 'Configured model', 'model-source'), el('h3', configured.id), el('small', this.config.provider.name));
         selected.append(el('p', `${configured.context_window.toLocaleString()} context · ${configured.max_output.toLocaleString()} maximum output`, 'view-description')); this.content.append(selected);
+        if (snapshot.health) {
+            const health = snapshot.health; const section = el('section', '', 'model-health'); section.dataset.state = health.state;
+            const top = el('div', '', 'model-health-heading'); top.append(el('h3', 'Provider health'));
+            const label = health.state === 'open' ? 'Cooldown' : health.state === 'half_open' ? 'Recovery request in progress' : health.state === 'disabled' ? 'Circuit disabled' : 'Requests allowed';
+            top.append(el('span', label, `model-health-state ${health.state}`)); section.append(top);
+            const observation = health.last_outcome === 'success' ? 'Last observed request succeeded.' : health.last_outcome === 'failure' ? `Last observed failure: ${health.last_failure_code}.` : health.last_outcome === 'neutral' ? 'Last request ended without an availability result.' : 'No recent inference result.';
+            section.append(el('p', observation, 'view-description'));
+            if (health.state === 'open') { section.append(el('p', `About ${Math.ceil(health.wait_seconds)} seconds remaining. The next request can test recovery when the cooldown expires.`, 'view-description')); }
+            if (health.in_flight) { section.append(el('small', `${health.in_flight} inference ${health.in_flight === 1 ? 'request' : 'requests'} in progress`)); }
+            const policy = el('details', '', 'model-health-policy'); policy.append(el('summary', 'Retry and health policy'));
+            policy.append(el('p', `${health.retry_policy.max_retries} retries before output · ${health.retry_policy.maximum_delay}s maximum retry wait`, 'view-description'));
+            policy.append(el('p', `${health.policy.failure_threshold} failed requests open a cooldown · ${health.policy.cooldown}s initial cooldown`, 'view-description'));
+            policy.append(el('p', 'Retry waits honor provider advice. Text, tools, usage or reasoning progress stop automatic retries.', 'view-description')); section.append(policy);
+            if (health.tracked) {
+                const reset = this.button('Reset provider health', () => this.startModels('reset_health', { expected_revision: health.revision })); reset.disabled = this.modelsBusy() || health.in_flight > 0; section.append(reset);
+                section.append(el('small', 'Reset permits future requests; it does not verify that the provider has recovered.'));
+            }
+            this.content.append(section);
+        }
         if (catalog.failure) { this.content.append(el('p', catalog.failure, 'validation-error')); }
         const directory = el('section', '', 'model-directory'); directory.append(el('h3', `Provider directory · ${catalog.total} models`));
         directory.append(el('p', catalog.checked_at ? `${catalog.fresh ? 'Current cache' : 'Refresh recommended'} · checked ${catalog.checked_at}` : 'Refresh to load the provider directory.', 'view-description'));
@@ -1125,7 +1144,7 @@ export class ShenScopePanel {
             this.flushAssistant(); this.active = false; this.assistant = undefined;
             for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }
             this.updateActions();
-            this.setStatus(params.kind === 'session_completed' ? `Complete · ${payload.budget.tokens.toLocaleString()} tokens · $${payload.budget.cost.toFixed(4)}` : 'Task stopped'); if (params.kind === 'session_error') { this.notice.textContent = payload.message; this.notice.hidden = false; }
+            this.setStatus(params.kind === 'session_completed' ? `Complete · ${payload.budget.tokens.toLocaleString()} tokens · $${payload.budget.cost.toFixed(4)}` : payload.code === 'cancelled' ? 'Task cancelled' : 'Task failed'); if (params.kind === 'session_error') { this.notice.textContent = payload.message; this.notice.hidden = false; }
         } else if (params.kind === 'usage') { this.setStatus(`Working · ${(payload.input_tokens + payload.output_tokens).toLocaleString()} tokens`); }
     }
     dispose(): void { this.disposed = true; this.renderRevision++; if (this.animation !== undefined) { cancelAnimationFrame(this.animation); } this.disposeEvent(); this.root.replaceChildren(); }

@@ -54,6 +54,7 @@ end
 
 function provider_from_config(config::AbstractDict)
     p=config["provider"]
+    p["retries"] isa Integer && !(p["retries"] isa Bool) || throw(ShenScopeError(:config,"Model retry count must be an integer"))
     document = get(p, "capabilities", Dict())
     document isa AbstractDict || throw(ShenScopeError(:config, "Provider capabilities must be a table"))
     names = Set(String.(fieldnames(ModelCapabilities)))
@@ -72,7 +73,10 @@ function provider_from_config(config::AbstractDict)
     c=ProviderConfig(;protocol=Symbol(p["protocol"]),name=p["name"],endpoint=p["endpoint"],model=p["model"],
         key_env=p["key_env"],timeout=p["timeout"],retries=p["retries"],
         input_price=p["input_price"],output_price=p["output_price"],capabilities=capability)
-    return HTTPProvider(validate_config(c))
+    retry = model_retry_policy_from_dict(get(p,"retry_policy",Dict());max_retries=c.retries)
+    circuit = model_circuit_policy_from_dict(get(p,"circuit",Dict()))
+    runtime = ModelProviderRuntime(;retry_policy=retry,circuit_policy=circuit)
+    return HTTPProvider(validate_config(c);runtime)
 end
 limits_from_config(c::AbstractDict)=BudgetLimits(;max_steps=c["budget"]["max_steps"],max_tokens=c["budget"]["max_tokens"],
     max_cost=c["budget"]["max_cost"],max_seconds=c["budget"]["max_seconds"])

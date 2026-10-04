@@ -1,7 +1,7 @@
 function cli_models_command(positional,flags,config,state_dir)
-    length(positional) >= 2 || throw(ShenScopeError(:input,"Use models status|list|refresh|inspect MODEL|count REQUEST.json"))
+    length(positional) >= 2 || throw(ShenScopeError(:input,"Use models status|health|list|refresh|inspect MODEL|count REQUEST.json"))
     action = positional[2]
-    action in ("status","list","refresh","inspect","count") || throw(ShenScopeError(:input,"Unknown model CLI action"))
+    action in ("status","health","list","refresh","inspect","count") || throw(ShenScopeError(:input,"Unknown model CLI action"))
     arguments = Dict{String,Any}("action"=>action)
     if action in ("inspect","count")
         length(positional) == 3 || throw(ShenScopeError(:input,"Model inspection needs a model ID; token counting needs a request JSON file"))
@@ -30,6 +30,6 @@ function cli_models_command(positional,flags,config,state_dir)
         validate_schema(arguments,tool_schema(tool));result = execute(tool,arguments,context)
         println(canonical(result));0
     finally
-        cleanup_model_catalogs!(tool.manager)
+        cleanup_models_tool!(tool)
     end
 end

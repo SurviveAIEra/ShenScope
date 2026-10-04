@@ -272,3 +272,29 @@ an explicit fallback, while auth/malformed/transport failures remain visible.
 Counts are not inference usage or evidence of tokenizer/billing exactness.
 Core API and both actual editor clients exercise owned jobs and permissions.
 See `docs/core/models.md` and checkpoint 018 validation for precise evidence.
+
+## Retry and provider-health synthesis
+
+Checkpoint 019 adds selected source observations at the pinned revisions. These
+are partial reviews, not a claim that entire projects have been comprehensively
+read. The circuit implementation is an independent Julia design; the sources
+below are not claimed to implement the same circuit state machine.
+
+| Primary source | Observed design | Independently implemented boundary |
+|---|---|---|
+| Codex `responses_retry.rs`, `compact_model_fallback.rs` | Typed terminal failures, bounded retry state and explicit compaction fallback | Cancellation/budget remain terminal; retry reasons are observable and never extend limits |
+| OpenCode `session/retry.ts` | Bounded jitter, header advice and user-visible retry reasons | Valid server waits are floors; suppression is explicit when the wait exceeds limits |
+| DeepSeek Harness `llm/src/retry-policy.ts` | Provider-owned immutable retry policy and transient classification | Strict bounded Core policy; always/infinite retry modes are not implemented |
+| Pi `utils/provider-retry.ts` | Server veto and delay precedence, excessive-wait rejection | False advice vetoes; true advice cannot override terminal categories; excessive waits suppress |
+| Kimi requester and base retry utilities | Abort-aware waits and terminal abort/quota/context/filter categories | Shared cancellation/permission/budget checkpoints during waiting and blocked reads |
+| ZCode `subagent/profile-model-selection.ts` | Explicit provider/model/options selection boundaries | Logical body/key snapshots and retained provider runtime; role selection remains next work |
+| Qwen `utils/retryPolicy.ts` | Exponent/timer ceilings and server-delay handling | Saturated exponent arithmetic with finite policy waits and shared deadline admission |
+
+Core adds scoped bounded logical-request leases, mutex/epoch circuit transitions,
+one explicit half-open inference probe, neutral non-provider outcomes and CAS
+reset with no hidden network request. Server, task workers, CLI/TUI and Models
+services share the intended runtime lifetime. Both actual editor clients expose
+cooldown, admission state and the last observed outcome. See
+`docs/core/model_policy.md` and checkpoint 019 evidence. Persistent fleet health,
+automatic role routing and live-provider availability claims are not implemented
+by this checkpoint.

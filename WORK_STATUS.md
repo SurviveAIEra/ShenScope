@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 14,900 authored Julia Core code lines across 133 files;
-CLI/TUI add 824 lines and are counted separately. This is 5.96% of the
-minimum line target, leaving 235,100 lines. These are early implementations,
+Latest cloc 2.11 count: 15,485 authored Julia Core code lines across 140 files;
+CLI/TUI add 839 lines and are counted separately. This is 6.194% of the
+minimum line target, leaving 234,515 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -317,3 +317,23 @@ exact tokenizers, role routing, circuit breakers, live-provider checks and full
 desktop distribution remain pending. Development immediately continues with
 model request retry/health policy and the remaining agent/project/runtime scope.
 The minimum 250,000 Core lines remain an active, unmet delivery constraint.
+
+Model policy checkpoint 019: bounded immutable retry decisions, server wait
+floors/veto/cap suppression, exact logical body/key snapshots and no replay after
+any output. Cancellation, network revocation and shared deadlines release
+inference seats. Scoped bounded circuit state uses epochs, one explicit
+half-open probe, neutral non-provider outcomes and CAS reset without network
+probing. Agent/task factories and CLI/TUI retain provider runtime health. Both
+actual IDE clients show cooldown/reset/verified subsequent fixture recovery.
+
+Validation: affected Core 14,547 passing assertions; focused policy 288 includes
+40 prior RPC assertions and overlaps the broad suite. New policy assertions: 248;
+new CLI health assertions: two. The broad total includes 12,050 coordinate
+property assertions. Editor check/build, three Node/Core transport tests, full
+Workbench typecheck and actual native/independent VSIX development GUI pass.
+Final package payload equality passes. Failed attempts remain recorded in
+docs/validation/model-policy-checkpoint-019.json. Details and boundaries are in
+docs/core/model_policy.md. Persistent fleet health, role routing, live-model
+checks and installed-package/desktop/Windows validation remain pending.
+Development immediately continues with explicit role profiles, eligible routes
+and controlled fallback. The 250,000 authored Core-line goal remains unmet.

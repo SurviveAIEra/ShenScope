@@ -1,0 +1,70 @@
+[ Info: Listening on: 127.0.0.1:43803, thread id: 1
+[ Info: Server on 127.0.0.1:43803 closing
+[ Info: Listening on: 127.0.0.1:37443, thread id: 4
+[ Info: Server on 127.0.0.1:37443 closing
+[ Info: Listening on: 127.0.0.1:42357, thread id: 1
+[ Info: Server on 127.0.0.1:42357 closing
+[ Info: Listening on: 127.0.0.1:32799, thread id: 1
+[ Info: Server on 127.0.0.1:32799 closing
+[ Info: Listening on: 127.0.0.1:44065, thread id: 1
+[ Info: Server on 127.0.0.1:44065 closing
+[ Info: Listening on: 127.0.0.1:42411, thread id: 1
+[ Info: Server on 127.0.0.1:42411 closing
+[ Info: Listening on: 127.0.0.1:40681, thread id: 2
+[ Info: Server on 127.0.0.1:40681 closing
+[ Info: Listening on: 127.0.0.1:44073, thread id: 4
+[ Info: Server on 127.0.0.1:44073 closing
+[ Info: Listening on: 127.0.0.1:38579, thread id: 1
+[ Info: Server on 127.0.0.1:38579 closing
+[ Info: Listening on: 127.0.0.1:40153, thread id: 1
+[ Info: Server on 127.0.0.1:40153 closing
+[ Info: Listening on: 127.0.0.1:38941, thread id: 1
+[ Info: Server on 127.0.0.1:38941 closing
+[ Info: Listening on: 127.0.0.1:33309, thread id: 1
+[ Info: Server on 127.0.0.1:33309 closing
+[ Info: Listening on: 127.0.0.1:39779, thread id: 1
+[ Info: Server on 127.0.0.1:39779 closing
+[ Info: Listening on: 127.0.0.1:42825, thread id: 1
+[ Info: Server on 127.0.0.1:42825 closing
+[ Info: Listening on: 127.0.0.1:35793, thread id: 1
+[ Info: Server on 127.0.0.1:35793 closing
+[ Info: Listening on: 127.0.0.1:36999, thread id: 1
+[ Info: Server on 127.0.0.1:36999 closing
+[ Info: Listening on: 127.0.0.1:43747, thread id: 1
+[ Info: Server on 127.0.0.1:43747 closing
+Test Summary:                                                               | Pass  Total  Time
+Model retry policies reject terminal categories and unbounded configuration |   24     24  1.9s
+Test Summary:                                                               | Pass  Total  Time
+Provider retry headers are bounded, time-aware and never expose raw headers |   21     21  0.1s
+Test Summary:                                                                   | Pass  Total  Time
+Retry decisions preserve server floors, delivery and configured/deadline limits |   25     25  0.0s
+Test Summary:                                                                        | Pass  Total  Time
+Circuit epochs reject stale completion and allow exactly one explicit recovery probe |   21     21  9.5s
+Test Summary:                                                                            | Pass  Total  Time
+Circuit admission reserves version capacity and does not reuse saturated CAS generations |    6      6  0.7s
+Test Summary:                                                                     | Pass  Total  Time
+Concurrent recovery acquisition admits one probe and preserves every other caller |    5      5  2.1s
+Test Summary:                                                                  | Pass  Total  Time
+Circuit windows, neutral errors, disabled policy and global seats are distinct |   11     11  0.7s
+Test Summary:                                                                           | Pass  Total   Time
+Health metadata scopes credentials and resets with CAS without claiming a network probe |   13     13  14.3s
+Test Summary:                                                            | Pass  Total     Time
+Model RPC owns operations, approvals, caches and configuration lifecycle |   40     40  1m41.6s
+Test Summary:                                                                       | Pass  Total  Time
+Model health RPC reflects live runtime and enforces reset permission, CAS and scope |   25     25  0.9s
+Test Summary:                                                                            | Pass  Total  Time
+Undelivered interrupted streams retry while delivered reasoning progress prevents replay |    4      4  7.4s
+Test Summary:                                                              | Pass  Total  Time
+HTTP retries retain exact body/key snapshots and count one logical outcome |    8      8  3.2s
+Test Summary:                                                                     | Pass  Total  Time
+Provider wait caps, terminal failures and server veto prevent extra HTTP attempts |   22     22  2.6s
+Test Summary:                                                                           | Pass  Total  Time
+Actual provider failures open circuits and the next explicit request performs one probe |    6      6  4.9s
+Test Summary:                                                                             | Pass  Total  Time
+Partial output and broken output consumers never cause replay or health misclassification |    8      8  2.7s
+Test Summary:                                                                            | Pass  Total  Time
+Retry wait cancellation, network revocation and shared deadlines release inference seats |   28     28  3.0s
+Test Summary:                                                               | Pass  Total  Time
+Revocation and cancellation retire blocked inference reads without retrying |   10     10  4.0s
+Test Summary:                                                                     | Pass  Total  Time
+Server and worker factories share explicit config, credentials and runtime health |   11     11  0.6s

@@ -22,7 +22,9 @@
       "codex-rs/core/src/unified_exec/async_watcher.rs",
       "codex-rs/app-server/src/fs_watch.rs",
       "codex-rs/linux-sandbox/src/landlock.rs",
-      "codex-rs/core/src/context/world_state/model_catalog.rs"
+      "codex-rs/core/src/context/world_state/model_catalog.rs",
+      "codex-rs/core/src/responses_retry.rs",
+      "codex-rs/core/src/compact_model_fallback.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -52,7 +54,8 @@
       "packages/app/src/context/file/watcher.ts",
       "packages/schema/src/filesystem-watcher.ts",
       "packages/opencode/src/plugin/loader.ts",
-      "packages/opencode/src/provider/provider.ts"
+      "packages/opencode/src/provider/provider.ts",
+      "packages/opencode/src/session/retry.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -86,7 +89,8 @@
       "packages/fs/fs/src/index.ts",
       "packages/fs/fs-local/src/index.ts",
       "packages/fs/fs-sandbox/src/containment.ts",
-      "packages/llm/llm-pi-ai/src/catalog.ts"
+      "packages/llm/llm-pi-ai/src/catalog.ts",
+      "packages/llm/llm/src/retry-policy.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -117,7 +121,8 @@
       "packages/coding-agent/src/utils/fs-watch.ts",
       "packages/coding-agent/examples/extensions/sandbox/index.ts",
       "packages/ai/src/models-store.ts",
-      "packages/ai/src/models.ts"
+      "packages/ai/src/models.ts",
+      "packages/ai/src/utils/provider-retry.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -147,7 +152,9 @@
       "packages/agent-core-v2/src/app/watch/configSection.ts",
       "packages/agent-core-v2/src/runtime/runtimeUnitHost.ts",
       "packages/agent-core-v2/src/runtime/runtimeRegistry.ts",
-      "packages/agent-core-v2/src/app/kosongConfig/modelsDevImport.ts"
+      "packages/agent-core-v2/src/app/kosongConfig/modelsDevImport.ts",
+      "packages/agent-core-v2/src/human/llm/requester/retry.ts",
+      "packages/agent-core-v2/src/_base/utils/retry.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -174,7 +181,8 @@
       "packages/services/src/fileWatcher/fileWatcherService.ts",
       "apps/zcode-cli/packages/core/src/repl/node-repl-session.ts",
       "apps/zcode-cli/packages/contracts/src/tools/eval-workflow-snippet.ts",
-      "apps/zcode-cli/packages/core/src/runtime/model-selection.ts"
+      "apps/zcode-cli/packages/core/src/runtime/model-selection.ts",
+      "apps/zcode-cli/packages/core/src/subagent/profile-model-selection.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -203,7 +211,8 @@
       "packages/cli/src/config/lsp-config-watcher.ts",
       "packages/cli/src/config/extension-runtime-reload.ts",
       "packages/cli/src/config/execution-sandbox-settings.ts",
-      "packages/core/src/models/model-catalog-refresh.ts"
+      "packages/core/src/models/model-catalog-refresh.ts",
+      "packages/core/src/utils/retryPolicy.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

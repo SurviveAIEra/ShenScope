@@ -24,17 +24,24 @@ include("Storage/Staging.jl")
 include("Storage/JournalStream.jl")
 include("Storage/Versioned.jl")
 include("Context/Sessions.jl")
+include("Models/RetryTypes.jl")
+include("Models/RetryHeaders.jl")
+include("Models/RetryDecisions.jl")
+include("Models/CircuitTypes.jl")
 include("Models/Provider.jl")
+include("Models/CircuitState.jl")
 include("Models/Requests.jl")
 include("Models/Errors.jl")
 include("Models/Delivery.jl")
 include("Models/Streaming.jl")
+include("Models/RetryRuntime.jl")
 include("Models/HTTP.jl")
 include("Models/CatalogTypes.jl")
 include("Models/ServiceRequests.jl")
 include("Models/ServiceTransport.jl")
 include("Models/CatalogParsing.jl")
 include("Models/CatalogCache.jl")
+include("Models/CircuitServices.jl")
 include("Models/TokenCounts.jl")
 include("Tools/Schema.jl")
 include("Tools/Models.jl")
@@ -161,6 +168,9 @@ export IsolatedJuliaAnalyzer, AnalyzerArchive, analyzer_archive, archive_analyze
 export ModelDescriptor, ModelCatalogManager, ModelsTool, model_descriptor_dict,
     model_catalog_view, refresh_model_catalog!, count_model_tokens, model_request_from_dict,
     OperationManager, start_operation!, owned_operation, close_operations!, bounded_canonical_json
+export ModelRetryPolicy, ModelRetryAdvice, ModelAttemptFailure, ModelRetryDecision,
+    ModelCircuitPolicy, ModelCircuitManager, ModelProviderRuntime, model_retry_decision,
+    model_health_snapshot, reset_model_health!, cleanup_models_tool!, bind_models_provider!
 export ProjectWatchOptions, ProjectWatch, start_project_watch, stop_project_watch!,
     project_watch_status, refresh_project_watch!
 

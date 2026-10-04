@@ -89,6 +89,9 @@ Configuration mutation waits for active service jobs to finish or be canceled.
 RPC methods: `models/query` reads allowed cached metadata; `models/start` starts
 `status`, `list`, `refresh`, `inspect`, `count` or `clear`; `models/job` and
 `models/cancel_job` operate on owned job IDs. Query does not launch a model run.
+Inference retry/circuit policy and the additional `health`/`reset_health` actions
+are described in [model_policy.md](model_policy.md). Directory and counting
+transport retain the no-retry service policy described above.
 Both editor clients expose a Models view with explicit refresh, unknown metadata,
 inspection, request JSON measurement, cache clear and cancel controls.
 

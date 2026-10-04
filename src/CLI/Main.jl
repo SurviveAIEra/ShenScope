@@ -153,12 +153,19 @@ function cli_main(args=ARGS)
                     args["ids"]=positional[4:end]
                 end
             end
-            factory=haskey(flags,"--script") ? ctx->scripted_provider(flags["--script"]) : ctx->provider_from_config(config)
-            tool=TaskTool(WorkExecutor(;tools=core_tools(;tasks=false,config),provider_factory=factory))
+            worker_tools=core_tools(;tasks=false,config)
+            if haskey(flags,"--script")
+                factory=ctx->scripted_provider(flags["--script"])
+            else
+                template=provider_from_config(config);bind_models_provider!(worker_tools,template)
+                factory=ctx->HTTPProvider(template.config,template.credential_lookup;runtime=template.runtime)
+            end
+            tool=TaskTool(WorkExecutor(;tools=worker_tools,provider_factory=factory))
             try
                 validate_schema(args,tool_schema(tool));println(canonical(execute(tool,args,ctx)))
             finally
                 cleanup_tasks!(tool.manager)
+                for entry in worker_tools;entry isa ModelsTool && cleanup_models_tool!(entry);end
             end
             return 0
         end
@@ -205,20 +212,26 @@ function cli_main(args=ARGS)
             permissions=policy,approve=cli_approval,sink=e->render_event(stdout,e;json=get(flags,"--json",false)))
         session=haskey(flags,"--session") ? load_session(state_dir,id) : new_session(ctx)
         tools=core_tools(;config,config_source=get(flags,"--config",config_path()))
+        bind_models_provider!(tools,provider)
+        if haskey(flags,"--script")
+            workers = only(tool for tool in tools if tool isa TaskTool).manager
+            workers.executor = WorkExecutor(;tools=collect(values(workers.executor.tools)),
+                provider_factory=ctx->scripted_provider(flags["--script"]))
+        end
         if command=="chat"
             length(positional)>=2 || throw(ShenScopeError(:input,"Task text required"))
             try
                 run_agent!(provider,join(positional[2:end]," "),ctx;session,tools)
             finally
+                for tool in tools;tool isa TaskTool && cleanup_tasks!(tool.manager);end
                 for tool in tools
                     tool isa MCPControlTool && cleanup_mcp!(tool.manager)
                     tool isa SkillsTool && cleanup_skills!(tool.manager)
                     tool isa HooksTool && cleanup_hooks!(tool.manager)
                     tool isa ContextTool && cleanup_context!(tool.manager)
                     tool isa AnalyzersTool && cleanup_analyzers!(tool.manager)
-                    tool isa ModelsTool && cleanup_model_catalogs!(tool.manager)
+                    tool isa ModelsTool && cleanup_models_tool!(tool)
                     tool isa ProcessTool && cleanup_processes!(tool.manager,id)
-                    tool isa TaskTool && cleanup_tasks!(tool.manager)
                 end
             end
             println(stderr,"Session: ",session.id)

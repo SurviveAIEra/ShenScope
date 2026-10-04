@@ -31,9 +31,11 @@ function CoreServer(root::AbstractString;state_dir=get(ENV,"SHENSCOPE_STATE_DIR"
     lookup=key->lock(server.mutex) do;get(server.credentials,key,get(ENV,key,""));end
     server.tools=core_tools(;config=server.config,config_source=server.config_file,credential_lookup=lookup)
     server.provider_factory=provider_factory===nothing ? s->begin
-        provider=provider_from_config(deepcopy(s.config))
-        HTTPProvider(provider.config,key->lock(s.mutex) do;get(s.credentials,key,get(ENV,key,""));end)
+        provider=server_models_tool(s).provider
+        HTTPProvider(provider.config,key->lock(s.mutex) do;get(s.credentials,key,get(ENV,key,""));end;runtime=provider.runtime)
     end : provider_factory
+    workers = server_task_tool(server).manager
+    workers.executor = WorkExecutor(;tools=collect(values(workers.executor.tools)),provider_factory=ctx->server.provider_factory(server))
     return server
 end
 
@@ -158,7 +160,7 @@ function capability_manifest()
         "permission_approvals"=>true,"config_profiles"=>true,"os_isolation"=>false,
         "mcp"=>true,"mcp_transports"=>["stdio","streamable_http"],"skills"=>true,"hooks"=>true,"project_intelligence"=>true,
         "durable_tasks"=>true,"dynamic_analyzers"=>true,"context_checkpoints"=>true,"context_recovery"=>true,
-        "model_catalog"=>true,"model_counting"=>true,
+        "model_catalog"=>true,"model_counting"=>true,"model_health"=>true,
         "isolated_compute"=>Dict("dependency_available"=>compute_seccomp_available(),"backend"=>"linux-seccomp-compute-v1",
             "enforcement_checked_per_child"=>true,"host_tools_isolated"=>false))
 end
@@ -250,6 +252,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
             isempty(value) ? delete!(server.credentials,variable) : (server.credentials[variable]=value)
         end
         invalidate_model_catalogs!(server_models_tool(server).manager;reason="Model credentials changed")
+        invalidate_model_circuits!(server_models_tool(server).provider.runtime.circuits)
         return Dict("configured"=>!isempty(value))
     elseif method=="credentials/status"
         variable=rpc_string(params,"variable";default=server.config["provider"]["key_env"],max_bytes=128)
@@ -345,7 +348,7 @@ function stop_server!(server::CoreServer)
     for tool in server.tools
         tool isa ProjectTool && cleanup_projects!(tool.manager)
         tool isa AnalyzersTool && cleanup_analyzers!(tool.manager)
-        tool isa ModelsTool && cleanup_model_catalogs!(tool.manager)
+        tool isa ModelsTool && cleanup_models_tool!(tool)
         tool isa ProcessTool || continue
         for id in keys(server.contexts);cleanup_processes!(tool.manager,id);end
     end

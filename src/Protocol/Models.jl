@@ -13,8 +13,10 @@ function models_rpc(server::CoreServer,method::String,params::AbstractDict)
         permission_decision(policy,PermissionRequest("models-query",:read,"models.catalog",server.root,"Read cached model catalog")) == Allow ||
             throw(ShenScopeError(:permission,"Use models/start for permissioned model metadata reads"))
         ctx = RuntimeContext(server.root;session_id=session.id,state_dir=server.state_dir,permissions=policy)
+        credentials = CredentialSnapshot(tool.provider.credential_lookup(tool.provider.config.key_env))
         return Dict("status"=>model_services_status(tool.provider),"catalog"=>
-            model_catalog_view(tool.manager,tool.provider,ctx;offset=get(params,"offset",0),limit=get(params,"limit",50)))
+            model_catalog_view(tool.manager,tool.provider,ctx;offset=get(params,"offset",0),limit=get(params,"limit",50),credentials),
+            "health"=>model_health_read(tool.provider,ctx,credentials))
     elseif method in ("models/job","models/cancel_job")
         ctx = RuntimeContext(server.root;session_id=session.id,state_dir=server.state_dir)
         return owned_operation(tool.manager.operations,rpc_string(params,"job_id";max_bytes=128),ctx;cancel=method == "models/cancel_job")

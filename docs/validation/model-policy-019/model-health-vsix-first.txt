@@ -1,0 +1,16 @@
+Panel failure state: Unavailable
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Extension webview must start independently of the native panel
+    at file:///workspace/ShenScope/ide/test/native_smoke.mjs:173:16 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
