@@ -1,0 +1,58 @@
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Settings
+Models
+Memory
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+Project index is busy; wait for its completion event
+Approval needed
+
+project.index · persistence
+
+/tmp/shenscope-native-3tUEws/state/projects/4b8a84f3e75da06e0b2488fa2a7dca69fde14c742853a8c0cfd29e3c5fb97b21/63bf282636daf1cceb2c79a34e321a29bf53b85949fd7cc939a5ce495020dbd1.jsonl
+
+Save incremental project facts
+
+Allow once
+Allow session
+Deny
+Project intelligence
+
+Explore symbols and trace the evidence behind affected code and test candidates.
+
+Tree-sitter
+Go AST
+CodeGraph
+TypeScript compiler
+Julia source
+
+Working on the project index…
+
+Cancel indexing
+Analyzing project…
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 120000ms exceeded.
+Call log:
+[2m  - waiting for locator('.shenscope-panel').getByRole('button', { name: 'Refresh index', exact: true }) to be visible[22m
+
+    at /workspace/ShenScope/ide/test/native_smoke.mjs:291:81 {
+  log: [
+    "  - waiting for locator('.shenscope-panel').getByRole('button', { name: 'Refresh index', exact: true }) to be visible"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

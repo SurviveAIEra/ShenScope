@@ -39,8 +39,9 @@ function parse_cli(args::Vector{String})
         "--history-limit","--bulk-threshold","--minimum-support","--change-kind","--order",
         "--max-depth","--max-files","--max-symbols","--max-relations","--minimum-confidence","--max-pairs",
         "--namespace","--title","--tags","--expected-version","--match","--sort","--cursor",
-        "--expected-snapshot","--snippet-chars","--tags-all","--tags-any","--sources"])
-    switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints"])
+        "--expected-snapshot","--snippet-chars","--tags-all","--tags-any","--sources",
+        "--backends","--evidence-key","--evidence-fingerprint","--scope-paths"])
+    switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints","--no-evidence-bridges"])
     i=1
     while i<=length(args)
         arg=args[i]
@@ -109,6 +110,7 @@ function cli_main(args=ARGS)
         println("Project cache: project compact --backend NAME --minimum-savings BYTES [--force]")
         println("Project history: project git_cochange|risk [FILE ...] --history-limit N --bulk-threshold N --minimum-support N --limit N")
         println("Julia source: project julia_methods|julia_dispatch|julia_structure [FILTER] --backend julia_syntax --max-pairs N")
+        println("Combined evidence: project evidence_compare|evidence_search|evidence_impact|evidence_tests [FILE or QUERY] --backends NAME,NAME")
         println("Project migration: project migration FILE ... --change-kind signature|rename|remove|move|behavior --order dependency_first|callers_first --max-depth N")
         println("Project changes: project watch --backend NAME [--automatic] [--poll-seconds N] [--duration N]")
         println("Memory: memory retrieve QUERY --namespace NAME --scope workspace|session|user --tags-all TAGS --match any|all")

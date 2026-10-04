@@ -1,0 +1,36 @@
+ERROR: LoadError: Some tests did not pass: 11 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/project_evidence_protocol.jl:1
+Test Summary:                                                             | Pass  Total   Time
+Combined evidence retains provider identity and exact declaration anchors |   15     15  15.0s
+Test Summary:                                                                 | Pass  Total  Time
+Combined traversal crosses explicit source anchors with inspectable witnesses |   11     11  3.1s
+Test Summary:                                              | Pass  Total  Time
+Ambiguous or shifted declarations are not silently bridged |    4      4  0.5s
+Test Summary:                                                       | Pass  Total  Time
+Combined evidence refuses conflicting hashes and changing revisions |    4      4  0.6s
+Test Summary:                                                            | Pass  Total  Time
+Evidence capture and analysis share cancellation, permissions and bounds |   10     10  0.6s
+Combined evidence RPC owns jobs and asks only for the bounded read: Test Failed at /workspace/ShenScope/test/unit/project_evidence_protocol.jl:44
+  Expression: timedwait((()->begin
+                #= /workspace/ShenScope/test/unit/project_evidence_protocol.jl:44 =#
+                !(isempty(server.approvals))
+            end), 30) == :ok
+   Evaluated: timed_out == ok
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#55#60")(root::String)
+   @ Main /workspace/ShenScope/test/unit/project_evidence_protocol.jl:44
+ [3] mktempdir(fn::var"#55#60", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/unit/project_evidence_protocol.jl:2 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/unit/project_evidence_protocol.jl:2
+Test Summary:                                                      | Pass  Fail  Total     Time
+Combined evidence RPC owns jobs and asks only for the bounded read |   11     1     12  1m26.9s

@@ -454,3 +454,26 @@ implements extraction, identities, scope handling, dispatch pattern comparison,
 permissions, bounds, persistence and queries. It never loads project code. The
 existing CodeGraphContext and non-Julia backends remain first-class capabilities;
 compiler-confirmed Julia dispatch and cross-backend fusion remain open.
+
+## Combined evidence checkpoint source observations
+
+Checkpoint 027 rereads handoff multi-source/multiple-dispatch sections and the
+Julia resource guidance. These selected reads continue the partial upstream
+review; they do not claim every advantage of each project has been implemented.
+
+| Project / inspected sections | Observation | Independent Core behavior |
+| --- | --- | --- |
+| Codex `codex-rs/file-search/src/lib.rs` 98–119 | Snapshot, total/scanned counts and completion differ | Combined pages expose total, offset, revision vector and bounded snapshot fingerprint |
+| OpenCode `packages/opencode/src/lsp/lsp.ts` 417–437 | Symbol requests collect results from multiple clients | Julia keeps provider identities and separate facts instead of flattening away origin |
+| DeepSeek Harness `packages/lsp/lsp-stdio/src/translate.ts` 50–72 | Advertised capability checks are explicit | Each evidence source retains its capability claims; anchors do not claim compiler semantics |
+| Pi `packages/coding-agent/src/core/extensions/types.ts` 332–355 | Scoped models are read-only session views with cancellation context | Combined requests use owning session contexts and detached index captures |
+| Kimi Code `packages/agent-core-v2/src/tool/output-accumulator.ts` 1–93 | Retained output and total output are distinct and truncation is visible | Evidence separately bounds serialized capture, selected page bytes and total observations |
+| ZCode `packages/ui/src/ToolCallBlocks/renderers/search.tsx` 79–97 | Query/result summaries use normalized human-facing status | Shared IDE controls name sources and show signatures, witnesses and source links |
+| Qwen Code `packages/core/src/lsp/LspResponseNormalizer.ts` 866–925 | Source/server identity, selection range and recursive symbol limits matter | Exact anchors require matching full source ranges and retain all provider observations |
+| CodeGraphContext `api/schemas.py` 1–37 and `tools/indexing/schema_contract.py` 1–30 | Private graph labels/query structures form an adapter boundary | Combined analysis consumes existing neutral symbols/relations, not database schemas |
+| Serena `src/serena/symbol.py` 258–277 | Identifier locations and body locations have different meanings | Range mismatch keeps independent declarations; no approximate bridge is silently inferred |
+
+No implementation was copied or translated. Exact-source bridges, conflict
+refusal, namespaced identities, bounded capture and dispatch on the combined
+snapshot are authored Julia behavior. Git/coverage/runtime fusion and broader
+compiler-confirmed semantics remain pending.

@@ -1,0 +1,1 @@
+{"free_bytes": 18913533952, "core_cache_pairs": 1, "core_cache_bytes": 55235082, "whole_project_copies": 0}

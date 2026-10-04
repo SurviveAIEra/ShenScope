@@ -34,7 +34,9 @@ test('Node editor transport talks to real Julia Core with scoped approvals and U
         milestone('Core initialized');
         assert.equal(hello.protocol_version, '1.0');
         const session = await client.request('sessions/create', { title: '中文对话' });
+        milestone('Conversation created');
         await client.request('agent/start', { session_id: session.id, prompt: '写入文件' });
+        milestone('Agent request accepted');
         await until(() => events.some(event => event.params?.kind === 'permission_request'));
         const approval = events.find(event => event.params?.kind === 'permission_request').params;
         await assert.rejects(client.request('permissions/respond', { session_id: 'foreign', request_id: approval.payload.id, decision: 'once' }), /another session/);
@@ -106,6 +108,58 @@ test('Julia source indexing and dispatch evidence travel through the real editor
         await assert.rejects(client.request('project/query', query), /changed|stale|Refresh/i);
         milestone('Julia stale evidence refused');
         assert.ok(events.filter(event => event.params?.kind === 'permission_request').every(event => event.params.payload.category === 'persistence'));
+    } finally { await client.dispose(); await rm(root, { recursive: true, force: true }); }
+});
+
+test('Real editor transport combines parser evidence with pinned pagination and stale-source refusal', { timeout: 240_000 }, async t => {
+    const started = Date.now();
+    const milestone = label => t.diagnostic(`${label}: ${Date.now() - started} ms`);
+    const root = await mkdtemp(join(tmpdir(), 'shenscope-evidence-editor-'));
+    const project = resolve('..');
+    await writeFile(join(root, 'sample.go'), 'package p\nfunc Greet() {}\n');
+    await writeFile(join(root, 'sample_test.go'), 'package p\nfunc TestGreet() { Greet() }\n');
+    await writeFile(join(root, 'config.toml'), '[permissions]\nread = "allow"\npersistence = "allow"\nprocess = "allow"\nnetwork = "deny"\n');
+    const client = new CoreClient({ executable: process.env.SHENSCOPE_JULIA || '/workspace/toolchains/julia-1.11.7/bin/julia',
+        cwd: root, env: { ...process.env, JULIA_DEPOT_PATH: '/workspace/julia-depot' },
+        args: ['--startup-file=no', '--threads=4', `--project=${project}`, '-e', 'using ShenScope; exit(ShenScope.main())', '--',
+            'serve', '--stdio', '--root', root, '--state-dir', join(root, 'state'), '--config', join(root, 'config.toml')] });
+    const events = []; client.onNotification(event => events.push(event));
+    try {
+        await client.start();
+        milestone('Combined Core initialized');
+        const session = await client.request('sessions/create', { title: 'Combined sources' });
+        const foreign = await client.request('sessions/create', { title: 'Separate conversation' });
+        const run = async args => {
+            const job = await client.request('project/start', { session_id: session.id, ...args });
+            milestone(`${args.backend || 'combined'} ${args.action} started`);
+            await until(() => events.some(event => ['project_completed', 'project_failed'].includes(event.params?.kind)
+                && event.params.payload.job_id === job.job_id), 120_000);
+            await assert.rejects(client.request('project/job', { session_id: foreign.id, job_id: job.job_id }), /another conversation/i);
+            const completed = await client.request('project/job', { session_id: session.id, job_id: job.job_id });
+            milestone(`${args.backend || 'combined'} ${args.action} completed`);
+            assert.equal(completed.status, 'complete', completed.error);
+            return completed.result;
+        };
+        for (const backend of ['go_ast', 'tree_sitter']) { await run({ action: 'build', backend }); }
+        const available = await client.request('project/query', { session_id: session.id, action: 'evidence_status' });
+        assert.equal(available.sources.filter(source => source.indexed).length, 2);
+        const args = { action: 'evidence_compare', backends: ['go_ast', 'tree_sitter'], limit: 1 };
+        const first = await run(args);
+        assert.equal(first.total, 2); assert.equal(first.items.length, 1); assert.equal(first.next_offset, 1);
+        assert.equal(first.atomic_multi_source_transaction, false);
+        const second = await run({ ...args, offset: first.next_offset, source_revisions: first.revision_vector,
+            expected_evidence_fingerprint: first.fingerprint });
+        assert.equal(second.next_offset, null); assert.notEqual(first.items[0].anchor.id, second.items[0].anchor.id);
+        const tests = await run({ action: 'evidence_tests', backends: args.backends, paths: ['sample.go'] });
+        assert.equal(tests.total, 2);
+        assert.ok(tests.items.every(item => item.observation.symbol.name === 'TestGreet' && !item.runtime_coverage_confirmed));
+        assert.ok(tests.items.every(item => item.steps.length > 0));
+        await writeFile(join(root, 'sample.go'), 'package p\nfunc Greet(x int) {}\n');
+        const stale = await client.request('project/start', { session_id: session.id, ...args });
+        await until(() => events.some(event => event.params?.kind === 'project_failed' && event.params.payload.job_id === stale.job_id), 60_000);
+        const failed = await client.request('project/job', { session_id: session.id, job_id: stale.job_id });
+        assert.equal(failed.status, 'failed'); assert.match(failed.error, /changed|refresh/i);
+        assert.equal(events.filter(event => event.params?.kind === 'permission_request').length, 0);
     } finally { await client.dispose(); await rm(root, { recursive: true, force: true }); }
 });
 

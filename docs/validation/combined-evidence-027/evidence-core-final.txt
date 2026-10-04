@@ -1,0 +1,36 @@
+Precompiling ShenScope...
+  77035.9 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 78 seconds. 40 already precompiled.
+Test Summary:                                                             | Pass  Total   Time
+Combined evidence retains provider identity and exact declaration anchors |   15     15  10.1s
+Test Summary:                                                                 | Pass  Total  Time
+Combined traversal crosses explicit source anchors with inspectable witnesses |   11     11  5.3s
+Test Summary:                                              | Pass  Total  Time
+Ambiguous or shifted declarations are not silently bridged |    4      4  1.1s
+Test Summary:                                                       | Pass  Total  Time
+Combined evidence refuses conflicting hashes and changing revisions |    4      4  1.1s
+Test Summary:                                                            | Pass  Total  Time
+Evidence capture and analysis share cancellation, permissions and bounds |   10     10  1.1s
+Test Summary:                                                      | Pass  Total   Time
+Combined evidence RPC owns jobs and asks only for the bounded read |   12     12  32.6s
+Test Summary:                                            | Pass  Total  Time
+Evidence CLI separates changed paths from captured scope |    2      2  1.0s
+Test Summary:                                                                      | Pass  Total   Time
+Actual Go AST and Tree-sitter facts combine without launching helpers during reads |   11     11  10.3s
+{"action":"evidence_compare","atomic_multi_source_transaction":false,"column_unit":"utf8_byte","fingerprint":"854f653af4b41a8c995f4fa854e0370ae78057ba36e022c19f91476a5b9cf32a","items":[{"anchor":{"eligible_bridge":true,"evidence_kind":"identical_source_declaration_anchor","file":"a.go","id":"f47c545b3ec6f9773538ff035c973753","indexed_source_sha256":"73c34a0824ac9562d79c9623d63f1043417b9060eeede62d821106a6d3a9a922","location":{"column_unit":"utf8_byte","end_column":20,"end_line":2,"file":"a.go","start_column":1,"start_line":2},"members":["ba0b79cb1e1425562cba03e8d7b1c379","d22996c75e7a0c11e9e8a72329e0ce8b"],"qualified_name":"p.Api","runtime_equivalence_confirmed":false},"limitations":["Different extraction granularity can explain disagreement; absence of an edge is not proof of absence."],"observations":[{"backend":"go_ast","key":"ba0b79cb1e1425562cba03e8d7b1c379","outgoing_relations":0,"provider_claims_semantic":false,"recorded_kind":"function","relation_kinds":[],"signature":"Api()"},{"backend":"tree_sitter","key":"d22996c75e7a0c11e9e8a72329e0ce8b","outgoing_relations":0,"provider_claims_semantic":false,"recorded_kind":"method","relation_kinds":[],"signature":"Api()::Int"}],"relation_count_disagreement":false,"relation_kind_disagreement":false,"signature_text_disagreement":true,"winner_selected":false}],"limitations":["Exact source anchors preserve observations from every provider; no provider is automatically selected as truth.","Declarations without identical ranges/names are not linked across sources.","Duplicate declarations within a provider disable that anchor's bridge.","Captured revision vectors are verified, but are not a transaction spanning every index and editor write."],"next_offset":null,"offset":0,"revision_vector":{"go_ast":1,"tree_sitter":1},"source_bytes":6121,"sources":[{"backend":"go_ast","capabilities":{"calls":"heuristic","definitions":true,"diagnostics":true,"global_relink":false,"implementations":false,"incremental_parse":true,"inheritance":false,"languages":["go"],"name":"go_ast","references":false,"rename":false,"syntax":true,"types":false},"files":2,"revision":1,"selection_sha256":"76598616190dda88e9240c75d44f0cb9470a1cdc60144a062b1062e0e58a87fe"},{"backend":"tree_sitter","capabilities":{"calls":"heuristic","definitions":true,"diagnostics":true,"global_relink":false,"implementations":false,"incremental_parse":true,"inheritance":false,"languages":["python","go","javascript","typescript","rust","java","julia"],"name":"tree_sitter","references":false,"rename":false,"syntax":true,"types":false},"files":3,"revision":1,"selection_sha256":"a97ddc7db69b165dc058b97c11d698ac366196bb30d9772790cf489e51682cbd"}],"summary":{"anchors":1,"backend_private_schemas_exposed":false,"eligible_bridges":1,"files":4,"fingerprint":"854f653af4b41a8c995f4fa854e0370ae78057ba36e022c19f91476a5b9cf32a","relations":3,"runtime_equivalence_confirmed":false,"source_bytes":6121,"sources":[{"backend":"go_ast","capabilities":{"calls":"heuristic","definitions":true,"diagnostics":true,"global_relink":false,"implementations":false,"incremental_parse":true,"inheritance":false,"languages":["go"],"name":"go_ast","references":false,"rename":false,"syntax":true,"types":false},"files":2,"revision":1,"selection_sha256":"76598616190dda88e9240c75d44f0cb9470a1cdc60144a062b1062e0e58a87fe"},{"backend":"tree_sitter","capabilities":{"calls":"heuristic","definitions":true,"diagnostics":true,"global_relink":false,"implementations":false,"incremental_parse":true,"inheritance":false,"languages":["python","go","javascript","typescript","rust","java","julia"],"name":"tree_sitter","references":false,"rename":false,"syntax":true,"types":false},"files":3,"revision":1,"selection_sha256":"a97ddc7db69b165dc058b97c11d698ac366196bb30d9772790cf489e51682cbd"}],"symbols":5},"total":1}
+Test Summary:                                                 | Pass  Total  Time
+Actual CLI combines saved sources using read-only permissions |    1      1  1.0s
+Test Summary:                                                          | Pass  Total  Time
+Julia method signatures preserve syntax without executing project code |   32     32  2.8s
+Test Summary:                                                          | Pass  Total  Time
+Julia declaration identities survive body edits, lines and type trivia |    8      8  0.6s
+Test Summary:                                                                  | Pass  Total   Time
+Malformed Julia source returns bounded diagnostics and no partial declarations |   10     10  35.0s
+Test Summary:                                                                  | Pass  Total  Time
+Julia dispatch reports syntax patterns and refuses stale or unbounded evidence |   19     19  1.0s
+Test Summary:                                               | Pass  Total  Time
+Dispatch type trivia preserves distinct literal annotations |    4      4  0.1s
+Test Summary:                                                             | Pass  Total  Time
+Julia project RPC keeps approvals, ownership and syntax evidence explicit |   11     11  2.4s
+Test Summary:                                                       | Pass  Total  Time
+Julia CLI query arguments carry bounded filters and revision checks |    3      3  0.0s

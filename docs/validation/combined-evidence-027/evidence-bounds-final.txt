@@ -1,0 +1,12 @@
+Test Summary:                                                             | Pass  Total  Time
+Combined evidence retains provider identity and exact declaration anchors |   15     15  7.1s
+Test Summary:                                                                 | Pass  Total  Time
+Combined traversal crosses explicit source anchors with inspectable witnesses |   11     11  2.4s
+Test Summary:                                              | Pass  Total  Time
+Ambiguous or shifted declarations are not silently bridged |    4      4  0.5s
+Test Summary:                                                       | Pass  Total  Time
+Combined evidence refuses conflicting hashes and changing revisions |    4      4  0.5s
+Test Summary:                                                            | Pass  Total  Time
+Evidence capture and analysis share cancellation, permissions and bounds |   10     10  0.5s
+Test Summary:                                                       | Pass  Total  Time
+Evidence bounds source ranges and rejects empty declaration bridges |    2      2  0.2s

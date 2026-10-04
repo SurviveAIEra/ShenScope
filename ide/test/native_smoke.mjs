@@ -49,6 +49,7 @@ const migrationOnly = process.argv.includes('--migration-only');
 const memoryOnly = process.argv.includes('--memory-only');
 const securityOnly = process.argv.includes('--security-only');
 const juliaOnly = process.argv.includes('--julia-only');
+const evidenceOnly = process.argv.includes('--evidence-only');
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
@@ -150,6 +151,11 @@ if (securityOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'deny'\nprocess = 'ask'\nnetwork = 'deny'\n`);
 }
 await writeFile(join(root, 'sample.go'), 'package fixture\nfunc Greet() int { return 1 }\nfunc TestGreet() int { return Greet() }\n');
+if (evidenceOnly) {
+    await writeFile(join(root, 'sample.go'), 'package fixture\nfunc Greet() int { return 1 }\n');
+    await writeFile(join(root, 'sample_test.go'), 'package fixture\nfunc TestGreet() int { return Greet() }\n');
+    await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'ask'\nprocess = 'ask'\nnetwork = 'deny'\n`);
+}
 if (memoryOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'ask'\nprocess = 'deny'\nnetwork = 'deny'\n`);
     const seed = `using ShenScope
@@ -243,7 +249,7 @@ try {
     }
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -272,6 +278,41 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (evidenceOnly) {
+        await panel.getByRole('button', { name: 'Project', exact: true }).click();
+        await panel.getByRole('combobox', { name: 'Project backend' }).selectOption('go_ast');
+        await panel.getByRole('button', { name: 'Index project', exact: true }).click();
+        await approve(panel, 'project.index · persistence', 'Allow session');
+        await approve(panel, 'project.backend · process', 'Allow session');
+        await panel.getByRole('button', { name: 'Refresh index', exact: true }).waitFor({ timeout: 120_000 });
+        await panel.getByRole('combobox', { name: 'Project backend' }).selectOption('tree_sitter');
+        await panel.getByRole('button', { name: 'Index project', exact: true }).click();
+        await approve(panel, 'project.index · persistence', 'Allow session');
+        await approve(panel, 'project.backend · process', 'Allow session');
+        await panel.getByRole('button', { name: 'Refresh index', exact: true }).waitFor({ timeout: 120_000 });
+        const section = panel.locator('.combined-evidence');
+        await waitEnabled(section.getByRole('button', { name: 'Compare sources', exact: true }));
+        await section.getByRole('button', { name: 'Compare sources', exact: true }).click();
+        await panel.locator('.combined-evidence-results').getByText('2 observations · 2 sources', { exact: true }).waitFor({ timeout: 120_000 });
+        assert.equal(await panel.locator('.combined-evidence-entry').count(), 2);
+        assert.ok((await panel.locator('.combined-evidence-results').innerText()).includes('Go AST · r1'));
+        assert.equal(await panel.getByRole('alert').isVisible(), false, 'Completed indexing has no stale busy error');
+        await panel.locator('.combined-evidence-results').scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-combined-sources.png`) });
+        await panel.getByRole('textbox', { name: 'Combined evidence changed files', exact: true }).fill('sample.go');
+        await panel.getByRole('button', { name: 'Combined tests', exact: true }).click();
+        await panel.locator('.combined-evidence-results').getByText('2 observations · 2 sources', { exact: true }).waitFor({ timeout: 120_000 });
+        await panel.locator('.combined-evidence-entry').getByText('TestGreet', { exact: true }).first().waitFor();
+        await panel.locator('.combined-evidence-entry').getByRole('button', { name: 'sample_test.go:2', exact: true }).first().click();
+        await page.locator('.monaco-workbench .tabs-container .tab').filter({ hasText: 'sample_test.go' }).waitFor({ timeout: 30_000 });
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-combined-tests.png`) });
+        await panel.getByRole('textbox', { name: 'Combined evidence query', exact: true }).fill('Greet');
+        await panel.getByRole('button', { name: 'Search sources', exact: true }).click();
+        await panel.locator('.combined-evidence-results').getByText('4 observations · 2 sources', { exact: true }).waitFor({ timeout: 120_000 });
+        assert.equal(requests.length, 0, 'Combined analysis makes no model request');
+        assert.equal(await panel.locator('.permission-card').count(), 0);
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, two actual parser indexes, shared source cards, multi-source search and test evidence with file navigation and no extra analysis process/model permissions`);
     }
     if (juliaOnly) {
         await panel.getByRole('button', { name: 'Project', exact: true }).click();

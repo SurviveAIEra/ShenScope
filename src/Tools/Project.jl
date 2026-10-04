@@ -17,9 +17,16 @@ execution_mode(::ProjectTool)=:exclusive
 tool_schema(::ProjectTool)=object_schema(Dict(
     "action"=>Dict("type"=>"string","enum"=>["build","update","compact","status","search","impact","test_selection","architecture","git_cochange","risk","migration",
         "definitions","references","hover","incoming_calls","outgoing_calls","implementations","diagnostics",
-        "julia_methods","julia_dispatch","julia_structure"]),
+        "julia_methods","julia_dispatch","julia_structure","evidence_status",
+        "evidence_compare","evidence_search","evidence_impact","evidence_tests"]),
     "backend"=>Dict("type"=>"string","enum"=>["tree_sitter","go_ast","codegraph","typescript","julia_syntax"]),
     "paths"=>Dict("type"=>"array","maxItems"=>10000,"items"=>string_schema(;max=4096)),
+    "backends"=>Dict("type"=>"array","minItems"=>2,"maxItems"=>8,"uniqueItems"=>true,
+        "items"=>Dict("type"=>"string","enum"=>["tree_sitter","go_ast","codegraph","typescript","julia_syntax"])),
+    "scope_paths"=>Dict("type"=>"array","maxItems"=>512,"items"=>string_schema(;max=4096)),
+    "source_revisions"=>Dict("type"=>"object","maxProperties"=>8,"additionalProperties"=>integer_schema(0)),
+    "evidence_keys"=>Dict("type"=>"array","maxItems"=>128,"items"=>string_schema(;max=32)),
+    "expected_evidence_fingerprint"=>string_schema(;max=64),"include_bridges"=>Dict("type"=>"boolean"),
     "query"=>string_schema(;max=4096),"limit"=>integer_schema(1,1000),"offset"=>integer_schema(0,100000),
     "symbols"=>Dict("type"=>"array","maxItems"=>128,"items"=>string_schema(;max=32)),
     "history_limit"=>integer_schema(1,512),"bulk_threshold"=>integer_schema(2,512),"minimum_support"=>integer_schema(1,512),
@@ -64,6 +71,8 @@ function execute(tool::ProjectTool,args::AbstractDict,ctx::RuntimeContext)
     end
 end
 function execute_project(tool::ProjectTool,args::AbstractDict,ctx::RuntimeContext)
+    args["action"]=="evidence_status" && return evidence_manager_status(tool.manager,ctx)
+    args["action"] in PROJECT_EVIDENCE_ACTIONS && return project_evidence_action(tool,args,ctx)
     name=get(args,"backend","tree_sitter");manager=tool.manager
     backend=lock(manager.mutex) do;project_backend!(manager,name);end
     key=digest(ctx.root)*":"*name

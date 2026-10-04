@@ -1,0 +1,20 @@
+✔ Real editor transport combines parser evidence with pinned pagination and stale-source refusal (32877.181249ms)
+ℹ Combined Core initialized: 2254 ms
+ℹ go_ast build started: 27119 ms
+ℹ go_ast build completed: 29145 ms
+ℹ tree_sitter build started: 29454 ms
+ℹ tree_sitter build completed: 29608 ms
+ℹ combined evidence_compare started: 30574 ms
+ℹ combined evidence_compare completed: 31509 ms
+ℹ combined evidence_compare started: 31708 ms
+ℹ combined evidence_compare completed: 31785 ms
+ℹ combined evidence_tests started: 31786 ms
+ℹ combined evidence_tests completed: 32364 ms
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 32967.581719

@@ -1,0 +1,46 @@
+
+> shenscope-editor-tooling@0.1.0 test
+> node --test test/*.test.mjs
+
+✔ Node editor transport talks to real Julia Core with scoped approvals and Unicode (29144.791648ms)
+ℹ Core initialized: 1769 ms
+ℹ Conversation created: 1773 ms
+ℹ Agent request accepted: 16252 ms
+ℹ Edit approved: 28011 ms
+ℹ Archive approved: 28165 ms
+ℹ Conversation and artifact verified: 28452 ms
+✔ Julia source indexing and dispatch evidence travel through the real editor transport (26548.988091ms)
+ℹ Julia Core initialized: 1833 ms
+ℹ Julia backend capabilities: 4616 ms
+ℹ Julia conversation created: 4626 ms
+ℹ Julia index job started: 24187 ms
+ℹ Julia index completed: 25633 ms
+ℹ Julia dispatch queried: 26018 ms
+ℹ Julia stale evidence refused: 26032 ms
+✔ Real editor transport combines parser evidence with pinned pagination and stale-source refusal (30703.210133ms)
+ℹ Combined Core initialized: 2131 ms
+ℹ go_ast build started: 24722 ms
+ℹ go_ast build completed: 26856 ms
+ℹ tree_sitter build started: 27175 ms
+ℹ tree_sitter build completed: 27377 ms
+ℹ combined evidence_compare started: 28341 ms
+ℹ combined evidence_compare completed: 29223 ms
+ℹ combined evidence_compare started: 29414 ms
+ℹ combined evidence_compare completed: 29516 ms
+ℹ combined evidence_tests started: 29517 ms
+ℹ combined evidence_tests completed: 30124 ms
+✔ Malformed child framing closes transport and rejects pending requests (94.602239ms)
+✔ Disposal terminates an owned child that ignores shutdown and SIGTERM (4045.523293ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 90630.165917
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

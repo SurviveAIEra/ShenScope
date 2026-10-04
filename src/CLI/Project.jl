@@ -2,7 +2,30 @@ function cli_project_arguments(positional::Vector{String}, flags::AbstractDict)
     length(positional)>=2 || throw(ShenScopeError(:input,"Project action required"))
     action=positional[2]
     args=Dict{String,Any}("action"=>action,"backend"=>get(flags,"--backend","tree_sitter"))
-    if action in JULIA_PROJECT_ACTIONS
+    if action in PROJECT_EVIDENCE_ACTIONS || action=="evidence_status"
+        haskey(flags,"--backends") && (args["backends"]=[strip(value) for value in split(flags["--backends"],',')])
+        if action=="evidence_search"
+            args["query"]=join(positional[3:end]," ")
+        else
+            args["paths"]=positional[3:end]
+        end
+        haskey(flags,"--evidence-key") && (args["evidence_keys"]=[flags["--evidence-key"]])
+        haskey(flags,"--evidence-fingerprint") && (args["expected_evidence_fingerprint"]=flags["--evidence-fingerprint"])
+        haskey(flags,"--scope-paths") && (args["scope_paths"]=[strip(value) for value in split(flags["--scope-paths"],',')])
+        get(flags,"--no-evidence-bridges",false) && (args["include_bridges"]=false)
+        for key in ("limit","offset","max_depth","max_symbols","max_relations")
+            option="--"*replace(key,'_'=>'-')
+            haskey(flags,option) || continue
+            value=tryparse(Int,flags[option])
+            value===nothing && throw(ShenScopeError(:input,"Evidence $key must be an integer"))
+            args[key]=value
+        end
+        if haskey(flags,"--minimum-confidence")
+            value=tryparse(Float64,flags["--minimum-confidence"])
+            value===nothing && throw(ShenScopeError(:input,"Evidence confidence must be numeric"))
+            args["minimum_confidence"]=value
+        end
+    elseif action in JULIA_PROJECT_ACTIONS
         args["query"]=join(positional[3:end]," ")
         haskey(flags,"--file") && (args["file"]=flags["--file"])
         haskey(flags,"--sha256") && (args["sha256"]=flags["--sha256"])

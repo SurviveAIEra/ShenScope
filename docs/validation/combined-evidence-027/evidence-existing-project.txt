@@ -1,0 +1,10 @@
+Test Summary:                             | Pass  Total   Time
+Analyzer definitions and session registry |   39     39  16.3s
+Test Summary:                                      | Pass  Total  Time
+Parent-owned analyzer graph evidence and freshness |   24     24  7.7s
+Test Summary:                                                                  | Pass  Total  Time
+CLI navigation encodes one owned cursor or symbol with bounded evidence paging |   12     12  1.3s
+Test Summary:                                                         | Pass  Total  Time
+CLI history filters preserve indexed seed identity and integer limits |    5      5  0.1s
+Test Summary:                                                | Pass  Total   Time
+Project RPC lifecycle, approvals and responsive cancellation |   40     40  29.7s

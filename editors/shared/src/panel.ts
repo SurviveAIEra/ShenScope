@@ -50,7 +50,14 @@ export class ShenScopePanel {
     private disposed = false;
     private projectBackend = 'tree_sitter';
     private projectJob?: string;
+    private projectStarting = false;
     private projectResult: any;
+    private evidenceBackends = new Set(['tree_sitter', 'go_ast']);
+    private evidenceQuery = '';
+    private evidencePaths = '';
+    private evidenceScope = '';
+    private evidenceBridges = true;
+    private evidenceRequest?: Record<string, unknown>;
     private projectHistoryLimit = 128;
     private projectBulkThreshold = 32;
     private projectMinimumSupport = 2;
@@ -160,7 +167,7 @@ export class ShenScopePanel {
         return `${role} · ${routing.profiles[id]?.model ?? 'Choose model'}`;
     }
     private async newConversation(): Promise<void> {
-        if (this.active || this.projectJob || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
+        if (this.active || this.projectJob || this.projectStarting || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
         this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
         this.modelsProfile = ''; this.modelPlanRole = '';
         this.sessionId = undefined; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
@@ -316,7 +323,7 @@ export class ShenScopePanel {
                     card.append(title, el('p', skill.description), el('small', skill.path, 'skill-source'));
                     if (!skill.selected) { card.append(el('small', 'Another source has priority for this name. You can choose this source explicitly.')); }
                     const enabled = el('input'); enabled.type = 'checkbox'; enabled.checked = skill.enabled; enabled.setAttribute('aria-label', `Enabled ${skill.name}`);
-                    enabled.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.hooksJob || this.hooksStarting;
+                    enabled.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.hooksJob || this.hooksStarting;
                     const label = el('label', '', 'checkbox-field'); label.append(enabled, el('span', 'Enabled')); card.append(label);
                     enabled.addEventListener('change', () => { enabled.disabled = true; void this.guard(async () => {
                         const next = structuredClone(this.config); next.skills ??= {};
@@ -353,9 +360,9 @@ export class ShenScopePanel {
             const next = structuredClone(this.config); next.skills ??= {};
             for (const [key, input] of inputs) { next.skills[key] = input.value.split('\n').map(line => line.trim()).filter(Boolean); }
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
-        }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
+        }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
     }
-    private contextBusy(): boolean { return !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || !!this.modelsJob || this.modelsStarting; }
+    private contextBusy(): boolean { return !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.modelsJob || this.modelsStarting; }
     private modelsBusy(): boolean { return this.contextBusy() || !!this.analyzersJob || this.analyzersStarting; }
     private async startModels(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.modelsBusy()) { throw new Error('Finish or cancel the current operation before working with models.'); }
@@ -785,7 +792,7 @@ export class ShenScopePanel {
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; await this.renderTab();
         }); save.disabled = this.contextBusy(); recovery.append(save); this.content.append(recovery);
     }
-    private hooksBusy(): boolean { return !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.contextJob || this.contextStarting; }
+    private hooksBusy(): boolean { return !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.contextJob || this.contextStarting; }
     private async startHooks(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.hooksJob || this.hooksStarting) { throw new Error('Finish or cancel the current Hook operation.'); }
         this.hooksStarting = true;
@@ -900,7 +907,7 @@ export class ShenScopePanel {
             title.append(el('h3', server.name), el('span', server.state, `badge badge-${server.state === 'ready' ? 'allow' : 'ask'}`));
             card.append(title, el('small', `${server.transport === 'stdio' ? 'Local process' : 'HTTP endpoint'}${server.server_info?.name ? ' · ' + server.server_info.name : ''}`, 'session-meta'));
             const enabledLabel = el('label', '', 'checkbox-field'); const enabled = el('input'); enabled.type = 'checkbox'; enabled.checked = server.enabled;
-            enabled.setAttribute('aria-label', `Enabled ${server.name}`); enabled.disabled = !!this.mcpJob || this.active || !!this.projectJob || !!this.hooksJob || this.hooksStarting;
+            enabled.setAttribute('aria-label', `Enabled ${server.name}`); enabled.disabled = !!this.mcpJob || this.active || !!this.projectJob || this.projectStarting || !!this.hooksJob || this.hooksStarting;
             enabledLabel.append(enabled, el('span', 'Enabled')); card.append(enabledLabel);
             enabled.addEventListener('change', () => { enabled.disabled = true; void this.guard(async () => {
                 const next = structuredClone(this.config); next.mcp.servers[server.name].enabled = enabled.checked;
@@ -958,7 +965,7 @@ export class ShenScopePanel {
             next.mcp.servers[name.value.trim()] = spec;
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision });
             this.config = next; this.configRevision = result.sha256; this.notice.hidden = true; this.setStatus('Connection saved'); await this.renderTab();
-        }, 'primary-button'); save.disabled = !!this.mcpJob || this.active || !!this.projectJob || !!this.hooksJob || this.hooksStarting; parent.append(save);
+        }, 'primary-button'); save.disabled = !!this.mcpJob || this.active || !!this.projectJob || this.projectStarting || !!this.hooksJob || this.hooksStarting; parent.append(save);
         if (existingName) {
             const remove = this.button('Remove connection', async () => {
                 const next = structuredClone(this.config); delete next.mcp.servers[existingName];
@@ -1018,21 +1025,26 @@ export class ShenScopePanel {
         for (const [value, label] of [['tree_sitter', 'Tree-sitter'], ['go_ast', 'Go AST'], ['codegraph', 'CodeGraph'], ['typescript', 'TypeScript compiler'], ['julia_syntax', 'Julia source']]) {
             const option = el('option', label); option.value = value; option.selected = value === this.projectBackend; backend.append(option);
         }
-        backend.disabled = !!this.projectJob;
+        backend.disabled = !!this.projectJob || this.projectStarting;
         backend.addEventListener('change', () => { this.projectBackend = backend.value; this.projectResult = undefined; void this.guard(() => this.renderTab()); });
         this.content.append(heading, el('p', 'Explore symbols and trace the evidence behind affected code and test candidates.', 'view-description'), backend);
-        if (this.projectJob) {
-            this.content.append(el('p', 'Working on the project index…', 'empty-text'), this.button('Cancel indexing', async () => { await this.bridge.request('project/cancel', { job_id: this.projectJob, session_id: this.sessionId }); })); return;
+        if (this.projectJob || this.projectStarting) {
+            this.content.append(el('p', this.projectStarting ? 'Starting project operation…' : 'Working on project evidence…', 'empty-text'));
+            if (this.projectJob) { this.content.append(this.button('Cancel indexing', async () => { await this.bridge.request('project/cancel', { job_id: this.projectJob, session_id: this.sessionId }); })); }
+            return;
         }
         const index = this.button('Index project', async () => {
             if (this.projectWatchLive(this.projectWatch)) { await this.requestProjectWatchRefresh(); }
             else { await this.startProject('build'); }
-        }, 'primary-button', 'graph'); this.content.append(index);
+        }, 'primary-button', 'graph'); index.disabled = true; this.content.append(index);
+        await this.renderCombinedEvidence(this.content, revision);
+        if (revision !== this.renderRevision) { return; }
         const status = await this.bridge.request('project/query', { backend: this.projectBackend, action: 'status', ...(this.sessionId ? { session_id: this.sessionId } : {}) });
         if (revision !== this.renderRevision) { return; }
         const watchEventRevision = this.projectWatchEventRevision;
         const watches = this.sessionId ? await this.bridge.request('project/watch_list', { session_id: this.sessionId }) : [];
         if (revision !== this.renderRevision) { return; }
+        index.disabled = false;
         const candidates = watches.filter((watch: any) => watch.backend === this.projectBackend);
         this.projectWatch = candidates.find((watch: any) => this.projectWatchLive(watch)) ?? candidates[candidates.length - 1];
         if (this.projectWatch && watchEventRevision !== this.projectWatchEventRevision) { this.projectWatch = this.projectWatchViews.get(this.projectWatch.id) ?? this.projectWatch; }
@@ -1149,7 +1161,7 @@ export class ShenScopePanel {
         const historyActions = el('div', '', 'analysis-actions');
         historyActions.append(this.button('Git co-change', () => this.startProject('git_cochange', paths.value)), this.button('Review priority', () => this.startProject('risk', paths.value)));
         history.append(bounds, historyActions); this.content.append(history);
-        if (this.projectResult?.analyzer) {
+        if (this.projectResult?.analyzer && !this.projectResult?.action?.startsWith('evidence_')) {
             const result = this.projectResult; this.content.append(el('h3', result.analyzer.replaceAll('_', ' '), 'analysis-title'));
             if (result.analyzer === 'migration') {
                 const summary = el('section', '', 'info-card migration-summary'); summary.append(el('strong', `${countLabel(result.total_steps, 'batch', 'batches')} · ${countLabel(result.cycle_groups, 'cycle group')}`), el('p', `${result.order.replaceAll('_', ' ')} · index revision ${result.revision}`), el('small', 'Proposal ' + result.plan_id.slice(0, 12)));
@@ -1197,13 +1209,110 @@ export class ShenScopePanel {
         if (bytes < 1024 * 1024) { return (bytes / 1024).toFixed(1) + ' KiB'; }
         return (bytes / (1024 * 1024)).toFixed(1) + ' MiB';
     }
+    private async renderCombinedEvidence(parent: HTMLElement, revision: number): Promise<void> {
+        const section = el('section', '', 'info-card combined-evidence');
+        section.append(el('h3', 'Combined project evidence'), el('p', 'Compare indexed sources or follow their recorded dependencies. Exact source connections retain every provider observation.', 'view-description'));
+        parent.append(section);
+        if (!this.sessionId) { section.append(el('p', 'Index a project source to begin. Combine at least two indexed sources.', 'view-description')); return; }
+        const session = this.sessionId;
+        let status: any;
+        try { status = await this.bridge.request('project/query', { session_id: session, action: 'evidence_status' }); }
+        catch (error) { section.append(el('p', error instanceof Error ? error.message : 'Indexed source status is unavailable.', 'inline-error')); return; }
+        if (revision !== this.renderRevision || session !== this.sessionId) { return; }
+        const choices = el('fieldset', '', 'evidence-source-choices'); choices.append(el('legend', 'Indexed sources'));
+        const labels: Record<string, string> = { tree_sitter: 'Tree-sitter', go_ast: 'Go AST', codegraph: 'CodeGraph', typescript: 'TypeScript compiler', julia_syntax: 'Julia source' };
+        const buttons: HTMLButtonElement[] = [];
+        const eligible = new Set<string>((status.sources ?? []).filter((source: any) => source.indexed).map((source: any) => source.backend));
+        const refresh = (): void => { const count = [...this.evidenceBackends].filter(name => eligible.has(name)).length; for (const button of buttons) { button.disabled = count < 2 || !!this.projectJob || this.projectStarting; } };
+        for (const source of status.sources ?? []) {
+            const label = el('label'); const checkbox = el('input'); checkbox.type = 'checkbox';
+            checkbox.checked = this.evidenceBackends.has(source.backend); checkbox.disabled = !source.indexed;
+            checkbox.setAttribute('aria-label', `Evidence source ${labels[source.backend] ?? source.backend}`);
+            checkbox.addEventListener('change', () => { if (checkbox.checked) { this.evidenceBackends.add(source.backend); } else { this.evidenceBackends.delete(source.backend); } refresh(); });
+            label.append(checkbox, el('span', labels[source.backend] ?? source.backend), el('small', source.indexed ? source.stamp ? `r${source.stamp.revision}` : 'Saved index' : 'Index first')); choices.append(label);
+        }
+        section.append(choices);
+        const query = el('input'); query.placeholder = 'Search across indexed sources'; query.value = this.evidenceQuery; query.setAttribute('aria-label', 'Combined evidence query');
+        query.addEventListener('input', () => { this.evidenceQuery = query.value; });
+        const paths = el('input'); paths.placeholder = 'Changed files, separated by commas'; paths.value = this.evidencePaths; paths.setAttribute('aria-label', 'Combined evidence changed files');
+        paths.addEventListener('input', () => { this.evidencePaths = paths.value; });
+        const scopeField = el('details', '', 'evidence-scope'); scopeField.append(el('summary', 'Limit captured files'));
+        const scope = el('input'); scope.value = this.evidenceScope; scope.placeholder = 'Optional files, separated by commas'; scope.setAttribute('aria-label', 'Combined evidence scope files');
+        scope.addEventListener('input', () => { this.evidenceScope = scope.value; });
+        scopeField.append(el('p', 'Files outside this set will not contribute callers. Leave empty to use the bounded project graph.', 'view-description'), scope);
+        const bridge = el('label', '', 'evidence-bridge-choice'); const check = el('input'); check.type = 'checkbox'; check.checked = this.evidenceBridges;
+        check.setAttribute('aria-label', 'Connect identical source declarations'); check.addEventListener('change', () => { this.evidenceBridges = check.checked; });
+        bridge.append(check, el('span', 'Connect identical source declarations'));
+        const controls = el('div', '', 'inline-controls');
+        const start = async (action: string): Promise<void> => {
+            const backends = [...this.evidenceBackends].filter(name => eligible.has(name));
+            const scope_paths = this.evidenceScope.split(',').map(value => value.trim()).filter(Boolean);
+            const request = { session_id: session, action, backends,
+                query: this.evidenceQuery.trim(), scope_paths, paths: action === 'evidence_impact' || action === 'evidence_tests' ? this.evidencePaths.split(',').map(value => value.trim()).filter(Boolean) : scope_paths,
+                include_bridges: this.evidenceBridges, limit: 20 };
+            await this.startEvidenceRequest(request);
+        };
+        for (const [label, action] of [['Compare sources', 'evidence_compare'], ['Search sources', 'evidence_search'], ['Combined impact', 'evidence_impact'], ['Combined tests', 'evidence_tests']]) {
+            const button = this.button(label, () => start(action), 'secondary-button'); buttons.push(button); controls.append(button);
+        }
+        refresh(); section.append(query, paths, scopeField, bridge, controls);
+        const result = this.projectResult;
+        if (!result?.action?.startsWith('evidence_')) { return; }
+        const results = el('div', '', 'combined-evidence-results'); results.setAttribute('aria-live', 'polite');
+        results.append(el('h4', result.action.replace('evidence_', '').replaceAll('_', ' ')), el('p', `${result.total} observations · ${result.sources?.length ?? 0} sources`, 'view-description'));
+        for (const source of result.sources ?? []) { results.append(el('span', `${labels[source.backend] ?? source.backend} · r${source.revision}`, 'badge')); }
+        for (const item of result.items ?? []) {
+            const card = el('article', '', 'combined-evidence-entry');
+            const observation = item.observation ?? item; const symbol = observation.symbol;
+            const anchor = item.anchor;
+            const location = symbol?.location ?? anchor?.location;
+            card.append(el('strong', symbol?.qualified_name ?? anchor?.qualified_name ?? 'Source observation'));
+            if (location) { card.append(this.button(`${location.file}:${location.start_line}`, () => this.bridge.openFile(location.file, location.start_line), 'source-link')); }
+            if (observation.backend) { card.append(el('small', `${labels[observation.backend] ?? observation.backend} · r${observation.source_revision}`)); }
+            if (item.observations) {
+                for (const source of item.observations) { card.append(el('p', `${labels[source.backend] ?? source.backend}: ${source.outgoing_relations} outgoing relations`, 'view-description')); if (source.signature) { card.append(el('code', source.signature, 'semantic-signature')); } }
+                card.append(el('small', item.signature_text_disagreement || item.relation_count_disagreement || item.relation_kind_disagreement ? 'Observations differ · review each source' : 'Overlapping source observations'));
+            }
+            if (item.steps?.length) {
+                const details = el('details'); details.append(el('summary', `${item.depth} evidence steps · ${Math.round(item.confidence * 100)}% recorded confidence`));
+                for (const step of item.steps) { details.append(el('p', step.step_kind === 'source_anchor_bridge' ? 'Source connection · identical declaration range' : `${labels[step.backend] ?? step.backend} · ${step.relation?.kind}`, 'view-description')); }
+                card.append(details);
+            }
+            results.append(card);
+        }
+        if (!result.items?.length) { results.append(el('p', 'No observations match this bounded snapshot.', 'empty-text')); }
+        if (result.next_offset !== null && result.next_offset !== undefined && this.evidenceRequest?.session_id === session) {
+            results.append(this.button('Next combined evidence page', () => this.startEvidenceRequest({ ...this.evidenceRequest,
+                offset: result.next_offset, source_revisions: result.revision_vector, expected_evidence_fingerprint: result.fingerprint }), 'secondary-button'));
+        }
+        for (const limitation of result.limitations ?? []) { results.append(el('p', limitation, 'view-description')); }
+        section.append(results);
+    }
+
+    private async startEvidenceRequest(request: Record<string, unknown>): Promise<void> {
+        if (request.session_id !== this.sessionId) { throw new Error('Refresh the project view after changing conversations.'); }
+        if (this.projectJob || this.projectStarting) { throw new Error('Finish the current project operation first.'); }
+        this.projectStarting = true; this.notice.hidden = true;
+        try {
+            await this.renderTab();
+            const result = await this.bridge.request('project/start', request);
+            if (request.session_id !== this.sessionId) { return; }
+            this.evidenceRequest = { ...request };
+            if (!this.completedProjectJobs.has(result.job_id)) { this.projectJob = result.job_id; this.setStatus('Combining project evidence…'); }
+        } finally { this.projectStarting = false; await this.renderTab(); }
+    }
+
     private async startProject(action: string, paths = ''): Promise<void> {
-        if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title: 'Project analysis' }); this.sessionId = session.id; }
-        const history = ['git_cochange', 'risk'].includes(action) ? { history_limit: this.projectHistoryLimit, bulk_threshold: this.projectBulkThreshold, minimum_support: this.projectMinimumSupport } : {};
-        const migration = action === 'migration' ? { change_kind: this.projectMigrationKind, order: this.projectMigrationOrder, max_depth: this.projectMigrationDepth } : {};
-        const result = await this.bridge.request('project/start', { session_id: this.sessionId, backend: this.projectBackend, action, paths: paths.split(/[\n,]/).map(path => path.trim()).filter(Boolean), ...history, ...migration });
-        if (!this.completedProjectJobs.has(result.job_id)) { this.projectJob = result.job_id; this.setStatus('Analyzing project…'); }
-        await this.renderTab();
+        if (this.projectJob || this.projectStarting) { throw new Error('Finish the current project operation first.'); }
+        this.projectStarting = true; this.notice.hidden = true;
+        try {
+            await this.renderTab();
+            if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title: 'Project analysis' }); this.sessionId = session.id; }
+            const history = ['git_cochange', 'risk'].includes(action) ? { history_limit: this.projectHistoryLimit, bulk_threshold: this.projectBulkThreshold, minimum_support: this.projectMinimumSupport } : {};
+            const migration = action === 'migration' ? { change_kind: this.projectMigrationKind, order: this.projectMigrationOrder, max_depth: this.projectMigrationDepth } : {};
+            const result = await this.bridge.request('project/start', { session_id: this.sessionId, backend: this.projectBackend, action, paths: paths.split(/[\n,]/).map(path => path.trim()).filter(Boolean), ...history, ...migration });
+            if (!this.completedProjectJobs.has(result.job_id)) { this.projectJob = result.job_id; this.setStatus('Analyzing project…'); }
+        } finally { this.projectStarting = false; await this.renderTab(); }
     }
     private projectWatchLive(watch: any): boolean { return !!watch && ['starting', 'watching', 'pending', 'dirty', 'updating', 'stopping'].includes(watch.phase); }
     private renderJuliaEvidence(parent: HTMLElement, status: any, revision: number): void {

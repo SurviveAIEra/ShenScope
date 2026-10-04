@@ -26,9 +26,10 @@ function project_rpc(server::CoreServer,method::String,params::AbstractDict)
     elseif method=="project/start"
         session=idle_session(server,params)
         args=Dict{String,Any}(key=>value for (key,value) in params if key!="session_id")
-        validate_schema(args,tool_schema(tool));args["action"] in ("build","update","compact","impact","test_selection","architecture","git_cochange","risk","migration") ||
+        validate_schema(args,tool_schema(tool));(args["action"] in ("build","update","compact","impact","test_selection","architecture","git_cochange","risk","migration") ||
+            args["action"] in PROJECT_EVIDENCE_ACTIONS) ||
             throw(RPCFault(-32602,"Use project/query for read operations"))
-        name=get(args,"backend","tree_sitter")
+        name=args["action"] in PROJECT_EVIDENCE_ACTIONS ? "combined_evidence" : get(args,"backend","tree_sitter")
         owner=get(server.contexts,session.id,nothing)
         (owner===nothing || iscancelled(owner.cancellation)) && (owner=server_context(server,session.id))
         context=child_context(owner)
@@ -70,6 +71,14 @@ function project_rpc(server::CoreServer,method::String,params::AbstractDict)
             project_job_view(job)
         end
     elseif method=="project/query"
+        if get(params,"action",nothing)=="evidence_status"
+            session=server_session(server,params)
+            owner=get(server.contexts,session.id,nothing)
+            context=owner===nothing || iscancelled(owner.cancellation) ? server_context(server,session.id) : child_context(owner)
+            request=PermissionRequest("evidence-status",:read,"project.evidence",server.root,"Inspect indexed evidence sources")
+            permission_decision(context.permissions,request)==Allow || throw(ShenScopeError(:permission,"Evidence status requires a read grant"))
+            return evidence_manager_status(manager,context)
+        end
         name=rpc_string(params,"backend";default="tree_sitter",max_bytes=64)
         policy=permissions_from_config(server.config)
         if haskey(params,"session_id")

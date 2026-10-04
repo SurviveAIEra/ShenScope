@@ -1,0 +1,18 @@
+✖ Real editor transport combines parser evidence with pinned pagination and stale-source refusal (36691.501507ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 36868.169253
+
+✖ failing tests:
+
+test at test/transport.test.mjs:112:1
+✖ Real editor transport combines parser evidence with pinned pagination and stale-source refusal (36691.501507ms)
+  Error: Core request timed out
+      at Timeout._onTimeout (file:///workspace/ShenScope/editors/dist/rpcClient.mjs:69:16)
+      at listOnTimeout (node:internal/timers:635:17)
+      at process.processTimers (node:internal/timers:571:7)

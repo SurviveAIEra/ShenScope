@@ -170,3 +170,12 @@ explicit syntax evidence; project code and macros are not executed. Incremental
 1/5/20-file oracles, replay, compaction, deletion and permission/staleness tests
 exercise the existing backend-neutral graph. This adapter does not advertise
 compiler inference, runtime dispatch resolution or cursor reference navigation.
+
+Checkpoint 027 adds bounded combined project snapshots, provider identity and
+revision/hash provenance, exact declaration anchors, visible disagreements,
+multi-source lexical search and witness-bearing impact/test candidates. Go AST
+and Tree-sitter are exercised together with process/network/persistence denied
+during saved-fact reads. CLI, owned RPC and both shared IDE clients expose the
+same Core actions. Read/cancel/budget and source/revision refusal remain enforced.
+Anchors and confidence are static heuristics; Git, runtime traces, coverage and
+compiler-confirmed Julia evidence are not yet connected to this combined graph.

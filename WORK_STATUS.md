@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 18,890 authored Julia Core code lines across 183 files;
-CLI/TUI add 951 lines and are counted separately. This is 7.556% of the
-minimum line target, leaving 231,110 lines. These are early implementations,
+Latest cloc 2.11 count: 20,173 authored Julia Core code lines across 200 files;
+CLI/TUI add 988 lines and are counted separately. This is 8.0692% of the
+minimum line target, leaving 229,827 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -424,6 +424,87 @@ Development continues immediately with scoped memory retrieval/management,
 security/runtime and remaining requirements. PackageCompiler remains pending.
 The 250,000 authored Core-line target remains active and unmet.
 
+## Checkpoint 026: Julia source and dispatch evidence
+
+Core: 19,564 authored Julia lines in 190 files; CLI/TUI: 963 lines in 17 files.
+The minimum target remains 250,000; 230,436 Core lines are still required.
+
+The JuliaSyntax backend independently extracts modules, types, fields, method
+signatures, positional/keyword/default/vararg/where metadata, call expressions
+and import/export/include evidence. Stable IDs survive body/line/type-trivia
+changes; byte ranges preserve Unicode/CRLF. Project code, macros, generated
+functions and includes are not executed. Streaming raw-lexer guards precede
+recursive parsing, with explicit source/token/nesting/capacity failures.
+
+Method, conservative dispatch-pattern and structure queries use existing tool,
+CLI and RPC contracts. Runtime ambiguity/overwrite/selected-method claims remain
+unconfirmed. Both IDEs share source-linked cards and capability declarations.
+Independent read/persistence authorization, stale source/revision checks,
+cancellation, shared budgets and bounded pages retain the existing semantics.
+A disposable query precompile workload fixes a real first-query transport timeout.
+
+Validation: 12,297 distinct affected assertions, including 131 new assertions and
+12,050 existing source-position sweep assertions; four real Node/Core tests;
+complete Workbench typecheck; shared editor check/build; both actual development
+GUIs; and exact VSIX Core/helper/client payload checks pass. Incremental 1/5/20-file
+facts and relations match full extraction; replay, compaction and deletion pass.
+Evidence: docs/validation/julia-project-checkpoint-026.json. Scope and limits:
+docs/core/julia_project_data.md. Failed fixture/API attempts, parser-guard defects
+and the deliberately stopped interpreter run are retained with their corrections.
+
+Seven primary agent source observations extend the partial reference inventory;
+handoff backend/fusion requirements were reread. The one-checkout constraint and
+shared depot remain in effect; approximately 17.6 GiB is free. Package artifacts
+are refreshed in place. No project backup/worktree or copied upstream Core exists.
+
+Development continues with the remaining runtime, Julia extensibility, evidence
+fusion and distribution requirements. Compiler-confirmed Julia semantics,
+cross-backend fusion, PackageCompiler and installed distribution remain open.
+The 250,000 authored Core-line target remains active and unmet.
+
+## Checkpoint 027: combined project evidence
+
+Core: 20,173 authored Julia lines in 200 files; CLI/TUI: 988 lines in 17 files.
+The minimum target remains 250,000; 229,827 Core lines are still required.
+
+Versioned snapshots combine selected saved backend indexes while preserving
+namespaced native identities, provenance, UTF-8 ranges and source hashes. Exact
+declaration anchors retain every observation; same-source duplicates disable
+bridges, differing hashes refuse capture and extraction differences never select
+an automatic winner. Comparison/search and multiple-dispatch impact/test analysis
+retain provider/anchor witness steps with explicit heuristic limitations.
+
+Composite reads require one read authorization without launching helpers, writing
+indexes, evaluating project code or calling models. Revision/file/configuration
+checks, range validation, cancellation, shared budgets and serialized/read/page
+bounds protect the operation. This is not a transaction spanning editor writes
+and every index. Scope filters and changed-file seeds have distinct meanings.
+
+CLI, owned asynchronous RPC, native Workbench and VSIX use the same implementation.
+The shared interface selects indexed sources, displays revisions/signatures and
+reachable test evidence, and opens source files. Screenshot review fixes narrow
+layout, theme inputs, pending-operation state and a status/start race. Pagination
+pins the prior fingerprint and revision vector.
+
+Validation: 279 distinct affected assertions (72 new), five actual Node/Core
+transport tests with the normal request deadline restored, both actual development
+GUIs, shared editor check/build, complete Workbench typecheck and exact packaged
+Core/helper/client comparisons pass. Go AST and Tree-sitter are exercised together
+with process/network/persistence denied during saved-fact reads. Evidence:
+docs/validation/combined-evidence-checkpoint-027.json. Scope and limitations:
+docs/core/combined_evidence.md. Failed ownership/approval fixture assumptions and
+concurrent initial-compilation timeouts are retained alongside passing corrections.
+
+Seven primary agent source observations and selected CodeGraphContext/Serena
+locations extend the partial capability review. Strict storage audit finds one
+application checkout, 46 dependency repositories and no unknown repositories;
+about 17.6 GiB is free. There are no project backup copies or worktrees.
+
+Development continues with Julia optional-extension lifecycle, runtime and the
+remaining requirements. Git/coverage/runtime fusion, compiler-confirmed Julia
+semantics, PackageCompiler and installed restoration remain pending. The 250,000
+authored Core-line target remains active and unmet.
+
 Memory checkpoint 024: independent collections with root/session ownership,
 strict journal validation, Unicode witnesses/BM25F, filters/phrases/expiry, bounded
 partial indexes, fixed-snapshot pagination and declared source/hash evidence.
@@ -472,41 +553,3 @@ Development continues immediately with Julia-specific Core capabilities, process
 runtime, extensibility and remaining requirements. Domain/platform adapters, full
 namespace execution, PackageCompiler and installed restoration remain open. The
 250,000 authored Core-line target remains active and unmet.
-
-## Checkpoint 026: Julia source and dispatch evidence
-
-Core: 19,564 authored Julia lines in 190 files; CLI/TUI: 963 lines in 17 files.
-The minimum target remains 250,000; 230,436 Core lines are still required.
-
-The JuliaSyntax backend independently extracts modules, types, fields, method
-signatures, positional/keyword/default/vararg/where metadata, call expressions
-and import/export/include evidence. Stable IDs survive body/line/type-trivia
-changes; byte ranges preserve Unicode/CRLF. Project code, macros, generated
-functions and includes are not executed. Streaming raw-lexer guards precede
-recursive parsing, with explicit source/token/nesting/capacity failures.
-
-Method, conservative dispatch-pattern and structure queries use existing tool,
-CLI and RPC contracts. Runtime ambiguity/overwrite/selected-method claims remain
-unconfirmed. Both IDEs share source-linked cards and capability declarations.
-Independent read/persistence authorization, stale source/revision checks,
-cancellation, shared budgets and bounded pages retain the existing semantics.
-A disposable query precompile workload fixes a real first-query transport timeout.
-
-Validation: 12,297 distinct affected assertions, including 131 new assertions and
-12,050 existing source-position sweep assertions; four real Node/Core tests;
-complete Workbench typecheck; shared editor check/build; both actual development
-GUIs; and exact VSIX Core/helper/client payload checks pass. Incremental 1/5/20-file
-facts and relations match full extraction; replay, compaction and deletion pass.
-Evidence: docs/validation/julia-project-checkpoint-026.json. Scope and limits:
-docs/core/julia_project_data.md. Failed fixture/API attempts, parser-guard defects
-and the deliberately stopped interpreter run are retained with their corrections.
-
-Seven primary agent source observations extend the partial reference inventory;
-handoff backend/fusion requirements were reread. The one-checkout constraint and
-shared depot remain in effect; approximately 17.6 GiB is free. Package artifacts
-are refreshed in place. No project backup/worktree or copied upstream Core exists.
-
-Development continues with the remaining runtime, Julia extensibility, evidence
-fusion and distribution requirements. Compiler-confirmed Julia semantics,
-cross-backend fusion, PackageCompiler and installed distribution remain open.
-The 250,000 authored Core-line target remains active and unmet.
