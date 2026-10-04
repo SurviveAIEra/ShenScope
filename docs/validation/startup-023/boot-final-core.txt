@@ -1,0 +1,64 @@
+Test Summary:                                       | Pass  Total   Time
+Actual worker DAG binds verified dependency results |    5      5  18.4s
+Test Summary:                                                   | Pass  Total   Time
+Test processes, timeout uncertainty and separate model sessions |   16     16  14.9s
+Test Summary:                                       | Pass  Total  Time
+Two real Julia processes cannot claim the same task |    3      3  9.2s
+{"counts":{"blocked":0,"cancelled":0,"failed":0,"pending":0,"ready":1,"retry_waiting":0,"running":0,"succeeded":0,"uncertain":0},"created_at":"2026-10-04T09:49:09.675Z","id":"cli-tool","journal_bytes":597,"revision":1,"scope":"session","session_id":"cli-owner","status":"ready","task_count":1,"title":"Workflow"}
+{"counts":{"blocked":0,"cancelled":0,"failed":0,"pending":0,"ready":0,"retry_waiting":0,"running":0,"succeeded":1,"uncertain":0},"created_at":"2026-10-04T09:49:09.675Z","id":"cli-tool","journal_bytes":3099,"revision":4,"scope":"session","session_id":"cli-owner","status":"succeeded","task_count":1,"title":"Workflow"}
+{"attempts":1,"cancel_requested":false,"definition":{"arguments":{"path":"source.txt"},"deduplication_key":"","dependencies":[],"id":"read","kind":"tool","operation":"read","priority":0,"retry":{"initial_delay":1,"jitter_fraction":0.1,"max_attempts":1,"maximum_delay":60,"multiplier":2},"safe_retry":false,"timeout":300,"title":"read"},"failure":null,"id":"read","lease":null,"not_before":0,"receipts":[{"attempt":1,"evidence":"Completion acknowledged by execution owner","execution_id":"f6965276-52fd-4740-ba08-fdd75adbf95c","finished_at":1.791107349722834e9,"hooks_barrier":false,"hooks_started":false,"phase":"succeeded","result_sha256":"ca555ce2b0f7556aaf7d17080f939372b6527e7e015b4dec0aeb728ed0caef0f","started_at":1.791107349687016e9}],"result":{"end_line":2,"path":"source.txt","sha256":"4b6a0df8336e6c161d6bd201436a455396d834fdaccdb83a89063a6073e1c6cd","start_line":1,"text":"1: shared Core\n2: ","total_lines":2},"status":"succeeded","version":4}
+Test Summary:                                            | Pass  Total  Time
+Agent and headless CLI invoke the same durable task tool |    6      6  3.5s
+Test Summary:                                                           | Pass  Total  Time
+Actual agent lazily activates a Skill and narrows its next declarations |    9      9  8.4s
+{"diagnostics":[],"entries":3,"generation":1,"loaded_at":"2026-10-04T09:49:19.021Z","roots":{"project":["skills"],"user":[]},"skills":[{"description":"Review changes with evidence","directory":"/tmp/jl_YpIoUy/skills/review-code","enabled":true,"id":"skill-4d138f1b9a072b002057011c","loaded":false,"loaded_at":null,"metadata":{"description":"Review changes with evidence","name":"review-code"},"model_invocable":true,"name":"review-code","path":"/tmp/jl_YpIoUy/skills/review-code/SKILL.md","scope":"project","selected":true,"sha256":"1cc00a529a04dcb0854d591e52df328d869d36b9c9c7264604ca066a00a0a9f0","shadowed_by":null,"user_invocable":true}],"truncated":false}
+{"body":"Use inspected evidence. CLI 中文","id":"skill-4d138f1b9a072b002057011c","loaded_at":"2026-10-04T09:49:19.325Z","name":"review-code","session_id":"skills-owner","sha256":"1cc00a529a04dcb0854d591e52df328d869d36b9c9c7264604ca066a00a0a9f0"}
+{"deactivated":["skill-4d138f1b9a072b002057011c"],"session_id":"skills-owner"}
+Test Summary:                                                           | Pass  Total  Time
+Headless Skills CLI reads shared references and preserves session state |    6      6  1.6s
+input: Skills activation requires --session ID
+Test Summary:                                                       | Pass  Total   Time
+Model CLI uses bounded explicit input and honest stateless catalogs |   15     15  12.7s
+[ Info: Listening on: 127.0.0.1:38907, thread id: 1
+arguments: arguments.limit is out of range
+input: --offset requires a nonnegative integer
+permission: Path escapes workspace
+arguments: arguments.mode has an unsupported value
+catalog: Model is not in this conversation's catalog
+arguments: JSON source is incomplete
+[ Info: Server on 127.0.0.1:38907 closing
+Test Summary:                                                                      | Pass  Total   Time
+CLI role routing previews and explicit profile services stay local until inference |   12     12  11.4s
+[ Info: Listening on: 127.0.0.1:43021, thread id: 1
+[ Info: Listening on: 127.0.0.1:38335, thread id: 1
+arguments: Unknown model route profile
+Session: 24a310e2-a0ce-4cde-8834-1f90c6b6eafc
+config: Unknown model route role
+[ Info: Server on 127.0.0.1:38335 closing
+[ Info: Server on 127.0.0.1:43021 closing
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/analyzer_cli.jl:1
+in expression starting at /workspace/ShenScope/.local/test_boot_final.jl:11
+Stateless analyzer CLI preserves archives and revalidates project runs: Error During Test at /workspace/ShenScope/test/integration/analyzer_cli.jl:1
+  Got exception outside of a @test
+  UndefVarError: `incoming_analyzer_tests` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] (::var"#77#78")(root::String)
+     @ Main /workspace/ShenScope/test/integration/analyzer_cli.jl:5
+   [2] mktempdir(fn::var"#77#78", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [3] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [4] macro expansion
+     @ /workspace/ShenScope/test/integration/analyzer_cli.jl:2 [inlined]
+   [5] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [6] top-level scope
+     @ /workspace/ShenScope/test/integration/analyzer_cli.jl:2
+   [7] include
+     @ ./sysimg.jl:38 [inlined]
+   [8] top-level scope
+     @ /workspace/ShenScope/.local/test_boot_final.jl:13
+Test Summary:                                                          | Error  Total  Time
+Stateless analyzer CLI preserves archives and revalidates project runs |     1      1  2.8s

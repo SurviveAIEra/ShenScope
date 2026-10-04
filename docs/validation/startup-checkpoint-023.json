@@ -1,0 +1,782 @@
+{
+  "checkpoint": 23,
+  "status": "development_in_progress",
+  "purpose": "Julia startup compilation boundaries and temporary offline metadata precompilation",
+  "parent_commit": "023849301102b508ffed9357fb7dea4fa94b2c0b",
+  "source_policy": "Independent Julia code; no source translation, padding or project-directory copies",
+  "environment": {
+    "julia": "1.11.7",
+    "threads": 4,
+    "precompile_tools": "1.2.1",
+    "platform": "Linux"
+  },
+  "core_counts": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 161,
+      "blank": 937,
+      "comment": 172,
+      "code": 17093
+    },
+    "cli_tui": {
+      "nFiles": 15,
+      "blank": 19,
+      "comment": 7,
+      "code": 874
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 232907,
+    "line_target_percent": 6.8372,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "tests": {
+    "passing_assertions": 805,
+    "testsets": [
+      {
+        "log": "startup-023/boot-affected-core.txt",
+        "passing_assertions": 443,
+        "testsets": [
+          {
+            "name": "Bounded JSON-RPC framing and UTF-8 lengths",
+            "passed": 8,
+            "time": "0.7s"
+          },
+          {
+            "name": "Protocol version, config ownership, secrets and session commands",
+            "passed": 15,
+            "time": "2.5s"
+          },
+          {
+            "name": "Agent protocol permission ownership and cancellation",
+            "passed": 13,
+            "time": "24.9s"
+          },
+          {
+            "name": "Project RPC lifecycle, approvals and responsive cancellation",
+            "passed": 40,
+            "time": "29.1s"
+          },
+          {
+            "name": "Model RPC owns operations, approvals, caches and configuration lifecycle",
+            "passed": 40,
+            "time": "15.2s"
+          },
+          {
+            "name": "Model health RPC reflects live runtime and enforces reset permission, CAS and scope",
+            "passed": 25,
+            "time": "1.6s"
+          },
+          {
+            "name": "Routing RPC, default/worker roles, profile services and config validation share one fleet",
+            "passed": 24,
+            "time": "3.5s"
+          },
+          {
+            "name": "Task definition validation and independent graph checks",
+            "passed": 15,
+            "time": "3.7s"
+          },
+          {
+            "name": "Claims, dependency release, priority, fences and detached views",
+            "passed": 13,
+            "time": "4.9s"
+          },
+          {
+            "name": "Safe retries, uncertain effects and explicit reconciliation",
+            "passed": 16,
+            "time": "1.4s"
+          },
+          {
+            "name": "Exclusive effects, cancellation propagation and read-only recovery",
+            "passed": 16,
+            "time": "0.9s"
+          },
+          {
+            "name": "Large result artifacts, digest verification and descriptor collisions",
+            "passed": 6,
+            "time": "0.5s"
+          },
+          {
+            "name": "Asynchronous task protocol, approvals and session ownership",
+            "passed": 13,
+            "time": "7.1s"
+          },
+          {
+            "name": "Task jobs block config replacement and drain owned processes",
+            "passed": 5,
+            "time": "1.6s"
+          },
+          {
+            "name": "Analyzer RPC ownership, permissions, cancellation and configuration barriers",
+            "passed": 31,
+            "time": "10.1s"
+          },
+          {
+            "name": "MCP async protocol keeps approvals, jobs and connections session scoped",
+            "passed": 33,
+            "time": "7.6s"
+          },
+          {
+            "name": "Skills YAML metadata is bounded, typed and independently validated",
+            "passed": 21,
+            "time": "4.4s"
+          },
+          {
+            "name": "Skills discovery preserves sources, precedence, diagnostics and lazy bodies",
+            "passed": 12,
+            "time": "1.7s"
+          },
+          {
+            "name": "Skills activation, resource confinement, replay and permission boundaries",
+            "passed": 22,
+            "time": "3.9s"
+          },
+          {
+            "name": "Skills source revisions are rechecked after approval",
+            "passed": 3,
+            "time": "0.1s"
+          },
+          {
+            "name": "Skills RPC scopes approvals, durable activation and source-opening proof",
+            "passed": 23,
+            "time": "3.0s"
+          },
+          {
+            "name": "Skills job cancellation drains approval and retains peer policy",
+            "passed": 6,
+            "time": "0.5s"
+          },
+          {
+            "name": "Hooks configuration has explicit points, bounds and no permission grants",
+            "passed": 29,
+            "time": "0.5s"
+          },
+          {
+            "name": "Hook source identity, read scope, ambiguity and explicit reload",
+            "passed": 14,
+            "time": "1.9s"
+          }
+        ]
+      },
+      {
+        "log": "startup-023/boot-remaining-core.txt",
+        "passing_assertions": 274,
+        "testsets": [
+          {
+            "name": "Real Hook commands have bounded metadata, private output and narrowed environment",
+            "passed": 14,
+            "time": "7.3s"
+          },
+          {
+            "name": "Hook approval rechecks source identity and current policy before launch",
+            "passed": 8,
+            "time": "1.9s"
+          },
+          {
+            "name": "Hook timeouts, cancellation, malformed output and bounded history",
+            "passed": 14,
+            "time": "1.1s"
+          },
+          {
+            "name": "Actual agent applies Hook context and lifecycle observations without exposing chat",
+            "passed": 10,
+            "time": "17.7s"
+          },
+          {
+            "name": "Before-effect Hook denial prevents writes; post-effect failure preserves receipts",
+            "passed": 11,
+            "time": "0.6s"
+          },
+          {
+            "name": "Owned processes drain descendants and bound blocked stdin",
+            "passed": 8,
+            "time": "2.0s"
+          },
+          {
+            "name": "Hook RPC scopes command approval, cancellation and source-opening proof",
+            "passed": 29,
+            "time": "5.9s"
+          },
+          {
+            "name": "Context settings and exact model envelopes",
+            "passed": 50,
+            "time": "2.3s"
+          },
+          {
+            "name": "Instruction scope discovery, permissions and source revisions",
+            "passed": 13,
+            "time": "0.9s"
+          },
+          {
+            "name": "Balanced tool groups, no reasoning split and Unicode excerpts",
+            "passed": 24,
+            "time": "0.3s"
+          },
+          {
+            "name": "Durable context projections preserve transcripts and provenance",
+            "passed": 17,
+            "time": "2.2s"
+          },
+          {
+            "name": "Compaction failure is atomic and fixed context is retained",
+            "passed": 7,
+            "time": "0.5s"
+          },
+          {
+            "name": "Original tool artifacts are scoped, permissioned and digest checked",
+            "passed": 9,
+            "time": "0.5s"
+          },
+          {
+            "name": "Optional model summaries bind citations and shared budget",
+            "passed": 10,
+            "time": "1.3s"
+          },
+          {
+            "name": "Context RPC ownership, permissions, asynchronous cancellation and CAS",
+            "passed": 16,
+            "time": "2.0s"
+          },
+          {
+            "name": "Manual context checkpoints are shared by RPC and subsequent agent runs",
+            "passed": 8,
+            "time": "5.9s"
+          },
+          {
+            "name": "CLI navigation encodes one owned cursor or symbol with bounded evidence paging",
+            "passed": 12,
+            "time": "0.3s"
+          },
+          {
+            "name": "CLI history filters preserve indexed seed identity and integer limits",
+            "passed": 5,
+            "time": "0.0s"
+          },
+          {
+            "name": "Headless CLI, offline task and session lifecycle",
+            "passed": 9,
+            "time": "2.7s"
+          }
+        ]
+      },
+      {
+        "log": "startup-023/boot-final-core.txt",
+        "passing_assertions": 72,
+        "testsets": [
+          {
+            "name": "Actual worker DAG binds verified dependency results",
+            "passed": 5,
+            "time": "18.4s"
+          },
+          {
+            "name": "Test processes, timeout uncertainty and separate model sessions",
+            "passed": 16,
+            "time": "14.9s"
+          },
+          {
+            "name": "Two real Julia processes cannot claim the same task",
+            "passed": 3,
+            "time": "9.2s"
+          },
+          {
+            "name": "Agent and headless CLI invoke the same durable task tool",
+            "passed": 6,
+            "time": "3.5s"
+          },
+          {
+            "name": "Actual agent lazily activates a Skill and narrows its next declarations",
+            "passed": 9,
+            "time": "8.4s"
+          },
+          {
+            "name": "Headless Skills CLI reads shared references and preserves session state",
+            "passed": 6,
+            "time": "1.6s"
+          },
+          {
+            "name": "Model CLI uses bounded explicit input and honest stateless catalogs",
+            "passed": 15,
+            "time": "12.7s"
+          },
+          {
+            "name": "CLI role routing previews and explicit profile services stay local until inference",
+            "passed": 12,
+            "time": "11.4s"
+          }
+        ]
+      },
+      {
+        "log": "startup-023/boot-analyzer-cli.txt",
+        "passing_assertions": 16,
+        "testsets": [
+          {
+            "name": "Stateless analyzer CLI preserves archives and revalidates project runs",
+            "passed": 16,
+            "time": "1m02.9s"
+          }
+        ]
+      }
+    ],
+    "new_assertions": 0,
+    "failed_harness_attempts": [
+      {
+        "log": "startup-023/boot-affected-core.txt",
+        "cause": "hook_script fixture not loaded",
+        "recovery": "Loaded the missing existing fixture and resumed only unfinished tests"
+      },
+      {
+        "log": "startup-023/boot-remaining-core.txt",
+        "cause": "work_context fixture not loaded",
+        "recovery": "Loaded the missing existing fixture and resumed only unfinished tests"
+      },
+      {
+        "log": "startup-023/boot-final-core.txt",
+        "cause": "incoming_analyzer_tests fixture not loaded",
+        "recovery": "Loaded the missing existing fixture and resumed only unfinished tests"
+      }
+    ],
+    "all_requested_affected_testsets_eventually_passed": true
+  },
+  "editor_transport": {
+    "boot-cli-boundary-editor": {
+      "passed": 3,
+      "initialized_ms": 28553,
+      "log": "startup-023/boot-cli-boundary-editor.txt"
+    },
+    "boot-cached-editor": {
+      "passed": 3,
+      "initialized_ms": 1572,
+      "log": "startup-023/boot-cached-editor.txt"
+    }
+  },
+  "measurements": {
+    "observations": {
+      "core-boot-baseline": {
+        "config_get": {
+          "bytes": 8360,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 0.000480344
+        },
+        "construction": {
+          "bytes": 67249512,
+          "compile_seconds": 1.659868095,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 1.670416702
+        },
+        "elapsed_seconds": 37.278591632,
+        "health": {
+          "bytes": 1104,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 6.6723e-05
+        },
+        "initialize": {
+          "bytes": 1535200048,
+          "compile_seconds": 13.439176124,
+          "gc_seconds": 0.251538067,
+          "recompile_seconds": 0,
+          "seconds": 13.440677286
+        },
+        "julia": "1.11.7",
+        "models_status": {
+          "bytes": 72762728,
+          "compile_seconds": 1.696961157,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 1.701510884
+        },
+        "module_load_seconds": 0.982737921,
+        "scope": "tiny local fixture; process/network/persistence denied; no live model",
+        "session_create": {
+          "bytes": 26714912,
+          "compile_seconds": 0.916743997,
+          "gc_seconds": 0.112252563,
+          "recompile_seconds": 0,
+          "seconds": 0.91901922
+        },
+        "threads": 4
+      },
+      "core-boot-service-barrier": {
+        "config_get": {
+          "bytes": 10448,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 0.000109088
+        },
+        "construction": {
+          "bytes": 67248328,
+          "compile_seconds": 1.663358327,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 1.673709964
+        },
+        "elapsed_seconds": 36.833819445,
+        "health": {
+          "bytes": 1104,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 1.1388e-05
+        },
+        "initialize": {
+          "bytes": 457401280,
+          "compile_seconds": 3.54706172,
+          "gc_seconds": 0.081847204,
+          "recompile_seconds": 0,
+          "seconds": 3.547508026
+        },
+        "julia": "1.11.7",
+        "models_status": {
+          "bytes": 395664864,
+          "compile_seconds": 5.4766972,
+          "gc_seconds": 0.117633297,
+          "recompile_seconds": 0,
+          "seconds": 5.483668684
+        },
+        "module_load_seconds": 8.138052446,
+        "scope": "tiny local fixture; process/network/persistence denied; no live model",
+        "session_create": {
+          "bytes": 31430472,
+          "compile_seconds": 0.947393189,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 0.949053732
+        },
+        "threads": 4
+      },
+      "core-boot-cached": {
+        "config_get": {
+          "bytes": 8360,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 5.0288e-05
+        },
+        "construction": {
+          "bytes": 1277768,
+          "compile_seconds": 0.109892497,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 0.113698475
+        },
+        "elapsed_seconds": 2.314673997,
+        "health": {
+          "bytes": 1104,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 5.72e-06
+        },
+        "initialize": {
+          "bytes": 14344,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 0.000337643
+        },
+        "julia": "1.11.7",
+        "models_status": {
+          "bytes": 137800,
+          "compile_seconds": 0.025172499,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 0.026392467
+        },
+        "module_load_seconds": 1.583818318,
+        "scope": "tiny local fixture; process/network/persistence denied; no live model",
+        "session_create": {
+          "bytes": 25648,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 0.00053066
+        },
+        "threads": 4
+      },
+      "boot-reproducer": {
+        "config_get": {
+          "allocated_bytes": 8632,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 8.1042e-05
+        },
+        "construction": {
+          "allocated_bytes": 1278728,
+          "compile_seconds": 0.112280503,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 0.116545759
+        },
+        "elapsed_seconds": 1.853928525,
+        "health": {
+          "allocated_bytes": 1104,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 5.35e-06
+        },
+        "initialize": {
+          "allocated_bytes": 14344,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 0.000302464
+        },
+        "julia": "1.11.7",
+        "models_status": {
+          "allocated_bytes": 138984,
+          "compile_seconds": 0.024449712,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 0.025587069
+        },
+        "module_load_seconds": 1.150228352,
+        "scope": "temporary local metadata fixture; no child process or model request; session writes cleaned",
+        "session_create": {
+          "allocated_bytes": 27800,
+          "compile_seconds": 0,
+          "gc_seconds": 0,
+          "recompile_seconds": 0,
+          "seconds": 0.000360515
+        },
+        "threads": 4
+      }
+    },
+    "explicit_package_precompile_wall_seconds": 54.955679856,
+    "current_cache_bytes": 40560340,
+    "limitations": [
+      "Single observations, no statistical speedup guarantee",
+      "Service-boundary sample also rebuilt package during module load",
+      "Segmented totals and Node/GUI milestones have different scopes",
+      "First agent/tool execution still has substantial uncached compilation",
+      "Earlier checkpoint 022 Node initialized milestone belongs to a different revision"
+    ]
+  },
+  "package": {
+    "bytes": 410628,
+    "entries": 193,
+    "authored_payload_matches": true
+  },
+  "storage": {
+    "workspace_free_bytes": 18953908224,
+    "whole_project_copies": 0,
+    "large_distribution_rebuilds": 0,
+    "cleanup": "One current package-cache pair replaces its previous version; small selected VSIX payload refreshed"
+  },
+  "cloud": {
+    "repository_audit": {
+      "applications": 1,
+      "dependencies": 45,
+      "unknown": 0,
+      "strict_walk_complete": true
+    },
+    "draft_revision_before": 18,
+    "draft_only": true,
+    "published": false,
+    "restoration_tested": false
+  },
+  "pending": [
+    "250000 authored Core lines and complete functional gates",
+    "PackageCompiler/sysimage experiment",
+    "General host-tool OS sandbox",
+    "Clean-machine restoration and installed package/desktop/Windows validation",
+    "Cold first-turn compilation"
+  ],
+  "source_sha256": {
+    "Manifest.toml": "e1aba9374bf65d598ba022decd7ec9f08cadbc00026ae6e616fa11aee98f02ef",
+    "Project.toml": "31322608edf80cab8d9318a47e20917cfe3ce377d89a8a5b86ed9b5b71536653",
+    "scripts/measure_startup.jl": "2a5f0536e233446b6d6814c1f901bf27f1a157dd14f2906698cf8673d94e6903",
+    "src/Analysis/ArchiveLifecycle.jl": "4e0bdf252a780d5199cb9478b2ab0015a789dc483d9460f30ed9f570f557c2a9",
+    "src/Analysis/ArchiveManifests.jl": "c68cc64bdf91be1512e3f81ec2d75630b96cacc1528fb790dbac43aa55fc3ba7",
+    "src/Analysis/ArchivePointers.jl": "32a70821269591443de46c5b41b6d4eab69d22187e1a7461ac84c6fc0fdccdfa",
+    "src/Analysis/ArchiveTypes.jl": "53cdb6b2baff1d13f9876ce6365477b429ae8952381a9ad164665af7313123f8",
+    "src/Analysis/Builtin.jl": "952171a023d5d35bc2b1138ea310a5e1752407248e4fe32a1cde4f6069900dbc",
+    "src/Analysis/Cochange.jl": "d2d80e5324df8c964f0cbf981a592f38aa7b518316081e6dd84e14b94d171dec",
+    "src/Analysis/Definitions.jl": "0363e71e8a234089993bb551c882c4341a39be4fd9893b09b20ff88d7919c69c",
+    "src/Analysis/ExternalTests.jl": "71e4ced6c853d0985a8c3763f20dd65d3136b611bb42382274d528a1cf9cd112",
+    "src/Analysis/GraphAlgorithms.jl": "eae22b1ee11bffa96abd8d7946dfbca0c804305614894ee38c79e5e84a40dc51",
+    "src/Analysis/GraphEvidence.jl": "d2a105449e495c9512ba4512ddbc6b66b9a65b4a3d54667489f2958238a780d8",
+    "src/Analysis/GraphRuntime.jl": "1f96439e0a863ee1549bae7ca58766f2ab9910ec06d01e0aacf59ffa90cbdb21",
+    "src/Analysis/GraphSnapshots.jl": "d2cae67f81ae1b4b2801f6bd3feca1665e717be6960e6ea99ddb64401d8ca9c7",
+    "src/Analysis/HistoryEvidence.jl": "ea50430f13b6e2a05b1c1c4d9d1a7ff2682243ad453b7a3335de8e23f47157d3",
+    "src/Analysis/IsolatedWorker.jl": "80e5d91c567b664e1ad363accb1159177c78e3ccc66ee9aa7203dae2b163e9fc",
+    "src/Analysis/Jobs.jl": "130183caeabe7606c844bfd2d584ba10c0af4be7f45ea0fb5e44ec885b96a2af",
+    "src/Analysis/MigrationBatches.jl": "ee1d5f08d4ac8cc49ada0fdd08aa15466d30eb3a2670807112a9bb455d758ab9",
+    "src/Analysis/MigrationEvidence.jl": "885efe5bfe2b69c0a1a33f3bc62f0739a38c2220f75bba849567e8b67b995198",
+    "src/Analysis/MigrationGraph.jl": "f835ec01fae7de2cdd6ed0276a856288a952a10d7b6e13f0df640032e3059838",
+    "src/Analysis/MigrationRuntime.jl": "298576ee14ed74dcb18bee4aa0e7db25369378af70a35da8444675933f89012c",
+    "src/Analysis/MigrationTypes.jl": "2cb937324cd1cac68456d785a4ab5b7d6506f3a071f19c2d0e5622bf587f1b19",
+    "src/Analysis/Registry.jl": "3828c38313a5c168a939d18ba4c0d08c3f0aa2482376ce060c4b97c78d18c79c",
+    "src/Analysis/Risk.jl": "c997c870325c4d4cba5a6a3a7d270e61275b502544994acb569252df238397b1",
+    "src/CLI/Agent.jl": "cad63c463a53b33af1294f7baf8c93f7b55600807b1cab13896afe5b168f4b6b",
+    "src/CLI/Analyzers.jl": "9cafc7babcf49598c1808c19ec3fc4878414ef751b79bbf8f26409d993bbed52",
+    "src/CLI/Context.jl": "ffec5beff1c2091ec47f9ecef23a45e68ed31d204b6cd370520988b9909dfba8",
+    "src/CLI/Diagnostics.jl": "f51e5fec7695dce428b16803ec1c74d24bfc4cdb0709e0bec847b81fcb88b677",
+    "src/CLI/Doctor.jl": "46c6f5ac79a0cd12bf251a5c56e61511d67de011bdbd15b4feaa14ac9ebdb2d6",
+    "src/CLI/Hooks.jl": "a16a8ee66f7feba12264c68ab1a3a6778ff3d237273242f3355cfc72e4ce815e",
+    "src/CLI/MCP.jl": "5bd0a5c7e3ffae6dff30d735c6eb351fc2777aa5db5a6706d020803b74ba8d98",
+    "src/CLI/Main.jl": "01d28db8b99ffd94745fa68056c2758492e0053b79e46fff20391a79b51b0bb3",
+    "src/CLI/Models.jl": "481cf3e43ee058648ec61b5d2516410ed81e21ad21706c982c285ddc64786023",
+    "src/CLI/Project.jl": "bf8ca4bd0fbbee37ea822e90ee48809e3f56626e1ddaccf83e93ca65ffd788c9",
+    "src/CLI/ProjectWatch.jl": "9d27be7383e26c03c2d649953438d4067106320b1890c3af6034f39a78e532fb",
+    "src/CLI/Serve.jl": "6b1c22e0126efa5c46b4c3f230f26be7923f6c48a2500c3df6874dd31924a6e3",
+    "src/CLI/Skills.jl": "a582c0aa7202f338925d12e31db33416c094d48196ff488f7fae8f433f6ab531",
+    "src/CLI/TUI.jl": "1708a4bb4fc384f58a260ae8f3f6caa19a7538d5d31d6916e6cbe65d3e180c86",
+    "src/CLI/Tasks.jl": "6bb978679a3fe81806944478b25206c7597e0b9d148611d1afc36d70060e13a5",
+    "src/Context/Accounting.jl": "37237f99e417bce3c054de3e8cd42a920e17e535843fa398a17ba2782ab7ad46",
+    "src/Context/Checkpoints.jl": "816570db8eab9f671790ea45a397e2e5f45da2e368864ffd85a2202176dd0c90",
+    "src/Context/Config.jl": "be2da52c653b1efbd54b500d72cead22f7a8e38d566a7bc4bc27b6a800e99616",
+    "src/Context/Evidence.jl": "483f868a4dd316e195576ff41c20aa66c353dcfa546dfd4515bbaae4ed173621",
+    "src/Context/Groups.jl": "dbc6a555866174eb5b333576414f6e5cdf19e521e8db6f35050b572f4f48cab4",
+    "src/Context/Instructions.jl": "9cfe1058ec79025961c92e4e5da2af656dc8ff0d31eb59890b78bb34b1168732",
+    "src/Context/Preparation.jl": "df3822c60c6909b36864c07b46eacd9733e578418f95010ead5d87b3060504ef",
+    "src/Context/Projection.jl": "3ba2c6e85732abd4820e4b3b9d92f2cf6f6f5d10281e9986c5712529b4b2008b",
+    "src/Context/Pruning.jl": "ce9cb0dedf4d24dd89ace9a914d9ff3b0972b4a2ffc081a43a73b305782ff95e",
+    "src/Context/Recovery.jl": "89ef79401dd69c938abd1fc19df5538024d7c28d64ce554a7001f89e2d9b8705",
+    "src/Context/Sessions.jl": "6ddec222258021468132037a9d275a59aea2cfce01af9e6e576e97e0eefe44be",
+    "src/Context/Summarization.jl": "3f20503ba409377758c68b62c2eebded844bfa9bfc540e38529611c9483955fd",
+    "src/Context/Types.jl": "4d342a9444a4b4dffa55e57c035509e23eafd64149eae8bb569aaed124c4def4",
+    "src/Core/AgentLoop.jl": "c348137fe56627a63e4d295ce79fcfabf40318ed40a4e3680edc5036ea7869e5",
+    "src/Core/Config.jl": "2ec1102f2db611b5743b07e36a29ba87deefeac5def720cdf81cb272b7090fa8",
+    "src/Core/Types.jl": "07f92881d7fd2ccdf24a3063d3b9da8d180496f0eda737606c6edc22b242986f",
+    "src/Extensions/CompilerDiagnostics.jl": "14443bc9ebc158d8c205c607c566ebb57392fc5e6e2d5527ca922d122700f185",
+    "src/Extensions/Contracts.jl": "366743963d4af01f3980a1365d691a663ab6510aaa1569b10fe9329fc2f2c684",
+    "src/Git/HistoryParsing.jl": "80d769baaa1123ed101b5a61b99ec8222e5ed1e77e849a61dab926d4045d2231",
+    "src/Git/HistoryProcess.jl": "f79307e49ffae3f8b528c495fa17807529f2a3eb42894c12f3b2d5fe5467fa6b",
+    "src/Git/HistoryRepository.jl": "db740f09cb31c4b962b34b9230e7f0e449f5248d14057032851f42ff80c46642",
+    "src/Git/HistorySnapshot.jl": "a35c9f60dd100e93ac8c7803c9a0865cf01cc4aab7b8ec076649b9fbaabbbfe6",
+    "src/Git/HistoryTypes.jl": "90167fecde26c31a4c896f45f1a8ba0840309e45202a10947438154b372b3e17",
+    "src/Hooks/Catalog.jl": "8c8bfaed0524cd8197f233986c72613357be6ec9a6467e555308cbd3cd73db89",
+    "src/Hooks/Config.jl": "7e6081bb6867cb8cb7e0a088de6fbc01d54125bd65174e2a199465f699863800",
+    "src/Hooks/Lifecycle.jl": "a52a095e4432b70099564ca7cd425a950cccdbca9c9688f3b68bc626130fa507",
+    "src/Hooks/Runner.jl": "9d83359be140e2f99412c159eb77237352fd8cf01683d187786887540914b609",
+    "src/Hooks/Types.jl": "68edc930f49353cf5d27f36b52b9571fdf3aba302c66188979630e021378b997",
+    "src/MCP/Client.jl": "5b4e3b4da83a26739bc7f051ea0d8e9ac70a214ba3d10cd94fc6c809df9d3651",
+    "src/MCP/Content.jl": "052fdd29bd589807c45766edfaf72233ce7a49c9695de1ac87ca3669e33c39f6",
+    "src/MCP/Discovery.jl": "10a6ca944ae41ac21c7f7b9e5b7f7c7ade2f9fa6daa8b357aeec8a5ca26b7186",
+    "src/MCP/HTTP.jl": "1df5c9676bbb2ea97139de73bc892e273c134237ecad51b8fce781ea70db0336",
+    "src/MCP/JSONRPC.jl": "d870be7a17379842473e28d03e8f6db7fd37da2f0de57d31817b06a1292e48da",
+    "src/MCP/Manager.jl": "48afb68b1fcce5dab8f43651a28cca1f3feeb3620d232b28408bf21b9a52b542",
+    "src/MCP/SSE.jl": "aa7079b6e0c971ebdf33e71dc8785128762b2c2ebce24b226b59a49c1d03bf84",
+    "src/MCP/Schema.jl": "2d056480feeb4d25a7ef8bc971c858be76bc664e3ce52b149fce9cd1d4c7ba7f",
+    "src/MCP/Stdio.jl": "c4d59e74b951cef069ab0361a1ba642e93b4e194b569debc82ce21567e8fd5e6",
+    "src/MCP/Types.jl": "836d032361c8aae21fd60651c018c0a94dce45b2f1a90ac39eb151c5b7ce54d7",
+    "src/Memory/Store.jl": "7ba0c97f428ccd02eba109a92ba959a109b3761988dbf33c96690593e438be32",
+    "src/Models/CatalogCache.jl": "95799621f7792958cb2d340939ff5d3ff50fa2b069243a136705d5a27e98d5cd",
+    "src/Models/CatalogParsing.jl": "abed77bf3aa6bbc0997808da8090d1b08a57ed41bb9c66b337b6f8130fc25d02",
+    "src/Models/CatalogTypes.jl": "048af166bd7f54ca756927830b7f74e1e4beddbf93305a067629740d5873b4c4",
+    "src/Models/CircuitServices.jl": "3f54ff0122a8224778d731e592b815783721bc2ce3b5b1f8e89e63c54767ac64",
+    "src/Models/CircuitState.jl": "57241665dc77844b26eeb31b5d136f1eccce57b3820948bbb40eebfcacb48879",
+    "src/Models/CircuitTypes.jl": "06f57b9fff5c2d19496f4cc3c1a2eb702d07211fd47ce218fb4a2eaf488270bd",
+    "src/Models/Delivery.jl": "d2436dcd7452a9627756643a26d731de80c49a9b9aae9198e051f1da569f8214",
+    "src/Models/Errors.jl": "95675a70286627d10decde4028fa449ca739bd42d224b477a3069d795a1e6dbb",
+    "src/Models/HTTP.jl": "6f9972fe72b8ae5abbe464be60ce4f018abddc29ac5b1a04e12a3bb71ef8973f",
+    "src/Models/Provider.jl": "54ebdff04329f3464b6b51f50a7628f2ceb71e27d2a66323796bd3f827de04e3",
+    "src/Models/Requests.jl": "0f5b46135d01318a5c64948f613889a76720fe4c8f3bcef5270999dbccd67e74",
+    "src/Models/RetryDecisions.jl": "14c58762cb12a9f8223acd52f6f661510b2dc0b35087236acb49629845cd1be2",
+    "src/Models/RetryHeaders.jl": "d7dcdcf901930f4b2fbedd2f59e0a615d3f9d78c74a29c5169c18bf26d4958ae",
+    "src/Models/RetryRuntime.jl": "3c8c1cd6397f5fb0c71abca8b9e43d19fe818e7120929789b92e514d301a4778",
+    "src/Models/RetryTypes.jl": "cfe3932948c7b3d95f8c418ecff8d95f4438deba55ce49cf88c93f1595a34ea9",
+    "src/Models/RoutingCapabilities.jl": "095e8bac7e376acdf0a896b05dad8ef00603f04548179f80c35be208291ba621",
+    "src/Models/RoutingConfig.jl": "49e344ca4613333ca6ce7f80b3ea95dc2b80b33d0ff4f68052cdda50d5353545",
+    "src/Models/RoutingPlans.jl": "c163f80310ab42a80934dbe0633d07777424604ec39b9e9de9815239ba230349",
+    "src/Models/RoutingRuntime.jl": "93280a330589f653caccd14d618b7edd30931f00f38d565314e2022cc30842ed",
+    "src/Models/RoutingState.jl": "c40a36a9e32ff0336db95dc5b0a53bd0f290abc50986877a458cd5d85a2438e6",
+    "src/Models/RoutingTypes.jl": "74fde5a38a6d52362c7e46a6c01c2c10f73c19f76561a1db2b4f3dd678f619ae",
+    "src/Models/ServiceRequests.jl": "173bf97722844e4b4804431fb8a06f6fb0bce739c14a9ebb8637149508d2c970",
+    "src/Models/ServiceTransport.jl": "5204a51b5ab474eb3dabb9d24c62f026556fd21b01ed130936be48066e8f39d6",
+    "src/Models/Streaming.jl": "f367bec96118049ecaa46b87bfa1652615094126de2afa23d57952d4e19c7c4d",
+    "src/Models/TokenCounts.jl": "cdd16b45cbd798977f29296c4217bf6fcb1faf17215d9a6eb42479eb9b5cab28",
+    "src/ProjectData/Backends.jl": "3217dff6dbb7c990ec8800d7086c6c1b92cd1f674e8335e287d6760024aff183",
+    "src/ProjectData/Compaction.jl": "568859bf165de86384f465bf5e997ef87f0731ec6413ca29b96de9cc86e0c61e",
+    "src/ProjectData/CompilerConfig.jl": "fcbf2adef6a202e48c38d8ae4c5e72f55ed947a0f6c3e5437eb9833d28520a3c",
+    "src/ProjectData/Fingerprints.jl": "7d1feb4c10ac1c92ac0067aff9ee29755d5f9e57aea500f7b29304fe77081168",
+    "src/ProjectData/Inputs.jl": "ae96ebfc9e1578da0fa9be8599ec4a3e4e11af75020d86a4749298b4e19c8e44",
+    "src/ProjectData/JSONC.jl": "4dacbfd5d98ec03a393fcc7266494239872044d8ee1147df7cbd5d0249b54369",
+    "src/ProjectData/Locations.jl": "4d7724ff12411346d3392261ae487556385ab0b859c04fef94217ecc1644188a",
+    "src/ProjectData/Navigation.jl": "9346cf8ac762726b1c6cf4c83dd31dd8fe3d77f44a655da2d2b671698d845dbc",
+    "src/ProjectData/Queries.jl": "8f47ce20d376617141b9f07208bbbcf794a6fe74d7e9937f5cb38750c23bf449",
+    "src/ProjectData/Replay.jl": "72617e0e5cd2c38a53ecf3996867a94a63fc9c09a8664686c3043a25ca2a993e",
+    "src/ProjectData/State.jl": "2dc89dea5003d2402a4fbe85e9376d95fb754aeffebe0afce654041c93757ec5",
+    "src/ProjectData/TypeScript.jl": "c073b6995d51cde2560ba5afa50c450a0ece380d08a8783402819e8391a7dda9",
+    "src/ProjectData/Types.jl": "84fd478a4a5497d95303549391967e5c4001432b5f33a658be8c9a829451f82b",
+    "src/ProjectData/WatchBatches.jl": "21807ff65dcdcd68cd548a2a30d383f9b90336a081405205a2375510aae8abeb",
+    "src/ProjectData/WatchRuntime.jl": "1fd5c119e08d13aaf7708adc946e4f78cbc7bb604400c93a91730cd896ad19e0",
+    "src/ProjectData/WatchSnapshots.jl": "1811c9400c42f533e7849acb187b56e10d91c25d13d22eac716f00296a9e90ca",
+    "src/ProjectData/WatchTypes.jl": "de67ae22f9282aafb40adf5c59f01fe1c7706d5703a84bf5044b35579a93d62f",
+    "src/Protocol/Analyzers.jl": "28d79b732b9b0475382931d17a0bed0c78a9d205600174e901f1fb83754c2986",
+    "src/Protocol/Context.jl": "afe48a0d09fdbf85c7331fa8c48514b11eafb1ebfdf495431a8393a8f99972e9",
+    "src/Protocol/Framing.jl": "3e1279a1c30b9b727ef47158054988f1dc613ebaed53d98d98c0433fa38864af",
+    "src/Protocol/Hooks.jl": "795c33b484faade49b113f410ee4867b60047e7c75831681c13e2f0057863d10",
+    "src/Protocol/MCP.jl": "80e80782e0b9f68c784766f716aaec5e7267f31c75300405317077143288a455",
+    "src/Protocol/Models.jl": "ecc15ac90df4047900f4a864fc7f3b76ba42f619e9d1aa7e2f96e4f00b6ca5d7",
+    "src/Protocol/Project.jl": "7b523bebbb9a382a9d9e899afa3e975962b5d9e53f9c15fd8a04e1835094b31a",
+    "src/Protocol/ProjectWatch.jl": "03b58d5c6bca03822fdeb58a376e09fe6121488a955a6af663425818253a93a8",
+    "src/Protocol/Server.jl": "1faa7273f06e443be94f7995a99f05871f7f037dca87119d7db6dc80ac3733d4",
+    "src/Protocol/Skills.jl": "37e8fb5ea14af7ace02065fa218b5ec52be25fcb7a4cfc04b62ebe87e4b42a73",
+    "src/Protocol/Tasks.jl": "40eb03fff392aa3de56c8e8b54a92334bcac03658a4952c8bdefe78e8a50f67f",
+    "src/Runtime/Cancellation.jl": "93d8074c242f6c3c71dc73111748ef071ee6bbfcae7125d81922bc7b06d0f8e9",
+    "src/Runtime/ComputeProcess.jl": "018807b620fb965a3ecb885f9a3c7ac0642edaa530dce886df4db7156f9c15f9",
+    "src/Runtime/Context.jl": "c9013fe8d026439fdb59f1d7acc85c86b57d7a52bde2c8ed7af6f809c710a8ea",
+    "src/Runtime/OwnedOperations.jl": "279b9f767e37aeef732af1656f06113a9b2b1c3912fe16c570b17429330285aa",
+    "src/Runtime/Precompile.jl": "dee29b2cd498e15a2a434483b6b139b78fb2beae69e13dc22a985a41a9f74720",
+    "src/Runtime/ToolScheduler.jl": "6096852e56e3fa74c9d7042e0625e0fc642b514127ed6569640cc92473185917",
+    "src/Runtime/UTF8.jl": "60711f754403e5f153ca4d92cf0ec966a2ff884074c0e77cd5c84fb173915821",
+    "src/Security/Budgets.jl": "1e449bba1022fd105aa7735f3ae94144fbbc9554c275ac51bd9ec9e399a106aa",
+    "src/Security/ComputeLimits.jl": "6bc38089606fccb6d550dda9dff7f87d5b4566dfd63968fd81ab741e97620f1d",
+    "src/Security/ComputeProtocol.jl": "9f0ec0aff7f0dce5baa24d5f2162d8ffa262b3b1445f6cb258973bcbaf8640c9",
+    "src/Security/ComputeSeccomp.jl": "622a7698f9eb9161f346cdc58f6ec55a1a6f13744ae7933508a8347c5a128092",
+    "src/Security/Files.jl": "c4cf1d9f5958fe4511d993d3e72fda1aec2ea7b8462b72fd3579bcdba982e43e",
+    "src/Security/Permissions.jl": "786caa6259e0ced12a00d9c017ef370a86835dc6815230c8f3fcb7a1913b9214",
+    "src/ShenScope.jl": "67d41f836cd32c2858a8f0d0883ef2c51c956eb06bf3de27fae26b7c0781625f",
+    "src/Skills/Activation.jl": "04ec4c9651634dcb90709dea6b16203afba08d88cffccad0983629d4817d3d7c",
+    "src/Skills/Discovery.jl": "dc6fe0f3215ad05d17e6a4888a6e5a7489e1e17d5b0ba2c50829be35312c2692",
+    "src/Skills/Metadata.jl": "1ce20d076dc6b89c3f07fb281adb820481b99b5207f8f17b30be2254f3131a8d",
+    "src/Skills/Projection.jl": "dfa279a10d7f0224e6dc08a25beb292eb4ad9eaff76d03aeaaccf3ed864528e3",
+    "src/Skills/Types.jl": "f6168b5fb8bc08a39d8a03268dc6fe5d6c156fa88ea07bea0763aea176153166",
+    "src/Storage/AtomicStreams.jl": "1e763bbab43f7c3d8d27ad7401be3ccc443901a6287f66e6389eb31a0d3b707b",
+    "src/Storage/BoundedJSON.jl": "36575d0955d668af0cac9e703043bbb2f5bba4ac295bf41ce48fa492134ded96",
+    "src/Storage/JSON.jl": "5735ed799976d178611b9a1d0f38e4c95d401553c0f74faea98c81365232c70f",
+    "src/Storage/Journal.jl": "39a6730391e68cfa096bfe82116c8ea256d7c554ff3e850c7d3e14a877f1b88a",
+    "src/Storage/JournalStream.jl": "4fd406eab6ed836b53af6b34a7743ae603c7444d8d709dc7e80d7ea7265f9ea3",
+    "src/Storage/Staging.jl": "36b4e49df606c08f10bf89df4ea38c0a497eddc792552d0da698a645e73a49cb",
+    "src/Storage/Versioned.jl": "c23bc1abb88cb76d5c5372b032bc42da3ebb1ddba1cc22e04bdfa1a3436efb4c",
+    "src/Tasks/Executor.jl": "d1de9b6e4a3502945dcf564fd07a659fc85b7999439192d6f2363a25ad099981",
+    "src/Tasks/Graph.jl": "a236dd93823c5b95eebd2e1a1957a006319c059e43da0eb7b499051af3a9e61c",
+    "src/Tasks/Lifecycle.jl": "c82c5fa68893b7e5c958328287e9bee4fba0fb490e7b99959c8748025b732d6d",
+    "src/Tasks/Queries.jl": "a6805c21f5c907a85f3b7c08c765b4ec96693acd7a88484d7729c1437d577d6a",
+    "src/Tasks/Results.jl": "8a7e2ff1db2ecbaf34da08c6d3fa28f6d27649ba3ac9b717f0436fe4f26b8675",
+    "src/Tasks/Runner.jl": "811f05ac5a1fac48958ccc224e170f498f51903ff4787bb8bdea745dc401f672",
+    "src/Tasks/Serialization.jl": "418adc5abbc76c2691c8f02421e534ee8eee865be985d3ac1c87c596538c5167",
+    "src/Tasks/Store.jl": "a719a3de228f3efc81a8abd2a5fe134697fee81b992774d14b8e6e1fa1735368",
+    "src/Tasks/Types.jl": "a9368e3ef1c732fc07cee154ae62e9dd091b042a92e4f43089a00f12d4d56dd4",
+    "src/Tools/Analyzers.jl": "fd9b1ede703734f282678f2d34a04d83428dc37bb33e27dcacdd94135de1b2f0",
+    "src/Tools/Context.jl": "fd23844f47cb0e89b448695b17ec8e923b1564aeb7ffd59339c3b3efc446eed2",
+    "src/Tools/Diagnostics.jl": "8bf5581d24972bda3d696a1a7cd2ccae7a02ac40642f1afae96c7bfb46b7bb40",
+    "src/Tools/Files.jl": "02bfffb0f27041190e8602cbc13a16435a80c77d1a14bbcbd7a8671cbcefe16a",
+    "src/Tools/Hooks.jl": "aa22ede7cf7a9feaaf897646f97235c08a1d97ef1f2ca0dcc62751f8c081dfd6",
+    "src/Tools/MCP.jl": "7d9349acc57ec70175d63fbd2078a03675844f5162b5e5bca20ad2d3b60cfb3f",
+    "src/Tools/Models.jl": "903fe10eeca2f9e19c194c12418d5f26b0708f75353e1f1fa17c3e69b3bff95f",
+    "src/Tools/Processes.jl": "e6c3f52f006c7e9da2be661c53a56c8699ffea493e89f2255cb26a1e69a6d34f",
+    "src/Tools/Project.jl": "10823457041f6cb433ed793900dc06fa6b0bfd33e5bc8cc17f7b62a8a254e911",
+    "src/Tools/Schema.jl": "8c5ab3b66f8d286d7f0f6417fe94d43c60242c46db232dac859fb8613828086e",
+    "src/Tools/Skills.jl": "2408c0980e299367cd1c57a3e78b3226e2699841d3e781f1ec5aab78e26c0dc3",
+    "src/Tools/Tasks.jl": "0855d5b17cef7a34181a492b9c538d2ac394f52ba30f9d0b56b5b5219229436c"
+  }
+}

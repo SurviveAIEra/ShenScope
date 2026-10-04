@@ -367,3 +367,23 @@ Real Go AST, Tree-sitter, CodeGraph and TypeScript compiler fixtures verify the
 shared planner. No upstream implementation, review-agent topology or worktree
 copy workflow is reused. No safe-migration, calibrated-confidence or performance
 improvement claim follows from these facts.
+
+## Startup checkpoint 023
+
+Selected source reads revisit all seven primary agents; the review remains
+partial. Codex's CLI separates subcommand ownership; OpenCode's serve command
+loads its server at its command boundary; DeepSeek's public CLI and desktop
+launcher distinguish mode selection and installation-owned dependencies. Pi's
+small entry point separates setup/main. Kimi's command handler returns an outcome
+to the process owner. ZCode establishes protocol stdout/stderr boundaries before
+bootstrap. Qwen measures its entry baseline before route-specific imports.
+Paths and revisions are in the lockfile.
+
+Julia has different compilation semantics: independently authored command and
+RPC boundaries use `Base.invokelatest`, and a disposable offline PrecompileTools
+workload captures metadata methods. The implementation preserves framed stdout,
+permissions and controller ownership. Measurements separate explicit cache
+generation from new-process readiness. A first agent turn remains substantially
+slower than initialization. See `../core/startup.md` and checkpoint 023 evidence;
+no upstream code or bootstrap implementation is translated. PackageCompiler,
+clean-machine/installed distribution and cross-platform timings remain pending.

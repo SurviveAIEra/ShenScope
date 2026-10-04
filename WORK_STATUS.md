@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 17,038 authored Julia Core code lines across 160 files;
-CLI/TUI add 878 lines and are counted separately. This is 6.8152% of the
-minimum line target, leaving 232,962 lines. These are early implementations,
+Latest cloc 2.11 count: 17,093 authored Julia Core code lines across 161 files;
+CLI/TUI add 874 lines and are counted separately. This is 6.8372% of the
+minimum line target, leaving 232,907 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -402,3 +402,24 @@ docs/core/migration.md; plans do not edit, schedule or execute tests. Developmen
 continues immediately with measured boot/precompile work, security/runtime and
 remaining requirements. The 250,000 authored Core-line target remains active
 and unmet.
+
+Startup checkpoint 023: distinct CLI/RPC compilation boundaries and a disposable
+offline PrecompileTools workload capture common metadata/framed-server methods.
+Normal package invalidation applies; no terminal, model request or child process
+is run during the workload. Source/interface behavior is preserved.
+
+Validation: 805 affected existing assertions eventually pass across all eight service
+controllers and relevant CLI/worker paths. Three incomplete test-harness fixture
+loads are recorded and corrected without rerunning finished testsets. Two serial
+real Node transport suites pass all three tests each. The explicit package-cache
+build took 54.956 s; current cache occupies about 39 MiB. Observed cached fresh-
+process initialization was 0.338 ms, with module load 1.584 s; cached Node's
+initialized milestone was 1.572 s. First agent/tool execution still incurs about
+25 s of compilation. These are single observations with different scopes, not
+a statistical or installed-desktop benchmark. The final VSIX authored payload
+matches. No GUI source or native overlay changed. Evidence and limitations:
+docs/validation/startup-checkpoint-023.json and docs/core/startup.md.
+
+Development continues immediately with scoped memory retrieval/management,
+security/runtime and remaining requirements. PackageCompiler remains pending.
+The 250,000 authored Core-line target remains active and unmet.

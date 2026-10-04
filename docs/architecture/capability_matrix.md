@@ -137,3 +137,9 @@ scoped RPC and both editor clients exercise the same Julia logic. Applying edits
 durable execution and executed-test proof remain separate requirements. Cold
 Core initialization exceeded client limits in concurrent validation; raw failures
 and successful serial verification are retained, with boot measurement next.
+
+Startup checkpoint 023 adds measured Julia command/RPC compilation boundaries
+and a temporary offline metadata precompile workload. Fresh-process real Node
+transport is validated separately from cache-generation cost and the still-cold
+first agent turn. See `../core/startup.md`. PackageCompiler/sysimage, installed
+distribution and Windows performance remain unverified.

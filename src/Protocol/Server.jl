@@ -182,14 +182,16 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     end
     server.initialized || throw(RPCFault(-32002,"Initialize first"))
     server.stopping && method!="shutdown" && throw(RPCFault(-32003,"Server is stopping"))
-    startswith(method,"project/") && return project_rpc(server,method,params)
-    startswith(method,"analyzers/") && return analyzers_rpc(server,method,params)
-    startswith(method,"models/") && return models_rpc(server,method,params)
-    startswith(method,"tasks/") && return tasks_rpc(server,method,params)
-    startswith(method,"mcp/") && return mcp_rpc(server,method,params)
-    startswith(method,"skills/") && return skills_rpc(server,method,params)
-    startswith(method,"hooks/") && return hooks_rpc(server,method,params)
-    startswith(method,"context/") && return context_rpc(server,method,params)
+    # Service controllers own separate compilation/lifecycle boundaries. The
+    # initialize/health path must not infer every model, parser and worker branch.
+    startswith(method,"project/") && return Base.invokelatest(project_rpc,server,method,params)
+    startswith(method,"analyzers/") && return Base.invokelatest(analyzers_rpc,server,method,params)
+    startswith(method,"models/") && return Base.invokelatest(models_rpc,server,method,params)
+    startswith(method,"tasks/") && return Base.invokelatest(tasks_rpc,server,method,params)
+    startswith(method,"mcp/") && return Base.invokelatest(mcp_rpc,server,method,params)
+    startswith(method,"skills/") && return Base.invokelatest(skills_rpc,server,method,params)
+    startswith(method,"hooks/") && return Base.invokelatest(hooks_rpc,server,method,params)
+    startswith(method,"context/") && return Base.invokelatest(context_rpc,server,method,params)
     if method=="health"
         return Dict("ready"=>!server.stopping,"active_runs"=>length(server.runs),"pending_approvals"=>length(server.approvals))
     elseif method=="shutdown"

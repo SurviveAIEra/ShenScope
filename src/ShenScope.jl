@@ -253,6 +253,20 @@ include("CLI/Context.jl")
 include("CLI/Analyzers.jl")
 include("CLI/Models.jl")
 include("CLI/TUI.jl")
+include("CLI/Tasks.jl")
+include("CLI/Diagnostics.jl")
+include("CLI/Serve.jl")
+include("CLI/Doctor.jl")
+include("CLI/Agent.jl")
+const CLI_COMMAND_HANDLERS = Dict{String,Function}(
+    "mcp"=>cli_mcp_command, "skills"=>cli_skills_command, "hooks"=>cli_hooks_command,
+    "context"=>cli_context_command, "analyzers"=>cli_analyzers_command,
+    "models"=>cli_models_command, "tasks"=>cli_tasks_command,
+    "diagnostics"=>cli_diagnostics_command, "project"=>cli_project_command,
+    "serve"=>cli_serve_command, "doctor"=>cli_doctor_command,
+    "chat"=>cli_agent_command, "tui"=>cli_agent_command)
 main(args=ARGS)=cli_main(args)
+
+include("Runtime/Precompile.jl")
 
 end

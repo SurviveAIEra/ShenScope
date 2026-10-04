@@ -1,0 +1,80 @@
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.7s
+Test Summary:                                                    | Pass  Total  Time
+Protocol version, config ownership, secrets and session commands |   15     15  2.5s
+Test Summary:                                        | Pass  Total   Time
+Agent protocol permission ownership and cancellation |   13     13  24.9s
+Test Summary:                                                | Pass  Total   Time
+Project RPC lifecycle, approvals and responsive cancellation |   40     40  29.1s
+Test Summary:                                                            | Pass  Total   Time
+Model RPC owns operations, approvals, caches and configuration lifecycle |   40     40  15.2s
+[ Info: Listening on: 127.0.0.1:37441, thread id: 2
+[ Info: Server on 127.0.0.1:37441 closing
+Test Summary:                                                                       | Pass  Total  Time
+Model health RPC reflects live runtime and enforces reset permission, CAS and scope |   25     25  1.6s
+Test Summary:                                                                             | Pass  Total  Time
+Routing RPC, default/worker roles, profile services and config validation share one fleet |   24     24  3.5s
+[ Info: Listening on: 127.0.0.1:38631, thread id: 1
+[ Info: Server on 127.0.0.1:38631 closing
+Test Summary:                                           | Pass  Total  Time
+Task definition validation and independent graph checks |   15     15  3.7s
+Test Summary:                                                   | Pass  Total  Time
+Claims, dependency release, priority, fences and detached views |   13     13  4.9s
+Test Summary:                                               | Pass  Total  Time
+Safe retries, uncertain effects and explicit reconciliation |   16     16  1.4s
+Test Summary:                                                      | Pass  Total  Time
+Exclusive effects, cancellation propagation and read-only recovery |   16     16  0.9s
+Test Summary:                                                         | Pass  Total  Time
+Large result artifacts, digest verification and descriptor collisions |    6      6  0.5s
+Test Summary:                                               | Pass  Total  Time
+Asynchronous task protocol, approvals and session ownership |   13     13  7.1s
+Test Summary:                                                | Pass  Total  Time
+Task jobs block config replacement and drain owned processes |    5      5  1.6s
+Test Summary:                                                                | Pass  Total   Time
+Analyzer RPC ownership, permissions, cancellation and configuration barriers |   31     31  10.1s
+Test Summary:                                                           | Pass  Total  Time
+MCP async protocol keeps approvals, jobs and connections session scoped |   33     33  7.6s
+Test Summary:                                                      | Pass  Total  Time
+Skills YAML metadata is bounded, typed and independently validated |   21     21  4.4s
+Test Summary:                                                               | Pass  Total  Time
+Skills discovery preserves sources, precedence, diagnostics and lazy bodies |   12     12  1.7s
+Test Summary:                                                             | Pass  Total  Time
+Skills activation, resource confinement, replay and permission boundaries |   22     22  3.9s
+Test Summary:                                        | Pass  Total  Time
+Skills source revisions are rechecked after approval |    3      3  0.1s
+Test Summary:                                                            | Pass  Total  Time
+Skills RPC scopes approvals, durable activation and source-opening proof |   23     23  3.0s
+Test Summary:                                                   | Pass  Total  Time
+Skills job cancellation drains approval and retains peer policy |    6      6  0.5s
+Test Summary:                                                            | Pass  Total  Time
+Hooks configuration has explicit points, bounds and no permission grants |   29     29  0.5s
+Test Summary:                                                   | Pass  Total  Time
+Hook source identity, read scope, ambiguity and explicit reload |   14     14  1.9s
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/hooks_protocol.jl:18
+in expression starting at /workspace/ShenScope/.local/test_boot_affected.jl:6
+Hook RPC scopes command approval, cancellation and source-opening proof: Error During Test at /workspace/ShenScope/test/unit/hooks_protocol.jl:18
+  Got exception outside of a @test
+  UndefVarError: `hook_script` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] hooks_protocol_server(root::String)
+     @ Main /workspace/ShenScope/test/unit/hooks_protocol.jl:2
+   [2] (::var"#162#165")(root::String)
+     @ Main /workspace/ShenScope/test/unit/hooks_protocol.jl:20
+   [3] mktempdir(fn::var"#162#165", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [4] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [5] macro expansion
+     @ /workspace/ShenScope/test/unit/hooks_protocol.jl:19 [inlined]
+   [6] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [7] top-level scope
+     @ /workspace/ShenScope/test/unit/hooks_protocol.jl:19
+   [8] include
+     @ ./sysimg.jl:38 [inlined]
+   [9] top-level scope
+     @ /workspace/ShenScope/.local/test_boot_affected.jl:13
+Test Summary:                                                           | Error  Total  Time
+Hook RPC scopes command approval, cancellation and source-opening proof |     1      1  1.9s

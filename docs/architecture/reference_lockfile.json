@@ -27,7 +27,8 @@
       "codex-rs/core/src/compact_model_fallback.rs",
       "codex-rs/agent-roles/src/agent_role_config.rs",
       "codex-rs/utils/git-discovery/src/lib.rs",
-      "codex-rs/protocol/src/plan_tool.rs"
+      "codex-rs/protocol/src/plan_tool.rs",
+      "codex-rs/cli/src/main.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -60,7 +61,8 @@
       "packages/opencode/src/provider/provider.ts",
       "packages/opencode/src/session/retry.ts",
       "packages/opencode/src/config/agent.ts",
-      "packages/core/src/git.ts"
+      "packages/core/src/git.ts",
+      "packages/opencode/src/cli/cmd/serve.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -97,7 +99,9 @@
       "packages/llm/llm-pi-ai/src/catalog.ts",
       "packages/llm/llm/src/retry-policy.ts",
       "packages/experimental/agent-team/src/roster.ts",
-      "packages/deliverables/workspace-changes/src/git.ts"
+      "packages/deliverables/workspace-changes/src/git.ts",
+      "apps/cli/src/bin.ts",
+      "apps/desktop-host/src/cli.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -132,7 +136,8 @@
       "packages/ai/src/utils/provider-retry.ts",
       "packages/coding-agent/src/core/model-config.ts",
       "packages/coding-agent/src/core/tools/bash.ts",
-      "packages/coding-agent/src/core/tools/edit.ts"
+      "packages/coding-agent/src/core/tools/edit.ts",
+      "packages/coding-agent/src/cli.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -168,7 +173,8 @@
       "packages/klient/src/contract/global/models.ts",
       "packages/agent-core-v2/src/app/git/git.ts",
       "packages/agent-core-v2/src/app/git/workTree.ts",
-      "packages/agent-core-v2/src/human/todo/tool.ts"
+      "packages/agent-core-v2/src/human/todo/tool.ts",
+      "apps/kimi-code/src/main.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -199,7 +205,9 @@
       "apps/zcode-cli/packages/core/src/subagent/profile-model-selection.ts",
       "packages/shared/src/model-selection.ts",
       "packages/services/src/git/git.ts",
-      "packages/ui/src/ToolCallBlocks/renderers/plan-guidance.tsx"
+      "packages/ui/src/ToolCallBlocks/renderers/plan-guidance.tsx",
+      "apps/zcode-cli/packages/cli/src/main.ts",
+      "apps/zcode-cli/packages/cli/src/index.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -233,7 +241,8 @@
       "packages/core/src/subagents/types.ts",
       "packages/core/src/subagents/agent-frontmatter-schema.ts",
       "packages/cli/src/commands/review/lib/git.ts",
-      "packages/cli/src/commands/review/plan-diff.ts"
+      "packages/cli/src/commands/review/plan-diff.ts",
+      "packages/cli/src/cli.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

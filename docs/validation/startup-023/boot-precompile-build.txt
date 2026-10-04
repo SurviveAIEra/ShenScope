@@ -1,0 +1,4 @@
+Precompiling ShenScope...
+  53885.7 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 54 seconds. 39 already precompiled.
+package_precompile_wall_seconds=54.955679856
