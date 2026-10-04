@@ -407,3 +407,26 @@ The combined design uses Julia-owned journal validation, CAS, lexical BM25F and
 conversation-owned jobs across CLI/TUI/native/VSIX. Scores are lexical relevance;
 source declarations are not verified truth. Namespace admission and fact writes
 are separate journals. General OS isolation and semantic memory remain pending.
+
+## Execution security checkpoint source observations
+
+Checkpoint 025 reads selected sections of the seven primary checkouts, extending
+the existing partial reviews. It independently implements Julia policy, namespace
+argument planning, child state, resource/network rules and scoped diagnostics.
+
+| Project / source | Observation | Julia synthesis |
+| --- | --- | --- |
+| Codex `codex-rs/linux-sandbox/src/landlock.rs` | Current filesystem enforcement belongs to bubblewrap; syscall/network policy and no_new_privs are separate primitives | Namespace backend and separate Julia/libseccomp bootstrap, explicit host state, no unverified Landlock fallback |
+| DeepSeek Harness `packages/sandbox/sandbox-policy/src/session-mode.ts`, `packages/sandbox/sandbox/src/diagnostics.ts` | Effective session policy and runner failures require owned state and structured evidence | Immutable launch policy, conversation-owned probe jobs, bounded failure diagnostics and no automatic host fallback |
+| OpenCode `packages/opencode/src/permission/index.ts` | Pending requests are owned deferred decisions; rule evaluation has explicit Ask behavior | Existing Core approvals remain separate by Read/Edit/Process/Network and bind the captured execution declaration |
+| Pi `packages/coding-agent/examples/extensions/sandbox/index.ts` | Command backend/environment integrates a filesystem and network policy | Explicit child state and filesystem/network options; no claim to implement Pi's domain allowlist |
+| Kimi Code `packages/agent-core-v2/src/agent/permissionPolicy/policies/git-control-path-access-ask.ts` | Git control-path access is distinguished from ordinary files | Workspace Git metadata stays readonly; private Core state and secret-name paths are masked |
+| ZCode `packages/shared/src/permission-request-preview.ts` | Permission previews identify command arguments and file scope | Process approval exposes argv/directory, readonly runtime paths, policy, limits and environment-key names |
+| Qwen Code `packages/cli/src/config/execution-sandbox-settings.ts`, `packages/core/src/sandbox/bwrap-status.ts` | Strict backend/filesystem/network config and bounded evidence distinguish unconfirmed setup from payload exit | Pre-write config validation, nonce-bound setup receipts, explicit signal status and no claim that setup confirms payload exec |
+
+Kernel network/resource/descriptor tests and interrupted durable file-effect tests
+are actual native-process checks. Full namespace execution is blocked in this
+container and its refusal is tested; the available-backend integration branch is
+not counted as executed here. Native/VSIX diagnostics preserve that distinction.
+Additional platform/domain policies, adapters and clean-machine validation remain
+pending. No upstream implementation was copied or translated.

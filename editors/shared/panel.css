@@ -296,4 +296,14 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .model-role-choice { max-width: 95px; min-width: 60px; padding: 3px 5px; font-size: 11px; color: var(--vscode-dropdown-foreground, var(--vscode-input-foreground)); background: var(--vscode-dropdown-background, var(--vscode-input-background)); border: 1px solid var(--vscode-dropdown-border, var(--vscode-widget-border)); border-radius: 5px; }
 .model-route-credentials { margin-top: 12px; }
 .model-route-credentials > button { display: block; margin: 8px 0; }
+.security-policy { display: flex; flex-wrap: wrap; gap: 10px; }
+.security-policy h3, .security-policy p, .security-policy small, .security-probe { width: 100%; }
+.security-probe { border-top: 1px solid var(--vscode-widget-border, #444); padding-top: 12px; overflow-wrap: anywhere; }
+.security-probe p { margin: 8px 0; }
+.security-probe small { color: var(--vscode-descriptionForeground); }
+.security-config { display: flex; flex-direction: column; gap: 12px; }
+.security-config .field { display: flex; flex-direction: column; gap: 6px; }
+.security-config select { width: 100%; min-height: 32px; padding: 5px 8px; color: var(--vscode-dropdown-foreground); background: var(--vscode-dropdown-background); border: 1px solid var(--vscode-dropdown-border, transparent); border-radius: 4px; }
+.security-config select:focus-visible { outline: 1px solid var(--vscode-focusBorder); }
+.security-config select:disabled { opacity: .55; }
 .shenscope-panel .composer-toolbar:has(.model-role-choice) { flex-wrap: wrap; }

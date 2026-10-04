@@ -1,0 +1,1 @@
+PASS: native Workbench with extensions disabled, actual process approvals, honest host/namespace status, policy CAS saves, live services after reconfiguration and no model requests; Namespace unavailable

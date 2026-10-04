@@ -1,0 +1,19 @@
+Test Summary:                                            | Pass  Total   Time
+Execution policy validates before configuration mutation |   22     22  14.3s
+Test Summary:                                                        | Pass  Total  Time
+Restricted environment excludes credentials and values from evidence |    8      8  1.0s
+Test Summary:                                                   | Pass  Total  Time
+Execution plan masks secrets and retains read-only Git metadata |   17     17  3.9s
+Test Summary:                                                   | Pass  Total  Time
+Execution evidence confirms setup without claiming payload exec |   10     10  1.0s
+Test Summary:                                            | Pass  Total  Time
+Execution access grants remain independent and revocable |   10     10  2.7s
+Test Summary:                                                         | Pass  Total  Time
+Execution diagnostics are scoped metadata and require explicit probes |   15     15  3.5s
+Test Summary:                                                        | Pass  Total  Time
+Kernel network filters, descriptor closure and native child commands |    4      4  1.1s
+Test Summary:                                                    | Pass  Total  Time
+Kernel execution resource limits preserve truthful signal status |    4      4  2.0s
+Full namespace execution unavailable here; verified refusal: bwrap: setting up uid map: Read-only file system
+Test Summary:                                                      | Pass  Total  Time
+Unavailable isolation never executes the requested payload on host |    2      2  0.3s

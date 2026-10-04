@@ -7,7 +7,7 @@ function cli_hooks_command(positional::Vector{String}, flags::AbstractDict, conf
     policy = permissions_from_config(config)
     get(flags, "--allow-process", false) && (policy.rules[:process]=Allow)
     ctx = RuntimeContext(get(flags, "--root", pwd());session_id=get(flags, "--session", string(uuid4())),state_dir,
-        permissions=policy,budget=BudgetLedger(limits_from_config(config)),approve=cli_approval)
+        permissions=policy,sandbox=sandbox_from_config(config),budget=BudgetLedger(limits_from_config(config)),approve=cli_approval)
     manager = HookManager(config;config_source=get(flags, "--config", config_path()))
     tool = HooksTool(manager)
     try

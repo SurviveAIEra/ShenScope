@@ -1,0 +1,77 @@
+Precompiling ShenScope...
+Info Given ShenScope was explicitly requested, output will be shown live [0K
+[0KERROR: LoadError: Security metadata precompile fixture failed
+[0KStacktrace:
+[0K  [1] error(s::String)
+[0K    @ Base ./error.jl:35
+[0K  [2] macro expansion
+[0K    @ /workspace/ShenScope/src/Runtime/Precompile.jl:53 [inlined]
+[0K  [3] macro expansion
+[0K    @ /workspace/julia-depot/packages/PrecompileTools/L8A3n/src/workloads.jl:78 [inlined]
+[0K  [4] (::ShenScope.var"#2787#2790")(root::String)
+[0K    @ ShenScope /workspace/ShenScope/src/Runtime/Precompile.jl:20
+[0K  [5] mktempdir(fn::ShenScope.var"#2787#2790", parent::String; prefix::String)
+[0K    @ Base.Filesystem ./file.jl:819
+[0K  [6] macro expansion
+[0K    @ /workspace/ShenScope/src/Runtime/Precompile.jl:7 [inlined]
+[0K  [7] macro expansion
+[0K    @ /workspace/julia-depot/packages/PrecompileTools/L8A3n/src/workloads.jl:140 [inlined]
+[0K  [8] top-level scope
+[0K    @ /workspace/ShenScope/src/Runtime/Precompile.jl:139
+[0K  [9] include(mod::Module, _path::String)
+[0K    @ Base ./Base.jl:562
+[0K [10] include(x::String)
+[0K    @ ShenScope /workspace/ShenScope/src/ShenScope.jl:1
+[0K [11] top-level scope
+[0K    @ /workspace/ShenScope/src/ShenScope.jl:298
+[0K [12] include
+[0K    @ ./Base.jl:562 [inlined]
+[0K [13] include_package_for_output(pkg::Base.PkgId, input::String, depot_path::Vector{String}, dl_load_path::Vector{String}, load_path::Vector{String}, concrete_deps::Vector{Pair{Base.PkgId, UInt128}}, source::Nothing)
+[0K    @ Base ./loading.jl:2881
+[0K [14] top-level scope
+[0K    @ stdin:6
+[0Kin expression starting at /workspace/ShenScope/src/Runtime/Precompile.jl:6
+[0Kin expression starting at /workspace/ShenScope/src/ShenScope.jl:1
+[0Kin expression starting at stdin:6
+           ✗ ShenScope
+  0 dependencies successfully precompiled in 28 seconds. 39 already precompiled.
+
+ERROR: LoadError: The following 1 direct dependency failed to precompile:
+
+ShenScope
+
+Failed to precompile ShenScope [3c0e50a5-18b4-4d3a-90e1-bcd141d94adb] to "/workspace/julia-depot/compiled/v1.11/ShenScope/jl_kGElMi".
+ERROR: LoadError: Security metadata precompile fixture failed
+Stacktrace:
+  [1] error(s::String)
+    @ Base ./error.jl:35
+  [2] macro expansion
+    @ /workspace/ShenScope/src/Runtime/Precompile.jl:53 [inlined]
+  [3] macro expansion
+    @ /workspace/julia-depot/packages/PrecompileTools/L8A3n/src/workloads.jl:78 [inlined]
+  [4] (::ShenScope.var"#2787#2790")(root::String)
+    @ ShenScope /workspace/ShenScope/src/Runtime/Precompile.jl:20
+  [5] mktempdir(fn::ShenScope.var"#2787#2790", parent::String; prefix::String)
+    @ Base.Filesystem ./file.jl:819
+  [6] macro expansion
+    @ /workspace/ShenScope/src/Runtime/Precompile.jl:7 [inlined]
+  [7] macro expansion
+    @ /workspace/julia-depot/packages/PrecompileTools/L8A3n/src/workloads.jl:140 [inlined]
+  [8] top-level scope
+    @ /workspace/ShenScope/src/Runtime/Precompile.jl:139
+  [9] include(mod::Module, _path::String)
+    @ Base ./Base.jl:562
+ [10] include(x::String)
+    @ ShenScope /workspace/ShenScope/src/ShenScope.jl:1
+ [11] top-level scope
+    @ /workspace/ShenScope/src/ShenScope.jl:298
+ [12] include
+    @ ./Base.jl:562 [inlined]
+ [13] include_package_for_output(pkg::Base.PkgId, input::String, depot_path::Vector{String}, dl_load_path::Vector{String}, load_path::Vector{String}, concrete_deps::Vector{Pair{Base.PkgId, UInt128}}, source::Nothing)
+    @ Base ./loading.jl:2881
+ [14] top-level scope
+    @ stdin:6
+in expression starting at /workspace/ShenScope/src/Runtime/Precompile.jl:6
+in expression starting at /workspace/ShenScope/src/ShenScope.jl:1
+in expression starting at stdin:
+in expression starting at /workspace/ShenScope/.local/test_execution_services.jl:1

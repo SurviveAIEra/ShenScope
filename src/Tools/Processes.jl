@@ -55,6 +55,8 @@ mutable struct ProcessHandle
     error::Pipe
     terminated::Bool
     termination_mutex::ReentrantLock
+    execution::ExecutionEvidence
+    permission_revoked::Bool
 end
 
 mutable struct ProcessManager
@@ -111,7 +113,9 @@ function start_process!(manager::ProcessManager,argv::Vector{String},ctx::Runtim
     output_limit isa Int && 64 <= output_limit <= 4 * 1024 * 1024 || throw(ShenScopeError(:arguments, "Invalid process output limit"))
     path=workspace_path(ctx.root,cwd)
     isdir(path) || throw(ShenScopeError(:path,"Process directory does not exist"))
+    plan=execution_prepare(ctx.sandbox,argv,ctx;cwd=path,environment)
     target = permission_target === nothing ? canonical(Dict("argv" => argv, "cwd" => path)) : String(permission_target)
+    plan!==nothing && (target=canonical(Dict("operation"=>target,"execution"=>execution_request_view(plan))))
     authorize!(ctx,:process,permission_tool,target;reason="Run workspace process")
     check_cancelled(ctx.cancellation)
     # Callers can revalidate a declaration after asynchronous approval.
@@ -119,6 +123,9 @@ function start_process!(manager::ProcessManager,argv::Vector{String},ctx::Runtim
     workspace_path(ctx.root, cwd) == path && isdir(path) || throw(ShenScopeError(:path, "Process directory changed after approval"))
     permission_decision(ctx.permissions, PermissionRequest("process-start", :process, String(permission_tool), target, "Recheck process launch")) == Deny &&
         throw(ShenScopeError(:permission, "Process launch is now denied"))
+    plan!==nothing && execution_ready!(plan,ctx)
+    permission_decision(ctx.permissions,PermissionRequest("process-ready",:process,String(permission_tool),target,"Confirm permission after execution preflight"))==Deny &&
+        throw(ShenScopeError(:permission,"Process permission was revoked during preflight"))
     effective_timeout = lock(ctx.budget.mutex) do
         check_budget(ctx.budget)
         remaining = ctx.budget.limits.max_seconds - (time_ns()-ctx.budget.started_ns)/1e9
@@ -127,11 +134,16 @@ function start_process!(manager::ProcessManager,argv::Vector{String},ctx::Runtim
     end
     return lock(manager.mutex) do
         length(manager.handles)<manager.max_handles || throw(ShenScopeError(:process,"Process handle limit reached"))
-        command=Sys.islinux() ? vcat(["setsid"],argv) : argv
+        payload=plan===nothing ? argv : collect(plan.command)
+        command=Sys.islinux() ? vcat(["setsid"],payload) : payload
         cmd=Cmd(Cmd(command);dir=path)
         # Keep an explicit inherited environment for compiler usability. Dynamic
         # analyzers use a separate restricted sandbox rather than this host tool.
-        environment !== nothing && (cmd = setenv(cmd, environment))
+        if plan!==nothing
+            cmd=setenv(cmd,Dict("PATH"=>"/usr/bin:/bin","LANG"=>"C.UTF-8"))
+        elseif environment!==nothing
+            cmd=setenv(cmd,environment)
+        end
         out=Pipe();err=Pipe();input=Pipe()
         process=try
             run(pipeline(ignorestatus(cmd);stdin=input,stdout=out,stderr=err);wait=false)
@@ -143,6 +155,7 @@ function start_process!(manager::ProcessManager,argv::Vector{String},ctx::Runtim
         close(out.in);close(err.in);close(input.out)
         stdout=OutputBuffer(output_limit);stderr=OutputBuffer(output_limit)
         id=string(uuid4())
+        evidence=plan===nothing ? ExecutionEvidence() : ExecutionEvidence(plan)
         readers=Task[]
         for (stream,buffer,label) in ((out,stdout,"stdout"),(err,stderr,"stderr"))
             push!(readers,@async begin
@@ -152,6 +165,8 @@ function start_process!(manager::ProcessManager,argv::Vector{String},ctx::Runtim
                         data = UInt8[read(stream, UInt8)]
                         available = min(bytesavailable(stream), 8191)
                         available > 0 && append!(data, read(stream, available))
+                        label=="stderr" && (data=execution_stderr!(evidence,data))
+                        isempty(data) && continue
                         capture!(buffer,data)
                         # The retained output is bounded; event chunks also are.
                         if emit_output
@@ -162,6 +177,12 @@ function start_process!(manager::ProcessManager,argv::Vector{String},ctx::Runtim
                 catch cause
                     cause isa EOFError || !isopen(stream) || rethrow()
                 finally
+                    if label=="stderr"
+                        remaining=execution_stderr!(evidence,UInt8[];final=true)
+                        capture!(buffer,remaining)
+                        text=feed_utf8!(decoder,remaining)
+                        emit_output && !isempty(text) && emit!(ctx,:process_output,Dict("handle"=>id,"stream"=>label,"text"=>text))
+                    end
                     final_text = finish_utf8!(decoder)
                     emit_output && !isempty(final_text) && emit!(ctx,:process_output,Dict("handle"=>id,"stream"=>label,"text"=>final_text))
                     close(stream)
@@ -169,11 +190,13 @@ function start_process!(manager::ProcessManager,argv::Vector{String},ctx::Runtim
             end)
         end
         h=ProcessHandle(id,ctx.session_id,argv,process,input,stdout,stderr,readers,time(),time()+effective_timeout,
-            ctx.cancellation,false,nothing,process_id,out,err,false,ReentrantLock())
+            ctx.cancellation,false,nothing,process_id,out,err,false,ReentrantLock(),evidence,false)
         manager.handles[id]=h
         h.monitor=@async begin
             while !process_exited(process)
-                if iscancelled(h.cancellation) || time()>h.deadline
+                denied=permission_decision(ctx.permissions,PermissionRequest("process-active",:process,String(permission_tool),target,"Current process permission"))==Deny
+                h.permission_revoked=denied || (plan!==nothing && execution_permission_denied(plan,ctx))
+                if iscancelled(h.cancellation) || time()>h.deadline || h.permission_revoked
                     h.timed_out=time()>h.deadline
                     terminate_process!(h);break
                 end
@@ -194,10 +217,13 @@ end
 function process_status(h::ProcessHandle)
     exited=process_exited(h.process)
     exited && h.monitor!==nothing && wait(h.monitor)
-    return Dict("handle"=>h.id,"running"=>!exited,"exit_code"=>exited ? h.process.exitcode : nothing,
+    signal=exited ? Int(h.process.termsignal) : nothing
+    return Dict("handle"=>h.id,"running"=>!exited,"exit_code"=>exited ? (signal==0 ? h.process.exitcode : -signal) : nothing,
+        "signal"=>signal,
         "stdout"=>output_text(h.stdout),"stderr"=>output_text(h.stderr),
         "stdout_bytes"=>h.stdout.total,"stderr_bytes"=>h.stderr.total,
-        "timed_out"=>h.timed_out,"elapsed_seconds"=>time()-h.started)
+        "timed_out"=>h.timed_out,"elapsed_seconds"=>time()-h.started,
+        "permission_revoked"=>h.permission_revoked,"sandbox"=>execution_evidence_view(h.execution;exited))
 end
 
 function process_input!(h::ProcessHandle, text::AbstractString, ctx::RuntimeContext; close_input=true, allow_closed_input=false)

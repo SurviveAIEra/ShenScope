@@ -1,0 +1,6 @@
+ERROR: UndefVarError: `start_process!` not defined in `Main`
+Suggestion: check for spelling errors or missing imports.
+Stacktrace:
+ [1] top-level scope
+   @ none:1
+Dict{String, Any}("exit_code" => nothing, "backend" => "bubblewrap", "authority" => "Diagnostic probe; every command prepares its own policy", "os_isolation" => false, "reason" => "Bubblewrap executable is not a protected system dependency", "checked_at" => "2026-10-04T11:33:55.043Z", "elapsed_seconds" => 0.000365519, "executable_sha256" => nothing, "state" => "blocked")

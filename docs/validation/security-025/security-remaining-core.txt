@@ -1,0 +1,80 @@
+permission: Operation denied by policy
+input: Unknown security action
+permission: Operation denied by policy
+ERROR: LoadError: Some tests did not pass: 4 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/task_protocol.jl:43
+in expression starting at /workspace/ShenScope/.local/test_execution_remaining.jl:11
+{"automatic_host_fallback":false,"bubblewrap_probe":null,"child_environment_values_disclosed":false,"landlock":{"abi":null,"backend_implemented":false,"enforced":false,"errno":38,"state":"unavailable_in_current_process"},"limitations":["Host mode has no OS isolation","Probes are diagnostic and are not command receipts","Installed/Windows/macOS backends are not verified","Workspace-write commands can change ordinary project files","Runtime mounts are explicitly readable dependencies, not private data stores"],"policy":{"backend":"host","description":"Commands run with host access after process permission.","os_isolation":false,"state":"host"},"schema":1,"seccomp_library_available":true}
+{"authority":"Diagnostic probe; every command prepares its own policy","backend":"bubblewrap","checked_at":"2026-10-04T12:26:18.497Z","elapsed_seconds":0.950301613,"executable_sha256":"573236e5328ac2ebb08f59ae3a9805b4f8d12bdef14be8af4450d5463294985f","exit_code":1,"os_isolation":false,"reason":"bwrap: setting up uid map: Read-only file system","state":"blocked"}
+{"config_path":"/tmp/jl_kGh8ni/config.toml","julia":"1.11.7","key_configured":false,"key_variable":"SHENSCOPE_MODEL_KEY","landlock":{"abi":null,"backend_implemented":false,"enforced":false,"errno":38,"state":"unavailable_in_current_process"},"model":"gpt-4.1","protocol":"openai_chat","provider":"openai-compatible","sandbox":{"backend":"host","description":"Commands run with host access after process permission.","os_isolation":false,"state":"host"},"seccomp_library_available":true,"state_dir":"/tmp/jl_kGh8ni/state","version":"0.1.0"}
+{"automatic_host_fallback":false,"bubblewrap_probe":null,"child_environment_values_disclosed":false,"landlock":{"abi":null,"backend_implemented":false,"enforced":false,"errno":38,"state":"unavailable_in_current_process"},"limitations":["Host mode has no OS isolation","Probes are diagnostic and are not command receipts","Installed/Windows/macOS backends are not verified","Workspace-write commands can change ordinary project files","Runtime mounts are explicitly readable dependencies, not private data stores"],"policy":{"backend":"bubblewrap","description":"Requires a confirmed Linux namespace runner; failure never falls back to host.","environment_keys":["COLORTERM","LANG","LC_ALL","LC_CTYPE","TERM","TZ"],"filesystem":"read_only","limits":{"address_space_bytes":0,"cpu_seconds":120,"file_bytes":67108864,"open_files":256},"network":"closed","os_isolation":false,"runtime_roots":["/bin","/lib","/lib64","/usr"],"state":"unprobed"},"schema":1,"seccomp_library_available":true}
+Test Summary:                                                  | Pass  Total  Time
+Security CLI exposes policy without implicit process execution |    8      8  5.7s
+Test Summary:                         | Pass  Total  Time
+Cancellation tree and dynamic context |    7      7  0.3s
+Test Summary:                                | Pass  Total  Time
+Concurrent budget reservation and accounting |    9      9  0.6s
+Test Summary:                             | Pass  Total  Time
+Permission decisions and path containment |    7      7  0.2s
+Test Summary:                                      | Pass  Total  Time
+Durable journal, torn tails and revision conflicts |    6      6  0.3s
+Test Summary:                                   | Pass  Total  Time
+Session reconstruction and unknown side effects |   11     11  1.1s
+Test Summary:                                        | Pass  Total  Time
+Configuration profiles, credential rejection and CAS |   10     10  0.6s
+Test Summary:                         | Pass  Total  Time
+Canonical numeric journal round trips |    3      3  0.8s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  1.3s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  1.6s
+Test Summary:                                                       | Pass  Total  Time
+Workspace tools conflict guard, schema and transactional validation |    9      9  2.7s
+Test Summary:                                                 | Pass  Total  Time
+Process execution, bounded logs, ownership, input and timeout |   12     12  2.1s
+Test Summary:                                                | Pass  Total   Time
+Agent repairs a failing Python test with real tool execution |   10     10  22.6s
+Test Summary:                                           | Pass  Total  Time
+Task definition validation and independent graph checks |   15     15  3.6s
+Test Summary:                                                   | Pass  Total  Time
+Claims, dependency release, priority, fences and detached views |   13     13  5.3s
+Test Summary:                                               | Pass  Total  Time
+Safe retries, uncertain effects and explicit reconciliation |   16     16  1.7s
+Test Summary:                                                      | Pass  Total  Time
+Exclusive effects, cancellation propagation and read-only recovery |   16     16  1.0s
+Test Summary:                                                         | Pass  Total  Time
+Large result artifacts, digest verification and descriptor collisions |    6      6  0.5s
+Test Summary:                                       | Pass  Total  Time
+Actual worker DAG binds verified dependency results |    5      5  5.0s
+Test Summary:                                                   | Pass  Total  Time
+Test processes, timeout uncertainty and separate model sessions |   16     16  1.9s
+Test Summary:                                       | Pass  Total   Time
+Two real Julia processes cannot claim the same task |    3      3  11.0s
+{"counts":{"blocked":0,"cancelled":0,"failed":0,"pending":0,"ready":1,"retry_waiting":0,"running":0,"succeeded":0,"uncertain":0},"created_at":"2026-10-04T12:27:26.370Z","id":"cli-tool","journal_bytes":597,"revision":1,"scope":"session","session_id":"cli-owner","status":"ready","task_count":1,"title":"Workflow"}
+{"counts":{"blocked":0,"cancelled":0,"failed":0,"pending":0,"ready":0,"retry_waiting":0,"running":0,"succeeded":1,"uncertain":0},"created_at":"2026-10-04T12:27:26.370Z","id":"cli-tool","journal_bytes":3099,"revision":4,"scope":"session","session_id":"cli-owner","status":"succeeded","task_count":1,"title":"Workflow"}
+{"attempts":1,"cancel_requested":false,"definition":{"arguments":{"path":"source.txt"},"deduplication_key":"","dependencies":[],"id":"read","kind":"tool","operation":"read","priority":0,"retry":{"initial_delay":1,"jitter_fraction":0.1,"max_attempts":1,"maximum_delay":60,"multiplier":2},"safe_retry":false,"timeout":300,"title":"read"},"failure":null,"id":"read","lease":null,"not_before":0,"receipts":[{"attempt":1,"evidence":"Completion acknowledged by execution owner","execution_id":"f5f11a00-bfc9-4b8a-8f47-6d8a13cabaab","finished_at":1.791116846414587e9,"hooks_barrier":false,"hooks_started":false,"phase":"succeeded","result_sha256":"ca555ce2b0f7556aaf7d17080f939372b6527e7e015b4dec0aeb728ed0caef0f","started_at":1.791116846378729e9}],"result":{"end_line":2,"path":"source.txt","sha256":"4b6a0df8336e6c161d6bd201436a455396d834fdaccdb83a89063a6073e1c6cd","start_line":1,"text":"1: shared Core\n2: ","total_lines":2},"status":"succeeded","version":4}
+Test Summary:                                            | Pass  Total  Time
+Agent and headless CLI invoke the same durable task tool |    6      6  1.6s
+Test Summary:                                               | Pass  Total  Time
+Asynchronous task protocol, approvals and session ownership |   13     13  3.2s
+Task jobs block config replacement and drain owned processes: Test Failed at /workspace/ShenScope/test/unit/task_protocol.jl:62
+  Expression: (workflow.tasks["slow"]).status == WorkUncertain
+   Evaluated: WorkFailed == WorkUncertain
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#129#130")(root::String)
+   @ Main /workspace/ShenScope/test/unit/task_protocol.jl:62
+ [3] mktempdir(fn::var"#129#130", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/unit/task_protocol.jl:44 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/unit/task_protocol.jl:44
+Test Summary:                                                | Pass  Fail  Total  Time
+Task jobs block config replacement and drain owned processes |    4     1      5  2.3s

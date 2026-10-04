@@ -82,7 +82,7 @@ function cli_project_command(positional::Vector{String},flags::AbstractDict,conf
     policy=permissions_from_config(config)
     get(flags,"--allow-process",false) && (policy.rules[:process]=Allow)
     get(flags,"--allow-persistence",false) && (policy.rules[:persistence]=Allow)
-    ctx=RuntimeContext(get(flags,"--root",pwd());state_dir,permissions=policy,
+    ctx=RuntimeContext(get(flags,"--root",pwd());state_dir,permissions=policy,sandbox=sandbox_from_config(config),
         budget=BudgetLedger(limits_from_config(config)),approve=cli_approval)
     tool=ProjectTool()
     try

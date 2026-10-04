@@ -63,7 +63,8 @@
       "packages/opencode/src/session/retry.ts",
       "packages/opencode/src/config/agent.ts",
       "packages/core/src/git.ts",
-      "packages/opencode/src/cli/cmd/serve.ts"
+      "packages/opencode/src/cli/cmd/serve.ts",
+      "packages/opencode/src/permission/index.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -103,7 +104,9 @@
       "packages/deliverables/workspace-changes/src/git.ts",
       "apps/cli/src/bin.ts",
       "apps/desktop-host/src/cli.ts",
-      "packages/compaction/compaction-tool-result-pruner/src/types.ts"
+      "packages/compaction/compaction-tool-result-pruner/src/types.ts",
+      "packages/sandbox/sandbox-policy/src/session-mode.ts",
+      "packages/sandbox/sandbox/src/diagnostics.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -178,7 +181,8 @@
       "packages/agent-core-v2/src/app/git/workTree.ts",
       "packages/agent-core-v2/src/human/todo/tool.ts",
       "apps/kimi-code/src/main.ts",
-      "packages/minidb/src/memory-guard.ts"
+      "packages/minidb/src/memory-guard.ts",
+      "packages/agent-core-v2/src/agent/permissionPolicy/policies/git-control-path-access-ask.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -212,7 +216,8 @@
       "packages/ui/src/ToolCallBlocks/renderers/plan-guidance.tsx",
       "apps/zcode-cli/packages/cli/src/main.ts",
       "apps/zcode-cli/packages/cli/src/index.ts",
-      "apps/zcode-cli/packages/core/src/memory/origin-session.ts"
+      "apps/zcode-cli/packages/core/src/memory/origin-session.ts",
+      "packages/shared/src/permission-request-preview.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -248,7 +253,8 @@
       "packages/cli/src/commands/review/lib/git.ts",
       "packages/cli/src/commands/review/plan-diff.ts",
       "packages/cli/src/cli.ts",
-      "integrations/external-context/src/memory-content.ts"
+      "integrations/external-context/src/memory-content.ts",
+      "packages/core/src/sandbox/bwrap-status.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

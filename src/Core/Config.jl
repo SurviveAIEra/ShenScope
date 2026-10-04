@@ -8,6 +8,7 @@ const DEFAULT_CONFIG=Dict{String,Any}(
     "mcp"=>Dict{String,Any}("servers"=>Dict{String,Any}()),
     "skills"=>Dict{String,Any}(),
     "hooks"=>Dict{String,Any}(),
+    "sandbox"=>Dict{String,Any}("backend"=>"host"),
     "context"=>Dict{String,Any}())
 
 function merge_config!(target::Dict,source::AbstractDict)
@@ -51,6 +52,7 @@ function load_config(;path=config_path(),profile=nothing)
     skill_config(config)
     hook_config(config)
     context_config(config)
+    sandbox_from_config(config)
     return config
 end
 
@@ -100,6 +102,7 @@ function save_config!(config::Dict;path=config_path(),expected_sha256=nothing,be
         end
         sanitized=merge_config!(Dict{String,Any}(),config)
         context_config(sanitized)
+        sandbox_from_config(sanitized)
         provider_from_config(sanitized);BudgetLedger(limits_from_config(sanitized));permissions_from_config(sanitized);mcp_specs_from_config(sanitized);skill_config(sanitized);hook_config(sanitized)
         fleet = model_routing_from_config(sanitized);close_model_fleet!(fleet)
         io=IOBuffer();TOML.print(io,sanitized;sorted=true)

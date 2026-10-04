@@ -5,7 +5,7 @@ function cli_tasks_command(positional,flags,config,state_dir)
         get(flags,flag,false) && (policy.rules[category]=Allow)
     end
     ctx=RuntimeContext(get(flags,"--root",pwd());state_dir,session_id=get(flags,"--session","cli-tasks"),
-        permissions=policy,budget=BudgetLedger(limits_from_config(config)),approve=cli_approval)
+        permissions=policy,sandbox=sandbox_from_config(config),budget=BudgetLedger(limits_from_config(config)),approve=cli_approval)
     action=positional[2];args=Dict{String,Any}("action"=>action)
     if action=="create"
         length(positional)==3 || throw(ShenScopeError(:input,"Use tasks create DEFINITION.json"))
@@ -44,6 +44,7 @@ function cli_tasks_command(positional,flags,config,state_dir)
         cleanup_tasks!(tool.manager)
         for entry in worker_tools;entry isa ModelsTool && cleanup_models_tool!(entry);end
         for entry in worker_tools;entry isa MemoryTool && cleanup_memory!(entry.manager);end
+        for entry in worker_tools;entry isa SecurityTool && cleanup_execution!(entry.manager);end
     end
     return 0
 end

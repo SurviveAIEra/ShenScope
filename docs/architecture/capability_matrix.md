@@ -151,3 +151,13 @@ source observations are recorded in `reference_synthesis.md`; their review
 remains partial. CLI/TUI and both IDE clients share the Julia implementation.
 Embeddings, independently verified file citations, legacy session migration,
 secure erasure and general host-tool isolation remain open capabilities.
+
+Checkpoint 025 adds explicit host/required-Linux execution policy, readonly runtime
+mounts, protected workspace masks, reduced child environment, namespace preflight,
+network/resource bootstrap, bounded setup receipts and scoped CLI/RPC/IDE diagnostics.
+Real kernel tests verify network denial, descriptor closure, CPU/file limits, live
+process revocation and uncertain durable effects. Namespace creation is blocked by
+the current container; its failure refuses the payload without host fallback.
+Successful full namespaces, platform alternatives, domain allowlists and restricted
+language/MCP environment adapters remain open; availability is not inferred from
+the existence of a binary or a Julia type.

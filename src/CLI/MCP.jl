@@ -14,7 +14,7 @@ function cli_mcp_command(positional::Vector{String}, flags::AbstractDict, config
         get(flags, flag, false) && (policy.rules[category] = Allow)
     end
     ctx = RuntimeContext(get(flags, "--root", pwd()); state_dir, session_id = get(flags, "--session", "cli-mcp"),
-        permissions = policy, approve = cli_approval)
+        permissions = policy, sandbox=sandbox_from_config(config), approve = cli_approval)
     action = positional[2]
     arguments = Dict{String,Any}("action" => action)
     if action != "servers"

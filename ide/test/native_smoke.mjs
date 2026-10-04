@@ -47,6 +47,7 @@ const routingOnly = process.argv.includes('--routing-only');
 const historyOnly = process.argv.includes('--history-only');
 const migrationOnly = process.argv.includes('--migration-only');
 const memoryOnly = process.argv.includes('--memory-only');
+const securityOnly = process.argv.includes('--security-only');
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
@@ -140,6 +141,9 @@ if (skillsOnly) {
     await writeFile(join(userSkill, 'SKILL.md'), '---\nname: manual-review\ndescription: Explicit user review instructions\ndisable-model-invocation: true\n---\nUSER SOURCE SENTINEL\n');
 }
 await writeFile(join(root, 'README.md'), 'Native sidebar test workspace\n');
+if (securityOnly) {
+    await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'deny'\nprocess = 'ask'\nnetwork = 'deny'\n`);
+}
 await writeFile(join(root, 'sample.go'), 'package fixture\nfunc Greet() int { return 1 }\nfunc TestGreet() int { return Greet() }\n');
 if (memoryOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'ask'\nprocess = 'deny'\nnetwork = 'deny'\n`);
@@ -234,7 +238,7 @@ try {
     }
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -263,6 +267,40 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (securityOnly) {
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Security');
+        await panel.getByText('Host access', { exact: true }).first().waitFor();
+        assert.ok((await panel.locator('.security-policy').innerText()).includes('No operating system isolation is configured.'));
+        await panel.getByRole('button', { name: 'Check isolation capability', exact: true }).click();
+        await approve(panel, 'security.probe · process', 'Allow once');
+        await panel.getByText('Security check complete', { exact: true }).waitFor({ timeout: 120_000 });
+        await panel.locator('.security-probe').waitFor();
+        const probe = await panel.locator('.security-probe').innerText();
+        assert.ok(probe.includes('Namespace available') || probe.includes('Namespace unavailable'));
+        assert.ok((await panel.locator('.security-policy').innerText()).includes('Host access'));
+        await panel.getByRole('combobox', { name: 'Execution backend', exact: true }).selectOption('bubblewrap');
+        await panel.getByRole('combobox', { name: 'Command filesystem', exact: true }).selectOption('read_only');
+        await panel.getByRole('combobox', { name: 'Command network', exact: true }).selectOption('closed');
+        await panel.getByRole('button', { name: 'Apply execution policy', exact: true }).click();
+        await panel.getByText('Execution policy saved', { exact: true }).waitFor({ timeout: 120_000 });
+        await panel.getByText('Isolation required', { exact: true }).waitFor();
+        await panel.getByRole('button', { name: 'Check isolation capability', exact: true }).click();
+        await approve(panel, 'security.probe · process', 'Allow once');
+        await panel.getByText('Security check complete', { exact: true }).waitFor({ timeout: 120_000 });
+        await panel.locator('.security-probe').waitFor();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-security-policy.png`) });
+        const saved = await readFile(config, 'utf8');
+        assert.match(saved, /backend = "bubblewrap"/);
+        assert.match(saved, /filesystem = "read_only"/);
+        assert.match(saved, /network = "closed"/);
+        await panel.getByRole('combobox', { name: 'Execution backend', exact: true }).selectOption('host');
+        await panel.getByRole('button', { name: 'Apply execution policy', exact: true }).click();
+        await panel.getByText('Execution policy saved', { exact: true }).waitFor({ timeout: 120_000 });
+        await panel.getByText('Host access', { exact: true }).first().waitFor();
+        assert.equal(requests.length, 0, 'Security metadata, probes and config changes make no model request');
+        assert.equal(await panel.locator('.permission-card').count(), 0);
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual process approvals, honest host/namespace status, policy CAS saves, live services after reconfiguration and no model requests; ${probe.split('\n')[0]}`);
     }
     if (memoryOnly) {
         await panel.getByRole('combobox', { name: 'More views' }).selectOption('Memory');

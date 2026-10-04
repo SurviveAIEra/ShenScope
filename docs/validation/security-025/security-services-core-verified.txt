@@ -1,0 +1,77 @@
+ERROR: LoadError: Some tests did not pass: 1 passed, 0 failed, 7 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/execution_cli.jl:1
+in expression starting at /workspace/ShenScope/.local/test_execution_services.jl:5
+Test Summary:                                                             | Pass  Total   Time
+Security RPC binds approval, jobs, revocation and configuration lifecycle |   34     34  25.4s
+Security CLI exposes policy without implicit process execution: Error During Test at /workspace/ShenScope/test/integration/execution_cli.jl:6
+  Test threw exception
+  Expression: main(vcat(["security", "status"], args)) == 0
+  UndefVarError: `main` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [2] (::var"#21#22")(root::String)
+     @ Main /workspace/ShenScope/test/integration/execution_cli.jl:6
+Security CLI exposes policy without implicit process execution: Error During Test at /workspace/ShenScope/test/integration/execution_cli.jl:7
+  Test threw exception
+  Expression: main(vcat(["security", "probe"], args)) == 1
+  UndefVarError: `main` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [2] (::var"#21#22")(root::String)
+     @ Main /workspace/ShenScope/test/integration/execution_cli.jl:7
+Security CLI exposes policy without implicit process execution: Error During Test at /workspace/ShenScope/test/integration/execution_cli.jl:8
+  Test threw exception
+  Expression: main(vcat(["security", "probe", "--allow-process"], args)) == 0
+  UndefVarError: `main` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [2] (::var"#21#22")(root::String)
+     @ Main /workspace/ShenScope/test/integration/execution_cli.jl:8
+Security CLI exposes policy without implicit process execution: Error During Test at /workspace/ShenScope/test/integration/execution_cli.jl:9
+  Test threw exception
+  Expression: main(vcat(["security", "invalid"], args)) == 1
+  UndefVarError: `main` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [2] (::var"#21#22")(root::String)
+     @ Main /workspace/ShenScope/test/integration/execution_cli.jl:9
+Security CLI exposes policy without implicit process execution: Error During Test at /workspace/ShenScope/test/integration/execution_cli.jl:10
+  Test threw exception
+  Expression: main(vcat(["doctor"], args)) == 0
+  UndefVarError: `main` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [2] (::var"#21#22")(root::String)
+     @ Main /workspace/ShenScope/test/integration/execution_cli.jl:10
+Security CLI exposes policy without implicit process execution: Error During Test at /workspace/ShenScope/test/integration/execution_cli.jl:13
+  Test threw exception
+  Expression: main(vcat(["security", "status"], args)) == 0
+  UndefVarError: `main` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [2] (::var"#21#22")(root::String)
+     @ Main /workspace/ShenScope/test/integration/execution_cli.jl:13
+Security CLI exposes policy without implicit process execution: Error During Test at /workspace/ShenScope/test/integration/execution_cli.jl:14
+  Test threw exception
+  Expression: main(vcat(["security", "probe"], args)) == 1
+  UndefVarError: `main` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:677 [inlined]
+   [2] (::var"#21#22")(root::String)
+     @ Main /workspace/ShenScope/test/integration/execution_cli.jl:14
+Test Summary:                                                  | Pass  Error  Total  Time
+Security CLI exposes policy without implicit process execution |    1      7      8  2.1s

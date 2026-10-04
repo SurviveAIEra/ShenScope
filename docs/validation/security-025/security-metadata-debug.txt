@@ -1,0 +1,20 @@
+ERROR: LoadError: UndefVarError: `verified_session` not defined in `ShenScope`
+Suggestion: check for spelling errors or missing imports.
+Stacktrace:
+ [1] security_rpc(server::CoreServer, method::String, params::Dict{String, String})
+   @ ShenScope /workspace/ShenScope/src/Protocol/Security.jl:8
+ [2] #invokelatest#2
+   @ ./essentials.jl:1055 [inlined]
+ [3] invokelatest
+   @ ./essentials.jl:1052 [inlined]
+ [4] dispatch_rpc(server::CoreServer, method::String, params::Dict{String, String})
+   @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:200
+ [5] (::var"#1#2")(root::String)
+   @ Main /workspace/ShenScope/.local/security_metadata_debug.jl:9
+ [6] mktempdir(fn::var"#1#2", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [7] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [8] top-level scope
+   @ /workspace/ShenScope/.local/security_metadata_debug.jl:2
+in expression starting at /workspace/ShenScope/.local/security_metadata_debug.jl:2

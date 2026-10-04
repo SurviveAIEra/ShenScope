@@ -46,6 +46,11 @@ using PrecompileTools: @setup_workload, @compile_workload
                     "params"=>Dict{String,Any}("session_id"=>session_id)))
                 seek(output,response_offset)
                 haskey(read_rpc(output),"result") || error("Memory metadata precompile fixture failed")
+                seekend(output);response_offset=position(output)
+                handle_rpc(server,Dict{String,Any}("jsonrpc"=>"2.0","id"=>9,"method"=>"security/query",
+                    "params"=>Dict{String,Any}("session_id"=>session_id)))
+                seek(output,response_offset)
+                haskey(read_rpc(output),"result") || error("Security metadata precompile fixture failed")
                 seekend(output)
                 input = IOBuffer()
                 write_rpc(input,Dict{String,Any}("jsonrpc"=>"2.0","id"=>6,"method"=>"health"))

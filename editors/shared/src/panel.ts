@@ -90,6 +90,11 @@ export class ShenScopePanel {
     private completedModelJobs = new Set<string>();
     private memoryJob?: string;
     private memoryStarting = false;
+    private securityJob?: string;
+    private securityStarting = false;
+    private securityResult?: any;
+    private securityResultOwner?: string;
+    private completedSecurityJobs = new Set<string>();
     private memoryResult?: { action: string; result: any };
     private completedMemoryJobs = new Set<string>();
     private memoryScope = 'workspace';
@@ -231,13 +236,9 @@ export class ShenScopePanel {
             const tools = await this.bridge.request('tools/list'); if (revision !== this.renderRevision) { return; }
             for (const tool of tools) { const card = el('section', '', 'info-card'); card.append(el('h3', tool.name), el('p', tool.description)); this.content.append(card); } return;
         }
-        if (this.tab === 'Runtime' || this.tab === 'Security') {
+        if (this.tab === 'Security') { await this.securityView(revision); return; }
+        if (this.tab === 'Runtime') {
             const runtime = await this.bridge.request('runtime/status'); if (revision !== this.renderRevision) { return; }
-            if (this.tab === 'Security') {
-                this.content.append(el('p', 'Choose which actions can run and which need your approval.', 'view-description'));
-                for (const [category, value] of Object.entries(this.config.permissions)) { const row = el('div', '', 'property-row'); row.append(el('span', category), el('span', String(value), `badge badge-${value}`)); this.content.append(row); }
-                this.content.append(this.button('Edit permissions', () => this.selectTab('Settings')));
-            }
             const details = el('details', '', 'diagnostics'); details.append(el('summary', 'Runtime details'), el('pre', JSON.stringify(runtime, null, 2))); this.content.append(details); return;
         }
         const capability: Record<string, string> = { Intelligence: 'project_intelligence', MCP: 'mcp', Skills: 'skills', Hooks: 'hooks', Models: 'model_catalog' };
@@ -354,7 +355,7 @@ export class ShenScopePanel {
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
         }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
     }
-    private contextBusy(): boolean { return !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || !!this.modelsJob || this.modelsStarting; }
+    private contextBusy(): boolean { return !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || !!this.modelsJob || this.modelsStarting; }
     private modelsBusy(): boolean { return this.contextBusy() || !!this.analyzersJob || this.analyzersStarting; }
     private async startModels(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.modelsBusy()) { throw new Error('Finish or cancel the current operation before working with models.'); }
@@ -592,6 +593,54 @@ export class ShenScopePanel {
             if (!this.completedMemoryJobs.has(result.job_id)) { this.memoryJob = result.job_id; this.setStatus('Working with saved memory…'); }
         } finally { this.memoryStarting = false; this.updateActions(); if (this.tab === 'Memory') { await this.renderTab(); } }
     }
+    private async startSecurity(action = 'probe'): Promise<void> {
+        if (this.analyzersBusy()) { throw new Error('Finish or cancel the current operation first.'); }
+        this.securityStarting = true; this.securityResult = undefined;
+        if (this.tab === 'Security') { for (const control of Array.from(this.content.querySelectorAll<HTMLButtonElement | HTMLSelectElement>('button,select'))) { control.disabled = true; } }
+        this.updateActions();
+        try {
+            const session_id = await this.ensureSession('Execution security');
+            const result = await this.bridge.request('security/start', { session_id, action });
+            if (!this.completedSecurityJobs.has(result.job_id)) { this.securityJob = result.job_id; this.setStatus('Checking execution security…'); }
+        } finally { this.securityStarting = false; this.updateActions(); if (this.tab === 'Security') { await this.renderTab(); } }
+    }
+    private async securityView(revision: number): Promise<void> {
+        const session_id = await this.ensureSession('Execution security'); let status: any;
+        try { status = await this.bridge.request('security/query', { session_id }); } catch { status = undefined; }
+        if (revision !== this.renderRevision) { return; }
+        const busy = this.analyzersBusy(); const policy = status?.policy ?? this.config.sandbox ?? { backend: 'host' };
+        this.content.append(el('p', 'Permissions decide whether a command may run. Isolation limits what the command can access.', 'view-description'));
+        const card = el('section', '', 'info-card security-policy'); const isolated = policy.backend === 'bubblewrap';
+        card.append(el('h3', isolated ? 'Isolation required' : 'Host access'), el('p', isolated ? 'Commands must confirm a Linux namespace and system call policy. An unavailable runner blocks execution.' : 'Commands have host access after process approval. No operating system isolation is configured.', 'view-description'));
+        if (isolated) { card.append(el('span', policy.filesystem === 'workspace_write' ? 'Workspace writes' : 'Read only workspace', 'badge'), el('span', policy.network === 'open' ? 'Network permitted with approval' : 'Network closed', 'badge')); }
+        const completed = this.securityResultOwner === session_id ? this.securityResult : undefined;
+        const probe = completed?.backend === 'bubblewrap' ? completed : status?.bubblewrap_probe;
+        if (probe) { const result = el('div', '', 'security-probe'); result.append(el('strong', probe.state === 'available' ? 'Namespace available' : 'Namespace unavailable'), el('p', probe.reason), el('small', `Checked ${probe.checked_at}`)); card.append(result); }
+        else { card.append(el('small', 'Namespace capability has not been checked in this conversation.', 'memory-muted')); }
+        const check = this.button('Check isolation capability', () => this.startSecurity(), 'primary-button'); check.disabled = busy; card.append(check);
+        if (!status) { const load = this.button('Read security status', () => this.startSecurity('status')); load.disabled = busy; card.append(load); }
+        if (this.securityJob) { card.append(el('p', 'Checking or waiting for your approval…'), this.button('Cancel security check', () => this.bridge.request('security/cancel_job', { session_id, job_id: this.securityJob }))); }
+        this.content.append(card);
+        const form = el('section', '', 'info-card security-config'); form.append(el('h3', 'Command policy'));
+        const select = (name: string, values: string[][], current: string) => { const label = el('label', name, 'field'); const input = el('select'); input.setAttribute('aria-label', name); input.disabled = busy; for (const [value, text] of values) { const option = el('option', text); option.value = value; option.selected = current === value; input.append(option); } label.append(input); form.append(label); return input; };
+        const backend = select('Execution backend', [['host', 'Host access'], ['bubblewrap', 'Require Linux isolation']], this.config.sandbox?.backend ?? 'host');
+        const filesystem = select('Command filesystem', [['read_only', 'Read only workspace'], ['workspace_write', 'Allow workspace writes']], this.config.sandbox?.filesystem ?? 'read_only');
+        const network = select('Command network', [['closed', 'Closed'], ['open', 'Open with network permission']], this.config.sandbox?.network ?? 'closed');
+        const refresh = () => { filesystem.disabled = busy || backend.value === 'host'; network.disabled = busy || backend.value === 'host'; }; backend.addEventListener('change', refresh); refresh();
+        const save = this.button('Apply execution policy', async () => {
+            if (this.analyzersBusy()) { throw new Error('Finish the current operation first.'); }
+            this.securityStarting = true; this.updateActions();
+            for (const control of Array.from(form.querySelectorAll<HTMLButtonElement | HTMLSelectElement>('button,select'))) { control.disabled = true; }
+            const next = structuredClone(this.config);
+            next.sandbox = backend.value === 'host' ? { backend: 'host' } : { ...(next.sandbox?.backend === 'bubblewrap' ? next.sandbox : {}), backend: 'bubblewrap', filesystem: filesystem.value, network: network.value };
+            try { const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.securityResult = undefined; this.setStatus('Execution policy saved'); }
+            finally { this.securityStarting = false; this.updateActions(); if (this.tab === 'Security') { await this.renderTab(); } }
+        }, 'primary-button'); save.disabled = busy; form.append(save, el('small', 'Settings apply to future commands. Restricted commands use a private temporary directory and do not inherit credential variables.', 'memory-muted')); this.content.append(form);
+        const permissions = el('details', '', 'info-card'); permissions.append(el('summary', 'Current permissions'));
+        for (const [category, value] of Object.entries(this.config.permissions)) { const row = el('div', '', 'property-row'); row.append(el('span', category), el('span', String(value), `badge badge-${value}`)); permissions.append(row); }
+        permissions.append(this.button('Edit permissions', () => this.selectTab('Settings'))); this.content.append(permissions);
+        if (status) { const details = el('details', '', 'diagnostics'); details.append(el('summary', 'Capability details'), el('pre', JSON.stringify(status, null, 2))); this.content.append(details); }
+    }
     private async memoryView(revision: number): Promise<void> {
         const session_id = await this.ensureSession('Saved memory'); let inventory: any;
         try { inventory = await this.bridge.request('memory/query', { session_id, scope: this.memoryScope, namespace: this.memoryNamespace }); } catch { inventory = undefined; }
@@ -736,7 +785,7 @@ export class ShenScopePanel {
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; await this.renderTab();
         }); save.disabled = this.contextBusy(); recovery.append(save); this.content.append(recovery);
     }
-    private hooksBusy(): boolean { return !!this.memoryJob || this.memoryStarting || this.active || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.contextJob || this.contextStarting; }
+    private hooksBusy(): boolean { return !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || !!this.contextJob || this.contextStarting; }
     private async startHooks(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.hooksJob || this.hooksStarting) { throw new Error('Finish or cancel the current Hook operation.'); }
         this.hooksStarting = true;
@@ -1272,6 +1321,14 @@ export class ShenScopePanel {
             if (params.kind === 'analyzers_job_completed') { this.analyzersResult = { action: payload.action, result: payload.result }; this.setStatus('Analyzer operation complete'); }
             else { this.analyzersResult = undefined; this.notice.textContent = payload.error ?? 'Analyzer operation failed'; this.notice.hidden = false; this.setStatus(payload.status === 'cancelled' ? 'Analyzer operation cancelled' : 'Analyzer operation failed'); }
             if (this.tab === 'Analyzers') { void this.guard(() => this.renderTab()); } this.updateActions(); return;
+        }
+        if (params.kind === 'security_job_completed' || params.kind === 'security_job_failed') {
+            this.completedSecurityJobs.add(payload.job_id); while (this.completedSecurityJobs.size > 64) { this.completedSecurityJobs.delete(this.completedSecurityJobs.values().next().value!); }
+            if (this.securityJob === payload.job_id) { this.securityJob = undefined; }
+            for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }
+            if (params.kind === 'security_job_completed') { this.securityResult = payload.result; this.securityResultOwner = params.session_id; this.setStatus('Security check complete'); }
+            else { this.notice.textContent = payload.error ?? 'Security check stopped'; this.notice.hidden = false; this.setStatus('Security check stopped'); }
+            this.updateActions(); if (this.tab === 'Security') { void this.guard(() => this.renderTab()); } return;
         }
         if (params.kind === 'memory_job_completed' || params.kind === 'memory_job_failed') {
             this.completedMemoryJobs.add(payload.job_id); while (this.completedMemoryJobs.size > 64) { this.completedMemoryJobs.delete(this.completedMemoryJobs.values().next().value!); }

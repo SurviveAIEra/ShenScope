@@ -112,6 +112,7 @@ function cli_main(args=ARGS)
         println("Project changes: project watch --backend NAME [--automatic] [--poll-seconds N] [--duration N]")
         println("Memory: memory retrieve QUERY --namespace NAME --scope workspace|session|user --tags-all TAGS --match any|all")
         println("Memory write: memory put KEY CONTENT_FILE --expected-version N [--allow-persistence]")
+        println("Security: security status | security probe [--allow-process]")
         return 0
     end
     try

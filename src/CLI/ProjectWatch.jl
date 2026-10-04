@@ -38,7 +38,7 @@ function cli_project_watch(positional::Vector{String},flags::AbstractDict,config
     policy=permissions_from_config(config)
     get(flags,"--allow-process",false) && (policy.rules[:process]=Allow)
     get(flags,"--allow-persistence",false) && (policy.rules[:persistence]=Allow)
-    context=RuntimeContext(get(flags,"--root",pwd());state_dir,permissions=policy,
+    context=RuntimeContext(get(flags,"--root",pwd());state_dir,permissions=policy,sandbox=sandbox_from_config(config),
         session_id=get(flags,"--session","cli-project-watch"),budget=BudgetLedger(limits_from_config(config)),
         approve=cli_approval,sink=e->cli_watch_event(e;json=get(flags,"--json",false)))
     manager=ProjectManager();watch=nothing

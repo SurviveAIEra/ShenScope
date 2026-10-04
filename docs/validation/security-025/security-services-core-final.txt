@@ -1,0 +1,26 @@
+Precompiling ShenScope...
+  77219.2 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 78 seconds. 39 already precompiled.
+ERROR: LoadError: Some tests did not pass: 33 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/execution_protocol.jl:1
+in expression starting at /workspace/ShenScope/.local/test_execution_services.jl:4
+Security RPC binds approval, jobs, revocation and configuration lifecycle: Test Failed at /workspace/ShenScope/test/unit/execution_protocol.jl:27
+  Expression: job.status == :completed && job.result["state"] in ("available", "blocked", "unconfirmed", "unsupported_platform")
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#11#16")(root::String)
+   @ Main /workspace/ShenScope/test/unit/execution_protocol.jl:27
+ [3] mktempdir(fn::var"#11#16", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/unit/execution_protocol.jl:2 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/unit/execution_protocol.jl:2
+Test Summary:                                                             | Pass  Fail  Total   Time
+Security RPC binds approval, jobs, revocation and configuration lifecycle |   33     1     34  21.9s

@@ -11,7 +11,7 @@ function cli_agent_command(positional,flags,config,state_dir)
     end
     id=get(flags,"--session",string(uuid4()))
     ctx=RuntimeContext(root;session_id=id,state_dir,budget=BudgetLedger(limits_from_config(config)),
-        permissions=policy,approve=cli_approval,sink=e->render_event(stdout,e;json=get(flags,"--json",false)))
+        permissions=policy,sandbox=sandbox_from_config(config),approve=cli_approval,sink=e->render_event(stdout,e;json=get(flags,"--json",false)))
     session=haskey(flags,"--session") ? load_session(state_dir,id) : new_session(ctx)
     tools=core_tools(;config,config_source=get(flags,"--config",config_path()))
     if !haskey(flags,"--script")
@@ -38,6 +38,7 @@ function cli_agent_command(positional,flags,config,state_dir)
                 tool isa AnalyzersTool && cleanup_analyzers!(tool.manager)
             tool isa ModelsTool && cleanup_models_tool!(tool)
             tool isa MemoryTool && cleanup_memory!(tool.manager)
+            tool isa SecurityTool && cleanup_execution!(tool.manager)
                 tool isa ProcessTool && cleanup_processes!(tool.manager,id)
             end
         end

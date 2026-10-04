@@ -1,0 +1,4 @@
+socket denied by kernel
+SHENSCOPE_EXEC_READY:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:network_probe
+
+exit_code=0

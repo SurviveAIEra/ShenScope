@@ -4,6 +4,7 @@ function cli_doctor_command(positional,flags,config,state_dir)
         "provider"=>provider_name(p),"protocol"=>String(p.config.protocol),"model"=>p.config.model,
         "key_configured"=>!isempty(get(ENV,p.config.key_env,"")),"key_variable"=>p.config.key_env,
         "state_dir"=>abspath(state_dir),"config_path"=>get(flags,"--config",config_path()),
-        "sandbox"=>"host process; OS isolation not configured")))
+        "sandbox"=>execution_sandbox_view(sandbox_from_config(config)),"landlock"=>execution_landlock_status(),
+        "seccomp_library_available"=>compute_seccomp_available())))
     return 0
 end

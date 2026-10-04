@@ -46,6 +46,12 @@ function execute_worker_tool(executor::WorkExecutor, operation::String, argument
     try
         before_tool_hooks!(call, ctx;worker=true)
         result = with_context(() -> execute(tool, arguments, ctx), ctx)
+        check_cancelled(ctx.cancellation)
+        if operation=="process"
+            get(result,"timed_out",false) && throw(ShenScopeError(:timeout,"Worker process timed out"))
+            (get(result,"signal",0)!=0 || get(result,"permission_revoked",false)) &&
+                throw(ShenScopeError(:process_interrupted,"Worker process ended before its effects could be confirmed"))
+        end
         success = is_successful_tool_result(tool, result)
         success || throw(ShenScopeError(:tool_failed, "Worker tool reported a failure"))
         emit!(ctx, :tool_completed, Dict("id" => id, "name" => operation, "ok" => success,
@@ -123,7 +129,7 @@ function worker_failure(error, spec::WorkSpec; interrupted = false)
     message = error isa ShenScopeError ? cliptext(error.message, 4096) : "Task execution failed: " * string(nameof(typeof(error)))
     retryable = error isa ShenScopeError && error.retryable || code in (:network, :timeout, :rate_limit, :provider_unavailable, :process)
     # External effects cannot be rolled back by changing a journal record.
-    uncertain = code == :mcp_outcome_uncertain || !spec.safe_retry && (interrupted || code in (:cancelled, :timeout, :lease_lost))
+    uncertain = code == :mcp_outcome_uncertain || !spec.safe_retry && (interrupted || code in (:cancelled, :timeout, :lease_lost, :process_interrupted))
     WorkFailure(code, message, retryable, uncertain)
 end
 

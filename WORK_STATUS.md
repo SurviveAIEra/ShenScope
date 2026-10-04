@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 18,134 authored Julia Core code lines across 172 files;
-CLI/TUI add 931 lines and are counted separately. This is 7.2536% of the
-minimum line target, leaving 231,866 lines. These are early implementations,
+Latest cloc 2.11 count: 18,890 authored Julia Core code lines across 183 files;
+CLI/TUI add 951 lines and are counted separately. This is 7.556% of the
+minimum line target, leaving 231,110 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -445,3 +445,30 @@ legacy session-proof migration and secure erasure remain pending.
 Development continues immediately with general host-tool sandbox/security,
 runtime/state and remaining Julia-specific capabilities. The 250,000 authored
 Core-line target remains active and unmet.
+
+Execution security checkpoint 025: explicit host/required-Linux policies, bounded
+mount plans/protected masks, reduced child state, namespace preflight, Julia-owned
+network/resource bootstrap, setup receipts and scoped CLI/RPC/native/VSIX controls.
+Read/Edit/Process/Network remain separate; policy/runtime paths are reviewed before
+launch, and Deny revocation terminates owned processes. Native signals now report
+truthful exit status. Interrupted unsafe durable tasks retain uncertain effects and
+receipts, including a real CPU-killed task that first writes a file.
+
+Configuration is validated before replacement; active jobs and draining processes
+block saves. Fresh memory/security managers and task references remain usable after
+policy changes, preserving durable facts. Seven primary project observations extend
+the partial reference review without copying implementations.
+
+Validation: 541 distinct affected assertions (141 new), three real Node/Core tests,
+final shared editor check/build, complete Workbench typecheck, exact package payload
+and both actual development GUIs pass. Actual kernel network denial, descriptor
+closure, CPU/file limits and process revocation pass. This container blocks nested
+namespace UID maps and exposes no Landlock interface; target refusal is verified,
+while successful full namespaces remain unverified here. Failed API/fixture attempts
+and the task cancellation regression are retained with their corrections. Evidence:
+docs/validation/security-checkpoint-025.json. Scope: docs/core/execution_security.md.
+
+Development continues immediately with Julia-specific Core capabilities, process
+runtime, extensibility and remaining requirements. Domain/platform adapters, full
+namespace execution, PackageCompiler and installed restoration remain open. The
+250,000 authored Core-line target remains active and unmet.
