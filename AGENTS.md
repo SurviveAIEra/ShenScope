@@ -5,10 +5,13 @@ tested checkpoints to `SurviveAIEra/ShenScope` on GitHub. Use this checkout;
 do not create worktrees or copy the project directory. No force pushes.
 
 Read `docs/requirements/reconstruction.md` and `WORK_STATUS.md` on resumption.
-The minimum target is 250,000 authored Julia Core code lines, with 500,000 as
-the stretch target. Count using cloc, excluding tests, documentation, generated
+The user's current phase target is 32,000 authored Julia Core code lines.
+Prioritize missing everyday project capabilities. The earlier 250,000/500,000
+figures are historical long-term planning, not this phase's stopping gate.
+Count using cloc, excluding tests, documentation, generated
 code, third-party code and Code-OSS. Never pad or duplicate code to reach it.
-Do not report the whole task complete before the target and functional gates pass.
+Complete this phase only after its size target and relevant functional checks
+pass; report remaining product gates honestly.
 
 Julia owns agent, model, tool, security, session, project data and analysis logic.
 ShenScope is a general agent for projects in any language. Julia implements Core;

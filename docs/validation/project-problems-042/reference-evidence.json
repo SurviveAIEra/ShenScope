@@ -1,0 +1,189 @@
+[
+  {
+    "project": "codex",
+    "repository": "openai/codex",
+    "license": "Apache-2.0",
+    "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+    "path": "codex-rs/app-server/src/request_processors/diagnostics.rs",
+    "sha256": "750eb6c1ffe91a200770caf4ecaba526b69e266cf1d53bcd5a670dcadb868a9e",
+    "inspected_lines": [
+      [
+        1,
+        23
+      ]
+    ],
+    "observation": "Engine memory gauges are distinct from target-project diagnostics.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "opencode",
+    "repository": "anomalyco/opencode",
+    "license": "MIT",
+    "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+    "path": "packages/opencode/src/lsp/diagnostic.ts",
+    "sha256": "79b0f13db3046b409020086b0e674696c30a3432d5be0262327fb6e98d333faa",
+    "inspected_lines": [
+      [
+        1,
+        29
+      ]
+    ],
+    "observation": "Per-file diagnostic projection reports omissions.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "opencode",
+    "repository": "anomalyco/opencode",
+    "license": "MIT",
+    "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+    "path": "packages/opencode/src/lsp/client.ts",
+    "sha256": "81a3c66617083715cdbfeabc7b12ae7f059da064ef3aba462738ca7b992b6b5a",
+    "inspected_lines": [
+      [
+        1,
+        135
+      ]
+    ],
+    "observation": "Separate document synchronization, push reports and negotiated capabilities.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "deepseek-harness",
+    "repository": "deepseek-ai/deepseek-harness",
+    "license": "MIT",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "path": "packages/lsp/tool-lsp/src/render.ts",
+    "sha256": "067940031a502fbc0d71ff6f2d9173768323d974c6dffe40cea9de3b863c6f82",
+    "inspected_lines": [
+      [
+        1,
+        72
+      ]
+    ],
+    "observation": "Pure coordinate conversion and bounded rendering remain separate from I/O.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "deepseek-harness",
+    "repository": "deepseek-ai/deepseek-harness",
+    "license": "MIT",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "path": "packages/lsp/lsp-stdio/src/framing.ts",
+    "sha256": "3963e0195fc8aa1e7825b7a1412ee76d82198d78647cf1cddeeb5f53057fd72a",
+    "inspected_lines": [
+      [
+        1,
+        102
+      ]
+    ],
+    "observation": "Bound asynchronous transport headers and bodies independently.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "deepseek-harness",
+    "repository": "deepseek-ai/deepseek-harness",
+    "license": "MIT",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "path": "packages/lsp/lsp-stdio/src/abort.ts",
+    "sha256": "68753fc8ae1b82ea067ca0f070acf873a5d216c18ad2917e06e843c1e70ae92d",
+    "inspected_lines": [
+      [
+        1,
+        48
+      ]
+    ],
+    "observation": "Cancellation abandons waiting without claiming owned work completed.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "qwen-code",
+    "repository": "QwenLM/qwen-code",
+    "license": "Apache-2.0",
+    "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+    "path": "packages/core/src/lsp/LspResponseNormalizer.ts",
+    "sha256": "d7538dfa36414f1c0ad9a0ab8bc3f02c0894f625d6cfc11252758c3d3344ed1c",
+    "inspected_lines": [
+      [
+        1,
+        120
+      ]
+    ],
+    "observation": "Validate diagnostics through explicit range and optional-field contracts.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "qwen-code",
+    "repository": "QwenLM/qwen-code",
+    "license": "Apache-2.0",
+    "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+    "path": "packages/core/src/lsp/NativeLspClient.ts",
+    "sha256": "d8a91147935ad96f81a54d4590b79c18d88f423fd9d7f86bd18a16f820c28d38",
+    "inspected_lines": [
+      [
+        1,
+        170
+      ]
+    ],
+    "observation": "Common language-service API is independent from native lifecycle.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "pi-mono",
+    "repository": "badlogic/pi-mono",
+    "license": "MIT",
+    "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+    "path": "packages/coding-agent/src/core/diagnostics.ts",
+    "sha256": "1914431098db1b4638e4fb3582ac22e8125356c4ab024671494f565c6d5ffb39",
+    "inspected_lines": [
+      [
+        1,
+        15
+      ]
+    ],
+    "observation": "Resource conflict provenance differs from language diagnostics.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "ZCode",
+    "repository": "zai-org/ZCode",
+    "license": "Apache-2.0",
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "path": "packages/shared/src/process-diagnostic.ts",
+    "sha256": "e6889f1d4d6c9829019dc07053872d15ae0af2a1d25aeb97d143dc857fc13c29",
+    "inspected_lines": [
+      [
+        1,
+        42
+      ]
+    ],
+    "observation": "Bound process failures and preserve the main protocol when side-channel reporting fails.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "kimi-code",
+    "repository": "MoonshotAI/kimi-code",
+    "license": "MIT",
+    "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+    "path": "packages/agent-core-v2/src/agent/tools/os/glob/globTool.ts",
+    "sha256": "9ab9539c9ba219569eca693fa5b670ad8f57ce74e70e4077868c55eedbab6fdf",
+    "inspected_lines": [
+      [
+        295,
+        329
+      ]
+    ],
+    "observation": "Retain complete paths in bounded results and disclose truncation.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  }
+]

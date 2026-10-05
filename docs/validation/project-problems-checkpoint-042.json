@@ -1,0 +1,123 @@
+{
+  "checkpoint": 42,
+  "feature": "source-verified project diagnostics",
+  "platform": "Linux Julia 1.11.7 four threads",
+  "core_lines": 27679,
+  "current_phase_target": 32000,
+  "new_core_lines": 867,
+  "checks": {
+    "problems": {
+      "assertions": 56,
+      "testsets": 5,
+      "result": "passed"
+    },
+    "affected_foundation_plan_protocol": {
+      "assertions": 132,
+      "testsets": 11,
+      "result": "passed"
+    }
+  },
+  "retained_failures": [
+    {
+      "artifact": "problems-shared-042.txt",
+      "reason": "The temporary launcher omitted its agent-plan fixture; corrected launcher passes. No product failure was hidden."
+    }
+  ],
+  "limitations": [
+    "bounded in-memory snapshots",
+    "native Problems clients not integrated in this checkpoint",
+    "TypeScript and JuliaSyntax are the current specialized diagnostic producers",
+    "no complete-project or live-model claim"
+  ],
+  "sources": [
+    {
+      "path": "scripts/core_size.py",
+      "sha256": "ea911f5ff46a36b3a27a815fd78d827232c6371fa69f1599d8ada581281d6735"
+    },
+    {
+      "path": "src/Core/PlanningTools.jl",
+      "sha256": "76c41293d6773fb60162002cbc76da23af4df3bfa6bdd1d8c3ad6cf42a071501"
+    },
+    {
+      "path": "src/Problems/EditorProjection.jl",
+      "sha256": "4a93427b238c28ca83b27730b3b00f55e7ee6bfa0048b86dc8fade3f9c0a2993"
+    },
+    {
+      "path": "src/Problems/Freshness.jl",
+      "sha256": "7d7492ce4970520ba8fd5e5631917dca99becd152d6a8c193b556679b032580b"
+    },
+    {
+      "path": "src/Problems/IndexedCapture.jl",
+      "sha256": "8ba01dd6c795ca00c3667d3c2257a6cdf6f711f0926b11faa3987f04427c20f4"
+    },
+    {
+      "path": "src/Problems/Normalization.jl",
+      "sha256": "acb77aa9a34a4ddb3b77d5cfe86eaa7d9acb151c5bf18263ce12ea27b58e558e"
+    },
+    {
+      "path": "src/Problems/Queries.jl",
+      "sha256": "98b7bb02e79609357cb212a77372a4b53272683d8c7041a96f94fe811740ffed"
+    },
+    {
+      "path": "src/Problems/Retention.jl",
+      "sha256": "7ba64f300cdedf4ed3f885dfd07f9de74554d984fb61eb61c41a449a660261da"
+    },
+    {
+      "path": "src/Problems/Types.jl",
+      "sha256": "0ff844c36d1018a73e780a7d7fe12737cbcc7a6c1e0cf10dd1c68c90972931c4"
+    },
+    {
+      "path": "src/Protocol/Problems.jl",
+      "sha256": "8779f8684cf93908fc4faf3fe331bcbd955d684f1bd0d0861ccb32c1ac5a0925"
+    },
+    {
+      "path": "src/Protocol/Server.jl",
+      "sha256": "3c301e0152e3c3d6614096ff4654a251de78a1ec03172a0399f48a201c0453bb"
+    },
+    {
+      "path": "src/Runtime/ToolScheduler.jl",
+      "sha256": "159758758ef52647da695ac8092f0f5449eb53a88c1bfd03e09ab4dc6a6dfe72"
+    },
+    {
+      "path": "src/ShenScope.jl",
+      "sha256": "6e36a63927e9c8f8fe6eb238ee5fa23138b7eb5739bf4840179678c0d8351295"
+    },
+    {
+      "path": "src/Tools/Problems.jl",
+      "sha256": "4b717e61539fa992e25a7eda1cecbd27a1e5e9b77506cb87da2554b07ee40bd5"
+    },
+    {
+      "path": "src/Workspace/SourceSnapshots.jl",
+      "sha256": "a950afae9d81acd4cb53800219870e6a143b3426249e470f20d03e47f76e3f08"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/validation/raw/project-problems-checkpoint-042/problems-042.txt",
+      "sha256": "3f4f1d7139a45557663db3c71d9b48b389c041a1ea112e6c91462806f66d9d6b",
+      "bytes": 978
+    },
+    {
+      "path": "docs/validation/raw/project-problems-checkpoint-042/problems-042-final.txt",
+      "sha256": "241f5a7b153e4acea86c65960bae5644b03fdcb1fa3f653d5a7b852e4016b082",
+      "bytes": 1110
+    },
+    {
+      "path": "docs/validation/raw/project-problems-checkpoint-042/problems-shared-042.txt",
+      "sha256": "d9746d3831e5c85600830da3f10304dcd20fc324fb238bfd8e7118087e4fc9be",
+      "bytes": 1945
+    },
+    {
+      "path": "docs/validation/raw/project-problems-checkpoint-042/problems-shared-042-final.txt",
+      "sha256": "94f1542dd3886c4f797b380bb81fbcbd1edd2e442faf2727397b0f80fb221cfe",
+      "bytes": 1600
+    },
+    {
+      "path": "docs/validation/raw/project-problems-checkpoint-042/problems-size-042.json",
+      "sha256": "f552b1a1799b188fbc9caf921fd8880c163c3e42884913d36d81ffe64512ada4",
+      "bytes": 686
+    }
+  ],
+  "references": "docs/validation/project-problems-042/reference-evidence.json",
+  "storage_free_gib": 17.372
+}

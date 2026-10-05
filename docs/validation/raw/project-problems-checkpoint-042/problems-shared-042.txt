@@ -1,0 +1,35 @@
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/agent_modes.jl:6
+Test Summary:                         | Pass  Total  Time
+Cancellation tree and dynamic context |    7      7  0.8s
+Test Summary:                                | Pass  Total  Time
+Concurrent budget reservation and accounting |    9      9  0.7s
+Test Summary:                             | Pass  Total  Time
+Permission decisions and path containment |    7      7  0.4s
+Test Summary:                                      | Pass  Total  Time
+Durable journal, torn tails and revision conflicts |    6      6  0.3s
+Test Summary:                                   | Pass  Total  Time
+Session reconstruction and unknown side effects |   11     11  1.1s
+Plan mode scope, inherited tasks and unchanged permission gates: Error During Test at /workspace/ShenScope/test/unit/agent_modes.jl:6
+  Got exception outside of a @test
+  UndefVarError: `agent_plan_fixture` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] (::var"#27#31")(root::String)
+     @ Main /workspace/ShenScope/test/unit/agent_modes.jl:8
+   [2] mktempdir(fn::var"#27#31", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [3] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [4] macro expansion
+     @ /workspace/ShenScope/test/unit/agent_modes.jl:7 [inlined]
+   [5] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [6] top-level scope
+     @ /workspace/ShenScope/test/unit/agent_modes.jl:7
+   [7] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [8] top-level scope
+     @ none:1
+Test Summary:                                                   | Error  Total  Time
+Plan mode scope, inherited tasks and unchanged permission gates |     1      1  1.5s

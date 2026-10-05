@@ -114,6 +114,7 @@ include("Memory/Retrieval.jl")
 include("Tools/Memory.jl")
 include("ProjectData/Types.jl")
 include("ProjectData/Locations.jl")
+include("Workspace/SourceSnapshots.jl")
 include("ProjectData/JSONC.jl")
 include("ProjectData/State.jl")
 include("ProjectData/Inputs.jl")
@@ -128,6 +129,13 @@ include("ProjectData/CompilerConfig.jl")
 include("ProjectData/TypeScript.jl")
 include("ProjectData/Queries.jl")
 include("ProjectData/Navigation.jl")
+include("Problems/Types.jl")
+include("Problems/Normalization.jl")
+include("Problems/Retention.jl")
+include("Problems/IndexedCapture.jl")
+include("Problems/Freshness.jl")
+include("Problems/Queries.jl")
+include("Problems/EditorProjection.jl")
 include("ProjectData/JuliaQueries.jl")
 include("ProjectData/Fingerprints.jl")
 include("ProjectData/Replay.jl")
@@ -173,6 +181,7 @@ include("Analysis/MigrationBatches.jl")
 include("Analysis/MigrationEvidence.jl")
 include("Analysis/MigrationRuntime.jl")
 include("Tools/Project.jl")
+include("Tools/Problems.jl")
 include("ProjectData/EvidenceManager.jl")
 include("Tools/Analyzers.jl")
 include("Analysis/Jobs.jl")
@@ -283,6 +292,7 @@ include("Protocol/Hooks.jl")
 include("Protocol/Context.jl")
 include("Protocol/Plans.jl")
 include("Protocol/Testing.jl")
+include("Protocol/Problems.jl")
 include("Protocol/Analyzers.jl")
 include("Protocol/Models.jl")
 include("Protocol/Memory.jl")
@@ -309,6 +319,13 @@ export SymbolId, SourceRange, SourceMap, CodeSymbol, Relation, FileFacts, CallRe
     graph_snapshot, graph_search, graph_traverse, ProjectTool, ImpactAnalyzer,
     TestSelectionAnalyzer, ArchitectureAnalyzer, analyze, analyzer_name, requirements
 export compact_project!, project_fingerprint
+export WorkspaceSourceSnapshot, read_workspace_snapshot, verify_workspace_snapshot,
+    workspace_snapshot_view, workspace_source_excerpt, source_editor_range
+export ProblemLimits, ProjectProblem, ProblemFileReport, ProblemSnapshot, ProblemManager,
+    ProblemQuery, ProblemsTool, project_problem, problem_file_report, retain_problem_snapshot!,
+    capture_indexed_problems!, list_problem_snapshots, problem_snapshot_read,
+    query_problem_snapshot, compare_problem_snapshots, read_problem_source,
+    project_problem_editor_snapshot, close_problems!
 export ProjectEvidenceSnapshot, EvidenceSourceStamp, EvidenceSymbol, EvidenceRelation,
     EvidenceAnchor, project_evidence_snapshot
 export ExtensionContribution, ExtensionBundle, ExtensionRegistry, InstalledExtensionSpec,

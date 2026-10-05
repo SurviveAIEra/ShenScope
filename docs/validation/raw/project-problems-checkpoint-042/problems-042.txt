@@ -1,0 +1,10 @@
+Test Summary:                                                                        | Pass  Total  Time
+Workspace snapshots guard Unicode ranges, symlinks, once approvals and version drift |   10     10  9.4s
+Test Summary:                                                                 | Pass  Total  Time
+Owned diagnostics withdraw stale markers, compare reports and bound retention |   20     20  4.9s
+Test Summary:                                                       | Pass  Total  Time
+Missing and modified compiler configuration invalidates publication |    4      4  0.7s
+Test Summary:                                                    | Pass  Total   Time
+Problem RPC keeps ownership, cancellation and current Read gates |   12     12  50.5s
+Test Summary:                                                                              | Pass  Total   Time
+Actual TypeScript diagnostics become current-source editor markers and retract after edits |    8      8  17.0s

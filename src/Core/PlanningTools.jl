@@ -15,6 +15,7 @@ plan_tool_actions(::ProjectTool)=("status","search","impact","test_selection","a
     "evidence_status","evidence_compare","evidence_search","evidence_impact","evidence_tests")
 plan_tool_actions(::TaskTool)=("list","status","tasks","get")
 plan_tool_actions(::TestingTool)=("discover","catalog","report","reports","source","history_list","history_get","history_source","editor_catalog","editor_result")
+plan_tool_actions(::ProblemsTool)=("capture","list","get","query","compare","source","editor")
 
 struct PlanningToolView{T<:AbstractTool} <: AbstractTool
     tool::T

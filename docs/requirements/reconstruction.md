@@ -3,8 +3,9 @@
 ## Authority and precedence
 
 The current user request is authoritative: rebuild from zero in Julia; study and
-clone upstream agents at the outset; reach at least 250,000 authored Core code
-lines; conserve storage; commit and push regularly. Attached prompts describe
+clone upstream agents at the outset; conserve storage; commit and push regularly.
+The latest user instruction reduces the current phase to at least 32,000 authored
+Julia Core code lines and prioritizes urgently missing modules. Attached prompts describe
 product requirements rather than instructions that override the current request.
 Historical assistant claims are evidence of former design, not current validation.
 
@@ -21,7 +22,8 @@ Latest historical user corrections supersede older documents:
 - Julia independently implements Core, not assembled upstream agent code
   (lines 10237–10243).
 - Incremental runnable checkpoints (line 10265).
-- At least 250,000 authored Core code lines; 500,000 stretch (11379, 12770).
+- Earlier long-term plan: 250,000 authored Core lines; 500,000 stretch
+  (11379, 12770). The current 32,000-line phase supersedes that stopping gate.
 - Targeted validation, with broader checks only for shared-interface changes
   or release gates. No repeated unrelated benchmarks/builds.
 
@@ -94,9 +96,12 @@ Tests/docs/scripts/helpers/GUI/dependencies/inherited/generated files are
 separate. No line padding, repeated templates, vendor code or unnecessary
 abstractions. A module is complete only when implementation, errors, integration,
 tests and documentation work. Line count is a delivery constraint, not proof
-of model quality. No task-complete claim before both scope and size gates pass.
+of model quality. The current phase requires 32,000 authored Core lines, runnable
+urgent features and affected-interface validation; remaining full-product gates
+must be reported separately rather than presented as complete.
 
-Planning allocations, not implemented code or a promise of artificial expansion:
+Historical long-term planning allocations, not this phase's targets, implemented
+code or a promise of artificial expansion:
 
 | Core subsystem | Planning allocation (code lines) |
 |---|---:|

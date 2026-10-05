@@ -1,0 +1,13 @@
+Precompiling ShenScope...
+ 106712.1 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 107 seconds. 41 already precompiled.
+Test Summary:                                                                        | Pass  Total  Time
+Workspace snapshots guard Unicode ranges, symlinks, once approvals and version drift |   10     10  5.3s
+Test Summary:                                                                 | Pass  Total  Time
+Owned diagnostics withdraw stale markers, compare reports and bound retention |   20     20  4.2s
+Test Summary:                                                       | Pass  Total  Time
+Missing and modified compiler configuration invalidates publication |    4      4  0.5s
+Test Summary:                                                    | Pass  Total  Time
+Problem RPC keeps ownership, cancellation and current Read gates |   14     14  7.4s
+Test Summary:                                                                              | Pass  Total   Time
+Actual TypeScript diagnostics become current-source editor markers and retract after edits |    8      8  11.6s

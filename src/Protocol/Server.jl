@@ -54,7 +54,7 @@ function server_event(server::CoreServer,event::AgentEvent)
     end
     rpc_notify(server,"agent/event",Dict("sequence"=>event.sequence,"kind"=>String(event.kind),
         "session_id"=>event.session_id,"trace_id"=>event.trace_id,"timestamp"=>event.timestamp,
-        "payload"=>testing_event_payload(server,event,diagnostics_event_payload(server,event))))
+        "payload"=>problems_event_payload(server,event,testing_event_payload(server,event,diagnostics_event_payload(server,event)))))
 end
 
 function server_approval(server::CoreServer,session_id::String,token::CancellationToken,request::PermissionRequest)
@@ -112,6 +112,8 @@ function idle_session(server::CoreServer,params::AbstractDict)
     haskey(server.runs,session.id) && throw(ShenScopeError(:session,"Session has an active run"))
     operations_running(server_testing_tool(server).operations;session_id=session.id) &&
         throw(ShenScopeError(:testing_busy,"Finish this conversation's test operation first"))
+    operations_running(server_problems_tool(server).operations;session_id=session.id) &&
+        throw(ShenScopeError(:problems_busy,"Finish this conversation's diagnostic operation first"))
     operations_running(server_extensions_tool(server).operations;session_id=session.id) &&
         throw(ShenScopeError(:extension_busy,"Finish this conversation's extension operation first"))
     operations_running(server_terminal_tool(server).manager.operations;session_id=session.id) &&
@@ -136,6 +138,8 @@ function start_agent!(server::CoreServer,params::AbstractDict)
     session=server_session(server,params)
     operations_running(server_testing_tool(server).operations;session_id=session.id) &&
         throw(ShenScopeError(:testing_busy,"Finish this conversation's test operation before starting the agent"))
+    operations_running(server_problems_tool(server).operations;session_id=session.id) &&
+        throw(ShenScopeError(:problems_busy,"Finish this conversation's diagnostic operation before starting the agent"))
     haskey(server.runs,session.id) && throw(ShenScopeError(:session,"Session has an active run"))
     operations_running(server_terminal_tool(server).manager.operations;session_id=session.id) &&
         throw(ShenScopeError(:terminal_busy,"Finish this conversation's terminal operation before starting the agent"))
@@ -189,8 +193,10 @@ end
 
 function capability_manifest()
     Dict("agent"=>true,"streaming_protocols"=>["openai_chat","openai_responses","anthropic","gemini","ollama"],
-        "tools"=>["read","search","edit","write","patch","process","terminal","git","memory","security","project","diagnostics","analyzers","models","tasks","mcp","skills","hooks","context","extensions","plan","testing"],"session_journal"=>true,"memory"=>true,"memory_namespaces"=>true,"memory_retrieval_evidence"=>true,
+        "tools"=>["read","search","edit","write","patch","process","terminal","git","memory","security","project","diagnostics","analyzers","models","tasks","mcp","skills","hooks","context","extensions","plan","testing","problems"],"session_journal"=>true,"memory"=>true,"memory_namespaces"=>true,"memory_retrieval_evidence"=>true,
         "agent_execution_modes"=>["act","plan"],"conversation_plans"=>true,
+        "project_problems"=>Dict("owned_snapshots"=>true,"source_hash_validation"=>true,
+            "stale_marker_withdrawal"=>true,"editor_utf16_projection"=>true,"complete_project_coverage"=>false),
         "project_testing"=>Dict("argument_vector_any_language"=>true,"parsers"=>collect(PROJECT_TEST_FRAMEWORKS),
             "discovery_executes_commands"=>false,"controller_retention"=>"bounded_in_memory","automatic_replay"=>false,
             "explicit_saved_history"=>true,"saved_history_survives_restart"=>true,"saved_history_revision_checks"=>true,
@@ -237,6 +243,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     startswith(method,"hooks/") && return Base.invokelatest(hooks_rpc,server,method,params)
     startswith(method,"context/") && return Base.invokelatest(context_rpc,server,method,params)
     startswith(method,"testing/") && return Base.invokelatest(testing_rpc,server,method,params)
+    startswith(method,"problems/") && return Base.invokelatest(problems_rpc,server,method,params)
     (startswith(method,"plans/") || method=="sessions/mode") && return Base.invokelatest(plans_rpc,server,method,params)
     if method=="health"
         return Dict("ready"=>!server.stopping,"active_runs"=>length(server.runs),"pending_approvals"=>length(server.approvals))
@@ -303,6 +310,8 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
             throw(ShenScopeError(:config,"Finish security operations before changing configuration"))
         operations_running(server_testing_tool(server).operations) &&
             throw(ShenScopeError(:config,"Finish project test operations before changing configuration"))
+        operations_running(server_problems_tool(server).operations) &&
+            throw(ShenScopeError(:config,"Finish project diagnostic operations before changing configuration"))
         value=get(params,"value",nothing)
         value isa AbstractDict || throw(RPCFault(-32602,"Configuration object required"))
         expected=rpc_string(params,"expected_sha256";max_bytes=64)
@@ -446,6 +455,7 @@ function stop_server!(server::CoreServer)
         tool isa TerminalTool && cleanup_terminals!(tool.manager;close_manager=true)
         tool isa DiagnosticsTool && close_operations!(tool.operations)
         tool isa TestingTool && (close_operations!(tool.operations);cleanup_project_tests!(tool.manager))
+        tool isa ProblemsTool && (close_operations!(tool.operations);close_problems!(tool.manager))
         if tool isa ExtensionsTool
             close_operations!(tool.operations);close_extension_registry!(tool.registry)
         end

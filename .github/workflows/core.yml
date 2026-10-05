@@ -68,6 +68,7 @@ jobs:
       - run: python scripts/setup_semantic.py --verify
       - run: julia --project=. -e 'using Pkg; Pkg.instantiate()'
       - run: julia --startup-file=no --threads=4 --project=. test/semantic.jl
+      - run: julia --startup-file=no --threads=4 --project=. test/problems.jl
       - run: npm run check && npm run build && npm test
         working-directory: editors
         env:

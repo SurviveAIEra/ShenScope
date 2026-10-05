@@ -1,9 +1,9 @@
 # Work status
 
-Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest verified cloc 2.11 count: 26,812 authored Julia Core code lines across 284 files;
+Current 32,000-line phase: IN_PROGRESS. Prioritize urgent general-project modules.
+Latest verified cloc 2.11 count: 27,679 authored Julia Core code lines across 294 files;
 CLI/TUI add 1,360 lines and optional Julia extensions add 57, counted separately.
-This is 10.7248% of the minimum line target, leaving 223,188 lines. These are early implementations,
+This is 86.4969% of the current phase's line target, leaving 4,321 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -35,7 +35,7 @@ and a real GUI HTTP/tool/approval/file-write test with extensions disabled.
 This is a development desktop runtime, not a completed desktop distribution.
 Full built-in-extension packaging and Windows installer validation are pending.
 MCP integration and isolated compute are verified below; general host-tool OS isolation remains unfinished.
-Core remains far below the 250,000-line delivery target.
+Remaining product gates are recorded below; size alone does not complete them.
 
 Storage hardening: atomic replacement now uses OS replacement primitives;
 Unix file/directory flushes; bounded journal record reads; shared-ledger checks
@@ -1149,3 +1149,5 @@ native Code-OSS ABI inspection are recorded. Evidence:
 `docs/validation/native-testing-checkpoint-041.json`; contracts:
 `docs/core/native_testing.md`. Continue general project diagnostics/Problems
 integration and the remaining functional/250,000-line gates.
+
+Project Problems checkpoint 042: source-verified, conversation-owned diagnostic snapshots, severity/text/file filters, report comparison, UTF-16 editor projection and hash-checked previews. Stale/deleted sources or changed/appearing compiler configuration withdraw markers. Read denial hides retained job data; cancellation releases pending approvals. Real TypeScript diagnostics retract after an edit and disappear after reindexing the repaired fixture. 56 feature assertions and 132 affected foundation/plan/protocol assertions pass. cloc: 27,679 authored Core lines, 4,321 below the current 32,000-line phase target. Native Problems publication and additional language-service producers are next; no whole-project or live-model completion claim. Evidence: `docs/validation/project-problems-checkpoint-042.json`.

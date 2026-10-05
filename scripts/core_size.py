@@ -28,8 +28,8 @@ print(json.dumps({
     'tool': 'cloc', 'version': core['header']['cloc_version'],
     'core': core['Julia'], 'cli_tui': cli['Julia'],
     'optional_julia_extensions': extensions.get('Julia', {'nFiles': 0, 'code': 0}),
-    'minimum_core_target': 250000, 'remaining_lines': max(0, 250000-lines),
-    'line_target_percent': round(lines/250000*100, 4),
+    'minimum_core_target': 32000, 'remaining_lines': max(0, 32000-lines),
+    'line_target_percent': round(lines/32000*100, 4),
     'excludes': ['CLI/TUI', 'tests', 'documentation', 'frontend', 'helper scripts', 'generated code', 'third-party code'],
     'meaning': 'Line count measures source size; it does not establish feature completeness or agent quality.'
 }, indent=2))
