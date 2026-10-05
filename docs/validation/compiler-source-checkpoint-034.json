@@ -1,0 +1,723 @@
+{
+  "checkpoint": 34,
+  "recorded_at": "2026-10-05T05:56:22.360500+00:00",
+  "scope": "Real retained compiler source positions, owned/current and historical hash-checked previews, source pairing and both editor clients",
+  "source_checksums": {
+    "editors/shared/panel.css": "57c37eb27c0f05a740a4cb4d37127b331020bb26ca54128543d6cad014a12dd0",
+    "editors/shared/src/panel.ts": "2a361fa42018b168357c9f077c9b0d00c215f84362a37ca73fe230f623bf00ef",
+    "editors/test/compiler.test.mjs": "edf9cb71e483fccce0dab55bae34832653c18cbedff9db0837b39265c4f4056c",
+    "ide/test/native_smoke.mjs": "29a8ef55a03d40ad92b0108a20d31dd7d8e12b6f70d2e4ccde37da45619173fb",
+    "src/CLI/Diagnostics.jl": "afa7cf0de0e434e4d7b737580c935721db7593ff4a88bdfe33dfb70b81cbb451",
+    "src/CLI/Main.jl": "3f9de52c716c68777b5814452ac84d2863b143907879b3871a3b6e11b74a45d5",
+    "src/Compiler/ArchiveCompare.jl": "495605899ae64527a4104643ecb6a9aa4302e315f305617aeb228ddfa19d4b9f",
+    "src/Compiler/IRReports.jl": "8a988167f9d22bde4f1f5f40874a993fc87496d957b111496a00a511c7475973",
+    "src/Compiler/IRTypes.jl": "3cbee4a95b8f924e904bb60c1303b5f66bc2d27f453be982413d936e86264b87",
+    "src/Compiler/SourcePreview.jl": "cee80e6ad99379c5184b9c78e88b1760b804d2fc05151b840b3be34ba2322314",
+    "src/Protocol/Diagnostics.jl": "c9afd2a7494a3c137706bc6d8110b9cfb33efa69c25b1cf872f791a6f1aefd38",
+    "src/Protocol/Server.jl": "bcfeacc4e14c58142e511a4a72a3f52c6fe0e6ae7efcbe805145497e596f5e99",
+    "src/ShenScope.jl": "79797358d379e91edee9b0f7599d203e1dd079028f243928d4af4e2584f52d22",
+    "src/Tools/CompilerArchive.jl": "64b77615ab1f0bd7f0c02e8d81c99e73284e3e7b11ee4b05f8834d412e82f401",
+    "src/Tools/Diagnostics.jl": "3c0f58eb0ab80b2040fac66868b358bfab2a6537c1c1efb1682070dec02ff060",
+    "test/compiler.jl": "823e5e9482e4d94f8de56278da32f0765da92a1c22c5075c810e22266b19349e",
+    "test/compiler_source.jl": "013065895659da8de1daf2c609366b81168fee3582188e4da0a0bcec2c548aa8",
+    "test/integration/compiler_archive_cli.jl": "47a84259e6b6a7c012f1e15ba58b924bb2cadf39a559db58b1584e339c4e6772",
+    "test/runtests.jl": "0178b241efccbf683e3b0131446b17987f18005a594d41e143e55044a77ac6f4",
+    "test/unit/compiler_source.jl": "c0a520f20818189aa71f1b34d91d702239db82d47df95a56f959cb58debdfe77"
+  },
+  "core_assertions": {
+    "affected_passed": 308,
+    "new_passed": 47,
+    "sets": {
+      "Actual inferred IR preserves branch definitions, loop flow and compiler scope": 16,
+      "Trusted compiler frames pin source and reject forged graph projections": 18,
+      "Compiler graph workers honor approvals, revocation and restricted execution": 11,
+      "Compiler polling closes actual helpers after live denial and cancellation": 15,
+      "Owned compiler jobs protect conversations, cancel pending approval and retire": 13,
+      "Actual compiler reports archive atomically, preserve ownership and use catalog CAS": 34,
+      "Recorded compiler source inventory survives Core changes and refuses rehashed malformed evidence": 17,
+      "Two real Julia processes cannot both commit the same compiler catalog revision": 6,
+      "Compiler archive cancellation leaves reviewable orphans and retains referenced evidence": 13,
+      "CLI archives actual inference in an existing conversation and restores it in a fresh invocation": 14,
+      "Parser transport bounds blocked pipes, failed framing and command approval": 41,
+      "Owned result limits preserve deep structured data and fail closed without expanding other managers": 7,
+      "Nested operation approval ownership survives cancellation and scoped callbacks": 5,
+      "Owned operations isolate cancellation, scopes, retention and notification failures": 18,
+      "Actual Julia source coordinates are retained independently of display defaults": 17,
+      "Compiler preview bounds Unicode text and refuses stale, external and symlink source": 14,
+      "Owned compiler source RPC and archived file verification preserve boundaries": 13,
+      "Published compiler catalogs survive notification failures and interrupted owned completion": 10,
+      "Read denial after publication hides result bodies and commit receipts on both RPC paths": 7,
+      "Owned archive reads retain valid evidence exceeding the former two MiB result cap": 7,
+      "A real agent tool call compiles, archives and reads its own durable compiler evidence": 12
+    },
+    "command": "julia --startup-file=no --threads=4 --project=. test/compiler.jl",
+    "actual_compiler_helpers": true,
+    "live_model_tested": false
+  },
+  "reflection_probe": {
+    "data": {
+      "default_debug": "none",
+      "runtime": "1.11.7",
+      "targets": [
+        {
+          "default": [
+            {
+              "line_entries": 1,
+              "locations": [
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                }
+              ],
+              "nonzero_locations": 0,
+              "statements": 5
+            }
+          ],
+          "source": [
+            {
+              "line_entries": 1,
+              "locations": [
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 106,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 106,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 106,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 106,
+                  "scope": "core"
+                }
+              ],
+              "nonzero_locations": 4,
+              "statements": 5
+            }
+          ],
+          "target": "digest_string"
+        },
+        {
+          "default": [
+            {
+              "line_entries": 1,
+              "locations": [
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                }
+              ],
+              "nonzero_locations": 0,
+              "statements": 87
+            }
+          ],
+          "source": [
+            {
+              "line_entries": 8,
+              "locations": [
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 93,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 93,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 93,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 93,
+                  "scope": "core"
+                }
+              ],
+              "nonzero_locations": 81,
+              "statements": 87
+            }
+          ],
+          "target": "canonical_dictionary"
+        },
+        {
+          "default": [
+            {
+              "line_entries": 1,
+              "locations": [
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                }
+              ],
+              "nonzero_locations": 0,
+              "statements": 65
+            }
+          ],
+          "source": [
+            {
+              "line_entries": 6,
+              "locations": [
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 121,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 121,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 121,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/Core/Types.jl",
+                  "line": 121,
+                  "scope": "core"
+                }
+              ],
+              "nonzero_locations": 63,
+              "statements": 65
+            }
+          ],
+          "target": "cliptext_string"
+        },
+        {
+          "default": [
+            {
+              "line_entries": 1,
+              "locations": [
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                }
+              ],
+              "nonzero_locations": 0,
+              "statements": 12
+            }
+          ],
+          "source": [
+            {
+              "line_entries": 1,
+              "locations": [
+                {
+                  "file": "src/ProjectData/Types.jl",
+                  "line": 11,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/ProjectData/Types.jl",
+                  "line": 11,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/ProjectData/Types.jl",
+                  "line": 11,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/ProjectData/Types.jl",
+                  "line": 11,
+                  "scope": "core"
+                }
+              ],
+              "nonzero_locations": 11,
+              "statements": 12
+            }
+          ],
+          "target": "symbol_identity"
+        },
+        {
+          "default": [
+            {
+              "line_entries": 1,
+              "locations": [
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                }
+              ],
+              "nonzero_locations": 0,
+              "statements": 66
+            }
+          ],
+          "source": [
+            {
+              "line_entries": 4,
+              "locations": [
+                {
+                  "file": "src/ProjectData/State.jl",
+                  "line": 60,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/ProjectData/State.jl",
+                  "line": 60,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/ProjectData/State.jl",
+                  "line": 60,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/ProjectData/State.jl",
+                  "line": 60,
+                  "scope": "core"
+                }
+              ],
+              "nonzero_locations": 62,
+              "statements": 66
+            }
+          ],
+          "target": "resolve_call_reference"
+        },
+        {
+          "default": [
+            {
+              "line_entries": 1,
+              "locations": [
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                },
+                {
+                  "file": null,
+                  "line": null,
+                  "scope": "unknown"
+                }
+              ],
+              "nonzero_locations": 0,
+              "statements": 61
+            }
+          ],
+          "source": [
+            {
+              "line_entries": 6,
+              "locations": [
+                {
+                  "file": "src/ProjectData/State.jl",
+                  "line": 45,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/ProjectData/State.jl",
+                  "line": 45,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/ProjectData/State.jl",
+                  "line": 45,
+                  "scope": "core"
+                },
+                {
+                  "file": "src/ProjectData/State.jl",
+                  "line": 45,
+                  "scope": "core"
+                }
+              ],
+              "nonzero_locations": 57,
+              "statements": 61
+            }
+          ],
+          "target": "remove_graph_edge"
+        }
+      ]
+    },
+    "stage": "Before explicit debuginfo was added to the graph entry; same supported Julia runtime"
+  },
+  "editor_transport": {
+    "tests_passed": 1,
+    "exit_code": 0,
+    "real_julia_core": true,
+    "checks": [
+      "owned source coordinates and file hash",
+      "foreign ownership refusal",
+      "archive source preview",
+      "unique actual Core anchors pair",
+      "ambiguous anchors stay unpaired",
+      "archive and permission regressions"
+    ]
+  },
+  "gui": {
+    "native": {
+      "exit_code": 0,
+      "extensions_disabled": true
+    },
+    "vsix": {
+      "exit_code": 0,
+      "independent_webview": true
+    },
+    "screenshots": [
+      "native-compiler-overview.png",
+      "native-compiler-ir.png",
+      "native-compiler-archive.png",
+      "native-compiler-comparison.png",
+      "native-compiler-source.png",
+      "vsix-compiler-overview.png",
+      "vsix-compiler-ir.png",
+      "vsix-compiler-archive.png",
+      "vsix-compiler-comparison.png",
+      "vsix-compiler-source.png"
+    ],
+    "preview_width_checked": true,
+    "source_screenshots_visually_inspected": true,
+    "checks": [
+      "actual statement preview",
+      "method declaration preview",
+      "historical file-only currentness disclosure",
+      "one highlighted source line",
+      "explicit close",
+      "bounded narrow-sidebar card",
+      "archive/compare/cleanup regressions"
+    ]
+  },
+  "static_checks": {
+    "shared_typescript": true,
+    "shared_build": true,
+    "complete_workbench_client_typecheck": true,
+    "git_diff_check": true,
+    "remote_ci_observed": false
+  },
+  "vsix": {
+    "entries": 276,
+    "exact_core_helper_extension_metadata_files": 267,
+    "exact_client_assets": 3,
+    "bytes": 577161,
+    "sha256": "ebb00dbb78fe36384c7a07960afe09018c817fa3565645f3ca05838a411284de",
+    "payload_matches_authored_sources": true,
+    "installed_package_tested": false
+  },
+  "cloc": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 238,
+      "blank": 1269,
+      "comment": 222,
+      "code": 23645
+    },
+    "cli_tui": {
+      "nFiles": 20,
+      "blank": 19,
+      "comment": 7,
+      "code": 1141
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 226355,
+    "line_target_percent": 9.458,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "after": {
+      "total_gib": 31.451,
+      "free_gib": 17.5,
+      "large_build_allowed": true,
+      "safe_scratch_paths": [
+        "/workspace/ShenScope/.local/tmp",
+        "/workspace/ShenScope/.local/build-scratch"
+      ]
+    },
+    "full_project_copies": 0,
+    "new_worktrees": 0,
+    "new_sysimages": 0
+  },
+  "repository_audit": {
+    "application_repositories": [
+      "/workspace/ShenScope"
+    ],
+    "dependency_repositories": [
+      "/workspace/julia-depot/clones/05181044-ff0b-4ac5-8273-598c1e38db00",
+      "/workspace/julia-depot/clones/0f8b85d8-7281-11e9-16c2-39a750bddbf1",
+      "/workspace/julia-depot/clones/21216c6a-2e73-6563-6e65-726566657250",
+      "/workspace/julia-depot/clones/3bb67fe8-82b1-5028-8e26-92a6c54297fa",
+      "/workspace/julia-depot/clones/458c3c95-2e84-50aa-8efc-19380b2a3a95",
+      "/workspace/julia-depot/clones/460bff9d-24e4-43bc-9d9f-a8973cb893f4",
+      "/workspace/julia-depot/clones/4d8831e6-92b7-49fb-bdf8-b643e874388c",
+      "/workspace/julia-depot/clones/5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4",
+      "/workspace/julia-depot/clones/69024149-9ee7-55f6-a4c4-859efe599b68",
+      "/workspace/julia-depot/clones/692b3bcd-3c85-4b1f-b108-f13ce0eb3210",
+      "/workspace/julia-depot/clones/69de0a69-1ddd-5017-9359-2bf0b02dc9f0",
+      "/workspace/julia-depot/clones/6c6a2e73-6563-6170-7368-637461726353",
+      "/workspace/julia-depot/clones/70703baa-626e-46a2-a12c-08ffd08c73b4",
+      "/workspace/julia-depot/clones/739be429-bea8-5141-9913-cc70e7f3736d",
+      "/workspace/julia-depot/clones/777ac1f9-54b0-4bf8-805c-2214025038e7",
+      "/workspace/julia-depot/clones/856f2bd8-1eba-4b0a-8007-ebc267875bd4",
+      "/workspace/julia-depot/clones/944b1d66-785c-5afd-91f1-9de20f533193",
+      "/workspace/julia-depot/clones/94ce4f54-9a6c-5748-9c1c-f9c7231a4531",
+      "/workspace/julia-depot/clones/aea7be01-6a6a-4083-8856-8a6e6704d82a",
+      "/workspace/julia-depot/clones/c27321d9-0574-5035-807b-f59d2c89b15c",
+      "/workspace/julia-depot/clones/cd3eb016-35fb-5094-929b-558a96fad6f3",
+      "/workspace/julia-depot/clones/d1d4a3ce-64b1-5f1a-9ba4-7e7e69966f35",
+      "/workspace/julia-depot/clones/ddb6d928-2868-570f-bddf-ab3f9cf99eb6",
+      "/workspace/julia-depot/clones/e6f89c97-d47a-5376-807f-9c37f3926c36",
+      "/workspace/julia-depot/clones/f0e56b4a-5159-44fe-b623-3e5288b988bb",
+      "/workspace/julia-depot/registries/General",
+      "/workspace/references/AgentREPL.jl",
+      "/workspace/references/Aries-cli",
+      "/workspace/references/CodeGraphContext",
+      "/workspace/references/JuliaMCP.jl",
+      "/workspace/references/Kaimon.jl",
+      "/workspace/references/OpenHands",
+      "/workspace/references/PackageCompiler.jl",
+      "/workspace/references/PromptingTools.jl",
+      "/workspace/references/ZCode",
+      "/workspace/references/aider",
+      "/workspace/references/cline",
+      "/workspace/references/cloc",
+      "/workspace/references/codex",
+      "/workspace/references/deepseek-harness",
+      "/workspace/references/goose",
+      "/workspace/references/hermes-agent",
+      "/workspace/references/kimi-code",
+      "/workspace/references/opencode",
+      "/workspace/references/pi-mono",
+      "/workspace/references/qwen-code",
+      "/workspace/references/serena",
+      "/workspace/references/software-agent-sdk",
+      "/workspace/references/vscode",
+      "/workspace/references/vscodium"
+    ],
+    "unknown_repositories": [],
+    "empty_sandbox_markers": [],
+    "strict_walk_complete": true
+  },
+  "research": {
+    "primary_sources": [
+      {
+        "name": "codex",
+        "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+        "path": "codex-rs/exec-server/src/local_file_system_read.rs",
+        "sha256": "d7ec29392fade077756cfd1312ae9d8fbeb61dcbd9d7e3ecbd386f30c4d10072",
+        "line_ranges": [
+          [
+            1,
+            59
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "opencode",
+        "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+        "path": "packages/core/src/tool/read.ts",
+        "sha256": "ff3298263962058f05ec4eb2f9007ef0bc42101dbda7908ca79f46a368128752",
+        "line_ranges": [
+          [
+            16,
+            43
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "deepseek-harness",
+        "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "path": "packages/fs/tool-fs/src/read.ts",
+        "sha256": "1e7d5743be73623b07cde79f2f7168f4466794c26c714b923c289cd0e155115f",
+        "line_ranges": [
+          [
+            14,
+            60
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "pi-mono",
+        "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+        "path": "packages/coding-agent/src/core/tools/read.ts",
+        "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518",
+        "line_ranges": [
+          [
+            135,
+            156
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "kimi-code",
+        "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+        "path": "packages/agent-core-v2/src/agent/tools/os/read/read.ts",
+        "sha256": "b0294533727a2831ad3f38882932d5f5a9d2cc3185eb86f380ac2481971edd5c",
+        "line_ranges": [
+          [
+            17,
+            43
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "ZCode",
+        "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+        "path": "packages/ui/src/ToolCallBlocks/renderers/read.tsx",
+        "sha256": "aab42216196aa06ae75eb57f363acbf87d99666f7babf4e00eedc4492dfcff5c",
+        "line_ranges": [
+          [
+            211,
+            235
+          ],
+          [
+            290,
+            313
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "qwen-code",
+        "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+        "path": "packages/vscode-ide-companion/src/webview/utils/fileLinks.ts",
+        "sha256": "0622f5e6dd53d344d72be6dc9bd774ce1e0b410dfe92fdab82aaf218b54fc785",
+        "line_ranges": [
+          [
+            22,
+            76
+          ]
+        ],
+        "code_reuse": false
+      }
+    ],
+    "status": "Further partial source reviews; broader synthesis continues",
+    "upstream_copy_or_translation": false,
+    "handoff_sections": [
+      "7.11 Compiler introspection",
+      "18.1–18.4 replaceable and combined fact backends"
+    ]
+  },
+  "failures_retained": [
+    "The new RPC fixture used config_path rather than config_file; corrected and full affected suite passed.",
+    "Visual inspection found long source lines expanding the preview past a narrow sidebar; constrained grid/flex sizing and actual width assertions now pass."
+  ],
+  "limitations": [
+    "Fixed trusted Core signatures only; arbitrary project inference remains unfinished.",
+    "Compiler line positions have no column precision or runtime execution evidence.",
+    "Historical preview verifies one installed file, not the complete inventory or unsigned producer.",
+    "Current-job source preview requires complete current inventory agreement.",
+    "Clipped lines and bounded windows omit text explicitly; no editable source document is opened.",
+    "External basenames and repeated/missing positions remain unpaired.",
+    "No OS isolation, live model, installed distribution, Windows or clean-machine restore claim.",
+    "The 250,000 authored Core-line gate remains unfinished; development continues."
+  ],
+  "raw_evidence_directory": "docs/validation/compiler-source-034"
+}

@@ -19,6 +19,10 @@
         opened=invoke(["diagnostics","archive_get",id])
         @test opened.status==0 && opened.result["report"]==saved.result["report"]
         @test opened.result["source_currentness"]=="not_checked"
+        source=invoke(["diagnostics","archive_source",id,"--context-lines","0","--method-index","1"])
+        @test source.status==0 && length(source.result["lines"])==1
+        @test source.result["source_sha256"]==saved.result["report"]["methods"][1]["identity"]["source_sha256"]
+        @test source.result["recorded_report"] && !source.result["producer_authenticated"]
         labelled=invoke(["diagnostics","archive_label",id,"--title","CLI renamed","--expected-revision","1"])
         @test labelled.status==0 && labelled.result["revision"]==2
         @test invoke(["diagnostics","archive_delete",id,"--expected-revision","1"]).status==1

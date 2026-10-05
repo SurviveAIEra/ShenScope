@@ -86,8 +86,9 @@ fail when opened; listing is a catalog view rather than validation of every body
 Comparison loads and validates both stored assets from one pinned catalog.
 Targets, argument signatures, Julia versions and compiler platforms must agree;
 otherwise the response explains why comparison is unavailable. Methods are
-matched by module/signature/file. Statements are paired only for unique source
-location/opcode/operand-kind anchors. Unknown or repeated anchors remain
+matched by module/signature/file. Statements are paired only for unique authored
+Core source location/opcode/operand-kind anchors. External basenames and zero,
+unknown or repeated anchors remain
 unpaired, with counts exposed to the UI. Compiler callee classes are compared
 without treating SSA or slot IDs as runtime function identities.
 

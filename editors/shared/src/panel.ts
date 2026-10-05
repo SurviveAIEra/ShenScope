@@ -79,6 +79,8 @@ export class ShenScopePanel {
     private diagnosticsCompareAfter = '';
     private diagnosticsComparison: any;
     private diagnosticsCleanup: any;
+    private diagnosticsSource: any;
+    private diagnosticsRevealSource = false;
     private diagnosticsTarget = 'cliptext_string';
     private diagnosticsTargets: any[] | undefined;
     private diagnosticsMethod = 0;
@@ -413,6 +415,17 @@ export class ShenScopePanel {
         this.diagnosticsArchiveManual = false; this.diagnosticsArchiveExpanded = false;
         this.diagnosticsCompareBefore = ''; this.diagnosticsCompareAfter = '';
         this.diagnosticsComparison = undefined; this.diagnosticsCleanup = undefined;
+        this.diagnosticsSource = undefined; this.diagnosticsRevealSource = false;
+    }
+
+    private async previewCompilerSource(statement_id = 0): Promise<void> {
+        const report = this.diagnosticsResult?.report;
+        if (!report || !this.capabilities.compiler_source_preview) { return; }
+        this.diagnosticsSource = undefined;
+        const args = { method_index: this.diagnosticsMethod + 1, statement_id, context_lines: 4 };
+        if (this.diagnosticsResultJob) { await this.startDiagnosticsAction('compiler_source', { ...args, job_id: this.diagnosticsResultJob }); }
+        else { await this.startDiagnosticsAction('archive_source', { ...args, report_id: report.report_sha256,
+            ...(this.diagnosticsArchive ? { expected_index_sha256: this.diagnosticsArchive.index_sha256 } : {}) }); }
     }
 
     private async startDiagnosticsAction(action: string, args: Record<string, unknown>): Promise<void> {
@@ -546,7 +559,8 @@ export class ShenScopePanel {
         else {
             view.append(el('p', `${result.changes_total} observed changes${result.changes_truncated ? ' · display limited' : ''}`));
             for (const method of result.methods) { view.append(el('p', `${method.file} · ${method.return_type_before.type} → ${method.return_type_after.type}`, 'semantic-signature'),
-                el('small', `${method.uniquely_source_anchored_pairs} uniquely paired statements · ${method.ambiguous_shared_anchors} ambiguous locations · ${method.unpaired_statements_before}/${method.unpaired_statements_after} unpaired`)); }
+                el('small', `${method.uniquely_source_anchored_pairs} uniquely paired statements · ${method.ambiguous_shared_anchors} ambiguous locations · ${method.unpaired_statements_before}/${method.unpaired_statements_after} unpaired`));
+                if (method.source_positions_before && method.source_positions_after) { view.append(el('small', `Core source positions: ${method.source_positions_before.core} → ${method.source_positions_after.core}. Repeated or missing positions are not statement identities.`)); } }
             for (const change of result.changes) { const details = el('details'); details.append(el('summary', change.kind.replaceAll('_', ' ')), el('pre', JSON.stringify(change, null, 2))); view.append(details); }
         }
         archive.append(view);
@@ -570,7 +584,12 @@ export class ShenScopePanel {
         for (const [label, value] of [['Return', method.return_type.type], ['Statements', method.statistics.statements], ['Blocks', method.statistics.blocks], ['Calls', method.statistics.calls], ['Cycles', graph.loops.cycle_groups.length]]) {
             const metric = el('div', '', 'compiler-metric'); metric.append(el('small', String(label)), el('strong', String(value))); metrics.append(metric);
         }
+        const positioned = method.statements.filter((row: any) => row.source.scope === 'core' && row.source.line > 0).length;
+        const positions = el('div', '', 'compiler-metric'); positions.append(el('small', 'Core positions'), el('strong', `${positioned}/${method.statements.length}`)); metrics.append(positions);
         section.append(metrics, el('p', `${method.identity.file}:${method.identity.line}`, 'semantic-signature'));
+        if (this.capabilities.compiler_source_preview) {
+            const declaration = this.button('Preview declaration', () => this.previewCompilerSource(), 'source-link'); declaration.disabled = this.contextBusy(); section.append(declaration);
+        }
         const flow = el('details', '', 'compiler-flow'); flow.append(el('summary', 'Control paths'));
         const blocks = el('div', '', 'compiler-blocks');
         for (const block of graph.blocks.slice(0, 64)) {
@@ -597,7 +616,13 @@ export class ShenScopePanel {
         for (const row of rows.slice(this.diagnosticsPage * size, (this.diagnosticsPage + 1) * size)) {
             const line = el('div', '', 'compiler-table-row'); line.setAttribute('role', 'row');
             const inferred = el('code', row.inferred_type.type); inferred.title = row.inferred_type.type;
-            line.append(el('code', `%${row.id}`), el('code', row.opcode), inferred);
+            const operation = el('div', '', 'compiler-operation'); operation.append(el('code', row.opcode));
+            if (this.capabilities.compiler_source_preview && row.source.scope === 'core' && row.source.line > 0) {
+                const source = this.button(`L${row.source.line}`, () => this.previewCompilerSource(row.id), 'compiler-source-link');
+                source.setAttribute('aria-label', `Preview statement ${row.id} source`); source.title = `${row.source.file}:${row.source.line}`;
+                source.disabled = this.contextBusy(); operation.append(source);
+            }
+            line.append(el('code', `%${row.id}`), operation, inferred);
             line.dataset.classification = row.inferred_type.classification;
             line.title = `${row.source.file ?? 'No source position'}:${row.source.line ?? ''} · uses ${row.uses_ssa.map((id: number) => `%${id}`).join(', ') || 'no SSA inputs'}`; table.append(line);
         }
@@ -607,6 +632,22 @@ export class ShenScopePanel {
         previous.setAttribute('aria-label', 'Previous statements'); previous.textContent = 'Previous';
         next.setAttribute('aria-label', 'Next statements'); next.textContent = 'Next';
         pagination.append(previous, el('small', `${rows.length ? this.diagnosticsPage * size + 1 : 0}–${Math.min(rows.length, (this.diagnosticsPage + 1) * size)} of ${rows.length}`), next); section.append(pagination);
+        const source = this.diagnosticsSource;
+        if (source?.report_sha256 === report.report_sha256) {
+            const preview = el('section', '', 'compiler-source-preview'); preview.setAttribute('role', 'region'); preview.setAttribute('aria-label', 'Verified compiler source preview');
+            const heading = el('div', '', 'compiler-source-heading'); heading.append(el('strong', `${source.file}:${source.focus_line}`),
+                this.button('Close source preview', () => { this.diagnosticsSource = undefined; return this.renderTab(); }, 'secondary-button')); preview.append(heading);
+            preview.append(el('small', 'Read bytes match the recorded file hash. Line positions do not establish executed paths or column precision.'),
+                el('code', `sha256 ${source.source_sha256.slice(0, 16)}`));
+            const code = el('div', '', 'compiler-source-code');
+            for (const row of source.lines) { const line = el('div', '', 'compiler-source-row'); line.dataset.focus = String(row.focus);
+                line.append(el('span', String(row.line)), el('code', row.text)); code.append(line); }
+            preview.append(code);
+            if (source.truncated_lines) { preview.append(el('small', `${source.truncated_lines} long lines have omitted text.`)); }
+            if (source.recorded_report) { preview.append(el('small', 'This checks one recorded file against the installed source. The complete historical inventory and producer remain unverified.')); }
+            section.append(preview);
+            if (this.diagnosticsRevealSource) { this.diagnosticsRevealSource = false; queueMicrotask(() => { if (preview.isConnected) { preview.scrollIntoView({ block: 'nearest' }); } }); }
+        }
         const findings = el('details', '', 'compiler-findings'); findings.append(el('summary', `${method.findings.total} observations`));
         for (const item of method.findings.items.slice(0, 24)) { findings.append(el('p', `%${item.statement} · ${item.message}`, 'view-description')); }
         if (method.findings.total > 24) { findings.append(el('small', 'Additional observations remain in the bounded report.')); } section.append(findings);
@@ -1876,7 +1917,9 @@ export class ShenScopePanel {
                 if (payload.action === 'compile' || payload.action === 'compile_archive' || payload.action === 'archive_get') {
                     this.diagnosticsResult = payload.result; this.diagnosticsResultJob = payload.action === 'compile' ? payload.job_id : undefined;
                     this.diagnosticsRecorded = payload.action === 'archive_get'; this.diagnosticsMethod = 0; this.diagnosticsBlock = 0; this.diagnosticsPage = 0;
+                    this.diagnosticsSource = undefined;
                 } else if (payload.action === 'targets') { this.diagnosticsTargets = payload.result.items; }
+                else if (payload.action === 'compiler_source' || payload.action === 'archive_source') { this.diagnosticsSource = payload.result; this.diagnosticsRevealSource = true; }
                 else if (payload.action === 'archive_list') { this.diagnosticsArchive = payload.result; this.diagnosticsArchiveManual = true; }
                 else if (payload.action === 'archive_compare') { this.diagnosticsComparison = payload.result; }
                 else if (payload.action === 'archive_gc') { this.diagnosticsCleanup = payload.result; if (!payload.result.dry_run) { this.diagnosticsArchiveManual = false; this.diagnosticsArchiveOffset = 0; } }

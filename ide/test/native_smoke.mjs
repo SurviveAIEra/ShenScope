@@ -311,6 +311,19 @@ try {
         assert.match(await panel.locator('.compiler-metrics').textContent(), /ReturnString/);
         const statements = Number(await panel.locator('.compiler-metric').filter({ hasText: 'Statements' }).locator('strong').textContent());
         assert.ok(statements > 40 && statements <= 80);
+        const sourceLink = panel.getByRole('button', { name: 'Preview statement 1 source', exact: true });
+        await sourceLink.click();
+        const sourcePreview = panel.getByRole('region', { name: 'Verified compiler source preview', exact: true });
+        await sourcePreview.waitFor();
+        assert.match(await sourcePreview.textContent(), /src\/Core\/Types.jl/);
+        assert.match(await sourcePreview.textContent(), /Read bytes match the recorded file hash/);
+        assert.equal(await sourcePreview.locator('.compiler-source-row[data-focus="true"]').count(), 1);
+        const previewLayout = await sourcePreview.evaluate(element => ({ width: element.getBoundingClientRect().width,
+            available: element.closest('.panel-content').clientWidth - 32 }));
+        assert.ok(previewLayout.width <= previewLayout.available + 2, JSON.stringify(previewLayout));
+        await sourcePreview.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-source.png`) });
+        await panel.getByRole('button', { name: 'Close source preview', exact: true }).click();
+        await waitCount(panel.locator('.compiler-source-preview'), 0);
         await panel.locator('.panel-content').evaluate(element => { element.scrollTop = 0; });
         await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-overview.png`) });
         await panel.getByRole('button', { name: 'Next statements', exact: true }).click();
@@ -364,6 +377,11 @@ try {
         await panel.locator('.compiler-recorded-note').waitFor();
         assert.match(await panel.locator('.compiler-recorded-note').textContent(), /source currentness is unchecked/);
         assert.equal(await panel.getByRole('button', { name: 'Save report', exact: true }).isDisabled(), true);
+        await panel.getByRole('button', { name: 'Preview declaration', exact: true }).click();
+        await panel.getByRole('region', { name: 'Verified compiler source preview', exact: true }).waitFor();
+        assert.match(await panel.locator('.compiler-source-preview').textContent(), /complete historical inventory and producer remain unverified/);
+        await panel.getByRole('button', { name: 'Close source preview', exact: true }).click();
+        await waitCount(panel.locator('.compiler-source-preview'), 0);
         await panel.locator(`.compiler-archive-entry[data-report-id="${firstReport}"]`).getByRole('button', { name: 'Remove from catalog', exact: true }).click();
         await waitCount(panel.locator('.compiler-archive-entry'), 1);
         await panel.getByRole('button', { name: 'Refresh reports', exact: true }).click();
@@ -381,7 +399,7 @@ try {
         await waitEnabled(panel.getByRole('button', { name: 'Infer method', exact: true }));
         await panel.locator('.status').filter({ hasText: 'Compiler inference stopped' }).waitFor();
         assert.equal(requests.length, 0);
-        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench without extensions'}, real Julia inferred IR, approvals, pagination, filters, effect qualifiers, two report archives, rename, bounded comparison, recorded-source disclosure, explicit orphan cleanup and pending-approval cancellation`);
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench without extensions'}, real Julia inferred IR, current and recorded hash-verified source previews, approvals, pagination, filters, effect qualifiers, two report archives, rename, bounded comparison, recorded-source disclosure, explicit orphan cleanup and pending-approval cancellation`);
     }
     if(terminalOnly){
         await panel.getByRole('combobox',{name:'More views'}).selectOption('Terminal');

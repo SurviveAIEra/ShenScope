@@ -1,5 +1,5 @@
 const COMPILER_ARCHIVE_ACTIONS=["archive_save","archive_list","archive_get","archive_label",
-    "archive_delete","archive_compare","archive_gc"]
+    "archive_delete","archive_compare","archive_gc","archive_source"]
 
 function diagnostics_arguments(args::AbstractDict)
     action=get(args,"action",nothing)
@@ -12,6 +12,9 @@ function diagnostics_arguments(args::AbstractDict)
         ["offset","limit","target","expected_index_sha256"]
     elseif action=="archive_get"
         ["report_id","expected_index_sha256"]
+    elseif action in ("compiler_source","archive_source")
+        vcat(action=="compiler_source" ? ["job_id"] : ["report_id","expected_index_sha256"],
+            ["method_index","statement_id","context_lines"])
     elseif action=="archive_label"
         ["report_id","title","expected_revision"]
     elseif action=="archive_delete"
@@ -29,11 +32,28 @@ function diagnostics_arguments(args::AbstractDict)
         throw(ShenScopeError(:diagnostics,"Unexpected parameter for diagnostics action "*action))
     required=action=="compile" ? ["target"] : action=="compile_archive" ? ["target","expected_revision"] :
         action=="archive_save" ? ["job_id","expected_revision"] :
-        action=="archive_get" ? ["report_id"] : action=="archive_label" ? ["report_id","title","expected_revision"] :
+        action in ("archive_get","archive_source") ? ["report_id"] : action=="compiler_source" ? ["job_id"] :
+        action=="archive_label" ? ["report_id","title","expected_revision"] :
         action=="archive_delete" ? ["report_id","expected_revision"] : action=="archive_compare" ? ["before_id","after_id"] :
         action=="archive_gc" && !get(args,"dry_run",true) ? ["expected_revision"] : String[]
     all(key->haskey(args,key),required) || throw(ShenScopeError(:diagnostics,"Required diagnostics action parameter missing"))
     nothing
+end
+
+function diagnostics_compiler_source(tool,args::AbstractDict,ctx::RuntimeContext)
+    view=owned_operation(tool.operations,args["job_id"],ctx)
+    view["action"] in ("compile","compile_archive") && view["status"]=="complete" &&
+        view["result"] isa AbstractDict && get(view["metadata"],"mode",nothing)=="graph" ||
+        throw(ShenScopeError(:diagnostics,"Source preview requires an owned completed graph-inference job"))
+    root=runtime_core_root()
+    authorize!(ctx,:read,"runtime.diagnostics",root;
+        reason="Verify the installed Core inventory and read a bounded compiler source excerpt")
+    snapshot=runtime_source_snapshot(ctx;root,authorized=true)
+    report=view["result"]["report"]
+    compiler_ir_validate_report(report,compiler_target(report["target"]),snapshot;
+        limits=compiler_archive_limits(report))
+    compiler_source_excerpt(report,snapshot,ctx;method_index=get(args,"method_index",1),
+        statement_id=get(args,"statement_id",0),context_lines=get(args,"context_lines",4),root,authorized=true)
 end
 
 function diagnostics_compile_archive(args::AbstractDict,ctx::RuntimeContext)
@@ -66,6 +86,10 @@ function diagnostics_archive_execute(tool,args::AbstractDict,ctx::RuntimeContext
             target=get(args,"target",nothing),expected_index_sha256=get(args,"expected_index_sha256",nothing))
     elseif action=="archive_get"
         return compiler_archive_get(store,args["report_id"],ctx;expected_index_sha256=get(args,"expected_index_sha256",nothing))
+    elseif action=="archive_source"
+        return compiler_archive_source(store,args["report_id"],ctx;expected_index_sha256=get(args,"expected_index_sha256",nothing),
+            method_index=get(args,"method_index",1),statement_id=get(args,"statement_id",0),
+            context_lines=get(args,"context_lines",4))
     elseif action=="archive_label"
         return compiler_archive_label(store,args["report_id"],args["title"],ctx;expected_revision=args["expected_revision"])
     elseif action=="archive_delete"

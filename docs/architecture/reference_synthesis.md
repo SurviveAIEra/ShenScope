@@ -617,3 +617,26 @@ benchmark or a claim of efficient large-project indexing.
 No upstream source was copied or translated. The artifact receipt is local
 integrity evidence, not a signature. Relocation, standalone apps, installed IDE
 distribution and clean-machine restore are distinct remaining gates.
+
+### Source coordinate and preview observations (checkpoint 034)
+
+Further partial review of the seven primary sources informs one shared Core
+source-preview action. File hashes and source ranges below are retained in raw
+validation evidence; implementation is independently authored Julia.
+
+| Source and inspected lines | Observation | Applied design |
+|---|---|---|
+| Codex `codex-rs/exec-server/src/local_file_system_read.rs` 1–59 | Cancellation, regular-file policy and byte bounds belong to the read boundary | Existing guarded Core text reads plus live cancellation/Read checks and separate excerpt limits |
+| OpenCode `packages/core/src/tool/read.ts` 16–43 | Read requests express line offsets and range bounds explicitly | Method/statement coordinates and a bounded context window; no arbitrary source filename |
+| DeepSeek harness `packages/fs/tool-fs/src/read.ts` 14–60 | Line count, line length and total bytes are distinct limits | Bounded line window, UTF-8 line clipping and independent JSON response capacity |
+| Pi `packages/coding-agent/src/core/tools/read.ts` 135–156 | User ranges, out-of-file refusal and truncation describe different outcomes | Out-of-file compiler coordinates refuse; long lines visibly mark omissions |
+| Kimi `packages/agent-core-v2/src/agent/tools/os/read/read.ts` 17–43 | Line coordinates and continuation/character bounds require explicit semantics | Actual compiler line positions, with no implied columns or complete long-line text |
+| ZCode `packages/ui/src/ToolCallBlocks/renderers/read.tsx` 211–235, 290–313 | File chips and deferred full snapshot fields are separate UI affordances | Compact line buttons open an explicit bounded preview with hash/availability context |
+| Qwen Code `packages/vscode-ide-companion/src/webview/utils/fileLinks.ts` 22–76 | Path decoding and line fragments can have different meanings | UI sends report-bound numeric coordinates to Core rather than constructing arbitrary file URIs |
+
+Actual Julia reflection revealed `Base.IRShow.default_debuginfo[] == :none` on
+the supported runtime. Explicit `debuginfo=:source` retains real codelocs for all
+six target signatures. Source data is still compiler evidence, not runtime
+execution. External basenames cannot identify a file, so comparison ignores them.
+Historical checks remain unsigned and validate the selected installed file only.
+The upstream capability review and broader synthesis continue.

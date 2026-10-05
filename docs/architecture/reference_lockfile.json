@@ -34,7 +34,8 @@
       "scripts/codex_package/cli.py",
       "codex-rs/app-server/src/request_processors/diagnostics.rs",
       "codex-rs/history/src/compaction_checkpoint.rs",
-      "codex-rs/core/src/tools/registry.rs"
+      "codex-rs/core/src/tools/registry.rs",
+      "codex-rs/exec-server/src/local_file_system_read.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -73,7 +74,8 @@
       "script/publish.ts",
       "packages/schema/src/lsp-event.ts",
       "packages/core/src/session/history.ts",
-      "packages/core/src/tool/tool.ts"
+      "packages/core/src/tool/tool.ts",
+      "packages/core/src/tool/read.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -118,7 +120,8 @@
       "packages/sandbox/sandbox/src/diagnostics.ts",
       "native/system/scripts/verify-launcher-binary.mjs",
       "packages/session/session-persistence/src/storage-contract.ts",
-      "packages/core/tools/src/types.ts"
+      "packages/core/tools/src/types.ts",
+      "packages/fs/tool-fs/src/read.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -240,7 +243,8 @@
       "scripts/zcode-distribution/installer.mjs",
       "packages/shared/src/process-diagnostic.ts",
       "packages/shared/src/node/privateFilePersistence.ts",
-      "packages/ui/src/ToolCallBlocks/toolResultDisplay.ts"
+      "packages/ui/src/ToolCallBlocks/toolResultDisplay.ts",
+      "packages/ui/src/ToolCallBlocks/renderers/read.tsx"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -281,7 +285,8 @@
       "scripts/installation/install-qwen-standalone.sh",
       "packages/cli/src/nonInteractive/tool-result-boundary-diagnostics.ts",
       "packages/core/src/managed-runtime/managed-harness-checkpoint.ts",
-      "packages/core/src/core/nonInteractiveToolExecutor.ts"
+      "packages/core/src/core/nonInteractiveToolExecutor.ts",
+      "packages/vscode-ide-companion/src/webview/utils/fileLinks.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

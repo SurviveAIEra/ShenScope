@@ -1,0 +1,75 @@
+Precompiling ShenScope...
+  76325.3 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 76 seconds. 40 already precompiled.
+conflict: Compiler archive revision changed; refresh the catalog
+input: CLI inference can be archived with compile TARGET --mode graph --save
+input: Compiler report archives require --session ID
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/compiler_source.jl:77
+in expression starting at /workspace/ShenScope/test/compiler.jl:13
+Test Summary:                                                                 | Pass  Total   Time
+Actual inferred IR preserves branch definitions, loop flow and compiler scope |   16     16  11.0s
+Test Summary:                                                          | Pass  Total  Time
+Trusted compiler frames pin source and reject forged graph projections |   18     18  8.7s
+Test Summary:                                                               | Pass  Total   Time
+Compiler graph workers honor approvals, revocation and restricted execution |   11     11  23.0s
+Test Summary:                                                             | Pass  Total  Time
+Compiler polling closes actual helpers after live denial and cancellation |   15     15  1.0s
+Test Summary:                                                                 | Pass  Total  Time
+Owned compiler jobs protect conversations, cancel pending approval and retire |   13     13  7.5s
+Test Summary:                                                                      | Pass  Total   Time
+Actual compiler reports archive atomically, preserve ownership and use catalog CAS |   34     34  25.3s
+Test Summary:                                                                                    | Pass  Total  Time
+Recorded compiler source inventory survives Core changes and refuses rehashed malformed evidence |   17     17  2.0s
+Test Summary:                                                                  | Pass  Total  Time
+Two real Julia processes cannot both commit the same compiler catalog revision |    6      6  8.7s
+Test Summary:                                                                           | Pass  Total  Time
+Compiler archive cancellation leaves reviewable orphans and retains referenced evidence |   13     13  2.2s
+Test Summary:                                                                                   | Pass  Total   Time
+CLI archives actual inference in an existing conversation and restores it in a fresh invocation |   14     14  15.7s
+Test Summary:                                                              | Pass  Total  Time
+Parser transport bounds blocked pipes, failed framing and command approval |   41     41  2.3s
+Test Summary:                                                                                      | Pass  Total  Time
+Owned result limits preserve deep structured data and fail closed without expanding other managers |    7      7  1.1s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  0.7s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  1.4s
+Test Summary:                                                                  | Pass  Total  Time
+Actual Julia source coordinates are retained independently of display defaults |   17     17  1.0s
+Test Summary:                                                                       | Pass  Total  Time
+Compiler preview bounds Unicode text and refuses stale, external and symlink source |   14     14  1.4s
+Owned compiler source RPC and archived file verification preserve boundaries: Error During Test at /workspace/ShenScope/test/unit/compiler_source.jl:77
+  Got exception outside of a @test
+  MethodError: no method matching CoreServer(::String; state_dir::String, config_path::String, output::IOBuffer)
+  This error has been manually thrown, explicitly, so the method may exist but be intentionally marked as unimplemented.
+  
+  Closest candidates are:
+    CoreServer(::String, !Matched::String, !Matched::String, !Matched::Dict{String, Any}, !Matched::Bool, !Matched::Bool, !Matched::IO, !Matched::ReentrantLock, !Matched::ReentrantLock, !Matched::Dict{String, ShenScope.AgentRun}, !Matched::Dict{String, RuntimeContext}, !Matched::Dict{String, Tuple{String, Channel{Symbol}}}, !Matched::Dict{String, String}, !Matched::Vector{AbstractTool}, !Matched::Function) got unsupported keyword arguments "state_dir", "config_path", "output"
+     @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:8
+    CoreServer(::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any) got unsupported keyword arguments "state_dir", "config_path", "output"
+     @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:8
+    CoreServer(::AbstractString; state_dir, config_file, output, provider_factory) got unsupported keyword argument "config_path"
+     @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:25
+  
+  Stacktrace:
+   [1] kwerr(::@NamedTuple{state_dir::String, config_path::String, output::IOBuffer}, ::Type, ::String)
+     @ Base ./error.jl:165
+   [2] (::var"#205#209")(root::String)
+     @ Main /workspace/ShenScope/test/unit/compiler_source.jl:80
+   [3] mktempdir(fn::var"#205#209", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [4] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [5] macro expansion
+     @ /workspace/ShenScope/test/unit/compiler_source.jl:78 [inlined]
+   [6] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [7] top-level scope
+     @ /workspace/ShenScope/test/unit/compiler_source.jl:78
+   [8] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [9] top-level scope
+     @ /workspace/ShenScope/test/compiler.jl:13
+Test Summary:                                                                | Error  Total  Time
+Owned compiler source RPC and archived file verification preserve boundaries |     1      1  1.6s

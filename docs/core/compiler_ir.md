@@ -3,7 +3,7 @@
 Conversation-owned persistence and recorded-observation comparison are described
 in [compiler_archives.md](compiler_archives.md).
 
-Core obtains real, unoptimized `Base.code_typed` output for six fixed installed
+Core obtains real, unoptimized `Base.code_typed(...; debuginfo=:source)` output for six fixed installed
 Core function/signature pairs. It does not evaluate supplied source, load an
 arbitrary project, or execute the target function. This extends the existing
 lowered/typed text diagnostics with a bounded structured report.
@@ -98,6 +98,39 @@ The shared UI shows return/statements/blocks/calls/cycles, forty statements per
 page, uncertain-type and block filters, source fingerprints, findings and effect
 qualifiers. Control-path buttons are capped at sixty-four. Text rendering avoids
 HTML interpretation. The report remains available through Core for other clients.
+
+Compiler statement positions are actual line-table coordinates. The Julia 1.11
+display default uses `:none`, so graph inference explicitly preserves source
+debug information without changing the global display setting. Missing positions
+remain unknown; external source records retain only a basename. Neither supplies
+column precision, exact syntax ranges or executed-path evidence.
+
+Both clients expose statement and declaration previews. `compiler_source`
+requires an owned completed graph job; `archive_source` requires a cataloged
+report and optionally its expected catalog digest. The Core checks Read, owner,
+source membership, bytes and SHA-256 before returning an installed Core excerpt.
+No arbitrary filename is accepted. Current jobs also require the current complete
+inventory to match; historical previews check the selected recorded file only
+and leave the complete inventory and unsigned producer unverified. Changed,
+missing, external, unknown, symlinked and out-of-range sources refuse preview.
+
+Context is zero to twenty lines around the selected coordinate (default four),
+with a 1,024-byte UTF-8 bound per retained line and an explicit truncation flag.
+The response is capped at 64 KiB; the underlying source read is capped at 8 MiB.
+Line iteration retains only the selected window. Cancellation, live Read denial
+and wall-clock budget checks remain active. The view uses text nodes, shows
+line numbers and highlights the selected line; it does not write any source.
+
+```sh
+bin/shenscope diagnostics archive_source REPORT_SHA256 --session ID \
+  --method-index 1 --statement-id 1 --context-lines 4
+```
+
+Source-anchored archive comparisons pair unique authored Core coordinates,
+opcodes and operand kinds. External basenames and zero/missing lines are not
+anchors. Counts distinguish known Core, external and unknown positions; repeated
+positions remain unpaired. More positions are evidence availability, not proof
+that runtime behavior or performance changed.
 
 ## Remaining boundaries
 

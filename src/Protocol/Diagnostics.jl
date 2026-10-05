@@ -39,7 +39,7 @@ function diagnostics_rpc(server::CoreServer,method::String,params::AbstractDict)
     validate_schema(args,tool_schema(tool))
     diagnostics_arguments(args)
     if method=="diagnostics/query"
-        (args["action"] in ("contracts","ambiguities","targets","archive_list","archive_get","archive_compare") ||
+        (args["action"] in ("contracts","ambiguities","targets","compiler_source","archive_source","archive_list","archive_get","archive_compare") ||
             args["action"]=="archive_gc" && get(args,"dry_run",true)) ||
             throw(RPCFault(-32602,"Use diagnostics/start for inference or archive mutations"))
         permission_decision(policy,PermissionRequest("diagnostics-query",:read,"runtime.diagnostics",server.root,

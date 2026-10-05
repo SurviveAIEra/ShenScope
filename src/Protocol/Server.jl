@@ -190,6 +190,7 @@ function capability_manifest()
         "mcp"=>true,"mcp_transports"=>["stdio","streamable_http"],"skills"=>true,"hooks"=>true,"project_intelligence"=>true,
         "julia_extension_lifecycle"=>true,"julia_optional_extensions"=>true,"extension_isolation"=>"trusted_in_process",
         "terminal_pty"=>terminal_platform_view(),"structured_compiler_ir"=>true,"compiler_report_archives"=>true,
+        "compiler_source_preview"=>true,
         "durable_tasks"=>true,"dynamic_analyzers"=>true,"context_checkpoints"=>true,"context_recovery"=>true,
         "model_catalog"=>true,"model_counting"=>true,"model_health"=>true,"model_routing"=>true,
         "isolated_compute"=>Dict("dependency_available"=>compute_seccomp_available(),"backend"=>"linux-seccomp-compute-v1",

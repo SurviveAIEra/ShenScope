@@ -231,3 +231,12 @@ synthetic large metadata is a capacity test, not an indexing benchmark. Generic
 durable side-effect accounting, arbitrary project inference and source/Git/runtime
 fusion remain pending. The seven primary sources have further partial reviews;
 complete synthesis across their capabilities is still unfinished.
+
+Checkpoint 034 retains actual compiler codelocs and adds current/historical
+file-hash-verified Core source excerpts to the agent tool, CLI, owned RPC and both
+IDE clients. Unique authored Core locations now support real statement pairing;
+external basenames and missing/repeated coordinates stay unpaired. Line evidence
+has no columns or runtime-path claim. Historical previews validate one installed
+file, not the complete inventory or unsigned producer. Arbitrary project compiler
+loading, profiling and fusion with combined project/Git/runtime facts remain
+unfinished. Seven further partial source reviews inform the original design.

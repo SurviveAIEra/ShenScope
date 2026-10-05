@@ -84,9 +84,10 @@ function compiler_ir_location(code::Core.CodeInfo,index::Int,root::String)
     1<=location<=length(code.linetable) || return unknown
     info=code.linetable[location]
     info isa Core.LineInfoNode || return unknown
+    Int(info.line)>0 || return unknown
     file=String(info.file)
     relative=isabspath(file) ? replace(relpath(file,root),'\\'=>'/') : file
     own=startswith(relative,"src/") && all(component->component!="..",split(relative,'/'))
     Dict("file"=>cliptext(own ? relative : basename(file),512),
-        "line"=>max(0,Int(info.line)),"scope"=>own ? "core" : "external")
+        "line"=>Int(info.line),"scope"=>own ? "core" : "external")
 end

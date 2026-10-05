@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest verified cloc 2.11 count: 23,531 authored Julia Core code lines across 237 files;
-CLI/TUI add 1,139 lines and optional Julia extensions add 57, counted separately.
-This is 9.4124% of the minimum line target, leaving 226,469 lines. These are early implementations,
+Latest verified cloc 2.11 count: 23,645 authored Julia Core code lines across 238 files;
+CLI/TUI add 1,141 lines and optional Julia extensions add 57, counted separately.
+This is 9.458% of the minimum line target, leaving 226,355 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -817,3 +817,44 @@ is copied or translated. The strict audit still finds one application repository
 project copies, worktrees or sysimages. Core increased by 78 authored lines;
 compiler source navigation, project inference, graph fusion and the remaining
 product/size gates continue.
+
+Compiler source checkpoint 034: graph inference explicitly retains actual Julia
+source debug information. The supported runtime's display default had dropped
+all statement codelocs; the real six-target reflection probe confirms the cause.
+The cliptext graph now preserves 63 of 65 positions. Missing positions remain
+unknown. Source coordinates have no column precision or executed-path claim.
+
+An owned completed graph job or a cataloged historical report can request a
+method/statement source preview. Read/ownership guards, strict source membership,
+UTF-8/byte bounds, file SHA-256 and line range checks run before publication.
+No arbitrary filename is accepted. Current jobs require complete inventory
+agreement; historical previews verify the selected installed file and explicitly
+leave the full inventory and unsigned producer unverified. Symlinks, changed
+bytes, external/missing positions and out-of-file lines refuse the read. Lazy
+line iteration retains only the chosen window, with explicit long-line omissions.
+
+Both IDE clients share compact line buttons, declaration previews, highlighted
+line numbers, hash/currentness context and explicit close. Source state resets
+with report/configuration/conversation changes. Unique authored Core anchors
+now pair actual statements; repeated/unknown/zero positions and external
+basenames remain unpaired. Comparison exposes source availability separately
+from structural changes and makes no performance/equivalence claim.
+
+Validation: 308 affected Julia assertions, including 47 new source/CLI assertions,
+actual compiler helpers, current/historical reads and scoped approvals. Real
+Node/Core transport and both actual GUI clients pass source previews, ownership,
+unique/ambiguous pairing and archive regressions. Shared checks/build and complete
+Workbench typecheck pass. A new fixture's incorrect constructor keyword was
+fixed. Actual screenshot inspection exposed long-line sidebar overflow; bounded
+grid/flex sizing and actual width assertions now pass in both clients. Raw
+failed/passing evidence and inspected screenshots are preserved in
+docs/validation/compiler-source-checkpoint-034.json.
+
+All seven primary agent reviews extend with bounded read and source-display
+observations; no source is copied or translated. The strict audit still finds
+one app checkout, 50 dependency repositories and no unknown repositories, with
+about 17.5 GiB free. No project copies, worktrees or sysimages were created.
+Core increased by 114 authored lines. Actual Profile.Allocs/measurement probes
+for three trusted targets are preliminary research; the public profiling service,
+arbitrary project inference, combined compiler/project facts and remaining size/
+functional gates continue.

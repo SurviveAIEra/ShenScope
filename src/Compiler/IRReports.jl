@@ -41,7 +41,9 @@ function compiler_ir_report(name::AbstractString;limits=CompilerIRLimits())
     snapshot=runtime_source_snapshot(ctx;root)
     selected=which(target.callable,target.arguments)
     identity=compiler_ir_method_identity(selected,snapshot)
-    entries=Base.code_typed(target.callable,target.arguments;optimize=false)
+    # The display default drops codelocs on supported Julia versions. Preserve
+    # actual compiler positions rather than inventing statement/source mappings.
+    entries=Base.code_typed(target.callable,target.arguments;optimize=false,debuginfo=:source)
     graphs=Dict{String,Any}[]
     for entry in entries[1:min(length(entries),8)]
         code=entry.first

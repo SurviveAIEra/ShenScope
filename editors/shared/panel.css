@@ -369,6 +369,18 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .shenscope-panel .compiler-table-head { color: var(--vscode-descriptionForeground); background: var(--vscode-editorGroupHeader-tabsBackground); font-weight: 600; }
 .shenscope-panel .compiler-table-row + .compiler-table-row { border-top: 1px solid var(--vscode-panel-border); }
 .shenscope-panel .compiler-table-row code { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.shenscope-panel .compiler-operation { display: flex; min-width: 0; align-items: center; gap: 5px; }
+.shenscope-panel .compiler-operation > code { flex: 1; }
+.shenscope-panel .compiler-source-link { flex-shrink: 0; padding: 2px 4px; border: 0; background: transparent; color: var(--vscode-textLink-foreground); font-size: 10px; }
+.shenscope-panel .compiler-source-preview { min-width: 0; max-width: 100%; box-sizing: border-box; border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.shenscope-panel .compiler-source-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.shenscope-panel .compiler-source-heading strong { min-width: 0; overflow-wrap: anywhere; font-size: 12px; }
+.shenscope-panel .compiler-source-preview > small, .shenscope-panel .compiler-source-preview > code { color: var(--muted); font-size: 10px; }
+.shenscope-panel .compiler-source-code { min-width: 0; max-width: 100%; overflow: auto; max-height: 260px; background: var(--vscode-textCodeBlock-background, var(--raised)); border-radius: 5px; font-family: var(--vscode-editor-font-family, monospace); font-size: 11px; }
+.shenscope-panel .compiler-source-row { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; padding: 3px 8px; }
+.shenscope-panel .compiler-source-row > span { text-align: right; color: var(--vscode-editorLineNumber-foreground, var(--muted)); user-select: none; }
+.shenscope-panel .compiler-source-row > code { background: transparent; padding: 0; white-space: pre; }
+.shenscope-panel .compiler-source-row[data-focus="true"] { background: var(--vscode-editor-lineHighlightBackground, var(--vscode-list-hoverBackground)); border-left: 2px solid var(--accent); }
 .shenscope-panel .compiler-table-row[data-classification="any"], .shenscope-panel .compiler-table-row[data-classification="nonconcrete"] { border-left: 2px solid var(--vscode-editorWarning-foreground, #d9ac54); }
 .shenscope-panel .compiler-pagination { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 6px; }
 .shenscope-panel .compiler-pagination small { text-align: center; white-space: nowrap; font-size: 10px; }

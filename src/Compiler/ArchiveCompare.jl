@@ -12,7 +12,8 @@ end
 
 function compiler_archive_statement_anchor(row)
     source=row["source"]
-    source["scope"]=="unknown" && return nothing
+    # External records contain only basenames, which cannot identify a file.
+    source["scope"]=="core" && source["line"]>0 || return nothing
     canonical(Dict("source"=>source,"opcode"=>row["opcode"],"kind"=>row["kind"]))
 end
 
@@ -72,6 +73,8 @@ function compiler_archive_method_comparison(before,after,retain::Function,ctx,st
         "uncertain_values_after"=>compiler_archive_uncertain_count(after),"uniquely_source_anchored_pairs"=>paired,
         "ambiguous_shared_anchors"=>ambiguous,"unpaired_statements_before"=>length(before["statements"])-paired,
         "unpaired_statements_after"=>length(after["statements"])-paired,
+        "source_positions_before"=>compiler_source_positions(before),
+        "source_positions_after"=>compiler_source_positions(after),
         "normal_cycle_groups_before"=>length(before["control_flow"]["loops"]["cycle_groups"]),
         "normal_cycle_groups_after"=>length(after["control_flow"]["loops"]["cycle_groups"]))
 end
@@ -92,7 +95,7 @@ function compiler_archive_compare(store::CompilerArchiveStore,left_id::String,ri
         "index_sha256"=>index["index_sha256"],"target_before"=>left["target"],"target_after"=>right["target"],
         "source_changed"=>left["source"]["fingerprint"]!=right["source"]["fingerprint"],
         "performance_change_proven"=>false,"behavior_equivalence_proven"=>false,"producer_authenticated"=>false,
-        "statement_matching"=>"unique source location, opcode and operand kind; ambiguous anchors remain unpaired",
+        "statement_matching"=>"unique authored Core source location, opcode and operand kind; ambiguous anchors remain unpaired",
         "callee_matching"=>"compiler callee classes; local SSA and slot IDs are not runtime function identities")
     reasons=String[]
     left["target"]==right["target"] || push!(reasons,"target_changed")

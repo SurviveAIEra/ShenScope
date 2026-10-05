@@ -1,0 +1,97 @@
+[
+  {
+    "name": "codex",
+    "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+    "path": "codex-rs/exec-server/src/local_file_system_read.rs",
+    "sha256": "d7ec29392fade077756cfd1312ae9d8fbeb61dcbd9d7e3ecbd386f30c4d10072",
+    "line_ranges": [
+      [
+        1,
+        59
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "opencode",
+    "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+    "path": "packages/core/src/tool/read.ts",
+    "sha256": "ff3298263962058f05ec4eb2f9007ef0bc42101dbda7908ca79f46a368128752",
+    "line_ranges": [
+      [
+        16,
+        43
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "deepseek-harness",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "path": "packages/fs/tool-fs/src/read.ts",
+    "sha256": "1e7d5743be73623b07cde79f2f7168f4466794c26c714b923c289cd0e155115f",
+    "line_ranges": [
+      [
+        14,
+        60
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "pi-mono",
+    "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+    "path": "packages/coding-agent/src/core/tools/read.ts",
+    "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518",
+    "line_ranges": [
+      [
+        135,
+        156
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "kimi-code",
+    "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+    "path": "packages/agent-core-v2/src/agent/tools/os/read/read.ts",
+    "sha256": "b0294533727a2831ad3f38882932d5f5a9d2cc3185eb86f380ac2481971edd5c",
+    "line_ranges": [
+      [
+        17,
+        43
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "ZCode",
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "path": "packages/ui/src/ToolCallBlocks/renderers/read.tsx",
+    "sha256": "aab42216196aa06ae75eb57f363acbf87d99666f7babf4e00eedc4492dfcff5c",
+    "line_ranges": [
+      [
+        211,
+        235
+      ],
+      [
+        290,
+        313
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "qwen-code",
+    "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+    "path": "packages/vscode-ide-companion/src/webview/utils/fileLinks.ts",
+    "sha256": "0622f5e6dd53d344d72be6dc9bd774ce1e0b410dfe92fdab82aaf218b54fc785",
+    "line_ranges": [
+      [
+        22,
+        76
+      ]
+    ],
+    "code_reuse": false
+  }
+]

@@ -1,0 +1,12 @@
+Test Summary:                                                                                      | Pass  Total  Time
+Owned result limits preserve deep structured data and fail closed without expanding other managers |    7      7  2.2s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  0.8s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  1.5s
+Test Summary:                                                                  | Pass  Total   Time
+Actual Julia source coordinates are retained independently of display defaults |   17     17  13.0s
+Test Summary:                                                                       | Pass  Total  Time
+Compiler preview bounds Unicode text and refuses stale, external and symlink source |   14     14  1.4s
+Test Summary:                                                                | Pass  Total   Time
+Owned compiler source RPC and archived file verification preserve boundaries |   13     13  18.6s

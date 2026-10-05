@@ -17,11 +17,12 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
         realpath(session.root)==ctx.root || throw(ShenScopeError(:permission,"Compiler archive conversation belongs to another workspace"))
     end
     action=="archive_save" && throw(ShenScopeError(:input,"CLI inference can be archived with compile TARGET --mode graph --save"))
+    action=="compiler_source" && throw(ShenScopeError(:input,"CLI previews use archive_source REPORT_ID --session ID"))
     args=Dict{String,Any}("action"=>save ? "compile_archive" : action)
     if action in ("compile","compile_archive")
         length(positional)==3 || throw(ShenScopeError(:input,"Compiler target required"));args["target"]=positional[3]
         save && (args["mode"]="graph")
-    elseif action in ("archive_get","archive_label","archive_delete")
+    elseif action in ("archive_get","archive_label","archive_delete","archive_source")
         length(positional)==3 || throw(ShenScopeError(:input,"Archive report digest required"));args["report_id"]=positional[3]
     elseif action=="archive_compare"
         length(positional)==4 || throw(ShenScopeError(:input,"Two archive report digests required"))
@@ -32,7 +33,8 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
     haskey(flags,"--mode") && (args["mode"]=flags["--mode"])
     haskey(flags,"--timeout") && (args["timeout"]=parse(Float64,flags["--timeout"]))
     for (flag,key) in (("--max-ir-bytes","max_ir_bytes"),("--max-statements","max_statements"),
-            ("--limit","limit"),("--offset","offset"),("--expected-revision","expected_revision"))
+            ("--limit","limit"),("--offset","offset"),("--expected-revision","expected_revision"),
+            ("--method-index","method_index"),("--statement-id","statement_id"),("--context-lines","context_lines"))
         haskey(flags,flag) || continue
         value=tryparse(Int,flags[flag]);value===nothing && throw(ShenScopeError(:input,flag*" must be an integer"))
         args[key]=value
