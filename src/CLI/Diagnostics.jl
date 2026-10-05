@@ -18,8 +18,9 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
     end
     action=="archive_save" && throw(ShenScopeError(:input,"CLI inference can be archived with compile TARGET --mode graph --save"))
     action=="compiler_source" && throw(ShenScopeError(:input,"CLI previews use archive_source REPORT_ID --session ID"))
+    action in ("evidence","evidence_source") && throw(ShenScopeError(:input,"CLI source association uses inspect TARGET; owned job queries use RPC"))
     args=Dict{String,Any}("action"=>save ? "compile_archive" : action)
-    if action in ("compile","compile_archive","profile")
+    if action in ("compile","compile_archive","profile","inspect")
         length(positional)==3 || throw(ShenScopeError(:input,"Compiler target required"));args["target"]=positional[3]
         save && (args["mode"]="graph")
     elseif action in ("archive_get","archive_label","archive_delete","archive_source")
@@ -42,6 +43,8 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
     end
     haskey(flags,"--title") && (args["title"]=flags["--title"])
     haskey(flags,"--fixture") && (args["fixture"]=flags["--fixture"])
+    haskey(flags,"--query") && (args["query"]=flags["--query"])
+    haskey(flags,"--observation-kind") && (args["observation_kind"]=flags["--observation-kind"])
     if haskey(flags,"--sample-rate")
         rate=tryparse(Float64,flags["--sample-rate"]);rate===nothing && throw(ShenScopeError(:input,"--sample-rate must be a number"))
         args["sample_rate"]=rate

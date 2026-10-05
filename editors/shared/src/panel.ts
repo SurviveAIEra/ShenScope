@@ -83,6 +83,10 @@ export class ShenScopePanel {
     private diagnosticsRevealSource = false;
     private diagnosticsAction = '';
     private diagnosticsProfile: any;
+    private diagnosticsProfileJob: string | undefined;
+    private diagnosticsEvidence: any;
+    private diagnosticsEvidenceSource: any;
+    private diagnosticsEvidenceArgs: Record<string, unknown> | undefined;
     private diagnosticsTarget = 'cliptext_string';
     private diagnosticsTargets: any[] | undefined;
     private diagnosticsMethod = 0;
@@ -419,6 +423,34 @@ export class ShenScopePanel {
         this.diagnosticsComparison = undefined; this.diagnosticsCleanup = undefined;
         this.diagnosticsSource = undefined; this.diagnosticsRevealSource = false;
         this.diagnosticsAction = ''; this.diagnosticsProfile = undefined;
+        this.diagnosticsProfileJob = undefined; this.clearRuntimeEvidence();
+    }
+
+    private clearRuntimeEvidence(): void {
+        this.diagnosticsEvidence = undefined; this.diagnosticsEvidenceSource = undefined; this.diagnosticsEvidenceArgs = undefined;
+    }
+
+    private async connectRuntimeEvidence(): Promise<void> {
+        const args: Record<string, unknown> = {};
+        if (this.diagnosticsResultJob && this.diagnosticsResult?.report?.target === this.diagnosticsTarget) { args.compiler_job_id = this.diagnosticsResultJob; }
+        if (this.diagnosticsProfileJob && this.diagnosticsProfile?.report?.target === this.diagnosticsTarget) { args.profile_job_id = this.diagnosticsProfileJob; }
+        if (!Object.keys(args).length) { return; }
+        this.clearRuntimeEvidence(); this.diagnosticsEvidenceArgs = args;
+        await this.startDiagnosticsAction('evidence', { ...args, limit: 12 });
+    }
+
+    private async runtimeEvidencePage(offset: number, observation_kind?: string, query?: string): Promise<void> {
+        if (!this.diagnosticsEvidenceArgs || !this.diagnosticsEvidence) { return; }
+        await this.startDiagnosticsAction('evidence', { ...this.diagnosticsEvidenceArgs, offset, limit: 12,
+            observation_kind: observation_kind ?? this.diagnosticsEvidence.observation_kind,
+            query: query ?? this.diagnosticsEvidence.query, expected_evidence_sha256: this.diagnosticsEvidence.evidence_sha256 });
+    }
+
+    private async previewRuntimeEvidence(key: string): Promise<void> {
+        if (!this.diagnosticsEvidenceArgs || !this.diagnosticsEvidence) { return; }
+        this.diagnosticsEvidenceSource = undefined;
+        await this.startDiagnosticsAction('evidence_source', { ...this.diagnosticsEvidenceArgs, observation_key: key,
+            expected_evidence_sha256: this.diagnosticsEvidence.evidence_sha256, context_lines: 4 });
     }
 
     private async previewCompilerSource(statement_id = 0): Promise<void> {
@@ -438,7 +470,8 @@ export class ShenScopePanel {
         try {
             const session_id = await this.ensureSession('Julia compiler');
             this.diagnosticsAction = action;
-            if (action === 'profile') { this.diagnosticsProfile = undefined; }
+            if (action === 'profile') { this.diagnosticsProfile = undefined; this.diagnosticsProfileJob = undefined; this.clearRuntimeEvidence(); }
+            if (action === 'compile' || action === 'compile_archive' || action === 'archive_get') { this.clearRuntimeEvidence(); }
             const started = await this.bridge.request('diagnostics/start', { session_id, action, ...args });
             if (!this.completedDiagnosticsJobs.has(started.job_id)) { this.diagnosticsJob = started.job_id; this.setStatus(action === 'profile' ? 'Measuring fixed Core fixture…' : action === 'compile' ? 'Inferring trusted Core method…' : 'Working with recorded compiler evidence…'); }
         } finally { this.diagnosticsStarting = false; this.updateActions(); }
@@ -450,11 +483,12 @@ export class ShenScopePanel {
         if (revision !== this.renderRevision) { return; }
         const details = el('details', '', 'diagnostics'); details.append(el('summary', 'Runtime details'), el('pre', JSON.stringify(runtime, null, 2))); this.content.append(details);
         if (!this.capabilities.structured_compiler_ir) { return; }
-        const session_id = await this.ensureSession('Julia compiler');
-        if (revision !== this.renderRevision) { return; }
         const section = el('section', '', 'compiler-section');
         const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Compiler inference'), el('span', 'Trusted Core', 'badge'));
         section.append(heading, el('p', 'Inspect an installed Core method, its inferred types and possible control paths. Project inference remains in development.', 'view-description'));
+        const loading = el('p', 'Reading trusted Core metadata…', 'view-description'); loading.setAttribute('role', 'status'); section.append(loading); this.content.append(section);
+        const session_id = await this.ensureSession('Julia compiler');
+        if (revision !== this.renderRevision) { return; }
         const controls = el('div', '', 'compiler-controls');
         const target = el('select'); target.setAttribute('aria-label', 'Compiler target'); target.disabled = this.contextBusy();
         try {
@@ -462,12 +496,13 @@ export class ShenScopePanel {
             if (revision !== this.renderRevision) { return; }
             for (const item of targets) { const option = el('option', item.name); option.value = item.name; target.append(option); }
             target.value = this.diagnosticsTarget;
-            target.onchange = () => { this.diagnosticsTarget = target.value; };
+            target.onchange = () => { this.diagnosticsTarget = target.value; this.clearRuntimeEvidence(); void this.guard(() => this.renderTab()); };
             controls.append(target);
         } catch {
             controls.append(el('p', 'Read permission is required to list compiler targets.', 'view-description'));
             const readTargets = this.button('Read compiler targets', () => this.startDiagnosticsAction('targets', {}), 'secondary-button'); readTargets.disabled = this.contextBusy(); controls.append(readTargets);
         }
+        loading.remove();
         const run = this.button('Infer method', () => this.startDiagnostics(), 'primary-button'); run.disabled = this.contextBusy() || !target.options.length;
         controls.append(run); section.append(controls);
         if (this.capabilities.compiler_runtime_profile) {
@@ -488,7 +523,64 @@ export class ShenScopePanel {
         }
         if (this.diagnosticsResult?.report) { this.compilerReportView(section, this.diagnosticsResult.report); }
         if (this.diagnosticsProfile?.report) { this.compilerProfileView(section, this.diagnosticsProfile.report); }
-        this.content.append(section);
+        if (this.capabilities.runtime_evidence_association) {
+            const connect = this.button('Connect source facts', () => this.connectRuntimeEvidence(), 'secondary-button');
+            connect.disabled = this.contextBusy() || !((this.diagnosticsResultJob && this.diagnosticsResult?.report?.target === this.diagnosticsTarget) ||
+                (this.diagnosticsProfileJob && this.diagnosticsProfile?.report?.target === this.diagnosticsTarget));
+            section.append(connect, el('p', 'Associate current owned report positions with hash-verified Core declarations. Reads source facts without running the target.', 'view-description'));
+            if (this.diagnosticsEvidence) { this.runtimeEvidenceView(section, this.diagnosticsEvidence); }
+        }
+    }
+
+    private runtimeEvidenceView(section: HTMLElement, evidence: any): void {
+        const view = el('section', '', 'runtime-evidence'); view.setAttribute('aria-label', 'Runtime source evidence');
+        const summary = evidence.summary;
+        view.append(el('h3', 'Source evidence'), el('p', `${summary.observations} observations · ${summary.callable_declarations} declarations · ${summary.selected_files} verified files`, 'view-description'),
+            el('small', `${evidence.report_stamps.map((item: any) => item.kind).join(' + ')} · JuliaSyntax ${evidence.provider_stamps[0].parser_version}`),
+            el('p', 'Containing declarations are candidates. Source association does not establish a runtime binding or semantic equivalence.', 'view-description'));
+        const controls = el('div', '', 'compiler-controls'); const kind = el('select'); kind.setAttribute('aria-label', 'Evidence observation kind');
+        for (const [value, label] of [['all', 'All observations'], ['method', 'Method inference'], ['statement', 'IR statements'], ['allocation', 'Allocation frames']]) {
+            const option = el('option', label); option.value = value; kind.append(option);
+        }
+        kind.value = evidence.observation_kind; kind.disabled = this.contextBusy();
+        kind.onchange = () => { void this.guard(() => this.runtimeEvidencePage(0, kind.value)); };
+        const query = el('input'); query.type = 'search'; query.value = evidence.query; query.placeholder = 'Filter evidence'; query.setAttribute('aria-label', 'Filter runtime evidence');
+        const search = this.button('Filter evidence', () => this.runtimeEvidencePage(0, kind.value, query.value), 'secondary-button'); search.disabled = this.contextBusy();
+        controls.append(kind, query, search); view.append(controls);
+        for (const item of evidence.items) {
+            const row = el('article', '', 'runtime-evidence-row'); row.dataset.kind = item.kind;
+            const label = item.kind === 'statement' ? `%${item.handle.statement_id} · ${item.details.opcode}` : item.kind === 'method' ? 'Inferred method' : `Sample ${item.handle.sample_id} · frame ${item.handle.frame_index}`;
+            row.append(el('strong', label), el('small', item.join_status.replaceAll('_', ' ')));
+            if (item.source.file) {
+                const source = this.button(`${item.source.file}:${item.source.line}`, () => this.previewRuntimeEvidence(item.key), 'compiler-source-link');
+                source.setAttribute('aria-label', `Preview ${item.kind} observation source`); source.disabled = this.contextBusy(); row.append(source);
+            } else { row.append(el('small', 'No retained authored source position.')); }
+            if (item.kind === 'allocation') { row.append(el('code', `${item.details.sampled_type} · ${item.details.sampled_bytes} sampled B`), el('small', 'This sample may appear in several frame rows; bytes are not additive across observations.')); }
+            const candidates = el('details', '', 'runtime-evidence-candidates'); candidates.append(el('summary', `${item.candidate_count} declaration candidates`));
+            for (const witness of item.declaration_candidates) { const declaration = witness.declaration; candidates.append(el('code', declaration.qualified_name), el('small', `${declaration.provider} · L${declaration.location.start_line}–${declaration.location.end_line} · same source hash`)); }
+            row.append(candidates); view.append(row);
+        }
+        if (!evidence.items.length) { view.append(el('p', 'No observations match the selected filter.', 'empty-text')); }
+        const pagination = el('div', '', 'runtime-evidence-pagination'); const previous = this.button('Previous evidence', () => this.runtimeEvidencePage(Math.max(0, evidence.offset - evidence.limit)), 'secondary-button');
+        const next = this.button('Next evidence', () => this.runtimeEvidencePage(evidence.next_offset), 'secondary-button');
+        previous.disabled = this.contextBusy() || evidence.offset === 0; next.disabled = this.contextBusy() || evidence.next_offset === null;
+        pagination.append(previous, el('small', `${evidence.total ? evidence.offset + 1 : 0}–${evidence.offset + evidence.items.length} of ${evidence.total}`), next); view.append(pagination);
+        if (this.diagnosticsEvidenceSource?.evidence_sha256 === evidence.evidence_sha256) { view.append(this.verifiedSourceView(this.diagnosticsEvidenceSource, () => { this.diagnosticsEvidenceSource = undefined; return this.renderTab(); }, true)); }
+        const notes = el('details'); notes.append(el('summary', 'Evidence scope')); for (const note of evidence.limitations) { notes.append(el('p', note, 'view-description')); }
+        view.append(notes); section.append(view);
+    }
+
+    private verifiedSourceView(source: any, close: () => Promise<void>, runtimeEvidence = false): HTMLElement {
+        const preview = el('section', '', 'compiler-source-preview'); preview.setAttribute('role', 'region');
+        preview.setAttribute('aria-label', runtimeEvidence ? 'Verified runtime evidence source preview' : 'Verified compiler source preview');
+        const heading = el('div', '', 'compiler-source-heading'); heading.append(el('strong', `${source.file}:${source.focus_line}`), this.button('Close source preview', close, 'secondary-button')); preview.append(heading);
+        preview.append(el('small', runtimeEvidence ? 'Read bytes match the recorded file hash. Declaration association does not prove a runtime binding.' : 'Read bytes match the recorded file hash. Line positions do not establish executed paths or column precision.'), el('code', `sha256 ${source.source_sha256.slice(0, 16)}`));
+        const code = el('div', '', 'compiler-source-code'); for (const row of source.lines) { const line = el('div', '', 'compiler-source-row'); line.dataset.focus = String(row.focus); line.append(el('span', String(row.line)), el('code', row.text)); code.append(line); }
+        preview.append(code);
+        if (source.truncated_lines) { preview.append(el('small', `${source.truncated_lines} long lines have omitted text.`)); }
+        if (source.recorded_report) { preview.append(el('small', 'This checks one recorded file against the installed source. The complete historical inventory and producer remain unverified.')); }
+        if (this.diagnosticsRevealSource) { this.diagnosticsRevealSource = false; queueMicrotask(() => { if (preview.isConnected) { preview.scrollIntoView({ block: 'nearest' }); } }); }
+        return preview;
     }
 
     private compilerProfileView(section: HTMLElement, report: any): void {
@@ -672,19 +764,7 @@ export class ShenScopePanel {
         pagination.append(previous, el('small', `${rows.length ? this.diagnosticsPage * size + 1 : 0}–${Math.min(rows.length, (this.diagnosticsPage + 1) * size)} of ${rows.length}`), next); section.append(pagination);
         const source = this.diagnosticsSource;
         if (source?.report_sha256 === report.report_sha256) {
-            const preview = el('section', '', 'compiler-source-preview'); preview.setAttribute('role', 'region'); preview.setAttribute('aria-label', 'Verified compiler source preview');
-            const heading = el('div', '', 'compiler-source-heading'); heading.append(el('strong', `${source.file}:${source.focus_line}`),
-                this.button('Close source preview', () => { this.diagnosticsSource = undefined; return this.renderTab(); }, 'secondary-button')); preview.append(heading);
-            preview.append(el('small', 'Read bytes match the recorded file hash. Line positions do not establish executed paths or column precision.'),
-                el('code', `sha256 ${source.source_sha256.slice(0, 16)}`));
-            const code = el('div', '', 'compiler-source-code');
-            for (const row of source.lines) { const line = el('div', '', 'compiler-source-row'); line.dataset.focus = String(row.focus);
-                line.append(el('span', String(row.line)), el('code', row.text)); code.append(line); }
-            preview.append(code);
-            if (source.truncated_lines) { preview.append(el('small', `${source.truncated_lines} long lines have omitted text.`)); }
-            if (source.recorded_report) { preview.append(el('small', 'This checks one recorded file against the installed source. The complete historical inventory and producer remain unverified.')); }
-            section.append(preview);
-            if (this.diagnosticsRevealSource) { this.diagnosticsRevealSource = false; queueMicrotask(() => { if (preview.isConnected) { preview.scrollIntoView({ block: 'nearest' }); } }); }
+            section.append(this.verifiedSourceView(source, () => { this.diagnosticsSource = undefined; return this.renderTab(); }));
         }
         const findings = el('details', '', 'compiler-findings'); findings.append(el('summary', `${method.findings.total} observations`));
         for (const item of method.findings.items.slice(0, 24)) { findings.append(el('p', `%${item.statement} · ${item.message}`, 'view-description')); }
@@ -1953,11 +2033,13 @@ export class ShenScopePanel {
             for (const card of Array.from(this.approvals.children)) { const element = card as HTMLElement; if (element.dataset.traceId === params.trace_id || (payload.permission_ids ?? []).includes(element.dataset.requestId)) { card.remove(); } }
             if (owned && params.kind === 'diagnostics_job_completed') {
                 if (payload.action === 'compile' || payload.action === 'compile_archive' || payload.action === 'archive_get') {
-                    this.diagnosticsResult = payload.result; this.diagnosticsResultJob = payload.action === 'compile' ? payload.job_id : undefined;
+                    this.diagnosticsResult = payload.result; this.diagnosticsResultJob = payload.action === 'compile' || payload.action === 'compile_archive' ? payload.job_id : undefined;
                     this.diagnosticsRecorded = payload.action === 'archive_get'; this.diagnosticsMethod = 0; this.diagnosticsBlock = 0; this.diagnosticsPage = 0;
                     this.diagnosticsSource = undefined;
                 } else if (payload.action === 'targets') { this.diagnosticsTargets = payload.result.items; }
-                else if (payload.action === 'profile') { this.diagnosticsProfile = payload.result; }
+                else if (payload.action === 'profile') { this.diagnosticsProfile = payload.result; this.diagnosticsProfileJob = payload.job_id; }
+                else if (payload.action === 'evidence') { this.diagnosticsEvidence = payload.result; }
+                else if (payload.action === 'evidence_source') { this.diagnosticsEvidenceSource = payload.result; this.diagnosticsRevealSource = true; }
                 else if (payload.action === 'compiler_source' || payload.action === 'archive_source') { this.diagnosticsSource = payload.result; this.diagnosticsRevealSource = true; }
                 else if (payload.action === 'archive_list') { this.diagnosticsArchive = payload.result; this.diagnosticsArchiveManual = true; }
                 else if (payload.action === 'archive_compare') { this.diagnosticsComparison = payload.result; }

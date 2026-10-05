@@ -1,0 +1,383 @@
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Settings
+Models
+Memory
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+Extensions
+Terminal
+Runtime
+Runtime details
+Compiler inference
+Trusted Core
+
+Inspect an installed Core method, its inferred types and possible control paths. Project inference remains in development.
+
+digest_string
+canonical_dictionary
+cliptext_string
+symbol_identity
+resolve_call_reference
+remove_graph_edge
+Infer method
+Measure method
+
+Measurement executes a supported trusted Core method with fixed test input. Warmup, timing and allocation sampling are separate passes.
+
+Saved compiler reports
+cliptext_string
+Julia 1.11.7 · 7.43 s inference
+
+7e811253c92c · source fingerprint
+
+Return
+String
+Statements
+65
+Blocks
+7
+Calls
+25
+Cycles
+0
+Core positions
+63/65
+
+src/Core/Types.jl:120
+
+Preview declaration
+Control paths
+Only uncertain value types
+SSA
+Operation
+Inferred type
+%1
+NewvarNode
+L121
+Any
+%2
+NewvarNode
+L121
+Any
+%3
+NewvarNode
+L121
+Any
+%4
+GlobalRef
+L121
+typeof(>=)
+%5
+call
+L121
+Bool
+%6
+GotoIfNot
+L121
+Any
+%7
+GotoNode
+Any
+%8
+GlobalRef
+L121
+typeof(throw)
+%9
+GlobalRef
+L121
+DataType
+%10
+call
+L121
+ArgumentError
+%11
+call
+L121
+Union{}
+%12
+GlobalRef
+L122
+typeof(<=)
+%13
+GlobalRef
+L122
+typeof(ncodeunits)
+%14
+call
+L122
+Int64
+%15
+call
+L122
+Bool
+%16
+GotoIfNot
+L122
+Any
+%17
+call
+L122
+String
+%18
+ReturnNode
+L122
+Any
+%19
+Const
+Union{}
+%20
+GlobalRef
+L123
+typeof(collect)
+%21
+=
+L123
+Vector{Char}
+%22
+=
+L124
+String
+%23
+GlobalRef
+L125
+typeof(max)
+%24
+GlobalRef
+L125
+typeof(div)
+%25
+GlobalRef
+L125
+typeof(-)
+%26
+GlobalRef
+L125
+typeof(ncodeunits)
+%27
+SlotNumber
+L125
+String
+%28
+call
+L125
+Int64
+%29
+call
+L125
+Int64
+%30
+call
+L125
+Int64
+%31
+=
+L125
+Int64
+%32
+GlobalRef
+L126
+typeof(*)
+%33
+GlobalRef
+L126
+DataType
+%34
+SlotNumber
+L126
+Vector{Char}
+%35
+GlobalRef
+L126
+Colon
+%36
+GlobalRef
+L126
+typeof(min)
+%37
+SlotNumber
+L126
+Int64
+%38
+GlobalRef
+L126
+typeof(length)
+%39
+SlotNumber
+L126
+Vector{Char}
+%40
+call
+L126
+Int64
+Previous
+1–40 of 65
+Next
+23 observations
+Effect guarantees · experimental
+Runtime measurement · cliptext_string
+
+unicode fixture · 8 calls per batch · 3 timing batches
+
+Median batch
+0.031 ms
+Allocated / batch
+47.63 KiB
+Warmup excluded
+0.001 s
+Samples kept
+80/80
+
+Allocation sampling uses a separate pass at rate 1. All observed samples are retained.
+
+Retained allocation types
+Profile.Allocs.BufferType
+8 samples · 45056 B
+Memory{Char}
+24 samples · 1280 B
+String
+24 samples · 848 B
+Vector{Char}
+24 samples · 768 B
+First Core allocation frames
+Measurement scope
+Connect source facts
+
+Associate current owned report positions with hash-verified Core declarations. Reads source facts without running the target.
+
+Source evidence
+
+386 observations · 21 declarations · 4 verified files
+
+compiler + profile · JuliaSyntax 0.4.10
+
+Containing declarations are candidates. Source association does not establish a runtime binding or semantic equivalence.
+
+All observations
+Method inference
+IR statements
+Allocation frames
+Filter evidence
+Sample 30 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+String · 65 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Sample 74 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+Memory{Char} · 68 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Sample 42 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+Memory{Char} · 24 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Sample 25 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+Vector{Char} · 32 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Sample 26 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+String · 18 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Sample 70 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+String · 65 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Sample 46 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+String · 18 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Sample 51 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+Profile.Allocs.BufferType · 5632 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Sample 80 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+String · 65 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Sample 13 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+Vector{Char} · 32 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Sample 44 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+Memory{Char} · 68 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Sample 18 · frame 3
+unique containing declaration
+src/Compiler/ProfileCapture.jl:23
+Vector{Char} · 32 sampled B
+This sample may appear in several frame rows; bytes are not additive across observations.
+1 declaration candidates
+Previous evidence
+1–12 of 320
+Next evidence
+src/Compiler/ProfileCapture.jl:23
+Close source preview
+Read bytes match the recorded file hash. Declaration association does not prove a runtime binding.
+sha256 7d2484797f2616fc
+19
+    Profile.Allocs.clear()
+20
+    try
+21
+        Profile.Allocs.start(;sample_rate=limits.sample_rate)
+22
+        value=try
+23
+            compiler_profile_workload(fixture,limits.iterations)
+24
+        finally
+25
+            Profile.Allocs.stop()
+26
+        end
+27
+        allocations=Profile.Allocs.fetch().allocs
+Evidence scope
+Compiler archive operation complete
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: {"width":164.5625,"available":125}
+    at file:///workspace/ShenScope/ide/test/native_smoke.mjs:352:16 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

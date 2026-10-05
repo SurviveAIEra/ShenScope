@@ -302,7 +302,7 @@ try {
     }
     if (compilerOnly) {
         await panel.getByRole('combobox', { name: 'More views' }).selectOption('Runtime');
-        await panel.getByRole('combobox', { name: 'Compiler target' }).selectOption('cliptext_string');
+        await panel.getByRole('combobox', { name: 'Compiler target' }).selectOption('cliptext_string', { timeout: 120_000 });
         await panel.getByRole('button', { name: 'Infer method', exact: true }).click();
         await approve(panel, 'runtime.diagnostics · dynamic', 'Allow once');
         await approve(panel, 'project.backend · process', 'Allow once');
@@ -336,6 +336,27 @@ try {
         await measurement.locator('.compiler-profile-notes > summary').click();
         assert.match(await measurement.textContent(), /need not equal timing-pass allocation bytes/);
         await measurement.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-profile.png`) });
+        await panel.getByRole('button', { name: 'Connect source facts', exact: true }).click();
+        await panel.locator('.runtime-evidence').waitFor({ timeout: 120_000 });
+        const sourceEvidence = panel.locator('.runtime-evidence');
+        assert.match(await sourceEvidence.textContent(), /compiler \+ profile/);
+        assert.match(await sourceEvidence.textContent(), /does not establish a runtime binding/);
+        await sourceEvidence.getByRole('button', { name: 'Next evidence', exact: true }).click();
+        await sourceEvidence.getByRole('button', { name: 'Previous evidence', exact: true }).waitFor({ state: 'visible' });
+        await panel.getByRole('combobox', { name: 'Evidence observation kind' }).selectOption('allocation');
+        await panel.locator('.runtime-evidence-row[data-kind="allocation"]').first().waitFor({ timeout: 120_000 });
+        await panel.getByRole('button', { name: 'Preview allocation observation source', exact: true }).first().click();
+        const runtimeSource = panel.getByRole('region', { name: 'Verified runtime evidence source preview', exact: true }); await runtimeSource.waitFor();
+        assert.equal(await runtimeSource.locator('.compiler-source-row[data-focus="true"]').count(), 1);
+        const evidenceLayout = await sourceEvidence.evaluate(element => ({ width: element.getBoundingClientRect().width, available: element.closest('.panel-content').clientWidth - 32 }));
+        assert.ok(evidenceLayout.width <= evidenceLayout.available + 2, JSON.stringify(evidenceLayout));
+        const navigationLayout = await panel.locator('.primary-nav').evaluate(element => { const outer = element.getBoundingClientRect(); return Array.from(element.children).map(child => { const box = child.getBoundingClientRect(); return box.left >= outer.left - 2 && box.right <= outer.right + 2; }); });
+        assert.ok(navigationLayout.every(Boolean));
+        await sourceEvidence.locator('h3').scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-runtime-evidence.png`) });
+        await runtimeSource.scrollIntoViewIfNeeded();
+        await runtimeSource.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-runtime-evidence-source.png`) });
+        await runtimeSource.getByRole('button', { name: 'Close source preview', exact: true }).click();
         await panel.locator('.panel-content').evaluate(element => { element.scrollTop = 0; });
         await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-overview.png`) });
         await panel.getByRole('button', { name: 'Next statements', exact: true }).click();
@@ -411,7 +432,7 @@ try {
         await waitEnabled(panel.getByRole('button', { name: 'Infer method', exact: true }));
         await panel.locator('.status').filter({ hasText: 'Compiler inference stopped' }).waitFor();
         assert.equal(requests.length, 0);
-        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench without extensions'}, real Julia inferred IR, fixed-fixture runtime measurement and allocation samples, current and recorded hash-verified source previews, approvals, pagination, filters, effect qualifiers, two report archives, rename, bounded comparison, recorded-source disclosure, explicit orphan cleanup and pending-approval cancellation`);
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench without extensions'}, real Julia inferred IR, fixed-fixture runtime measurement and allocation samples, JuliaSyntax declaration association, hash-verified allocation source preview, narrow evidence/navigation sizing, current and recorded compiler source previews, approvals, pagination, filters, effect qualifiers, two report archives, rename, bounded comparison, recorded-source disclosure, explicit orphan cleanup and pending-approval cancellation`);
     }
     if(terminalOnly){
         await panel.getByRole('combobox',{name:'More views'}).selectOption('Terminal');

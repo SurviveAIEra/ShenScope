@@ -249,3 +249,13 @@ Read/Dynamic/Process, cancellation and timeout boundaries. Warmup/driver/JIT and
 sampling limitations are explicit; CPU, heap, arbitrary project profiling and
 performance improvement remain unverified. Seven further partial reviews inform
 timing phase and usage-scope presentation without copying upstream source.
+
+Checkpoint 036 associates owned fixed-Core inferred and allocation positions
+with fresh JuliaSyntax canonical declarations. Report/file/fact hashes,
+independent identities and containment witnesses remain explicit. Ambiguous and
+missing positions do not become resolved bindings; repeated allocation frame
+rows are not additive. Read-only association, executed CLI/agent inspect, owned
+RPC and both IDEs share this bounded Core implementation. CodeGraph private
+schemas remain outside the join. Arbitrary workspace inference/runtime/coverage
+and additional providers remain pending. Seven further partial reviews inform
+the original evidence and adapter design without copying upstream code.

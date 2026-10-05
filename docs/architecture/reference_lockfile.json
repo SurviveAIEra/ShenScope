@@ -209,7 +209,8 @@
       "packages/agent-core-v2/src/app/capability/capabilityService.ts",
       "packages/agent-core-v2/src/persistence/backends/node-fs/atomicDocumentStore.ts",
       "packages/agent-core-v2/src/agent/toolResultTruncation/toolResultTruncationService.ts",
-      "packages/agent-core-v2/src/agent/usage/usageEvents.ts"
+      "packages/agent-core-v2/src/agent/usage/usageEvents.ts",
+      "packages/agent-core-v2/src/agent/tools/os/grep/grepTool.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

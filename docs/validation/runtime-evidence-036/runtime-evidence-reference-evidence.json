@@ -1,0 +1,93 @@
+[
+  {
+    "name": "codex",
+    "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+    "path": "codex-rs/protocol/src/memory_citation.rs",
+    "line_ranges": [
+      [
+        1,
+        20
+      ]
+    ],
+    "sha256": "37dc99601986fae386a737efb29d3af4636acad16bb7588af6206d8608812fd8",
+    "code_reuse": false
+  },
+  {
+    "name": "opencode",
+    "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+    "path": "packages/opencode/src/tool/lsp.ts",
+    "line_ranges": [
+      [
+        15,
+        95
+      ]
+    ],
+    "sha256": "993e1316f12a44cde46eb8af34868a1ea2077a6e4ec749c25ec8b913a2e46da5",
+    "code_reuse": false
+  },
+  {
+    "name": "deepseek-harness",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "path": "docs/subsystems/lsp.md",
+    "line_ranges": [
+      [
+        1,
+        110
+      ]
+    ],
+    "sha256": "4c42a4d65cf235176c760901c38d320ee23ce83df61209b559b5a192ba607fa3",
+    "code_reuse": false
+  },
+  {
+    "name": "pi-mono",
+    "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+    "path": "packages/coding-agent/src/core/tools/read.ts",
+    "line_ranges": [
+      [
+        35,
+        115
+      ]
+    ],
+    "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518",
+    "code_reuse": false
+  },
+  {
+    "name": "kimi-code",
+    "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+    "path": "packages/agent-core-v2/src/agent/tools/os/grep/grepTool.ts",
+    "line_ranges": [
+      [
+        1,
+        85
+      ]
+    ],
+    "sha256": "0d3a81cc2bb0070c7dd5fcab02dfa7771fbd2cb4ff154ab58d984d1d4b6edfde",
+    "code_reuse": false
+  },
+  {
+    "name": "ZCode",
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "path": "apps/zcode-cli/packages/core/src/tool/read-file-state.ts",
+    "line_ranges": [
+      [
+        1,
+        90
+      ]
+    ],
+    "sha256": "ebeb3f37d397cc7233e96039d93049f2f265e6597a59706869edbb8855e58ff2",
+    "code_reuse": false
+  },
+  {
+    "name": "qwen-code",
+    "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+    "path": "packages/core/src/lsp/LspResponseNormalizer.ts",
+    "line_ranges": [
+      [
+        1,
+        95
+      ]
+    ],
+    "sha256": "d7538dfa36414f1c0ad9a0ab8bc3f02c0894f625d6cfc11252758c3d3344ed1c",
+    "code_reuse": false
+  }
+]

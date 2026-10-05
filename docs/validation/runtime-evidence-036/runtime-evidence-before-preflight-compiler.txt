@@ -1,0 +1,48 @@
+Precompiling ShenScope...
+ 114325.8 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 115 seconds. 41 already precompiled.
+conflict: Compiler archive revision changed; refresh the catalog
+input: CLI inference can be archived with compile TARGET --mode graph --save
+input: Compiler report archives require --session ID
+Test Summary:                                                                 | Pass  Total   Time
+Actual inferred IR preserves branch definitions, loop flow and compiler scope |   16     16  20.7s
+Test Summary:                                                          | Pass  Total   Time
+Trusted compiler frames pin source and reject forged graph projections |   18     18  17.8s
+Test Summary:                                                               | Pass  Total   Time
+Compiler graph workers honor approvals, revocation and restricted execution |   11     11  31.7s
+Test Summary:                                                             | Pass  Total  Time
+Compiler polling closes actual helpers after live denial and cancellation |   15     15  1.4s
+Test Summary:                                                                 | Pass  Total   Time
+Owned compiler jobs protect conversations, cancel pending approval and retire |   13     13  31.1s
+Test Summary:                                                                      | Pass  Total     Time
+Actual compiler reports archive atomically, preserve ownership and use catalog CAS |   34     34  1m16.1s
+Test Summary:                                                                                    | Pass  Total  Time
+Recorded compiler source inventory survives Core changes and refuses rehashed malformed evidence |   17     17  6.4s
+Test Summary:                                                                  | Pass  Total   Time
+Two real Julia processes cannot both commit the same compiler catalog revision |    6      6  24.4s
+Test Summary:                                                                           | Pass  Total  Time
+Compiler archive cancellation leaves reviewable orphans and retains referenced evidence |   13     13  9.4s
+Test Summary:                                                                                   | Pass  Total   Time
+CLI archives actual inference in an existing conversation and restores it in a fresh invocation |   14     14  30.8s
+Test Summary:                                                              | Pass  Total  Time
+Parser transport bounds blocked pipes, failed framing and command approval |   41     41  4.5s
+Test Summary:                                                                                      | Pass  Total  Time
+Owned result limits preserve deep structured data and fail closed without expanding other managers |    7      7  2.6s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  1.4s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  3.4s
+Test Summary:                                                                  | Pass  Total  Time
+Actual Julia source coordinates are retained independently of display defaults |   17     17  2.4s
+Test Summary:                                                                       | Pass  Total  Time
+Compiler preview bounds Unicode text and refuses stale, external and symlink source |   14     14  3.2s
+Test Summary:                                                                | Pass  Total  Time
+Owned compiler source RPC and archived file verification preserve boundaries |   13     13  4.9s
+Test Summary:                                                                              | Pass  Total  Time
+Published compiler catalogs survive notification failures and interrupted owned completion |   10     10  1.4s
+Test Summary:                                                                           | Pass  Total  Time
+Read denial after publication hides result bodies and commit receipts on both RPC paths |    7      7  0.9s
+Test Summary:                                                                     | Pass  Total     Time
+Owned archive reads retain valid evidence exceeding the former two MiB result cap |    7      7  2m05.6s
+Test Summary:                                                                         | Pass  Total   Time
+A real agent tool call compiles, archives and reads its own durable compiler evidence |   12     12  41.1s

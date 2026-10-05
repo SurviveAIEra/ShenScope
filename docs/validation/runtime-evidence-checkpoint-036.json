@@ -1,0 +1,383 @@
+{
+  "checkpoint": 36,
+  "recorded_at": "2026-10-05T08:13:49.392502+00:00",
+  "scope": "Canonical Julia declaration/source containment witnesses for owned compiler and runtime allocation reports, executed inspect and both clients",
+  "source_checksums": {
+    "editors/shared/panel.css": "63cade2b9fe863f7a9dc5efe4ff27801c03783904a60630fdbf83385b47fe9e5",
+    "editors/shared/src/panel.ts": "2e57f160d0dd7649db6acc004cc5540b614edc07f0b5812e87c751315e3ac9e2",
+    "editors/test/evidence.test.mjs": "b849c8e8d922012b8fbf0d40595bd9b9fd5cd30975705cb308aeb20104c976a7",
+    "ide/test/native_smoke.mjs": "8f70f9a08798e2683708e656536d60b16349a0458b2fc64396fa01fbebe99e61",
+    "src/CLI/Diagnostics.jl": "f9dcbabe4ee08b675fcccddf39e211d3f1db39bb9d563b01b00b4de07fc981a6",
+    "src/CLI/Main.jl": "d923e730b01417b15d3626055b25394c71ebd7ec5d53e3705a6e55a40207da0f",
+    "src/Compiler/EvidenceFacts.jl": "4c4bb21d0024215edb4a61cbd9279b596b00e33aba894e7cc76b11b5c8ff1198",
+    "src/Compiler/EvidenceJoins.jl": "f9492df68eb005368259d38cf7169f792a31f8a139c85ec186ada2275ce27bce",
+    "src/Compiler/EvidenceObservations.jl": "002b45578ca15bd48bad57e26f2da988cc6b10d14d1538df5ec19ec2a1c04ba8",
+    "src/Compiler/EvidenceQueries.jl": "70f5ec47a966a932a33964e56789807e9a1ecee056a7ca0d1bbf5b647dd73bb7",
+    "src/Compiler/EvidenceTypes.jl": "db0f18e4a3e37cd272f8f54bdba99d6c7b94ce638cf01fb7f795cd882007f7da",
+    "src/Compiler/SourcePreview.jl": "45db4982d2f8ba8389af7db81564d85dbad8600f5b1aea5070d7f783195bd877",
+    "src/Protocol/Diagnostics.jl": "e58166d60151d54e03ea44f54c09857f01040aa94654bdd96da42bc5dacb21b2",
+    "src/Protocol/Server.jl": "07be5f6fea6429cee7f3d2d7f1f6358b45f9d365e753be17657c14fe6ade564c",
+    "src/ShenScope.jl": "eee4d493887b2ead9fc9695e446220dacff9c5f9bad434891e35ff60421f354c",
+    "src/Tools/CompilerArchive.jl": "bf08188de5aea71e042de522b877fe06bf677ea5d7b6a3045197272939f907ea",
+    "src/Tools/Diagnostics.jl": "d9d6bb99fb8f1cd82804849fe0a266a74cb5d761c1f037917c0a38fe61a98509",
+    "src/Tools/RuntimeEvidence.jl": "d73bb7b99881469e207bf8e1ea0ea7022574b4fc85e9f8fc76338798ebc7146a",
+    "test/integration/runtime_evidence.jl": "4d3750c1e4e45add2525a17cfed4e561dafe719e76796065f994ea17ff02aab7",
+    "test/runtests.jl": "7db80b1718f4c0398048ebac930ec68ba353cd5864945f9d520946ba33f79325",
+    "test/runtime_evidence.jl": "2b289977fef87d0031688d2d83b198fb8d01711e32e1342d1978255352c8dcb2",
+    "test/unit/runtime_evidence.jl": "71089905207960ca814503a9fe9dcf43dc19db93dc205df69cb1407d5a509efd"
+  },
+  "core_assertions": {
+    "affected_distinct_passed": 424,
+    "new_passed": 116,
+    "final_evidence_suite": {
+      "total": 146,
+      "sets": {
+        "Owned result limits preserve deep structured data and fail closed without expanding other managers": 7,
+        "Nested operation approval ownership survives cancellation and scoped callbacks": 5,
+        "Owned operations isolate cancellation, scopes, retention and notification failures": 18,
+        "Runtime declaration interval joins agree with an independent containment oracle": 62,
+        "Actual inferred source joins are bounded, paged and hash verified": 34,
+        "Owned runtime evidence joins actual helper allocations and compiler facts without execution": 13,
+        "CLI and real agent diagnostics inspect combine actual fixed-Core execution evidence": 7
+      }
+    },
+    "compiler_regression": {
+      "total": 308,
+      "sets": {
+        "Actual inferred IR preserves branch definitions, loop flow and compiler scope": 16,
+        "Trusted compiler frames pin source and reject forged graph projections": 18,
+        "Compiler graph workers honor approvals, revocation and restricted execution": 11,
+        "Compiler polling closes actual helpers after live denial and cancellation": 15,
+        "Owned compiler jobs protect conversations, cancel pending approval and retire": 13,
+        "Actual compiler reports archive atomically, preserve ownership and use catalog CAS": 34,
+        "Recorded compiler source inventory survives Core changes and refuses rehashed malformed evidence": 17,
+        "Two real Julia processes cannot both commit the same compiler catalog revision": 6,
+        "Compiler archive cancellation leaves reviewable orphans and retains referenced evidence": 13,
+        "CLI archives actual inference in an existing conversation and restores it in a fresh invocation": 14,
+        "Parser transport bounds blocked pipes, failed framing and command approval": 41,
+        "Owned result limits preserve deep structured data and fail closed without expanding other managers": 7,
+        "Nested operation approval ownership survives cancellation and scoped callbacks": 5,
+        "Owned operations isolate cancellation, scopes, retention and notification failures": 18,
+        "Actual Julia source coordinates are retained independently of display defaults": 17,
+        "Compiler preview bounds Unicode text and refuses stale, external and symlink source": 14,
+        "Owned compiler source RPC and archived file verification preserve boundaries": 13,
+        "Published compiler catalogs survive notification failures and interrupted owned completion": 10,
+        "Read denial after publication hides result bodies and commit receipts on both RPC paths": 7,
+        "Owned archive reads retain valid evidence exceeding the former two MiB result cap": 7,
+        "A real agent tool call compiles, archives and reads its own durable compiler evidence": 12
+      },
+      "stage": "Before final evidence-only query preflight/source-line guards; the affected shared source-preview implementation is unchanged"
+    },
+    "repeated_owned_assertions_excluded": 30,
+    "actual_one_thread_profile_helper": true,
+    "independent_linear_interval_oracle": true,
+    "actual_cli_and_mock_provider_agent": true,
+    "live_model_tested": false,
+    "commands": [
+      "julia --startup-file=no --threads=4 --project=. test/runtime_evidence.jl",
+      "julia --startup-file=no --threads=4 --project=. test/compiler.jl"
+    ]
+  },
+  "editor_transport": {
+    "distinct_tests_passed": 2,
+    "real_julia_core": true,
+    "initial_combined_exit_code": 1,
+    "old_compiler_test_passed_in_initial_run": true,
+    "corrected_evidence_rerun_exit_code": 0,
+    "checks": [
+      "real inferred and sampled positions",
+      "source/fact/report pins",
+      "owned and foreign conversations",
+      "page identity and nonoverlap",
+      "allocation source excerpt",
+      "stale evidence and unknown observations refuse",
+      "irrelevant arbitrary file input refuses"
+    ]
+  },
+  "gui": {
+    "native": {
+      "exit_code": 0,
+      "extensions_disabled": true
+    },
+    "vsix": {
+      "exit_code": 0,
+      "independent_webview": true
+    },
+    "screenshots": [
+      "native-compiler-overview.png",
+      "native-compiler-ir.png",
+      "native-compiler-archive.png",
+      "native-compiler-comparison.png",
+      "native-compiler-source.png",
+      "native-compiler-profile.png",
+      "native-runtime-evidence.png",
+      "native-runtime-evidence-source.png",
+      "vsix-compiler-overview.png",
+      "vsix-compiler-ir.png",
+      "vsix-compiler-archive.png",
+      "vsix-compiler-comparison.png",
+      "vsix-compiler-source.png",
+      "vsix-compiler-profile.png",
+      "vsix-runtime-evidence.png",
+      "vsix-runtime-evidence-source.png"
+    ],
+    "source_and_overview_screenshots_visually_inspected": true,
+    "checks": [
+      "real JuliaSyntax association",
+      "category and pagination",
+      "allocation source preview",
+      "one highlighted line",
+      "evidence and navigation bounds",
+      "actual native theme filter appearance",
+      "compiler/source/archive regression"
+    ]
+  },
+  "static_checks": {
+    "shared_typescript": true,
+    "shared_build": true,
+    "complete_workbench_client_typecheck": true,
+    "git_diff_check": true,
+    "remote_ci_observed": false
+  },
+  "vsix": {
+    "entries": 288,
+    "exact_core_helper_extension_metadata_files": 279,
+    "exact_client_assets": 3,
+    "bytes": 600462,
+    "sha256": "bdae0da6619de5a4c4b3b81a7ddbce7531d8e8e5716306ec66155ecb17265e01",
+    "payload_matches_authored_sources": true,
+    "installed_package_tested": false
+  },
+  "cloc": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 250,
+      "blank": 1311,
+      "comment": 222,
+      "code": 24452
+    },
+    "cli_tui": {
+      "nFiles": 20,
+      "blank": 19,
+      "comment": 7,
+      "code": 1151
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 225548,
+    "line_target_percent": 9.7808,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "after": {
+      "total_gib": 31.451,
+      "free_gib": 17.49,
+      "large_build_allowed": true,
+      "safe_scratch_paths": [
+        "/workspace/ShenScope/.local/tmp",
+        "/workspace/ShenScope/.local/build-scratch"
+      ]
+    },
+    "full_project_copies": 0,
+    "new_worktrees": 0,
+    "new_sysimages": 0,
+    "core_cache_pairs": 1
+  },
+  "repository_audit": {
+    "application_repositories": [
+      "/workspace/ShenScope"
+    ],
+    "dependency_repositories": [
+      "/workspace/julia-depot/clones/05181044-ff0b-4ac5-8273-598c1e38db00",
+      "/workspace/julia-depot/clones/0f8b85d8-7281-11e9-16c2-39a750bddbf1",
+      "/workspace/julia-depot/clones/21216c6a-2e73-6563-6e65-726566657250",
+      "/workspace/julia-depot/clones/3bb67fe8-82b1-5028-8e26-92a6c54297fa",
+      "/workspace/julia-depot/clones/458c3c95-2e84-50aa-8efc-19380b2a3a95",
+      "/workspace/julia-depot/clones/460bff9d-24e4-43bc-9d9f-a8973cb893f4",
+      "/workspace/julia-depot/clones/4d8831e6-92b7-49fb-bdf8-b643e874388c",
+      "/workspace/julia-depot/clones/5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4",
+      "/workspace/julia-depot/clones/69024149-9ee7-55f6-a4c4-859efe599b68",
+      "/workspace/julia-depot/clones/692b3bcd-3c85-4b1f-b108-f13ce0eb3210",
+      "/workspace/julia-depot/clones/69de0a69-1ddd-5017-9359-2bf0b02dc9f0",
+      "/workspace/julia-depot/clones/6c6a2e73-6563-6170-7368-637461726353",
+      "/workspace/julia-depot/clones/70703baa-626e-46a2-a12c-08ffd08c73b4",
+      "/workspace/julia-depot/clones/739be429-bea8-5141-9913-cc70e7f3736d",
+      "/workspace/julia-depot/clones/777ac1f9-54b0-4bf8-805c-2214025038e7",
+      "/workspace/julia-depot/clones/856f2bd8-1eba-4b0a-8007-ebc267875bd4",
+      "/workspace/julia-depot/clones/944b1d66-785c-5afd-91f1-9de20f533193",
+      "/workspace/julia-depot/clones/94ce4f54-9a6c-5748-9c1c-f9c7231a4531",
+      "/workspace/julia-depot/clones/aea7be01-6a6a-4083-8856-8a6e6704d82a",
+      "/workspace/julia-depot/clones/c27321d9-0574-5035-807b-f59d2c89b15c",
+      "/workspace/julia-depot/clones/cd3eb016-35fb-5094-929b-558a96fad6f3",
+      "/workspace/julia-depot/clones/d1d4a3ce-64b1-5f1a-9ba4-7e7e69966f35",
+      "/workspace/julia-depot/clones/ddb6d928-2868-570f-bddf-ab3f9cf99eb6",
+      "/workspace/julia-depot/clones/e6f89c97-d47a-5376-807f-9c37f3926c36",
+      "/workspace/julia-depot/clones/f0e56b4a-5159-44fe-b623-3e5288b988bb",
+      "/workspace/julia-depot/registries/General",
+      "/workspace/references/AgentREPL.jl",
+      "/workspace/references/Aries-cli",
+      "/workspace/references/CodeGraphContext",
+      "/workspace/references/JuliaMCP.jl",
+      "/workspace/references/Kaimon.jl",
+      "/workspace/references/OpenHands",
+      "/workspace/references/PackageCompiler.jl",
+      "/workspace/references/PromptingTools.jl",
+      "/workspace/references/ZCode",
+      "/workspace/references/aider",
+      "/workspace/references/cline",
+      "/workspace/references/cloc",
+      "/workspace/references/codex",
+      "/workspace/references/deepseek-harness",
+      "/workspace/references/goose",
+      "/workspace/references/hermes-agent",
+      "/workspace/references/kimi-code",
+      "/workspace/references/opencode",
+      "/workspace/references/pi-mono",
+      "/workspace/references/qwen-code",
+      "/workspace/references/serena",
+      "/workspace/references/software-agent-sdk",
+      "/workspace/references/vscode",
+      "/workspace/references/vscodium"
+    ],
+    "unknown_repositories": [],
+    "empty_sandbox_markers": [],
+    "strict_walk_complete": true
+  },
+  "research": {
+    "primary_sources": [
+      {
+        "name": "codex",
+        "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+        "path": "codex-rs/protocol/src/memory_citation.rs",
+        "line_ranges": [
+          [
+            1,
+            20
+          ]
+        ],
+        "sha256": "37dc99601986fae386a737efb29d3af4636acad16bb7588af6206d8608812fd8",
+        "code_reuse": false
+      },
+      {
+        "name": "opencode",
+        "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+        "path": "packages/opencode/src/tool/lsp.ts",
+        "line_ranges": [
+          [
+            15,
+            95
+          ]
+        ],
+        "sha256": "993e1316f12a44cde46eb8af34868a1ea2077a6e4ec749c25ec8b913a2e46da5",
+        "code_reuse": false
+      },
+      {
+        "name": "deepseek-harness",
+        "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "path": "docs/subsystems/lsp.md",
+        "line_ranges": [
+          [
+            1,
+            110
+          ]
+        ],
+        "sha256": "4c42a4d65cf235176c760901c38d320ee23ce83df61209b559b5a192ba607fa3",
+        "code_reuse": false
+      },
+      {
+        "name": "pi-mono",
+        "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+        "path": "packages/coding-agent/src/core/tools/read.ts",
+        "line_ranges": [
+          [
+            35,
+            115
+          ]
+        ],
+        "sha256": "297d26092979651091f44de8862a6fd55aaf59e7252f8fb8dd3d7cb3f9771518",
+        "code_reuse": false
+      },
+      {
+        "name": "kimi-code",
+        "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+        "path": "packages/agent-core-v2/src/agent/tools/os/grep/grepTool.ts",
+        "line_ranges": [
+          [
+            1,
+            85
+          ]
+        ],
+        "sha256": "0d3a81cc2bb0070c7dd5fcab02dfa7771fbd2cb4ff154ab58d984d1d4b6edfde",
+        "code_reuse": false
+      },
+      {
+        "name": "ZCode",
+        "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+        "path": "apps/zcode-cli/packages/core/src/tool/read-file-state.ts",
+        "line_ranges": [
+          [
+            1,
+            90
+          ]
+        ],
+        "sha256": "ebeb3f37d397cc7233e96039d93049f2f265e6597a59706869edbb8855e58ff2",
+        "code_reuse": false
+      },
+      {
+        "name": "qwen-code",
+        "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+        "path": "packages/core/src/lsp/LspResponseNormalizer.ts",
+        "line_ranges": [
+          [
+            1,
+            95
+          ]
+        ],
+        "sha256": "d7538dfa36414f1c0ad9a0ab8bc3f02c0894f625d6cfc11252758c3d3344ed1c",
+        "code_reuse": false
+      }
+    ],
+    "status": "Further partial source reviews; comprehensive synthesis continues",
+    "upstream_copy_or_translation": false,
+    "handoff_sections": [
+      "7.11 Compiler introspection",
+      "7.26 Profile/Profile.Allocs",
+      "18.1–18.4 replaceable combined fact backends"
+    ]
+  },
+  "failures_retained": [
+    "Initial Julia fixture omitted the internal symbol_id namespace; corrected.",
+    "CLI fixture selected a nonexistent file instead of the actual main entry; corrected.",
+    "Initial Node fixtures used session/new, id and an incorrect schema-error pattern; established contracts now pass.",
+    "Initial native wait expired before compiler controls were ready; explicit loading/readiness and final workflow pass.",
+    "Actual narrow-sidebar measurement exposed overflow; bounded grid/select/input and responsive navigation now pass.",
+    "Tall element screenshots were clipped by the scrolling panel; final captures use the visible panel.",
+    "Visual inspection found a white default filter input; final native-theme styling and screenshots are verified."
+  ],
+  "limitations": [
+    "Installed trusted Core only; no arbitrary project compiler/runtime loading.",
+    "JuliaSyntax is the current source-fact provider; additional provider integration is unfinished.",
+    "Source containment does not establish a runtime binding, column identity or semantic equivalence.",
+    "One sampled allocation can appear in multiple frame observations; their bytes are not additive.",
+    "Every request reparses a bounded source selection; no large-project cache/performance claim.",
+    "Unsigned owned results are ephemeral and can be retired by configuration replacement or bounded retention.",
+    "No OS isolation, live-model, CPU usage, retained heap, coverage, Windows or installed-distribution claim.",
+    "The 250,000 authored Core-line gate remains unfinished; development continues."
+  ],
+  "raw_evidence_directory": "docs/validation/runtime-evidence-036"
+}

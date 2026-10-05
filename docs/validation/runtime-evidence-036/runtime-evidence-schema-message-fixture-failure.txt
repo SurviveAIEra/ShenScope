@@ -1,0 +1,36 @@
+✖ Owned compiler and sampled runtime positions join hash-pinned Julia declarations (85091.470397ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 85203.508231
+
+✖ failing tests:
+
+test at test/evidence.test.mjs:8:1
+✖ Owned compiler and sampled runtime positions join hash-pinned Julia declarations (85091.470397ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /property|parameter/i. Input:
+  
+  'Error: arguments contains an unknown field'
+  
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/ShenScope/editors/test/evidence.test.mjs:44:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: arguments contains an unknown field
+        at CoreClient.accept (file:///workspace/ShenScope/editors/dist/rpcClient.mjs:144:26)
+        at Socket.<anonymous> (file:///workspace/ShenScope/editors/dist/rpcClient.mjs:53:14)
+        at Socket.emit (node:events:509:28)
+        at addChunk (node:internal/streams/readable:563:12)
+        at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+        at Readable.push (node:internal/streams/readable:394:5)
+        at Pipe.onStreamRead (node:internal/stream_base_commons:189:23),
+    expected: /property|parameter/i,
+    operator: 'rejects',
+    diff: 'simple'
+  }

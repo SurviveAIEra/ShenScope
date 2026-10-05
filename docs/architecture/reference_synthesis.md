@@ -662,3 +662,19 @@ Default rate one still does not equate sampled allocation bytes with separate
 timing-pass bytes. Bound prefixes, first-Core-frame attribution and collection
 noise are documented. No source is copied or translated; whole-project, CPU/heap,
 cross-platform and comparative performance validation remain unfinished.
+
+### Runtime/declaration association observations (checkpoint 036)
+
+| Primary source | Further inspected contract | Application in the independent Julia design |
+|---|---|---|
+| Codex | Memory citations retain paths and line ranges | Source hashes, observation handles and declaration-range witnesses remain explicit. |
+| OpenCode | LSP operations, coordinates and permissioned reads | Owned source reads retain permission boundaries and coordinate limits. |
+| DeepSeek Harness | Replaceable LSP seam and canonical workspace coordinates | Fact adapters use the stable Core model; installed Core and workspace scopes stay distinct. |
+| Pi | Replaceable read operations and visible bounds | Fact reads and previews retain explicit limits without directory copies. |
+| Kimi Code | Workspace/path contracts and bounded grep results | Source inventory membership is checked and reads remain scoped and bounded. |
+| ZCode | Read-state path identity and freshness semantics | Report/file/fact pins replace reliance on old client read state. |
+| Qwen Code | LSP normalization retains provider/schema distinctions | Inference, allocation and declarations preserve independent provenance. |
+
+These further partial reviews inform identity and boundaries. They do not imply
+that upstream agents implement this Julia join algorithm or that every upstream
+capability has been synthesized. No source is copied or translated.

@@ -1,0 +1,26 @@
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/runtime_evidence.jl:1
+in expression starting at /workspace/ShenScope/test/runtime_evidence.jl:5
+Test Summary:                                                                                      | Pass  Total  Time
+Owned result limits preserve deep structured data and fail closed without expanding other managers |    7      7  3.2s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  1.3s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  2.9s
+Runtime declaration interval joins agree with an independent containment oracle: Error During Test at /workspace/ShenScope/test/unit/runtime_evidence.jl:1
+  Got exception outside of a @test
+  UndefVarError: `symbol_id` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] macro expansion
+     @ /workspace/ShenScope/test/unit/runtime_evidence.jl:6 [inlined]
+   [2] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [3] top-level scope
+     @ /workspace/ShenScope/test/unit/runtime_evidence.jl:2
+   [4] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [5] top-level scope
+     @ /workspace/ShenScope/test/runtime_evidence.jl:5
+Test Summary:                                                                   | Error  Total  Time
+Runtime declaration interval joins agree with an independent containment oracle |     1      1  3.3s

@@ -4,3 +4,4 @@ docs/validation/compiler-archive-032/*.txt -whitespace
 docs/validation/compiler-operations-033/*.txt -whitespace
 docs/validation/compiler-source-034/*.txt -whitespace
 docs/validation/compiler-profile-035/*.txt -whitespace
+docs/validation/runtime-evidence-036/*.txt -whitespace

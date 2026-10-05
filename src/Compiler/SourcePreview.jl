@@ -36,22 +36,34 @@ end
 
 function compiler_source_excerpt(report::AbstractDict,snapshot::RuntimeSourceSnapshot,ctx::RuntimeContext;
         method_index=1,statement_id=0,context_lines=4,root=runtime_core_root(),authorized=false)
-    context_lines=compiler_ir_integer(context_lines,"preview context lines",0,20)
     location=compiler_source_location(report;method_index,statement_id)
-    source=findfirst(file->file.path==location.file,snapshot.files)
-    source!==nothing || throw(ShenScopeError(:diagnostics,"Preview source is absent from the recorded inventory"))
-    recorded=snapshot.files[source]
     snapshot.uuid==Base.PkgId(@__MODULE__).uuid && report["source"]["fingerprint"]==snapshot.fingerprint ||
         throw(ShenScopeError(:conflict,"Compiler preview inventory does not match its report"))
+    excerpt=compiler_source_excerpt_at(snapshot,ctx,location.file,location.line;
+        report_sha256=report["report_sha256"],context_lines,root,authorized)
+    merge(excerpt,Dict("schema"=>"shenscope.compiler-source/1","method_index"=>location.method_index,
+        "statement_id"=>location.statement_id,"source_mapping"=>"compiler line coordinates; no column precision or executed-path evidence",
+        "source_position_counts"=>compiler_source_positions(report["methods"][location.method_index])))
+end
+
+function compiler_source_excerpt_at(snapshot::RuntimeSourceSnapshot,ctx::RuntimeContext,file,line;
+        report_sha256,context_lines=4,root=runtime_core_root(),authorized=false)
+    context_lines=compiler_ir_integer(context_lines,"preview context lines",0,20)
+    focus=compiler_ir_integer(line,"preview source line",1,10_000_000)
+    source=findfirst(item->item.path==file,snapshot.files)
+    source!==nothing && snapshot.uuid==Base.PkgId(@__MODULE__).uuid ||
+        throw(ShenScopeError(:diagnostics,"Preview source is absent from the recorded Core inventory"))
+    recorded=snapshot.files[source]
+    compiler_archive_hash(report_sha256,"preview report hash")
     root=String(root)
     authorized || authorize!(ctx,:read,"runtime.diagnostics",root;
         reason="Read a bounded excerpt of installed Core source, verifying the report's recorded file hash")
     compiler_source_checkpoint(ctx,root)
-    text=read_scoped_text(ctx,root,location.file,RUNTIME_SOURCE_MAX_FILE_BYTES;authorized=true,
+    text=read_scoped_text(ctx,root,file,RUNTIME_SOURCE_MAX_FILE_BYTES;authorized=true,
         tool="runtime.diagnostics",reason="Read hash-verified compiler source excerpt")
     ncodeunits(text)==recorded.bytes && digest(text)==recorded.sha256 ||
         throw(ShenScopeError(:conflict,"Current Core source differs from the compiler report's recorded file"))
-    first=max(1,location.line-context_lines);requested_last=location.line+context_lines
+    first=max(1,focus-context_lines);requested_last=focus+context_lines
     rows=Dict{String,Any}[];total_lines=0
     for (number,line) in enumerate(eachsplit(text,'\n';keepempty=true))
         total_lines=number
@@ -59,20 +71,17 @@ function compiler_source_excerpt(report::AbstractDict,snapshot::RuntimeSourceSna
             value=String(chopsuffix(line,"\r"))
             clipped=ncodeunits(value)>COMPILER_SOURCE_LINE_BYTES
             push!(rows,Dict("line"=>number,"text"=>clipped ? cliptext(value,COMPILER_SOURCE_LINE_BYTES) : value,
-                "focus"=>number==location.line,"truncated"=>clipped))
+                "focus"=>number==focus,"truncated"=>clipped))
         end
         if number%4096==0;compiler_source_checkpoint(ctx,root);yield();end
     end
-    location.line<=total_lines || throw(ShenScopeError(:conflict,"Compiler position is beyond the verified source file"))
+    focus<=total_lines || throw(ShenScopeError(:conflict,"Compiler position is beyond the verified source file"))
     last=min(total_lines,requested_last)
-    result=Dict("schema"=>"shenscope.compiler-source/1","report_sha256"=>report["report_sha256"],
+    result=Dict("schema"=>"shenscope.source-excerpt/1","report_sha256"=>report_sha256,
         "source_fingerprint"=>snapshot.fingerprint,"source_sha256"=>recorded.sha256,
-        "file"=>location.file,"method_index"=>location.method_index,"statement_id"=>location.statement_id,
-        "focus_line"=>location.line,"first_line"=>first,"last_line"=>last,"total_lines"=>total_lines,
+        "file"=>file,"focus_line"=>focus,"first_line"=>first,"last_line"=>last,"total_lines"=>total_lines,
         "lines"=>rows,"truncated_lines"=>count(row->row["truncated"],rows),
-        "file_currentness"=>"bytes_match_recorded_hash","producer_authenticated"=>false,
-        "source_mapping"=>"compiler line coordinates; no column precision or executed-path evidence",
-        "source_position_counts"=>compiler_source_positions(report["methods"][location.method_index]))
+        "file_currentness"=>"bytes_match_recorded_hash","producer_authenticated"=>false)
     compiler_source_checkpoint(ctx,root)
     bounded_canonical_json(result;maximum=COMPILER_SOURCE_PREVIEW_BYTES)
     result

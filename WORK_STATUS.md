@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest verified cloc 2.11 count: 24,042 authored Julia Core code lines across 244 files;
-CLI/TUI add 1,148 lines and optional Julia extensions add 57, counted separately.
-This is 9.6168% of the minimum line target, leaving 225,958 lines. These are early implementations,
+Latest verified cloc 2.11 count: 24,452 authored Julia Core code lines across 250 files;
+CLI/TUI add 1,151 lines and optional Julia extensions add 57, counted separately.
+This is 9.7808% of the minimum line target, leaving 225,548 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -892,3 +892,50 @@ unknown repositories. About 17.5 GiB is free, with one Core cache pair and no
 project copies, worktrees or new sysimages. Core increased by 397 authored lines.
 Project/compiler/runtime fact fusion and remaining product and size gates
 continue; arbitrary project profiling and broader performance evidence are pending.
+
+Runtime evidence checkpoint 036: owned completed compiler/profile jobs join fresh
+JuliaSyntax declarations from hash-verified installed Core files. The join uses
+canonical FileFacts/CodeSymbol independently of CodeGraph private schemas.
+Reports require identical target/signature and current complete source inventory.
+No project loading, target execution or persistent indexing occurs during reads.
+CLI/agent inspect explicitly runs two fixed helpers first, then associates facts.
+
+An interval index with prefix maximum end lines retains all containing callable
+declarations. Witnesses retain report/observation/declaration identities, hashes
+and ranges. Multiple candidates stay ambiguous and unknown positions unmatched.
+Candidate overflow and out-of-file coordinates refuse. Even unique matches do
+not prove runtime bindings or semantic equivalence. Allocation frame rows are
+not additive; original timing and retained-prefix totals remain separate.
+
+Read/ownership/currentness, cancellation/shared budget and file/byte/declaration/
+observation/join-work/page bounds remain enforced. Invalid inspection parameters
+refuse before helper execution. Evidence digests pin pages and source previews.
+The current adapter reparses selected installed Core files without a hidden cache.
+Additional providers, arbitrary project compiler/runtime/coverage fusion and
+large-project evidence remain pending.
+
+Both clients share association, category/filter/page controls, candidate details
+and allocation source previews. Runtime shows metadata loading immediately.
+Actual narrow-sidebar overflow prompted bounded grid/select/input sizing and
+responsive navigation. Screenshots capture the scrolling panel rather than a
+tall clipped element.
+
+Validation: 146 final evidence/owned assertions and 308 affected compiler/archive/
+source assertions pass. Excluding 30 repeated owned assertions gives 424 distinct
+affected assertions including 116 new ones. Compiler regression preceded final
+evidence-only preflight/range guards; its source-preview implementation is
+unchanged and final evidence tests cover those new guards. Two distinct real
+Node/Core tests pass in recorded runs. Corrected fixtures use the internal
+namespace, actual CLI entry, sessions/create, job_id and exact unknown-field
+rejection. Native/VSIX actual workflows, shared checks/build and complete
+Workbench typecheck pass. Failures/screenshots are retained in
+docs/validation/runtime-evidence-checkpoint-036.json. MockProvider is explicit;
+no live-model, performance, Windows or distribution claim is made.
+
+Seven further primary source reviews inform original identity/provenance and
+adapter boundaries. No source is copied or translated. Strict audit still finds
+one application checkout, 50 dependencies and no unknown repositories. About
+17.5 GiB is free with one current Core cache pair and no project copies, worktrees
+or new sysimages. Core increased by 410 authored lines. CPU sampling, remaining
+runtime/state/model capabilities and all remaining size/functional gates continue;
+the 250,000-line target remains far from reached.

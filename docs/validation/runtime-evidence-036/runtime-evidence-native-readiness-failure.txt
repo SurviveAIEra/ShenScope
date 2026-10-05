@@ -1,0 +1,37 @@
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Settings
+Models
+Memory
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+Extensions
+Terminal
+Runtime
+Runtime details
+Ready · native-fixture
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.shenscope-panel').getByRole('combobox', { name: 'Compiler target' })[22m
+
+    at /workspace/ShenScope/ide/test/native_smoke.mjs:305:72 {
+  log: [
+    "  - waiting for locator('.shenscope-panel').getByRole('combobox', { name: 'Compiler target' })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

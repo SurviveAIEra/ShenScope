@@ -41,3 +41,10 @@ Julia functions return facts, ranked candidates, evidence and confidence;
 the model retains engineering decisions. Generated analyzers need separate
 OS/process isolation, no network/write access, bounded resources/output,
 selftests and session-default lifetime before archival/promotion.
+
+Checkpoint 036 adds a bounded canonical-fact join for installed Core self-inspection:
+fresh JuliaSyntax declarations, owned compiler positions and actual allocation
+stack samples retain hashes and independent identities. Containment witnesses
+remain candidates, not runtime bindings or semantic equivalence. CodeGraph
+private schemas are not required. Arbitrary workspace inference, additional
+providers and CPU/coverage/heap integration remain pending.

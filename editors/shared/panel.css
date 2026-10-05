@@ -342,12 +342,14 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .terminal-dimensions input { width:64px; color:var(--vscode-input-foreground); background:var(--vscode-input-background); border:1px solid var(--vscode-input-border, transparent); padding:6px; }
 .terminal-output { overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; max-height:340px; font-family:var(--vscode-editor-font-family,monospace); font-size:12px; }
 
-.shenscope-panel .compiler-section { display: grid; gap: 12px; margin-top: 18px; min-width: 0; }
+.shenscope-panel .compiler-section { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 18px; min-width: 0; width: 100%; box-sizing: border-box; }
 .shenscope-panel .compiler-section .view-heading { gap: 8px; margin-bottom: 0; }
 .shenscope-panel .compiler-section .view-heading h2 { font-size: 16px; }
 .shenscope-panel .compiler-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .shenscope-panel .compiler-controls select, .shenscope-panel .compiler-section > select { color: var(--vscode-dropdown-foreground, var(--text)); background: var(--vscode-dropdown-background, var(--raised)); border: 1px solid var(--vscode-dropdown-border, var(--border)); border-radius: 6px; padding: 7px 9px; min-width: 0; }
-.shenscope-panel .compiler-controls select { flex: 1; min-width: 140px; }
+.shenscope-panel .compiler-controls select { flex: 1; min-width: min(140px, 100%); max-width: 100%; box-sizing: border-box; }
+.shenscope-panel .compiler-controls input { flex: 1 1 120px; min-width: 0; max-width: 100%; box-sizing: border-box; padding: 7px 9px; color: var(--vscode-input-foreground, var(--text)); background: var(--vscode-input-background, var(--raised)); border: 1px solid var(--vscode-input-border, var(--border)); border-radius: 6px; }
+.shenscope-panel .compiler-controls input::placeholder { color: var(--vscode-input-placeholderForeground, var(--muted)); }
 .shenscope-panel .compiler-section select:focus-visible { outline: 1px solid var(--vscode-focusBorder); outline-offset: 1px; }
 .shenscope-panel .compiler-pending { padding: 12px; border-left: 3px solid var(--vscode-progressBar-background, #5395ff); display: grid; gap: 10px; }
 .shenscope-panel .compiler-overview { border-bottom: 1px solid var(--vscode-panel-border); padding-bottom: 10px; }
@@ -407,4 +409,19 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .shenscope-panel .compiler-profile-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 10px; }
 .shenscope-panel .compiler-profile-row code { min-width: 0; overflow-wrap: anywhere; background: transparent; padding: 0; }
 .shenscope-panel .compiler-profile-row span, .shenscope-panel .compiler-profile small { color: var(--muted); }
+.shenscope-panel .runtime-evidence { min-width: 0; max-width: 100%; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+.shenscope-panel .runtime-evidence-row { min-width: 0; display: flex; flex-direction: column; gap: 5px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.shenscope-panel .runtime-evidence-row code, .shenscope-panel .runtime-evidence-row strong, .shenscope-panel .runtime-evidence-row button { max-width: 100%; min-width: 0; white-space: normal; overflow-wrap: anywhere; text-align: left; }
+.shenscope-panel .runtime-evidence-candidates code, .shenscope-panel .runtime-evidence-candidates small { display: block; margin-top: 4px; }
+.shenscope-panel .runtime-evidence-pagination { margin-top: 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.shenscope-panel .runtime-evidence-pagination small { text-align: center; white-space: nowrap; font-size: 10px; color: var(--muted); }
+.shenscope-panel .runtime-evidence-pagination button { padding: 6px 8px; font-size: 11px; }
+.shenscope-panel { container-type: inline-size; }
+@container (max-width: 290px) {
+  .shenscope-panel .nav-button svg { display: none; }
+}
+@container (max-width: 230px) {
+  .shenscope-panel .primary-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .shenscope-panel .nav-button { width: 100%; box-sizing: border-box; }
+}
 .shenscope-panel .compiler-profile summary { cursor: pointer; font-size: 11px; }

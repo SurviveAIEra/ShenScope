@@ -1,0 +1,22 @@
+✖ Owned compiler and sampled runtime positions join hash-pinned Julia declarations (126785.863444ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 127087.742964
+
+✖ failing tests:
+
+test at test/evidence.test.mjs:8:1
+✖ Owned compiler and sampled runtime positions join hash-pinned Julia declarations (126785.863444ms)
+  Error: Select an owned compiler or runtime measurement job
+      at CoreClient.accept (file:///workspace/ShenScope/editors/dist/rpcClient.mjs:144:26)
+      at Socket.<anonymous> (file:///workspace/ShenScope/editors/dist/rpcClient.mjs:53:14)
+      at Socket.emit (node:events:509:28)
+      at addChunk (node:internal/streams/readable:563:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+      at Readable.push (node:internal/streams/readable:394:5)
+      at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
