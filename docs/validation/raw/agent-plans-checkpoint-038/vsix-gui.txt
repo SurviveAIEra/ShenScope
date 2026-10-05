@@ -1,0 +1,1 @@
+PASS: VSIX, persisted Plan/Act control, real Core reading three languages, refused mutation, reported plan, history reload, new-conversation isolation and actual approved Act write

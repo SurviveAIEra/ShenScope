@@ -696,3 +696,20 @@ Julia samplers or comprehensive capability synthesis. The implementation uses
 Julia 1.11 `Profile` and the authored fixed-fixture/worker/source-fact contracts.
 No upstream implementation is copied or translated. Arbitrary project sampling,
 exclusive CPU time, task attribution and comparative performance remain pending.
+
+### General conversation planning observations (checkpoint 038)
+
+| Primary source | Inspected behavior | Application in the original Julia design |
+|---|---|---|
+| Codex `agent-roles/src/agent_role_config.rs` 35–105 | Typed role instruction/configuration bounds | Mode and plan documents have strict ownership, fields and sizes. |
+| OpenCode `agent/agent.ts` 138–179 | Plan/build restrict tool categories and edits | Reviewed Core types/actions narrow declarations, with an independent dispatch/permission fence. |
+| DeepSeek Harness `sandbox-policy/src/session-mode.ts` 1–54 | Durable events project session mode | One conversation journal owns mode and plan state; no competing client configuration store. |
+| Pi durable `27-plan-mode.ts` 1–105 | Conversation plan state and explicit tool working set | Reported plans remain session state, separate from executable task DAGs. |
+| Kimi `exitPlanModeTool.ts` 1–115 and `planOps.ts` 1–85 | Revision-aware review and mode lifecycle | Human controllers alone change mode; completion requires owned citations but still claims no independent success proof. |
+| ZCode `plan-guidance.tsx` 1–105 | Reviewable bounded plan display | Shared compact progress cards retain dependencies, notes and the reported-progress qualification. |
+| Qwen `agent-frontmatter-schema.ts` 1–100 | Role/mode parsing separates policy choices | Act eligibility does not relax Allow/Ask/Deny; Plan is inherited and cannot be relaxed by nested scopes. |
+
+These eight further source observations across all seven primary projects are
+partial research. The Core uses original typed Julia documents, ScopedValue,
+streaming journal history and OS run fences. No source is copied or translated;
+no comprehensive-synthesis or live-model planning-quality claim is made.

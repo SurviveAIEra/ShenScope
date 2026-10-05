@@ -1,0 +1,586 @@
+{
+  "checkpoint": 38,
+  "recorded_at": "2026-10-05T10:28:30.053709+00:00",
+  "scope": "General conversation Plan/Act control, inherited execution fences, persistent cited reported plans and CLI/TUI/VSIX/native integration",
+  "source_checksums": {
+    "editors/shared/panel.css": "6a23131a054ab56e95db294ad2ebdfe03d19c92c35291d2aa802b6637afee8c8",
+    "editors/shared/src/panel.ts": "450cfa88f50451d8fd356271f92581913defd1ca1c31e79f70d65088323993a7",
+    "editors/shared/src/rpcMethods.ts": "57b667c239fba523275ae0cfbad81a9c5c4d30f99b2c9c7bcd194e3d8931fdfe",
+    "editors/test/plans.test.mjs": "cb879d42ab3c695fbde9f3686a9f9020b97400531f98c75eaf0f4168f4322778",
+    "ide/test/native_smoke.mjs": "44be040837280f518a62cf52346291cad61f88e65c81864e0ec6253a69d4853e",
+    "src/CLI/Agent.jl": "7d264c88318b72862ee13d367a9d31b3d3ae34be1040eac0fed54928acadf2f2",
+    "src/CLI/Main.jl": "3c8d18bc83738029b4ccdfc592409cd39c4b7b5fde963bd23c66501314f95692",
+    "src/CLI/Plans.jl": "4829df134566b25c9fc17d5e7e65a065f6d787e95bfdf9608e8371b40377c7b0",
+    "src/CLI/TUI.jl": "165225836ef1917bf0c6e581e97d415b437c2d46bcdd2ea5836b74838f82b98c",
+    "src/Context/AgentModeStore.jl": "4fe45a741a38a7f0eaed3367d842b5f2926c17aced1a094331d6b479916cfdec",
+    "src/Context/PlanHistory.jl": "36178ad45ecd5a2a98f596a463af798b4780ad847aaede1fa1e708561bbb9fa5",
+    "src/Context/PlanStore.jl": "55743a8dafda5e000ba3e09773195e36798eb037faf60b282d79aa7cb9bd614b",
+    "src/Context/PlanTypes.jl": "016e677172e7b3c2a0231e2db106e56dbb9d47091412013cf9cd805bd86cd1fd",
+    "src/Context/PlanUpdates.jl": "d9be3a9ebe32c402d599fc378daae3e074aaaf2f434535c41a8d8c41af2e11be",
+    "src/Context/PlanValidation.jl": "b34c86324427d4e2988140df3079827af7aa1267ea1a6516539946af976e6d24",
+    "src/Context/Projection.jl": "8038607df74f19452b35889b62913a09c4bb22be15191d1154c4a4fc123be742",
+    "src/Context/RunFence.jl": "192f4ae10884fac70797a83f0b1cbc18e5483b9c1ac5758805b99a513313c4d4",
+    "src/Context/Sessions.jl": "f0a0a9b95258831a0df7716a7534a344ae243fdbb1d3ca8c6582f24afad311c5",
+    "src/Core/AgentLoop.jl": "af62bc06f7f70d805cbe460f8bdf750e4687689c17a31d7050191d148669d05d",
+    "src/Core/AgentModes.jl": "ababb67d89cadadc8e73ef14261ccc04422d204950799579d95d39c4c15ca9de",
+    "src/Core/PlanningTools.jl": "e7709d423650465419c3b0d99f95ebfe8471ac1aae5858b5cb3bb65263341ab8",
+    "src/Protocol/Plans.jl": "0f7cce54175a12a2a7aa7ee947e025cb669e6a1818c157e778f59b8423da962c",
+    "src/Protocol/Server.jl": "8b71f906bfa3472dfae6997ce690e064de2e729cb2d1f034f66d35b70d4a80f4",
+    "src/Runtime/Context.jl": "b148b8cab549d057d03e82700434c4f34734036492cc9f4e7c011cb3f4b2773f",
+    "src/Runtime/ToolScheduler.jl": "e2c4f0bab1a875b15974bb4817b7202e0ca9fa557af794555ad6e8871c18d890",
+    "src/ShenScope.jl": "7160b0d1e4c268252fbfa9c4fb943d859da0aa1c210b942dab806f43b34ea744",
+    "src/Storage/Journal.jl": "7d693d19792c5d63e3911f0043d9eb7ae07f5a7e7e00d23ad0f5bf1c7bcb5627",
+    "src/Tools/Context.jl": "16b43441f7b3e1422b3cdda5f590adca04dbc0976e32a1cf4c05f4f8d3f31d07",
+    "src/Tools/Plan.jl": "de86d80c5369d2ca1017439d3fcaa7c2363437ace396fa4f97c88c144587119a",
+    "src/Tools/Schema.jl": "3c5b9b0728e4732c5f403e92c956922aa294e7e8f14651bb981bb345d1f1e243",
+    "test/agent_plan_integration.jl": "49b55e5fdd33df1c94b562b1e16ef357dd57f24845b942b4f04705936446dd1a",
+    "test/agent_plans.jl": "e962457c976eaab593214612f8b4dec2912359cadc7d3e333fa21133d7648977",
+    "test/agent_workflows.jl": "af07ead1e07f979fb5c1aba400c412bb773ae128d69737d4b978cc1b45cfa154",
+    "test/fixtures/agent_plans.jl": "092d3f7624ff9b71659763c715729ee55c0226891427e158c68b2cd17397ac7e",
+    "test/fixtures/plan_fence_worker.jl": "c2af3c2397b8f5bfe1e60ad3ac79e28c19f34481a860c8ef70a4f4f99831367f",
+    "test/integration/agent_plans.jl": "79a69e8a2df7d27475913637fd70a00c3288c73d1758d7322662d8b791baa312",
+    "test/integration/tui_pty.py": "3ce4d9f6b3ff42fb17b8b1d85c3307b48ed969cf2f4bfa4fdef61ce433803c3b",
+    "test/plan_fences.jl": "702681c67c1e2ffbabdce679edcfc7523ccb50c34c6d31ea07ddeeb5edd62b83",
+    "test/runtests.jl": "5207d3c456fb46c57e068c574b42887ad2d9a7dff44707f85f8d6855f8f5baf6",
+    "test/unit/agent_modes.jl": "9798097991a2a0a165c031b6659f184be188b2c357435626bc02c980b5e25cf9",
+    "test/unit/agent_plans.jl": "f2aac0ff56a763a25ee2bed68b9e75f0aab0f352fa59d26814bf061c14c4e938",
+    "test/unit/plan_protocol.jl": "69a1edee29a54a5dec06b2d8c7358c5a96e24891f0550b8eb85caa27214fbda9"
+  },
+  "core_assertions": {
+    "distinct_affected_passed": 950,
+    "new_passed": 172,
+    "suites": {
+      "julia-complete.txt": {
+        "Plan mode scope, inherited tasks and unchanged permission gates": 20,
+        "Reviewed Core tool schemas narrow without trusting plugin hints": 19,
+        "Persisted mode CAS, ancestry, scope and interrupted notification": 14,
+        "Bounded owning plans, dependency validation and cited progress": 29,
+        "Plan permission revocation, cancellation and durable publication receipt": 13,
+        "Real agent loop keeps plans separate from edits across project languages": 36,
+        "Fresh owning plan context, terminal controls and CLI persistence": 10,
+        "Plan RPC owns sessions, mode revisions and current Read gates": 20
+      },
+      "fences-first.txt": {
+        "Actual cross-process run ownership and crash-released fences": 11
+      },
+      "workflows-first.txt": {
+        "Cancellation tree and dynamic context": 7,
+        "Concurrent budget reservation and accounting": 9,
+        "Permission decisions and path containment": 7,
+        "Durable journal, torn tails and revision conflicts": 6,
+        "Session reconstruction and unknown side effects": 11,
+        "Atomic replacement remains complete to concurrent readers": 3,
+        "Oversized unterminated journal input is bounded": 2,
+        "Contended journal locks check cancellation and release after failed checkpoints": 6,
+        "Bounded JSON-RPC framing and UTF-8 lengths": 8,
+        "Protocol version, config ownership, secrets and session commands": 15,
+        "Agent protocol permission ownership and cancellation": 13,
+        "Terminal rendering sanitizes control sequences and handles wide text": 16,
+        "SSE Unicode fragmentation, multiline and limits": 3,
+        "OpenAI-compatible real HTTP tool stream and native replay": 7,
+        "Anthropic signature and tool continuation": 5,
+        "OpenAI Responses encrypted reasoning and call stream": 3,
+        "Gemini and Ollama native protocols": 5,
+        "Retry before delivery, no replay after delivery, malformed calls": 5,
+        "Workspace tools conflict guard, schema and transactional validation": 9,
+        "Process execution, bounded logs, ownership, input and timeout": 12,
+        "Agent repairs a failing Python test with real tool execution": 10,
+        "Context settings and exact model envelopes": 50,
+        "Instruction scope discovery, permissions and source revisions": 13,
+        "Balanced tool groups, no reasoning split and Unicode excerpts": 24,
+        "Durable context projections preserve transcripts and provenance": 17,
+        "Compaction failure is atomic and fixed context is retained": 7,
+        "Original tool artifacts are scoped, permissioned and digest checked": 9,
+        "Optional model summaries bind citations and shared budget": 10,
+        "HTTP context overflow recovers before delivery without replay": 13,
+        "Model network approval respects the remaining shared wall-clock budget": 7,
+        "Reasoning and partial tool arguments fence model retry and recovery": 21,
+        "Completed stream calls remain undispatched when a later call is malformed": 8,
+        "Provider usage survives failed context attempts and disabled recovery": 14,
+        "Context RPC ownership, permissions, asynchronous cancellation and CAS": 16,
+        "Manual context checkpoints are shared by RPC and subsequent agent runs": 8,
+        "Task definition validation and independent graph checks": 15,
+        "Claims, dependency release, priority, fences and detached views": 13,
+        "Safe retries, uncertain effects and explicit reconciliation": 16,
+        "Exclusive effects, cancellation propagation and read-only recovery": 16,
+        "Large result artifacts, digest verification and descriptor collisions": 6,
+        "Actual worker DAG binds verified dependency results": 5,
+        "Test processes, timeout uncertainty and separate model sessions": 16,
+        "Two real Julia processes cannot claim the same task": 3,
+        "Agent and headless CLI invoke the same durable task tool": 6,
+        "Asynchronous task protocol, approvals and session ownership": 13,
+        "Task jobs block config replacement and drain owned processes": 5,
+        "Hooks configuration has explicit points, bounds and no permission grants": 29,
+        "Hook source identity, read scope, ambiguity and explicit reload": 14,
+        "Real Hook commands have bounded metadata, private output and narrowed environment": 14,
+        "Hook approval rechecks source identity and current policy before launch": 8,
+        "Hook timeouts, cancellation, malformed output and bounded history": 14,
+        "Actual agent applies Hook context and lifecycle observations without exposing chat": 10,
+        "Before-effect Hook denial prevents writes; post-effect failure preserves receipts": 11,
+        "Owned processes drain descendants and bound blocked stdin": 8,
+        "Hook RPC scopes command approval, cancellation and source-opening proof": 29,
+        "Actual durable workers persist Hook effects and serialize unknown command checks": 12,
+        "Lost leases cannot silently replay declared Hook effects or accept foreign markers": 8,
+        "Hooks CLI uses the same commands, permissions and failure status": 6,
+        "Model routing config is strict, bounded, immutable and credential blind": 35,
+        "Route plans explain feature, capacity and native replay exclusions without keys": 14,
+        "Routing receipts and runtime seats retain strict conversation ownership": 11,
+        "Explicit routing fixes every eligible key before approval and records real source fallback": 17,
+        "Terminal, partial, consumer and explicit fallback restrictions prevent source switching": 28,
+        "Route cancellation, admission and context cost accounting stop work before side effects": 8,
+        "Headless CLI, offline task and session lifecycle": 9
+      }
+    },
+    "live_model_tested": false,
+    "regression_stage_note": "778 Act workflows passed before the final AbstractString acceptance fix in mode parsing. The shared agent loop, journal and tools were unchanged thereafter; final 161 plan/mode and actual clients cover the parser fix.",
+    "actual_cross_process_contention_and_crash_release": true,
+    "actual_project_languages": [
+      "python",
+      "javascript",
+      "rust"
+    ],
+    "language_intelligence_completeness_claim": false
+  },
+  "editor_transport": {
+    "distinct_tests_passed": 1,
+    "final_run_passed": true,
+    "real_core": true,
+    "restart_and_read_revocation_verified": true
+  },
+  "tui": {
+    "actual_pty": true,
+    "plan_and_act_commands": true,
+    "responsive_persistence_approval": true,
+    "refused_plan_write": true,
+    "approved_unicode_act_write": true
+  },
+  "gui": {
+    "native_workbench_without_extensions": true,
+    "standalone_extension_webview": true,
+    "final_layout_workflows_passed": true,
+    "layouts": {
+      "native": {
+        "narrow": {
+          "client": 197,
+          "scroll": 197,
+          "modeBackground": "rgb(32, 32, 32)"
+        },
+        "wide": {
+          "client": 357,
+          "scroll": 357
+        }
+      },
+      "vsix": {
+        "narrow": {
+          "client": 197,
+          "scroll": 197,
+          "modeBackground": "rgb(32, 32, 32)"
+        },
+        "wide": {
+          "client": 357,
+          "scroll": 357
+        }
+      }
+    },
+    "screenshots": [
+      "native-plan-narrow.png",
+      "native-plan-wide.png",
+      "vsix-plan-narrow.png",
+      "vsix-plan-wide.png"
+    ],
+    "visually_inspected": true,
+    "checks": [
+      "three-language actual reads",
+      "malicious unoffered write refused",
+      "persistent reported plan",
+      "new conversation starts Act without old plan",
+      "history restore retains Plan and plan document",
+      "explicit Act switch",
+      "real edit approval and write"
+    ]
+  },
+  "builds": {
+    "shared_check_and_build": true,
+    "full_workbench_typecheck": true,
+    "vsix": {
+      "entries": 305,
+      "exact_core_helper_extension_metadata_files": 296,
+      "exact_client_assets": 3,
+      "bytes": 627621,
+      "sha256": "e87d916dcf4d170633c4c59a624ab3143d43d799356a4a0a17520cd06630f79d",
+      "payload_matches_authored_sources": true,
+      "installed_package_tested": false
+    }
+  },
+  "source_size": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 266,
+      "blank": 1353,
+      "comment": 228,
+      "code": 25331
+    },
+    "cli_tui": {
+      "nFiles": 21,
+      "blank": 20,
+      "comment": 9,
+      "code": 1262
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 224669,
+    "line_target_percent": 10.1324,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "observed": {
+      "total_gib": 31.451,
+      "free_gib": 17.482,
+      "large_build_allowed": true,
+      "safe_scratch_paths": [
+        "/workspace/ShenScope/.local/tmp",
+        "/workspace/ShenScope/.local/build-scratch"
+      ]
+    },
+    "core_cache": [
+      {
+        "name": "aMBxt_CqE99.so",
+        "bytes": 59611392
+      },
+      {
+        "name": "aMBxt_CqE99.ji",
+        "bytes": 1620323
+      }
+    ],
+    "whole_project_copies_created": 0,
+    "worktrees_created": 0,
+    "sysimages_created": 0,
+    "cleanup": "None needed; only one existing Core cache pair and more than 8 GiB free."
+  },
+  "repository_audit": {
+    "applications": 1,
+    "dependencies": 50,
+    "unknown": 0,
+    "strict_walk_complete": true
+  },
+  "research": {
+    "checkpoint": 38,
+    "review_scope": "further partial reviews",
+    "implementation": "original Julia design; no code copied or translated",
+    "observations": [
+      {
+        "project": "codex",
+        "repository": "openai/codex",
+        "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+        "path": "codex-rs/agent-roles/src/agent_role_config.rs",
+        "source_sha256": "70ba8cf41c7339a06fee896d41c57a6e8344b770b1a1ed9a04c66d56e27d9511",
+        "read_lines": [
+          35,
+          105
+        ],
+        "observation": "Typed role instructions and bounded configuration"
+      },
+      {
+        "project": "opencode",
+        "repository": "anomalyco/opencode",
+        "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+        "path": "packages/opencode/src/agent/agent.ts",
+        "source_sha256": "e781c571d584fa996200e320f14c2735e32968256b8db194391e7c06aed7433e",
+        "read_lines": [
+          138,
+          179
+        ],
+        "observation": "Build and plan modes restrict editing and tool categories"
+      },
+      {
+        "project": "deepseek-harness",
+        "repository": "deepseek-ai/deepseek-harness",
+        "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "path": "packages/sandbox/sandbox-policy/src/session-mode.ts",
+        "source_sha256": "afe650fc43e87031eb7b50d9a1717b926906e4fcaab01199cd434235586714d7",
+        "read_lines": [
+          1,
+          54
+        ],
+        "observation": "Session mode projected from durable events"
+      },
+      {
+        "project": "pi-mono",
+        "repository": "badlogic/pi-mono",
+        "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+        "path": "packages/durable/test/examples/27-plan-mode.ts",
+        "source_sha256": "ef9431702f05842a42ebc6998705ca57bd25feae974fa172f46342babe9cf191",
+        "read_lines": [
+          1,
+          105
+        ],
+        "observation": "Conversation plan state and restricted tool set"
+      },
+      {
+        "project": "kimi-code",
+        "repository": "MoonshotAI/kimi-code",
+        "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+        "path": "packages/agent-core-v2/src/features/plan/tools/exit-plan-mode/exitPlanModeTool.ts",
+        "source_sha256": "111523cb8dcfc2e5428b2abec91aae52fb67e534971195107d683ce3a41a7146",
+        "read_lines": [
+          1,
+          115
+        ],
+        "observation": "Plan revision and explicit review boundary"
+      },
+      {
+        "project": "kimi-code",
+        "repository": "MoonshotAI/kimi-code",
+        "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+        "path": "packages/agent-core-v2/src/features/plan/planOps.ts",
+        "source_sha256": "5fc805219ac755c7f155695f783b553088aab90a1ed44aa8f3d59e2926204dde",
+        "read_lines": [
+          1,
+          85
+        ],
+        "observation": "Persistent mode lifecycle operations"
+      },
+      {
+        "project": "ZCode",
+        "repository": "zai-org/ZCode",
+        "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+        "path": "packages/ui/src/ToolCallBlocks/renderers/plan-guidance.tsx",
+        "source_sha256": "512ef2321621ab167fc981f993e11b87aa181e1012669c356ab7c45eda2e431d",
+        "read_lines": [
+          1,
+          105
+        ],
+        "observation": "Reviewable bounded plan presentation"
+      },
+      {
+        "project": "qwen-code",
+        "repository": "QwenLM/qwen-code",
+        "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+        "path": "packages/core/src/subagents/agent-frontmatter-schema.ts",
+        "source_sha256": "afac96198745069936559f0b95bd34302a6a4b20e52ff24016529c0106f395ab",
+        "read_lines": [
+          1,
+          100
+        ],
+        "observation": "Role mode validation and policy distinction"
+      }
+    ]
+  },
+  "failures_retained": [
+    "Two initial integration fixture parser errors; fixed by using an explicit callback variable.",
+    "Terminal mode command exposed SubString rejection; parser now accepts AbstractString and actual TUI passes.",
+    "PTY fixture initially allowed persistence once and missed the separate tool-output archive approval; explicit session persistence approval now covers the intended flow.",
+    "Initial GUI fixture had an illegal top-level return; removed.",
+    "Actual native GUI found the three new operations missing from the editor RPC allowlist; both clients now pass.",
+    "Initial inspected screenshots exposed a bright unthemed mode selector and excessive narrow-card explanation; final themed selector and concise qualification pass."
+  ],
+  "limitations": [
+    "Reported progress/citations are not independent execution or testing proof",
+    "No automatic plan execution",
+    "Mode fence is not an OS sandbox",
+    "Cold project backends requiring subprocesses can refuse in Plan",
+    "Queries require current Read Allow",
+    "Fixed test fixtures/local HTTP, no live-model planning quality claim",
+    "Windows and installed distribution not runtime verified",
+    "Specialized language intelligence remains partial",
+    "Core below the 250000-line target"
+  ],
+  "raw_directory": "docs/validation/raw/agent-plans-checkpoint-038",
+  "raw_manifest": {
+    "editor-build-final.txt": {
+      "bytes": 58,
+      "sha256": "456325254e03a678a382bc8457be1d4edf674fefcb4ff0bb54bb37906c13505d"
+    },
+    "editor-build-layout.txt": {
+      "bytes": 58,
+      "sha256": "456325254e03a678a382bc8457be1d4edf674fefcb4ff0bb54bb37906c13505d"
+    },
+    "editor-build-rpc.txt": {
+      "bytes": 58,
+      "sha256": "456325254e03a678a382bc8457be1d4edf674fefcb4ff0bb54bb37906c13505d"
+    },
+    "editor-build.txt": {
+      "bytes": 58,
+      "sha256": "456325254e03a678a382bc8457be1d4edf674fefcb4ff0bb54bb37906c13505d"
+    },
+    "editor-check-final.txt": {
+      "bytes": 56,
+      "sha256": "e930b40f222bfa85176b0c5fcaf77b2b2657528f76423d9018b63f2244720669"
+    },
+    "editor-check-first.txt": {
+      "bytes": 56,
+      "sha256": "e930b40f222bfa85176b0c5fcaf77b2b2657528f76423d9018b63f2244720669"
+    },
+    "editor-check-layout.txt": {
+      "bytes": 56,
+      "sha256": "e930b40f222bfa85176b0c5fcaf77b2b2657528f76423d9018b63f2244720669"
+    },
+    "editor-check-rpc.txt": {
+      "bytes": 56,
+      "sha256": "e930b40f222bfa85176b0c5fcaf77b2b2657528f76423d9018b63f2244720669"
+    },
+    "fences-first.txt": {
+      "bytes": 164,
+      "sha256": "0ca526bbf5553f220de58903883ca3ef86ee242800566e1f09947aae8ca0459b"
+    },
+    "julia-complete.txt": {
+      "bytes": 1664,
+      "sha256": "052b36dbd61de9e096ca6c0c59277c99a12cef9a1a24b5af0f89e0aba8ca9b68"
+    },
+    "julia-final.txt": {
+      "bytes": 1529,
+      "sha256": "0aa0accc1dbf661a8c5b23f7cf7e5dcf59ebf04a8472baf970c6008c6a3d6c2d"
+    },
+    "julia-first.txt": {
+      "bytes": 1595,
+      "sha256": "ddafb67f55ef32db4b18601e9fa07ae04bf1ce3675c5cb3a91f11c1986fabef4"
+    },
+    "julia-integration-final.txt": {
+      "bytes": 2081,
+      "sha256": "6e8e8dc5e469d36dc8f6c396f01525622b5858047859caae9c94c83264cb5589"
+    },
+    "native-bridge-failure.png": {
+      "bytes": 27264,
+      "sha256": "297b0bfbfe8f1122c3cc3560d53b50deaca8840a1d9c8e172e51467dd82396cd"
+    },
+    "native-gui-final.txt": {
+      "bytes": 1033,
+      "sha256": "aef5cc8034cd877cc3d180738a54a27ef38a8d040ac1b8c6714e5c31cc093e16"
+    },
+    "native-gui-first.txt": {
+      "bytes": 1329,
+      "sha256": "71545045808f8c7f4ca3369f43a61198ddfd8a54fbe3b6b07c21a6ca7f3e6386"
+    },
+    "native-gui-layout.txt": {
+      "bytes": 212,
+      "sha256": "1ed5d9e636699d72d0fc2aebb808027cba8f6166ed0f66cde39114e7e7b8fd87"
+    },
+    "native-gui-rpc.txt": {
+      "bytes": 212,
+      "sha256": "1ed5d9e636699d72d0fc2aebb808027cba8f6166ed0f66cde39114e7e7b8fd87"
+    },
+    "native-overlay-layout.txt": {
+      "bytes": 59,
+      "sha256": "f9622473f446dde0fd6ddad86e819a689db14eb75746e2d10937a63a60671aaa"
+    },
+    "native-overlay-rpc.txt": {
+      "bytes": 59,
+      "sha256": "f9622473f446dde0fd6ddad86e819a689db14eb75746e2d10937a63a60671aaa"
+    },
+    "native-overlay.txt": {
+      "bytes": 59,
+      "sha256": "f9622473f446dde0fd6ddad86e819a689db14eb75746e2d10937a63a60671aaa"
+    },
+    "native-plan-layout.json": {
+      "bytes": 154,
+      "sha256": "4484df127424cc5483eb06496cc60efe09e9efed0566942d55f71be384a2be34"
+    },
+    "native-plan-narrow-before-layout.png": {
+      "bytes": 25018,
+      "sha256": "94544b7c76079a6eaef71feebb675b53bee4943ca7eecfe8345a31bbb5bdab13"
+    },
+    "native-plan-narrow.png": {
+      "bytes": 24428,
+      "sha256": "fb84bb16709fdb0ec4bc8728e383e8634de6717c23824cb5664f796a6e822bea"
+    },
+    "native-plan-wide-before-layout.png": {
+      "bytes": 35464,
+      "sha256": "06620e06a5437cd4bbe5b9e03a52505a0cd70e7ee08d66f01ffadfead15e5fc7"
+    },
+    "native-plan-wide.png": {
+      "bytes": 34103,
+      "sha256": "47b4bd5940945831856b89309c11f42de8163c40f4587ccf183749143371bc95"
+    },
+    "native-transpile-layout.txt": {
+      "bytes": 73,
+      "sha256": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997"
+    },
+    "native-transpile-rpc.txt": {
+      "bytes": 73,
+      "sha256": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997"
+    },
+    "native-transpile.txt": {
+      "bytes": 73,
+      "sha256": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997"
+    },
+    "native-typecheck-final.txt": {
+      "bytes": 715,
+      "sha256": "13f94dd6ebfafd0dd7058f4e027a45b58c86fe9cfd9dcd44072af86dc9f2ea49"
+    },
+    "native-typecheck.txt": {
+      "bytes": 715,
+      "sha256": "13f94dd6ebfafd0dd7058f4e027a45b58c86fe9cfd9dcd44072af86dc9f2ea49"
+    },
+    "node-plans-final.txt": {
+      "bytes": 219,
+      "sha256": "e8df16fbc114ea6da659ff6088d186d1c052b8eecebc5e5c08f2179b3f58faa9"
+    },
+    "node-plans.txt": {
+      "bytes": 216,
+      "sha256": "9d5b393a579a4ef61bc6d53a79f504a23491f60a169a8a23fed73ec5713fb313"
+    },
+    "tui-plans-final.txt": {
+      "bytes": 137,
+      "sha256": "acbfb95ddcb2fe64f8aeeea6dbe1ca413f4fac917d31c4127a171b32ec43a865"
+    },
+    "tui-plans.txt": {
+      "bytes": 3465,
+      "sha256": "9470a3b4b84e3e394e4775702912ea81c77b26fc6161b5d20c7c1831a8d22072"
+    },
+    "vsix-gui-layout.txt": {
+      "bytes": 181,
+      "sha256": "3d3af590c06cff2495a909d7a01a154507f5c59ae27072101f5e730cc33a32ed"
+    },
+    "vsix-gui.txt": {
+      "bytes": 181,
+      "sha256": "3d3af590c06cff2495a909d7a01a154507f5c59ae27072101f5e730cc33a32ed"
+    },
+    "vsix-package-final.txt": {
+      "bytes": 863,
+      "sha256": "cbd419b0bad933b80ab9e0b58d022346aef57182c862fcab9d372448ecb0890b"
+    },
+    "vsix-package.txt": {
+      "bytes": 864,
+      "sha256": "f42c0b38590e2918e14aaa9039d73f9937411bf43d419dd1da5a302723c8185d"
+    },
+    "vsix-plan-layout.json": {
+      "bytes": 154,
+      "sha256": "4484df127424cc5483eb06496cc60efe09e9efed0566942d55f71be384a2be34"
+    },
+    "vsix-plan-narrow-before-layout.png": {
+      "bytes": 25138,
+      "sha256": "dcb628a5aee23cde479418b02db5a693c0b061480634f73f079bf4a861737759"
+    },
+    "vsix-plan-narrow.png": {
+      "bytes": 24538,
+      "sha256": "9bbd63e696ea45ee9853535e98fbd7d6147bcae2ba1ccd403aa4c68d6f9bcd93"
+    },
+    "vsix-plan-wide-before-layout.png": {
+      "bytes": 35685,
+      "sha256": "0548444460e8f3db6abe8309ebf057abe5cc765e6702fd11fc0bfe6ec7b59c7a"
+    },
+    "vsix-plan-wide.png": {
+      "bytes": 34364,
+      "sha256": "92a8faeebe6e75ca693f45d90cdb18a0a267c0dc9186bb46a7e20f1a869f7d6e"
+    },
+    "workflows-first.txt": {
+      "bytes": 18637,
+      "sha256": "c51c8eb221c635c8ab2d4a164d7bf9892e50cd73c8b6e6e5bbed8249dedd0a80"
+    }
+  }
+}

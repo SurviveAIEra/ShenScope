@@ -307,6 +307,21 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .security-config select:focus-visible { outline: 1px solid var(--vscode-focusBorder); }
 .security-config select:disabled { opacity: .55; }
 .shenscope-panel .composer-toolbar:has(.model-role-choice) { flex-wrap: wrap; }
+.shenscope-panel .composer-toolbar:has(.agent-mode-choice) { flex-wrap: wrap; }
+.shenscope-panel .agent-mode-choice { min-width: 0; max-width: 100%; min-height: 26px; padding: 3px 7px; font-size: 11px; color: var(--text); background: var(--raised); border: 1px solid var(--border); border-radius: 5px; }
+.shenscope-panel .composer-toolbar:has(.agent-mode-choice) .model-button { max-width: 55%; }
+.shenscope-panel .conversation-plan { flex: 0 0 auto; min-width: 0; max-height: 35%; overflow: auto; margin: 5px 0 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.shenscope-panel .conversation-plan[hidden] { display: none; }
+.shenscope-panel .plan-heading { padding: 8px 10px; cursor: pointer; overflow-wrap: anywhere; }
+.shenscope-panel .plan-heading strong, .shenscope-panel .plan-heading small { display: block; }
+.shenscope-panel .plan-heading small, .shenscope-panel .plan-mode-hint, .shenscope-panel .plan-step-meta { color: var(--muted); font-size: 11px; }
+.shenscope-panel .plan-mode-hint { display: block; padding: 8px 10px; margin: 0; line-height: 1.5; }
+.shenscope-panel .plan-steps { padding: 0 10px 8px 28px; margin: 0; }
+.shenscope-panel .plan-step { padding: 8px 0; border-top: 1px solid var(--border); overflow-wrap: anywhere; }
+.shenscope-panel .plan-step p { margin: 4px 0; }
+.shenscope-panel .plan-step-meta { display: block; margin: 3px 0; }
+.shenscope-panel .plan-step-status { font-size: 10px; font-weight: 600; color: var(--muted); }
+.shenscope-panel .plan-in_progress .plan-step-status { color: var(--accent); }
 .julia-evidence .inline-controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
 .julia-evidence .inline-controls input { flex: 1 1 180px; min-width: 0; }
 .julia-evidence-entry { padding: 12px 0; border-top: 1px solid var(--vscode-widget-border, #444); overflow-wrap: anywhere; }

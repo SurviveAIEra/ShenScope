@@ -54,7 +54,8 @@ function atomic_write(path::AbstractString, content::AbstractString; mode=0o600)
     return path
 end
 
-function store_lock(f::Function, path::AbstractString;checkpoint=()->nothing)
+function store_lock(f::Function, path::AbstractString;checkpoint=()->nothing,nonblocking=false)
+    nonblocking isa Bool || throw(ArgumentError("Invalid nonblocking lock selection"))
     checkpoint()
     mkpath(dirname(path))
     open(path * ".lock","a+") do io
@@ -68,6 +69,7 @@ function store_lock(f::Function, path::AbstractString;checkpoint=()->nothing)
                     handle,0x00000003,0,0xffffffff,0xffffffff,overlap)==0
                 code=ccall((:GetLastError,"kernel32"),UInt32,())
                 code==33 || throw(ShenScopeError(:storage,"Journal lock failed"))
+                nonblocking && throw(ShenScopeError(:session_busy,"Conversation already has an active operation"))
                 time()<deadline || throw(ShenScopeError(:storage,"Journal lock timeout"))
                 checkpoint()
                 sleep(0.005)
@@ -75,6 +77,7 @@ function store_lock(f::Function, path::AbstractString;checkpoint=()->nothing)
         elseif Sys.isunix()
             while ccall(:flock,Cint,(Cint,Cint),fd(io),6)!=0
                 Base.Libc.errno() in (11,35) || throw(ShenScopeError(:storage,"Journal lock failed"))
+                nonblocking && throw(ShenScopeError(:session_busy,"Conversation already has an active operation"))
                 time()<deadline || throw(ShenScopeError(:storage,"Journal lock timeout"))
                 checkpoint()
                 sleep(0.005)

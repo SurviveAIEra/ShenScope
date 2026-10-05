@@ -1,0 +1,33 @@
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/agent_plans.jl:37
+in expression starting at /workspace/ShenScope/test/agent_plan_integration.jl:4
+Test Summary:                                                            | Pass  Total     Time
+Real agent loop keeps plans separate from edits across project languages |   36     36  1m04.0s
+Fresh owning plan context, terminal controls and CLI persistence: Error During Test at /workspace/ShenScope/test/integration/agent_plans.jl:37
+  Got exception outside of a @test
+  agent_mode: Agent mode must be act or plan
+  Stacktrace:
+    [1] parse_agent_mode(value::SubString{String})
+      @ ShenScope /workspace/ShenScope/src/Core/AgentModes.jl:9
+    [2] set_agent_mode!(session::Session, ctx::RuntimeContext, mode::SubString{String}; expected_revision::Int64)
+      @ ShenScope /workspace/ShenScope/src/Context/AgentModeStore.jl:37
+    [3] terminal_control_command!(state::ShenScope.TerminalState, prompt::String, session::Session, ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/CLI/Plans.jl:46
+    [4] (::var"#20#23")(root::String)
+      @ Main /workspace/ShenScope/test/integration/agent_plans.jl:41
+    [5] mktempdir(fn::var"#20#23", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [6] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [7] macro expansion
+      @ /workspace/ShenScope/test/integration/agent_plans.jl:38 [inlined]
+    [8] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+    [9] top-level scope
+      @ /workspace/ShenScope/test/integration/agent_plans.jl:38
+   [10] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [11] top-level scope
+      @ /workspace/ShenScope/test/agent_plan_integration.jl:4
+Test Summary:                                                    | Error  Total  Time
+Fresh owning plan context, terminal controls and CLI persistence |     1      1  4.4s

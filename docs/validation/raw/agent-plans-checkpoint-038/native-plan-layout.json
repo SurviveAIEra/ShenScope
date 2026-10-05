@@ -1,0 +1,11 @@
+{
+  "narrow": {
+    "client": 197,
+    "scroll": 197,
+    "modeBackground": "rgb(32, 32, 32)"
+  },
+  "wide": {
+    "client": 357,
+    "scroll": 357
+  }
+}

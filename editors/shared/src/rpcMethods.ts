@@ -1,6 +1,7 @@
 export const PANEL_RPC_METHODS = Object.freeze([
     'health', 'config/get', 'config/set', 'credentials/status', 'sessions/list', 'sessions/create',
     'sessions/get', 'sessions/export', 'sessions/rename', 'sessions/archive', 'sessions/pin', 'sessions/branch',
+    'sessions/mode', 'plans/query', 'plans/history',
     'agent/start', 'agent/cancel', 'agent/steer', 'permissions/respond', 'tools/list', 'runtime/status',
     'project/backends', 'project/start', 'project/job', 'project/cancel', 'project/query',
     'project/watch_start', 'project/watch_status', 'project/watch_stop', 'project/watch_refresh', 'project/watch_list',

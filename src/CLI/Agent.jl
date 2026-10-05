@@ -13,6 +13,9 @@ function cli_agent_command(positional,flags,config,state_dir)
     ctx=RuntimeContext(root;session_id=id,state_dir,budget=BudgetLedger(limits_from_config(config)),
         permissions=policy,sandbox=sandbox_from_config(config),approve=cli_approval,sink=e->render_event(stdout,e;json=get(flags,"--json",false)))
     session=haskey(flags,"--session") ? load_session(state_dir,id) : new_session(ctx)
+    if haskey(flags,"--agent-mode")
+        set_agent_mode!(session,ctx,flags["--agent-mode"];expected_revision=agent_mode_setting(session)["revision"])
+    end
     tools=core_tools(;config,config_source=get(flags,"--config",config_path()))
     if !haskey(flags,"--script")
         model = only(tool for tool in tools if tool isa ModelsTool)

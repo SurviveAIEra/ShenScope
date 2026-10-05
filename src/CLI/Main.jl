@@ -44,7 +44,7 @@ function parse_cli(args::Vector{String})
         "--package-name","--package-uuid","--package-version","--entry-sha256","--project-sha256","--contribution","--generation","--arguments",
         "--argv","--input","--rows","--columns","--timeout","--mode","--max-ir-bytes","--max-statements",
         "--expected-revision","--expected-index-sha256","--method-index","--statement-id","--context-lines",
-        "--fixture","--iterations","--repetitions","--max-samples","--max-frames","--sample-rate","--sample-delay","--profile-buffer-words","--observation-kind","--query"])
+        "--fixture","--iterations","--repetitions","--max-samples","--max-frames","--sample-rate","--sample-delay","--profile-buffer-words","--observation-kind","--query","--agent-mode"])
     switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints","--no-evidence-bridges","--accept-cleanup-failure","--save","--apply-cleanup"])
     i=1
     while i<=length(args)
@@ -76,8 +76,8 @@ function scripted_provider(path::String)
     return MockProvider(script)
 end
 
-function cli_session_command(args::Vector{String},state_dir::String)
-    isempty(args) && throw(ShenScopeError(:input,"Expected sessions list, export, rename or archive"))
+function cli_session_command(args::Vector{String},state_dir::String;flags=Dict())
+    isempty(args) && throw(ShenScopeError(:input,"Expected sessions list, export, rename, archive or mode"))
     action=first(args)
     if action=="list"
         println(canonical(list_sessions(state_dir;include_archived=true)))
@@ -93,6 +93,17 @@ function cli_session_command(args::Vector{String},state_dir::String)
         rename_session!(s,join(args[3:end]," "))
     elseif action=="archive"
         session_record!(s,"metadata",Dict("archived"=>true))
+    elseif action=="mode"
+        length(args) in (2,3) || throw(ShenScopeError(:input,"Usage: sessions mode ID [plan|act] --expected-revision N"))
+        root=get(flags,"--root",s.root);ctx=RuntimeContext(root;session_id=s.id,state_dir)
+        session_control_scope(s,ctx)
+        if length(args)==2
+            haskey(flags,"--expected-revision") && throw(ShenScopeError(:input,"Mode query does not accept an expected revision"))
+            println(canonical(agent_mode_view(s)))
+        else
+            haskey(flags,"--expected-revision") || throw(ShenScopeError(:input,"Mode changes require --expected-revision"))
+            println(canonical(set_agent_mode!(s,ctx,args[3];expected_revision=parse(Int,flags["--expected-revision"]))))
+        end
     else
         throw(ShenScopeError(:input,"Unknown sessions command"))
     end
@@ -107,6 +118,8 @@ function cli_main(args=ARGS)
         println("ShenScope — Open coding intelligence for serious codebases.")
         println("Usage: shenscope chat TASK | tui | sessions ACTION | project ACTION | tasks ACTION | mcp ACTION | skills ACTION | hooks ACTION | context ACTION | memory ACTION | analyzers ACTION | models ACTION | diagnostics ACTION | doctor | serve --stdio")
         println("Options: --root PATH --state-dir PATH --config PATH --profile NAME --session ID --json")
+        println("Chat mode: --agent-mode plan|act; sessions mode ID [plan|act] --expected-revision N")
+        println("Conversation plan: plan get|history --session ID; plan replace|progress JSON_FILE --session ID --expected-revision N")
         println("Explicit permissions: --allow-edit --allow-process --allow-network --allow-persistence --allow-dynamic --allow-mcp")
         println("Offline protocol fixture: --script JSON_FILE")
         println("Project navigation: project definitions|references|hover|incoming_calls|outgoing_calls|implementations FILE LINE COLUMN --backend typescript")
@@ -132,7 +145,7 @@ function cli_main(args=ARGS)
         command=first(positional)
         state_dir=get(flags,"--state-dir",get(ENV,"SHENSCOPE_STATE_DIR",joinpath(homedir(),".local/state/shenscope")))
         if command=="sessions"
-            return Base.invokelatest(cli_session_command,positional[2:end],state_dir)
+            return Base.invokelatest(cli_session_command,positional[2:end],state_dir;flags)
         end
         config=load_config(;path=get(flags,"--config",config_path()),profile=get(flags,"--profile",nothing))
         handler=get(CLI_COMMAND_HANDLERS,command,nothing)

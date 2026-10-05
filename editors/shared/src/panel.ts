@@ -34,6 +34,12 @@ export class ShenScopePanel {
     private content = el('main', '', 'panel-content');
     private transcript = el('div', '', 'transcript');
     private composer = el('textarea');
+    private agentMode: 'act' | 'plan' = 'act';
+    private agentModeRevision = 0;
+    private agentModeChanging = false;
+    private planResult: any;
+    private planReview = el('section', '', 'conversation-plan');
+    private planRequest = 0;
     private approvals = el('div', '', 'approvals');
     private notice = el('div', '', 'notice');
     private welcome = el('section', '', 'welcome');
@@ -211,11 +217,12 @@ export class ShenScopePanel {
         return `${role} · ${routing.profiles[id]?.model ?? 'Choose model'}`;
     }
     private async newConversation(): Promise<void> {
-        if (this.active || this.projectJob || this.projectStarting || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
+        if (this.agentModeChanging || this.active || this.projectJob || this.projectStarting || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
         this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
         this.modelsProfile = ''; this.modelPlanRole = '';
         this.terminalResult = undefined;
         this.resetDiagnostics();
+        this.agentMode = 'act'; this.agentModeRevision = 0; this.planResult = undefined; this.planRequest++; this.renderPlanReview();
         this.sessionId = undefined; this.extensionsResult = undefined; this.extensionsPackageReceipt = undefined; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
@@ -237,19 +244,21 @@ export class ShenScopePanel {
         this.transcript.append(row); this.trimTranscript(); this.scrollToEnd(); return body;
     }
     private updateActions(): void {
+        const mode = this.content.querySelector<HTMLSelectElement>('.agent-mode-choice'); if (mode) { mode.value = this.agentMode; mode.disabled = this.analyzersBusy() || this.agentModeChanging; }
         const role = this.content.querySelector<HTMLSelectElement>('.model-role-choice'); if (role) { role.disabled = this.active; }
         if (!this.sendButton || !this.cancelButton) { return; } const label = this.active ? 'Send guidance' : 'Send message';
         this.sendButton.setAttribute('aria-label', label); this.sendButton.title = `${label} (Ctrl / ⌘ Enter)`;
-        this.sendButton.disabled = !this.config || !this.composer.value.trim() || !!this.hooksJob || this.hooksStarting || !!this.contextJob || this.contextStarting || !!this.analyzersJob || this.analyzersStarting || !!this.modelsJob || this.modelsStarting; this.cancelButton.hidden = !this.active;
+        this.sendButton.disabled = !this.config || !this.composer.value.trim() || this.agentModeChanging || !!this.hooksJob || this.hooksStarting || !!this.contextJob || this.contextStarting || !!this.analyzersJob || this.analyzersStarting || !!this.modelsJob || this.modelsStarting; this.cancelButton.hidden = !this.active;
         this.composer.placeholder = this.active ? 'Guide the running task…' : 'Ask, plan, or build something…';
     }
     private async send(): Promise<void> {
         await this.guard(async () => {
+            if (this.agentModeChanging) { throw new Error('Wait for the conversation mode to save.'); }
             if (this.modelsJob || this.modelsStarting) { throw new Error('Finish or cancel the model operation before sending a message.'); }
             if (this.analyzersJob || this.analyzersStarting) { throw new Error('Finish or cancel the analyzer operation before sending a message.'); }
             const prompt = this.composer.value.trim(); if (!prompt || !this.config) { return; } this.notice.hidden = true;
             if (this.active && this.sessionId) { await this.bridge.request('agent/steer', { session_id: this.sessionId, prompt }); this.addMessage('steering', prompt); this.composer.value = ''; this.updateActions(); return; }
-            if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title: prompt.slice(0, 100) }); this.sessionId = session.id; }
+            await this.ensureSession(prompt.slice(0, 100));
             this.addMessage('user', prompt); this.assistant = undefined; this.assistantText = ''; this.active = true; this.composer.value = ''; this.setStatus('Working…'); this.updateActions(); this.scrollToEnd(true);
             try { await this.bridge.request('agent/start', { session_id: this.sessionId, prompt, ...(this.config.model_routing ? { model_role: this.chatModelRole || this.config.model_routing.default_role } : {}) }); }
             catch (error) { this.active = false; this.setStatus('Task could not start'); this.updateActions(); throw error; }
@@ -265,6 +274,14 @@ export class ShenScopePanel {
             this.cancelButton = this.button('Stop', async () => { if (this.sessionId && this.active) { await this.bridge.request('agent/cancel', { session_id: this.sessionId }); this.setStatus('Cancelling…'); } }, 'stop-button', 'stop');
             this.sendButton = this.button('Send message', () => this.send(), 'send-button', 'send'); actions.append(this.cancelButton, this.sendButton);
             const selectedModel = this.button(this.configuredModelLabel(), () => this.selectTab(this.config?.model_routing ? 'Models' : 'Settings'), 'model-button'); toolbar.append(selectedModel);
+            if (this.capabilities.conversation_plans) {
+                const mode = el('select', '', 'agent-mode-choice'); mode.setAttribute('aria-label', 'Agent execution mode');
+                mode.title = 'Applies to chat runs. Plan reads and prepares; Act uses tools with your permissions.';
+                for (const [value, label] of [['act', 'Act'], ['plan', 'Plan']]) { const option = el('option', label); option.value = value; mode.append(option); }
+                mode.value = this.agentMode;
+                mode.addEventListener('change', () => { const requested = mode.value as 'act' | 'plan'; mode.value = this.agentMode; void this.guard(() => this.changeAgentMode(requested)); }); toolbar.append(mode);
+                this.renderPlanReview();
+            }
             if (this.config?.model_routing) {
                 const roles = el('select', '', 'model-role-choice'); roles.setAttribute('aria-label', 'Model role');
                 for (const role of Object.keys(this.config.model_routing.roles).sort()) { const option = el('option', role); option.value = role; roles.append(option); }
@@ -272,7 +289,7 @@ export class ShenScopePanel {
                 roles.addEventListener('change', () => { this.chatModelRole = roles.value; const label = this.configuredModelLabel(); selectedModel.textContent = label; selectedModel.title = label; selectedModel.setAttribute('aria-label', label); }); toolbar.append(roles);
             }
             toolbar.append(actions);
-            box.append(this.composer, toolbar); this.content.append(conversation, box, el('div', 'Ctrl / ⌘ Enter to send · Changes require your permission', 'composer-hint')); this.updateActions(); return;
+            box.append(this.composer, toolbar); this.content.append(conversation, this.planReview, box, el('div', 'Ctrl / ⌘ Enter to send · Changes require your permission', 'composer-hint')); this.updateActions(); return;
         }
         if (this.tab === 'History') { await this.history(revision); return; }
         if (this.tab === 'Settings') { await this.settings(revision); return; }
@@ -307,12 +324,14 @@ export class ShenScopePanel {
             if (!sessions.length) { list.append(el('p', 'Your conversations will appear here.', 'empty-text')); }
             for (const session of sessions) {
                 const row = el('article', '', 'session-card'); const open = this.button(session.title, async () => {
-                    if (this.analyzersBusy()) { throw new Error('Finish the current task before switching conversations.'); }
+                    if (this.agentModeChanging || this.analyzersBusy()) { throw new Error('Finish the current task before switching conversations.'); }
                     this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
                     this.modelsProfile = ''; this.modelPlanRole = '';
                     const openingRevision = this.renderRevision; this.resetDiagnostics(); this.sessionId = session.id; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 };
                     const full = await this.bridge.request('sessions/get', { session_id: session.id });
                     if (this.sessionId !== full.id) { return; }
+                    this.agentMode = full.agent_mode?.mode ?? 'act'; this.agentModeRevision = full.agent_mode?.revision ?? 0; this.planResult = undefined; this.planRequest++; this.renderPlanReview();
+                    void this.guard(() => this.refreshConversationPlan());
                     this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren();
                     for (const message of full.messages) { this.addMessage(message.role, message.text); }
                     if (this.tab === 'History' && this.renderRevision === openingRevision) { await this.selectTab('Chat'); this.scrollToEnd(true); this.composer.focus(); }
@@ -329,8 +348,52 @@ export class ShenScopePanel {
         const wrapper = el('label', '', 'field'); wrapper.append(el('span', label)); const input = el('input'); input.value = value; input.type = type; wrapper.append(input); parent.append(wrapper); return input;
     }
     private async ensureSession(title: string): Promise<string> {
-        if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title }); this.sessionId = session.id; }
+        if (!this.sessionId) { const session = await this.bridge.request('sessions/create', { title }); this.sessionId = session.id; this.agentMode = session.agent_mode?.mode ?? 'act'; this.agentModeRevision = session.agent_mode?.revision ?? 0; }
         return this.sessionId!;
+    }
+    private async changeAgentMode(mode: 'act' | 'plan'): Promise<void> {
+        if (this.analyzersBusy() || this.agentModeChanging) { throw new Error('Finish the current operation before changing chat mode.'); }
+        this.agentModeChanging = true; this.updateActions();
+        let session_id: string | undefined;
+        try {
+            session_id = await this.ensureSession('New conversation');
+            const setting = await this.bridge.request('sessions/mode', { session_id, action: 'set', mode, expected_revision: this.agentModeRevision });
+            if (this.sessionId !== session_id || this.disposed) { return; }
+            this.agentMode = setting.mode; this.agentModeRevision = setting.revision; this.renderPlanReview();
+            this.setStatus(mode === 'plan' ? 'Plan mode · read and prepare' : 'Act mode · tools require permissions');
+        } catch (error) {
+            if (session_id) {
+                const setting = await this.bridge.request('sessions/mode', { session_id });
+                if (this.sessionId === session_id && !this.disposed) { this.agentMode = setting.mode; this.agentModeRevision = setting.revision; }
+            }
+            throw error;
+        } finally { this.agentModeChanging = false; this.updateActions(); }
+    }
+    private async refreshConversationPlan(): Promise<void> {
+        if (!this.sessionId || !this.capabilities.conversation_plans) { return; }
+        const session_id = this.sessionId; const request = ++this.planRequest;
+        const result = await this.bridge.request('plans/query', { session_id });
+        if (request !== this.planRequest || session_id !== this.sessionId || this.disposed) { return; }
+        this.planResult = result; this.renderPlanReview();
+    }
+    private renderPlanReview(): void {
+        const open = this.planReview.querySelector<HTMLDetailsElement>('details')?.open ?? false;
+        this.planReview.replaceChildren(); const plan = this.planResult?.plan;
+        this.planReview.hidden = !plan && this.agentMode !== 'plan';
+        if (!plan) { this.planReview.append(el('small', 'Plan mode: inspect the project and prepare steps. Workspace changes and commands are unavailable to the agent.', 'plan-mode-hint')); return; }
+        const details = el('details', '', 'plan-details'); details.open = open; const summary = el('summary', '', 'plan-heading');
+        summary.append(el('strong', plan.title), el('small', `${this.planResult.summary?.statuses.completed ?? 0}/${plan.steps.length} reported complete · v${plan.revision}`)); details.append(summary);
+        details.append(el('p', 'Reported progress; success is not independently verified.', 'plan-mode-hint'));
+        const list = el('ol', '', 'plan-steps');
+        const labels: Record<string, string> = { pending: 'Pending', in_progress: 'In progress', completed: 'Reported complete', blocked: 'Blocked', skipped: 'Skipped' };
+        for (const step of plan.steps.slice(0, 64)) {
+            const row = el('li', '', `plan-step plan-${step.status}`); row.append(el('span', labels[step.status] ?? step.status, 'plan-step-status'), el('p', step.text));
+            if (step.dependencies.length) { row.append(el('small', `After: ${step.dependencies.join(', ')}`, 'plan-step-meta')); }
+            if (step.note) { row.append(el('small', step.note, 'plan-step-meta')); }
+            if (step.citations.length) { row.append(el('small', `Message references: ${step.citations.map((item: any) => item.message).join(', ')}`, 'plan-step-meta')); }
+            list.append(row);
+        }
+        details.append(list); this.planReview.append(details);
     }
     private async startSkills(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting) { throw new Error('Finish or cancel the current Skills operation.'); }
@@ -2069,10 +2132,13 @@ export class ShenScopePanel {
         if (method === 'transport/closed') { this.active = false; this.setStatus('Disconnected'); this.notice.textContent = params.message; this.notice.hidden = false; this.approvals.replaceChildren(); this.updateActions(); return; }
         if (method === 'config/changed') {
             this.resetDiagnostics();
+            this.planResult = undefined; this.planRequest++; this.renderPlanReview();
             this.modelsProfile = ''; this.modelPlanRole = ''; this.chatModelRole = ''; this.modelsResult = undefined;
             void this.guard(async () => { const snapshot = await this.bridge.request('config/get'); if (this.disposed) { return; } this.config = snapshot.value; this.configRevision = snapshot.sha256; await this.renderTab(); }); return;
         }
         if (method !== 'agent/event' || params.session_id !== this.sessionId) { return; } const payload = params.payload;
+        if (params.kind === 'agent_plan_updated') { this.planRequest++; this.planResult = { plan: payload.plan, summary: payload.summary }; this.renderPlanReview(); return; }
+        if (params.kind === 'agent_mode_changed') { this.agentMode = payload.mode; this.agentModeRevision = payload.revision; this.renderPlanReview(); this.updateActions(); return; }
         if (params.kind === 'diagnostics_job_completed' || params.kind === 'diagnostics_job_failed') {
             this.completedDiagnosticsJobs.add(payload.job_id); while (this.completedDiagnosticsJobs.size > 64) { this.completedDiagnosticsJobs.delete(this.completedDiagnosticsJobs.values().next().value!); }
             const owned = this.diagnosticsJob === payload.job_id || this.diagnosticsStarting;
@@ -2248,6 +2314,7 @@ export class ShenScopePanel {
             this.flushAssistant(); this.active = false; this.assistant = undefined;
             for (const card of Array.from(this.approvals.children)) { if ((card as HTMLElement).dataset.traceId === params.trace_id) { card.remove(); } }
             this.updateActions();
+            if (this.config?.permissions?.read === 'allow') { void this.guard(() => this.refreshConversationPlan()); }
             this.setStatus(params.kind === 'session_completed' ? `Complete · ${payload.budget.tokens.toLocaleString()} tokens · $${payload.budget.cost.toFixed(4)}` : payload.code === 'cancelled' ? 'Task cancelled' : 'Task failed'); if (params.kind === 'session_error') { this.notice.textContent = payload.message; this.notice.hidden = false; }
         } else if (params.kind === 'usage') { this.setStatus(`Working · ${(payload.input_tokens + payload.output_tokens).toLocaleString()} tokens`); }
     }

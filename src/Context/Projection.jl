@@ -31,6 +31,8 @@ end
 function context_system(session::Session, ctx::RuntimeContext, tools::AbstractVector{<:AbstractTool}, instructions;
         hook_context="", extra_system="")
     sections = String[AGENT_SYSTEM_TEXT]
+    mode_instructions=agent_mode_instructions()
+    isempty(mode_instructions) || push!(sections,mode_instructions)
     rendered = render_instructions(instructions, ctx.root)
     isempty(rendered) || push!(sections, rendered)
     for tool in tools

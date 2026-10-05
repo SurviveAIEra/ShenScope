@@ -35,7 +35,25 @@ function save_budget!(session::Session,ctx::RuntimeContext)
     session.metadata["budget"]=status
 end
 
-function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::RuntimeContext;
+function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::RuntimeContext;session=nothing,kwargs...)
+    selected=session===nothing ? new_session(ctx;title=cliptext(prompt,128)) : session
+    entered=false
+    try
+        return with_session_run_fence(selected,ctx) do
+            setting=agent_mode_setting(selected)
+            entered=true
+            with_agent_execution_mode(setting["mode"]) do
+                run_agent_owned!(provider,prompt,ctx;session=selected,kwargs...)
+            end
+        end
+    catch error
+        entered || emit!(ctx,:session_error,Dict("code"=>error isa ShenScopeError ? String(error.code) : "internal",
+            "message"=>error isa ShenScopeError ? error.message : "Unable to acquire conversation execution fence"))
+        rethrow()
+    end
+end
+
+function run_agent_owned!(provider::AbstractModelProvider,prompt::AbstractString,ctx::RuntimeContext;
         session=nothing,tools=core_tools(),control=AgentControl(),max_output=min(2048,capabilities(provider).max_output),
         options=Dict{String,Any}(),concurrency=4,context_bytes=256*1024)
     s=session===nothing ? new_session(ctx;title=cliptext(prompt,128)) : session
@@ -46,7 +64,7 @@ function run_agent!(provider::AbstractModelProvider,prompt::AbstractString,ctx::
     registry=Dict{String,AbstractTool}(tool_name(t)=>t for t in tools)
     length(registry)==length(tools) || throw(ShenScopeError(:extension,"Duplicate tool names"))
     set_status!(s,:running)
-    emit!(ctx,:session_started,Dict("id"=>s.id,"provider"=>provider_name(provider)))
+    emit!(ctx,:session_started,Dict("id"=>s.id,"provider"=>provider_name(provider),"agent_mode"=>agent_mode_name(current_agent_mode())))
     last_signature="";repeats=0
     try
         return with_context(ctx) do

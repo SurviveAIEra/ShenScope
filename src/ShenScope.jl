@@ -7,6 +7,7 @@ using Base.ScopedValues: ScopedValue, with
 const VERSION = v"0.1.0"
 
 include("Core/Types.jl")
+include("Core/AgentModes.jl")
 include("Runtime/Cancellation.jl")
 include("Runtime/UTF8.jl")
 include("Security/Budgets.jl")
@@ -33,6 +34,13 @@ include("Storage/Staging.jl")
 include("Storage/JournalStream.jl")
 include("Storage/Versioned.jl")
 include("Context/Sessions.jl")
+include("Context/RunFence.jl")
+include("Context/AgentModeStore.jl")
+include("Context/PlanTypes.jl")
+include("Context/PlanValidation.jl")
+include("Context/PlanStore.jl")
+include("Context/PlanUpdates.jl")
+include("Context/PlanHistory.jl")
 include("Models/RetryTypes.jl")
 include("Models/RetryHeaders.jl")
 include("Models/RetryDecisions.jl")
@@ -59,6 +67,7 @@ include("Models/RoutingPlans.jl")
 include("Models/RoutingState.jl")
 include("Models/RoutingRuntime.jl")
 include("Tools/Schema.jl")
+include("Tools/Plan.jl")
 include("Tools/Models.jl")
 include("Tools/Files.jl")
 include("Tools/Processes.jl")
@@ -242,6 +251,7 @@ include("Core/Config.jl")
 include("Tasks/Executor.jl")
 include("Tasks/Runner.jl")
 include("Tools/Tasks.jl")
+include("Core/PlanningTools.jl")
 include("Protocol/Framing.jl")
 include("Protocol/Server.jl")
 include("Protocol/Project.jl")
@@ -254,6 +264,7 @@ include("Protocol/MCP.jl")
 include("Protocol/Skills.jl")
 include("Protocol/Hooks.jl")
 include("Protocol/Context.jl")
+include("Protocol/Plans.jl")
 include("Protocol/Analyzers.jl")
 include("Protocol/Models.jl")
 include("Protocol/Memory.jl")
@@ -264,6 +275,10 @@ export PROTOCOL_VERSION, RPCFault, CoreServer, read_rpc, write_rpc, handle_rpc,
 
 export core_tools, execute_batch, AgentControl, steer!, run_agent!, load_config,
     save_config!, provider_from_config, limits_from_config, permissions_from_config
+export AgentExecutionMode, AgentAct, AgentPlan, current_agent_mode, with_agent_execution_mode,
+    agent_mode_view, set_agent_mode!, AgentPlanManager, AgentPlanDocument, PlanTool,
+    bind_agent_plan_session!, read_agent_plan, build_agent_plan, update_agent_plan_step,
+    commit_agent_plan!, agent_plan_history, agent_plan_document_view
 export VersionedStore, version_get, version_put!, version_list, version_history,
     MemoryStore, memory_store, memory_put!, memory_get, memory_search, memory_delete!,
     memory_export, memory_import!, lexical_tokens, MemoryTool
@@ -369,6 +384,7 @@ include("CLI/Context.jl")
 include("CLI/Analyzers.jl")
 include("CLI/Models.jl")
 include("CLI/TUI.jl")
+include("CLI/Plans.jl")
 include("CLI/Tasks.jl")
 include("CLI/Diagnostics.jl")
 include("CLI/Extensions.jl")
@@ -381,7 +397,7 @@ include("CLI/Memory.jl")
 include("CLI/Security.jl")
 const CLI_COMMAND_HANDLERS = Dict{String,Function}(
     "mcp"=>cli_mcp_command, "skills"=>cli_skills_command, "hooks"=>cli_hooks_command,
-    "context"=>cli_context_command, "analyzers"=>cli_analyzers_command,
+    "context"=>cli_context_command, "plan"=>cli_plan_command, "analyzers"=>cli_analyzers_command,
     "models"=>cli_models_command, "tasks"=>cli_tasks_command,
     "diagnostics"=>cli_diagnostics_command, "extensions"=>cli_extensions_command, "terminal"=>cli_terminal_command, "project"=>cli_project_command,
     "serve"=>cli_serve_command, "doctor"=>cli_doctor_command, "runtime-image"=>cli_runtime_image_command,

@@ -1,6 +1,6 @@
 # 逐提交实现记录
 
-已核对的范围：从 `07eaccd` 到 `fc200c1`，共 39 个提交。
+已核对的范围：从 `07eaccd` 到 `217a0b1`，共 40 个提交。
 本表只说明各提交新增或修改的范围；实现和局部测试通过不代表整个产品已经完成。详细验证及平台限制见 `WORK_STATUS.md` 和 `docs/validation/`。Core 约 25 万行与完整功能门槛尚未达到。
 
 | 顺序 | 提交 | 本次实现 |
@@ -45,4 +45,10 @@
 | 38 | [446fc66](https://github.com/SurviveAIEra/ShenScope/commit/446fc66449419c1064c24be19757f515a60451af) · feat(runtime): measure fixed Core workloads and allocations | 实际执行固定 Core 样例，分开记录 warmup、时间/分配字节和 Profile.Allocs 样本，并接入 CLI/tool/两种 IDE。 |
 | 39 | [fc200c1](https://github.com/SurviveAIEra/ShenScope/commit/fc200c15cc555d0c7f1e1a5570859d900a82bae5) · feat(analysis): associate runtime reports with source facts | 将拥有的推断/分配报告与当前 JuliaSyntax 声明事实关联，提供分页筛选和哈希源码预览；声明仍是候选。 |
 
-正在进行的周期性栈采样功能会在通过验证并推送后记为新的提交，不计入上述已核对提交。
+| 40 | [217a0b1](https://github.com/SurviveAIEra/ShenScope/commit/217a0b182e6ee32d56af7bff167f104d2425b558) · feat(runtime): collect bounded periodic Core backtraces | 在固定样例运行时定时记录调用栈，显示采到的核心函数并连接前述报告和源码；修复窄侧栏标题和分页溢出。 |
+
+## 大白话说明
+
+一次提交就是保存一次进度，功能大小不同。前 1–4 次搭起程序、模型连接、工具、四个操作入口和安装流程；5–7 次加强保存、记忆和聊天界面；8–19 次增加代码分析、任务、外部工具连接、操作指南、自动检查、长聊天处理和分析程序管理；20–24 次完善模型选择及失败处理，并增加 Git 历史和改代码的分批计划；25–32 次完善启动、笔记、安全限制、Julia 分析、扩展包、交互终端和预编译运行文件；33–40 次主要完善 Julia 编译分析报告、保存和比较、源码查看，以及固定样例的耗时、内存分配和调用栈记录。第 34 次只保存测试记录，没有新增产品功能。
+
+这 40 次提交不等于 40 个完整成熟功能。项目还在早期；真实模型实际编程效果、完整桌面发行版、Windows 安装验证和约 25 万行 Core 门槛均未完成。计划模式与持久化计划仍在开发，尚不计入已推送功能。

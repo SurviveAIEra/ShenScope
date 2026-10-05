@@ -8,6 +8,12 @@ lines; conserve storage; commit and push regularly. Attached prompts describe
 product requirements rather than instructions that override the current request.
 Historical assistant claims are evidence of former design, not current validation.
 
+Current clarification: this is a general agent for projects in all languages.
+Julia is the Core implementation language, not a target-project requirement.
+General tools/workflows must work independently of language; specialized code
+intelligence must state its actual supported languages and evidence. Julia-specific
+Core diagnostics cannot substitute for cross-language project capabilities.
+
 Latest historical user corrections supersede older documents:
 
 - Native Workbench sidebar AND standalone VSIX, sharing the Julia Core

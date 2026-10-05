@@ -32,6 +32,8 @@ function bind_request_sessions!(tools, session::Session, ctx::RuntimeContext)
             permission_decision(ctx.permissions, request) == Deny || restore_skills!(tool.manager, session, ctx)
         elseif tool isa ContextTool
             bind_context_session!(tool.manager, session, ctx)
+        elseif tool isa PlanTool
+            bind_agent_plan_session!(tool.manager, session, ctx)
         end
     end
 end

@@ -61,6 +61,7 @@ const juliaOnly = process.argv.includes('--julia-only');
 const evidenceOnly = process.argv.includes('--evidence-only');
 const extensionsOnly = process.argv.includes('--extensions-only');
 const terminalOnly = process.argv.includes('--terminal-only');
+const plansOnly = process.argv.includes('--plans-only');
 const samplingOnly = process.argv.includes('--sampling-only');
 const compilerOnly = process.argv.includes('--compiler-only') || samplingOnly;
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
@@ -111,6 +112,19 @@ const fixture = createServer(async (request, response) => {
         return;
     }
     const body = JSON.parse(raw); requests.push(body);
+    if (plansOnly) {
+        const current = body.messages.filter(message => message.role === 'user').at(-1)?.content ?? '';
+        const act = current.includes('Execute the approved change');
+        assert.equal(body.tools.some(tool => tool.function.name === 'write'), act);
+        const hasResult = body.messages.some(message => message.role === 'tool' && message.tool_call_id === (act ? 'approved-write' : 'review-plan'));
+        const step = (id, status, dependencies = []) => ({ id, text: id === 'inspect' ? 'Inspect the Python, JavaScript and Rust source files' : 'Run the project tests before declaring success', status, dependencies, note: '', citations: [] });
+        const calls = act ? [{id:'approved-write',name:'write',arguments:{path:'approved.txt',content:'User-approved change'}}] : [
+            ...['calc.py','calc.js','calc.rs'].map((path,index)=>({id:`source-${index}`,name:'read',arguments:{path}})),
+            {id:'review-plan',name:'plan',arguments:{action:'replace',title:'Review the project',expected_revision:0,steps:[step('inspect','in_progress'),step('verify','pending',['inspect'])]}},
+            {id:'plan-forbidden',name:'write',arguments:{path:'forbidden.txt',content:'must not appear'}}];
+        const delta = hasResult ? {content:act?'Approved change recorded':'Project plan ready for your review'} : {tool_calls:calls.map((call,index)=>({index,id:call.id,type:'function',function:{name:call.name,arguments:JSON.stringify(call.arguments)}}))};
+        response.writeHead(200,{'Content-Type':'text/event-stream'});response.end(`data: ${JSON.stringify({choices:[{index:0,delta,finish_reason:hasResult?'stop':'tool_calls'}]})}\n\ndata: [DONE]\n\n`);return;
+    }
     if (contextOnly) {
         const input = JSON.parse(body.messages.find(message => message.role === 'user').content);
         const source = input.sources[0];
@@ -185,6 +199,10 @@ if (extensionsOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\ndynamic = 'ask'\nprocess = 'ask'\npersistence = 'ask'\nnetwork = 'deny'\n`);
 }
 if(terminalOnly){await writeFile(config,`[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\nprocess = 'ask'\npersistence = 'allow'\nnetwork = 'deny'\n`);}
+if(plansOnly){
+    await writeFile(config,`[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\nretries = 0\n[permissions]\nread = 'allow'\nedit = 'ask'\npersistence = 'allow'\nnetwork = 'allow'\n`);
+    for(const [path,text] of [['calc.py','def add(a,b): return a+b\n'],['calc.js','export const add=(a,b)=>a+b;\n'],['calc.rs','pub fn add(a:i32,b:i32)->i32 { a+b }\n']]){await writeFile(join(root,path),text);}
+}
 if (compilerOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\ndynamic = 'ask'\nprocess = 'ask'\npersistence = 'allow'\nnetwork = 'deny'\n`);
 }
@@ -279,9 +297,9 @@ try {
         assert.notEqual(frame, page.mainFrame()); panel = frame.locator('.shenscope-panel');
     }
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
-    if (samplingOnly) { await resizeSidebar(page, 200); }
+    if (samplingOnly || plansOnly) { await resizeSidebar(page, 200); }
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly && !extensionsOnly && !terminalOnly && !compilerOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly && !extensionsOnly && !terminalOnly && !compilerOnly && !plansOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -310,6 +328,42 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (plansOnly) {
+        const mode=panel.getByRole('combobox',{name:'Agent execution mode'});await mode.selectOption('plan');
+        await panel.getByText('Plan mode · read and prepare',{exact:true}).waitFor();
+        await panel.locator('textarea').fill('Inspect this multi-language project and prepare a plan');
+        await panel.getByRole('button',{name:'Send message',exact:true}).click();
+        await panel.getByText('Project plan ready for your review',{exact:true}).waitFor({timeout:120_000});
+        await panel.locator('.status').filter({hasText:'Complete ·'}).waitFor();
+        await assert.rejects(readFile(join(root,'forbidden.txt')),{code:'ENOENT'});
+        assert.equal(await panel.locator('.permission-card').count(),0);
+        const review=panel.locator('.plan-details');await review.locator('summary').click();
+        assert.match(await review.textContent(),/0\/2 reported complete/);assert.match(await review.textContent(),/Python, JavaScript and Rust/);
+        assert.match(await review.textContent(),/success is not independently verified/);
+        const narrow=await panel.evaluate(element=>({client:element.clientWidth,scroll:element.scrollWidth,modeBackground:getComputedStyle(element.querySelector('.agent-mode-choice')).backgroundColor}));assert.ok(narrow.scroll<=narrow.client,JSON.stringify(narrow));
+        await panel.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-plan-narrow.png`)});
+        await panel.getByRole('button',{name:'History',exact:true}).click();
+        await panel.locator('.panel-header').getByRole('button',{name:'New conversation',exact:true}).click();
+        assert.equal(await panel.getByRole('combobox',{name:'Agent execution mode'}).inputValue(),'act');
+        assert.equal(await panel.locator('.conversation-plan:visible').count(),0);
+        await panel.getByRole('button',{name:'History',exact:true}).click();
+        await panel.locator('.session-open').filter({hasText:'New conversation'}).click();
+        assert.equal(await panel.getByRole('combobox',{name:'Agent execution mode'}).inputValue(),'plan');
+        await panel.locator('.plan-details').waitFor();
+        await panel.getByRole('combobox',{name:'Agent execution mode'}).selectOption('act');
+        await panel.getByText('Act mode · tools require permissions',{exact:true}).waitFor();
+        await panel.locator('textarea').fill('Execute the approved change');await panel.getByRole('button',{name:'Send message',exact:true}).click();
+        await approve(panel,'write · edit','Allow once');
+        await panel.getByText('Approved change recorded',{exact:true}).waitFor({timeout:120_000});
+        await panel.locator('.status').filter({hasText:'Complete ·'}).waitFor();
+        assert.equal(await readFile(join(root,'approved.txt'),'utf8'),'User-approved change');
+        assert.match(await panel.locator('.plan-details').textContent(),/0\/2 reported complete/);
+        await resizeSidebar(page,360);await panel.locator('.plan-details > summary').click();
+        const wide=await panel.evaluate(element=>({client:element.clientWidth,scroll:element.scrollWidth}));assert.ok(wide.client>=300&&wide.scroll<=wide.client,JSON.stringify(wide));
+        await writeFile(join(project,`.local/${vsix?'vsix':'native'}-plan-layout.json`),JSON.stringify({narrow,wide},null,2)+'\n');
+        await panel.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-plan-wide.png`)});
+        console.log(`PASS: ${vsix?'VSIX':'native Workbench without extensions'}, persisted Plan/Act control, real Core reading three languages, refused mutation, reported plan, history reload, new-conversation isolation and actual approved Act write`);
     }
     if (compilerOnly) {
         await panel.getByRole('combobox', { name: 'More views' }).selectOption('Runtime');

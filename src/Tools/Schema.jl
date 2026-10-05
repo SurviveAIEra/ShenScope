@@ -70,7 +70,7 @@ function active_tools(tools::AbstractVector{<:AbstractTool}, ctx::RuntimeContext
         push!(result, extra)
     end
     for tool in tools; result = filter_tools(tool, result, ctx); end
-    result
+    plan_mode_toolset(result)
 end
 
 function declaration(t::AbstractTool)
@@ -82,6 +82,7 @@ function execute_call(t::AbstractTool,call::ToolCall,ctx::RuntimeContext)
     validate_tool_arguments(t,call.arguments)
     emit!(ctx,:tool_started,Dict("id"=>call.id,"name"=>call.name))
     result=try
+        guard_agent_tool(t,call.arguments)
         before_tool_hooks!(call,ctx)
         value=with_context(()->execute(t,call.arguments,ctx),ctx)
         ToolResult(call.id,is_successful_tool_result(t,value),value,tool_failure_message(t,value))

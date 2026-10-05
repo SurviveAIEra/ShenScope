@@ -92,7 +92,8 @@ end
 
 function session_view(session::Session;include_messages=true)
     result=Dict{String,Any}("id"=>session.id,"root"=>session.root,"title"=>session.title,
-        "status"=>String(session.status),"revision"=>session.revision,"metadata"=>session.metadata,
+        "status"=>String(session.status),"revision"=>session.revision,"metadata"=>Dict(key=>value for (key,value) in session.metadata if key!="work_plan"),
+        "agent_mode"=>agent_mode_view(session),
         "usage"=>[Dict("input_tokens"=>u.input_tokens,"output_tokens"=>u.output_tokens,"cost"=>u.cost,
             "source"=>String(u.source)) for u in session.usage])
     include_messages && (result["messages"]=message_dict.(session.messages))
@@ -184,7 +185,8 @@ end
 
 function capability_manifest()
     Dict("agent"=>true,"streaming_protocols"=>["openai_chat","openai_responses","anthropic","gemini","ollama"],
-        "tools"=>["read","search","edit","write","patch","process","terminal","git","memory","security","project","diagnostics","analyzers","models","tasks","mcp","skills","hooks","context","extensions"],"session_journal"=>true,"memory"=>true,"memory_namespaces"=>true,"memory_retrieval_evidence"=>true,
+        "tools"=>["read","search","edit","write","patch","process","terminal","git","memory","security","project","diagnostics","analyzers","models","tasks","mcp","skills","hooks","context","extensions","plan"],"session_journal"=>true,"memory"=>true,"memory_namespaces"=>true,"memory_retrieval_evidence"=>true,
+        "agent_execution_modes"=>["act","plan"],"conversation_plans"=>true,
         "execution_sandbox_policy"=>true,"execution_sandbox_probe"=>true,
         "permission_approvals"=>true,"config_profiles"=>true,"os_isolation"=>false,
         "mcp"=>true,"mcp_transports"=>["stdio","streamable_http"],"skills"=>true,"hooks"=>true,"project_intelligence"=>true,
@@ -226,6 +228,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     startswith(method,"skills/") && return Base.invokelatest(skills_rpc,server,method,params)
     startswith(method,"hooks/") && return Base.invokelatest(hooks_rpc,server,method,params)
     startswith(method,"context/") && return Base.invokelatest(context_rpc,server,method,params)
+    (startswith(method,"plans/") || method=="sessions/mode") && return Base.invokelatest(plans_rpc,server,method,params)
     if method=="health"
         return Dict("ready"=>!server.stopping,"active_runs"=>length(server.runs),"pending_approvals"=>length(server.approvals))
     elseif method=="shutdown"
@@ -339,7 +342,12 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
         id=string(uuid4());ctx=server_context(server,id)
         title=rpc_string(params,"title";default="New conversation",max_bytes=512)
         return session_view(new_session(ctx;title))
-    elseif method in ("sessions/get","sessions/export")
+    elseif method=="sessions/export"
+        session=server_session(server,params)
+        plan=plans_rpc(server,"plans/query",Dict("session_id"=>session.id))
+        result=session_view(session);result["metadata"]["work_plan"]=plan["plan"]
+        return result
+    elseif method=="sessions/get"
         return session_view(server_session(server,params))
     elseif method=="sessions/rename"
         session=idle_session(server,params)

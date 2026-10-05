@@ -42,6 +42,7 @@ end
 function authorize!(ctx::RuntimeContext, category::Symbol, tool::AbstractString,
         target::AbstractString; reason="Tool execution")
     check_cancelled(ctx.cancellation)
+    agent_mode_authorize(category,tool)
     request = PermissionRequest(string(uuid4()),category,String(tool),String(target),reason)
     decision = permission_decision(ctx.permissions,request)
     decision == Deny && throw(ShenScopeError(:permission,"Operation denied by policy"))

@@ -1,0 +1,103 @@
+{
+  "checkpoint": 38,
+  "review_scope": "further partial reviews",
+  "implementation": "original Julia design; no code copied or translated",
+  "observations": [
+    {
+      "project": "codex",
+      "repository": "openai/codex",
+      "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+      "path": "codex-rs/agent-roles/src/agent_role_config.rs",
+      "source_sha256": "70ba8cf41c7339a06fee896d41c57a6e8344b770b1a1ed9a04c66d56e27d9511",
+      "read_lines": [
+        35,
+        105
+      ],
+      "observation": "Typed role instructions and bounded configuration"
+    },
+    {
+      "project": "opencode",
+      "repository": "anomalyco/opencode",
+      "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+      "path": "packages/opencode/src/agent/agent.ts",
+      "source_sha256": "e781c571d584fa996200e320f14c2735e32968256b8db194391e7c06aed7433e",
+      "read_lines": [
+        138,
+        179
+      ],
+      "observation": "Build and plan modes restrict editing and tool categories"
+    },
+    {
+      "project": "deepseek-harness",
+      "repository": "deepseek-ai/deepseek-harness",
+      "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+      "path": "packages/sandbox/sandbox-policy/src/session-mode.ts",
+      "source_sha256": "afe650fc43e87031eb7b50d9a1717b926906e4fcaab01199cd434235586714d7",
+      "read_lines": [
+        1,
+        54
+      ],
+      "observation": "Session mode projected from durable events"
+    },
+    {
+      "project": "pi-mono",
+      "repository": "badlogic/pi-mono",
+      "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+      "path": "packages/durable/test/examples/27-plan-mode.ts",
+      "source_sha256": "ef9431702f05842a42ebc6998705ca57bd25feae974fa172f46342babe9cf191",
+      "read_lines": [
+        1,
+        105
+      ],
+      "observation": "Conversation plan state and restricted tool set"
+    },
+    {
+      "project": "kimi-code",
+      "repository": "MoonshotAI/kimi-code",
+      "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+      "path": "packages/agent-core-v2/src/features/plan/tools/exit-plan-mode/exitPlanModeTool.ts",
+      "source_sha256": "111523cb8dcfc2e5428b2abec91aae52fb67e534971195107d683ce3a41a7146",
+      "read_lines": [
+        1,
+        115
+      ],
+      "observation": "Plan revision and explicit review boundary"
+    },
+    {
+      "project": "kimi-code",
+      "repository": "MoonshotAI/kimi-code",
+      "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+      "path": "packages/agent-core-v2/src/features/plan/planOps.ts",
+      "source_sha256": "5fc805219ac755c7f155695f783b553088aab90a1ed44aa8f3d59e2926204dde",
+      "read_lines": [
+        1,
+        85
+      ],
+      "observation": "Persistent mode lifecycle operations"
+    },
+    {
+      "project": "ZCode",
+      "repository": "zai-org/ZCode",
+      "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+      "path": "packages/ui/src/ToolCallBlocks/renderers/plan-guidance.tsx",
+      "source_sha256": "512ef2321621ab167fc981f993e11b87aa181e1012669c356ab7c45eda2e431d",
+      "read_lines": [
+        1,
+        105
+      ],
+      "observation": "Reviewable bounded plan presentation"
+    },
+    {
+      "project": "qwen-code",
+      "repository": "QwenLM/qwen-code",
+      "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+      "path": "packages/core/src/subagents/agent-frontmatter-schema.ts",
+      "source_sha256": "afac96198745069936559f0b95bd34302a6a4b20e52ff24016529c0106f395ab",
+      "read_lines": [
+        1,
+        100
+      ],
+      "observation": "Role mode validation and policy distinction"
+    }
+  ]
+}

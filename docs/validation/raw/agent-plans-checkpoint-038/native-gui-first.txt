@@ -1,0 +1,17 @@
+file:///workspace/ShenScope/ide/test/native_smoke.mjs:364
+        console.log(`PASS: ${vsix?'VSIX':'native Workbench without extensions'}, persisted Plan/Act control, real Core reading three languages, refused mutation, reported plan, history reload, new-conversation isolation and actual approved Act write`);return;
+                                                                                                                                                                                                                                                            ^^^^^^
+
+SyntaxError: Illegal return statement
+    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:89:18)
+    at #translate (node:internal/modules/esm/loader:434:20)
+    at afterLoad (node:internal/modules/esm/loader:502:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:507:12)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)
+    at afterResolve (node:internal/modules/esm/loader:607:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12)
+    at node:internal/modules/esm/loader:632:32
+    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)
+
+Node.js v24.19.0

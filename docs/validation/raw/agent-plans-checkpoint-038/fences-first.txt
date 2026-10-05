@@ -1,0 +1,2 @@
+Test Summary:                                                | Pass  Total   Time
+Actual cross-process run ownership and crash-released fences |   11     11  11.9s

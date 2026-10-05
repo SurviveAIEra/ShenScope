@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest verified cloc 2.11 count: 24,762 authored Julia Core code lines across 255 files;
-CLI/TUI add 1,160 lines and optional Julia extensions add 57, counted separately.
-This is 9.9048% of the minimum line target, leaving 225,238 lines. These are early implementations,
+Latest verified cloc 2.11 count: 25,331 authored Julia Core code lines across 266 files;
+CLI/TUI add 1,262 lines and optional Julia extensions add 57, counted separately.
+This is 10.1324% of the minimum line target, leaving 224,669 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -974,3 +974,53 @@ remains free, with one Core cache pair and no project copies, worktrees or new
 sysimages. Core increased by 310 authored lines. Remaining agent modes/planning,
 context/state/model/project/runtime/distribution capabilities and the 250,000-line
 functional and size gates continue. The task remains IN_PROGRESS.
+
+General planning checkpoint 038: explicit user-controlled Plan/Act settings and
+bounded conversation plans share the existing session journal. Julia ScopedValue
+preserves Plan across Task/Threads/new contexts and nested Act scopes cannot
+relax it. Reviewed Core types/actions narrow model declarations; direct dispatch
+and permissions enforce the same operation boundary. Act never grants permission.
+Plan forbids workspace edits, commands, dynamic code, MCP and unreviewed plugins;
+own plan/context state keeps independent Read/Persistence checks.
+
+Actual nonblocking OS run locks fence the entire agent turn and mode update.
+Cross-process attempts refuse, kernel locks release after a killed process, and
+stale journal revisions refuse. Plans contain bounded named steps/dependencies,
+CAS revisions, hashes and owned message citations. Cycles, premature dependent
+progress, corruption and missing completion citations refuse. Reported progress
+does not prove execution/testing and does not automatically schedule work.
+Full branches retain progress; partial branches reset it and remove later
+citations. Both retain mode with independent child ownership/ancestry. History
+streams a bounded journal window without creating version directories or copies.
+
+CLI chat selection, session mode/query, plan reads/writes and asynchronous TUI
+/mode and /plan controls are connected. Both GUI clients share the composer
+mode selector and reported-plan review, history restore and new-session isolation.
+Actual screenshots prompted theme-aware selector colors and a shorter narrow
+review explanation. Final native/VSIX layouts measure 197-pixel narrow and
+357-pixel wide content without horizontal overflow, using real sidebar resizing.
+
+Validation: 161 final plan/mode assertions, 11 actual cross-process/crash assertions
+and 778 affected Act workflow assertions pass, totaling 950 distinct assertions,
+including 172 new ones. The Act regressions preceded the final AbstractString
+mode parser fix; shared agent/journal/tools were unchanged afterward, and final
+plan tests plus actual clients cover that fix. Real Node/Core restart/permission
+test, actual PTY Plan/Act/approval flow, both actual GUI workflows, shared checks/
+build, complete Workbench typecheck and exact final VSIX payload checks pass.
+Parser, terminal-approval fixture and editor allowlist failures are preserved in
+docs/validation/agent-plans-checkpoint-038.json with raw outputs/screenshots.
+No live-model, Windows or installed-distribution quality claim is made.
+
+The tool is general across target-project languages; Julia implements Core.
+Real agent fixtures read Python, JavaScript and Rust sources without modification
+in Plan and perform actual approved writes in Act. This does not establish
+complete language intelligence or repair quality. After this checkpoint prioritize
+general project testing/failure navigation and additional language coverage over
+further fixed-Core compiler diagnostics. Eight further source observations across
+all seven primary agents inform original design, without copying or translation.
+
+Strict audit still finds one application checkout, 50 dependencies and no unknown
+repositories. About 17.5 GiB remains free with one Core cache pair and no project
+copies, worktrees or new sysimages. Core increased by 569 authored lines. General
+project workflows, remaining product gates and the 250,000-line goal continue;
+the whole request remains IN_PROGRESS.

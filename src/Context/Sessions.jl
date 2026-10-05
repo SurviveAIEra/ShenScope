@@ -121,12 +121,14 @@ function recover_tool_pairs!(s::Session)
 end
 
 function branch_session(s::Session,ctx::RuntimeContext; through=length(s.messages))
-    0<=through<=length(s.messages) || throw(ShenScopeError(:input,"Invalid branch boundary"))
+    through=agent_control_integer(through,"branch boundary",0,length(s.messages))
     child = new_session(ctx;title=s.title * " (branch)",parent=s.id)
     for m in s.messages[1:through]
         add_message!(child,m)
     end
     recover_tool_pairs!(child)
     branch_context_checkpoint!(s, child, through)
+    branch_agent_mode!(s,child)
+    branch_agent_plan!(s,child,through)
     return child
 end

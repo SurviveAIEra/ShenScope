@@ -1,0 +1,27 @@
+Precompiling ShenScope...
+  99133.6 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 99 seconds. 41 already precompiled.
+ERROR: LoadError: ParseError:
+# Error @ /workspace/ShenScope/test/integration/agent_plans.jl:12:17
+                    response(;calls=[ToolCall("read",Dict("path"=>path))])
+                end,
+#               └ ── Expected `]`
+Stacktrace:
+ [1] top-level scope
+   @ /workspace/ShenScope/test/integration/agent_plans.jl:12
+ [2] include(fname::String)
+   @ Main ./sysimg.jl:38
+ [3] top-level scope
+   @ /workspace/ShenScope/test/agent_plans.jl:6
+in expression starting at /workspace/ShenScope/test/integration/agent_plans.jl:12
+in expression starting at /workspace/ShenScope/test/agent_plans.jl:6
+Test Summary:                                                   | Pass  Total  Time
+Plan mode scope, inherited tasks and unchanged permission gates |   19     19  1.6s
+Test Summary:                                                   | Pass  Total   Time
+Reviewed Core tool schemas narrow without trusting plugin hints |   19     19  19.4s
+Test Summary:                                                    | Pass  Total  Time
+Persisted mode CAS, ancestry, scope and interrupted notification |   14     14  1.2s
+Test Summary:                                                  | Pass  Total  Time
+Bounded owning plans, dependency validation and cited progress |   29     29  3.6s
+Test Summary:                                                            | Pass  Total  Time
+Plan permission revocation, cancellation and durable publication receipt |   13     13  1.2s

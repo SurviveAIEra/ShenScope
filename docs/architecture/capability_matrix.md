@@ -266,3 +266,14 @@ RPC and both IDEs share this bounded Core implementation. CodeGraph private
 schemas remain outside the join. Arbitrary workspace inference/runtime/coverage
 and additional providers remain pending. Seven further partial reviews inform
 the original evidence and adapter design without copying upstream code.
+
+Checkpoint 038 adds general conversation Plan/Act control and bounded persistent
+reported plans. The controls apply independently of project language. Reviewed
+Core types/actions narrow the offered tools; inherited Julia scope and actual
+cross-process run fences preserve boundaries. Existing permissions remain
+independent. Plans retain dependencies, revisions and owning message hashes;
+reported progress is not independent proof or automatic task execution. CLI,
+PTY TUI, VSIX and native Workbench share the Core state. Seven further partial
+primary-agent reviews inform the original design; no upstream code is copied.
+Specialized project intelligence still reports exact language coverage rather
+than claiming complete support for every language.

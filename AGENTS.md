@@ -11,6 +11,9 @@ code, third-party code and Code-OSS. Never pad or duplicate code to reach it.
 Do not report the whole task complete before the target and functional gates pass.
 
 Julia owns agent, model, tool, security, session, project data and analysis logic.
+ShenScope is a general agent for projects in any language. Julia implements Core;
+it does not constrain target projects. Keep tools, workflows and IDE entry points
+language independent; report exact language coverage of specialized analysis.
 Both native Code-OSS Workbench and a standalone VSIX are required clients.
 Reference checkouts under `/workspace/references` are research dependencies,
 read only, not source material to copy or translate into Core.

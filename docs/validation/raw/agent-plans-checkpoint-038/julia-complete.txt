@@ -1,0 +1,20 @@
+Precompiling ShenScope...
+    ShenScope Being precompiled by another process (pid: 165124, pidfile: /workspace/julia-depot/compiled/v1.11/ShenScope/aMBxt_0KQtR.ji.pidfile)
+ 104829.0 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 105 seconds. 41 already precompiled.
+Test Summary:                                                   | Pass  Total  Time
+Plan mode scope, inherited tasks and unchanged permission gates |   20     20  1.9s
+Test Summary:                                                   | Pass  Total   Time
+Reviewed Core tool schemas narrow without trusting plugin hints |   19     19  17.8s
+Test Summary:                                                    | Pass  Total  Time
+Persisted mode CAS, ancestry, scope and interrupted notification |   14     14  1.1s
+Test Summary:                                                  | Pass  Total  Time
+Bounded owning plans, dependency validation and cited progress |   29     29  3.2s
+Test Summary:                                                            | Pass  Total  Time
+Plan permission revocation, cancellation and durable publication receipt |   13     13  0.9s
+Test Summary:                                                            | Pass  Total   Time
+Real agent loop keeps plans separate from edits across project languages |   36     36  17.9s
+Test Summary:                                                    | Pass  Total   Time
+Fresh owning plan context, terminal controls and CLI persistence |   10     10  17.3s
+Test Summary:                                                 | Pass  Total  Time
+Plan RPC owns sessions, mode revisions and current Read gates |   20     20  5.4s

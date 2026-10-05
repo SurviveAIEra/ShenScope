@@ -79,7 +79,8 @@
       "packages/core/src/tool/tool.ts",
       "packages/core/src/tool/read.ts",
       "packages/core/src/session/message-updater.ts",
-      "packages/app/e2e/performance/timeline/session-timeline-profile.ts"
+      "packages/app/e2e/performance/timeline/session-timeline-profile.ts",
+      "packages/opencode/src/agent/agent.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -169,7 +170,8 @@
       "packages/coding-agent/src/core/diagnostics.ts",
       "packages/coding-agent/src/modes/interactive/components/tool-execution.ts",
       "packages/coding-agent/src/core/usage-totals.ts",
-      "packages/coding-agent/src/core/tools/truncate.ts"
+      "packages/coding-agent/src/core/tools/truncate.ts",
+      "packages/durable/test/examples/27-plan-mode.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -215,7 +217,9 @@
       "packages/agent-core-v2/src/agent/toolResultTruncation/toolResultTruncationService.ts",
       "packages/agent-core-v2/src/agent/usage/usageEvents.ts",
       "packages/agent-core-v2/src/agent/tools/os/grep/grepTool.ts",
-      "packages/telemetry/src/systemMetrics.ts"
+      "packages/telemetry/src/systemMetrics.ts",
+      "packages/agent-core-v2/src/features/plan/tools/exit-plan-mode/exitPlanModeTool.ts",
+      "packages/agent-core-v2/src/features/plan/planOps.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

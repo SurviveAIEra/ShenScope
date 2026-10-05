@@ -4,13 +4,14 @@ mutable struct TerminalState
     offset::Int
     status::String
     active::Bool
+    control_busy::Bool
     quitting::Bool
     dirty::Bool
     approval::Union{Nothing,PermissionRequest}
     decision::Union{Nothing,Channel{Symbol}}
     escape::String
 end
-TerminalState()=TerminalState(String[],Char[],0,"Ready",false,false,true,nothing,nothing,"")
+TerminalState()=TerminalState(String[],Char[],0,"Ready",false,false,false,true,nothing,nothing,"")
 
 function terminal_safe(text::AbstractString)
     cleaned=replace(String(text),r"\e(?:\][^\a\e]*(?:\a|\e\\)|[PX^_].*?\e\\|\[[0-?]*[ -/]*[@-~]|.)"s=>"")
@@ -178,6 +179,28 @@ function run_tui(provider::AbstractModelProvider,ctx::RuntimeContext,session::Se
                     prompt=strip(String(copy(state.draft)));empty!(state.draft)
                     isempty(prompt) && continue
                     if prompt=="/quit";state.quitting=true;cancel!(ctx.cancellation);continue;end
+                    if state.control_busy
+                        terminal_push!(state,"Finish or cancel the conversation control command first.")
+                        continue
+                    end
+                    if startswith(prompt,"/mode") || startswith(prompt,"/plan")
+                        if state.active
+                            terminal_push!(state,"Finish or cancel the current run before using /mode or /plan.")
+                            continue
+                        end
+                        ctx.cancellation=CancellationToken();state.active=true;state.control_busy=true;state.status="Conversation control…"
+                        job=@async try
+                            # Control commands do not become model prompts. The
+                            # UI task remains responsive to scoped approvals.
+                            terminal_control_command!(state,prompt,session,ctx)
+                            state.status="Ready"
+                        catch error
+                            state.status=error isa ShenScopeError ? error.message : "Conversation control failed"
+                        finally
+                            state.active=false;state.control_busy=false;state.dirty=true;state.approval=nothing;state.decision=nothing
+                        end
+                        yield();continue
+                    end
                     if state.active
                         steer!(control,prompt);terminal_push!(state,"Steering: "*prompt)
                     else

@@ -1,0 +1,207 @@
+Test Summary:                         | Pass  Total  Time
+Cancellation tree and dynamic context |    7      7  1.1s
+Test Summary:                                | Pass  Total  Time
+Concurrent budget reservation and accounting |    9      9  1.0s
+Test Summary:                             | Pass  Total  Time
+Permission decisions and path containment |    7      7  0.5s
+Test Summary:                                      | Pass  Total  Time
+Durable journal, torn tails and revision conflicts |    6      6  0.5s
+Test Summary:                                   | Pass  Total  Time
+Session reconstruction and unknown side effects |   11     11  1.3s
+Test Summary:                                             | Pass  Total  Time
+Atomic replacement remains complete to concurrent readers |    3      3  0.4s
+Test Summary:                                   | Pass  Total  Time
+Oversized unterminated journal input is bounded |    2      2  0.2s
+Test Summary:                                                                   | Pass  Total  Time
+Contended journal locks check cancellation and release after failed checkpoints |    6      6  0.6s
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.6s
+Test Summary:                                                    | Pass  Total  Time
+Protocol version, config ownership, secrets and session commands |   15     15  3.3s
+Test Summary:                                        | Pass  Total   Time
+Agent protocol permission ownership and cancellation |   13     13  31.5s
+Test Summary:                                                        | Pass  Total  Time
+Terminal rendering sanitizes control sequences and handles wide text |   16     16  0.8s
+Test Summary:                                   | Pass  Total  Time
+SSE Unicode fragmentation, multiline and limits |    3      3  0.5s
+Test Summary:                                             | Pass  Total   Time
+OpenAI-compatible real HTTP tool stream and native replay |    7      7  12.1s
+Test Summary:                             | Pass  Total  Time
+Anthropic signature and tool continuation |    5      5  7.7s
+Test Summary:                                        | Pass  Total  Time
+OpenAI Responses encrypted reasoning and call stream |    3      3  5.8s
+Test Summary:                      | Pass  Total  Time
+Gemini and Ollama native protocols |    5      5  8.2s
+Test Summary:                                                    | Pass  Total   Time
+Retry before delivery, no replay after delivery, malformed calls |    5      5  11.1s
+Test Summary:                                                       | Pass  Total  Time
+Workspace tools conflict guard, schema and transactional validation |    9      9  1.5s
+Test Summary:                                                 | Pass  Total  Time
+Process execution, bounded logs, ownership, input and timeout |   12     12  4.6s
+Test Summary:                                                | Pass  Total  Time
+Agent repairs a failing Python test with real tool execution |   10     10  1.9s
+Test Summary:                              | Pass  Total  Time
+Context settings and exact model envelopes |   50     50  1.5s
+Test Summary:                                                 | Pass  Total  Time
+Instruction scope discovery, permissions and source revisions |   13     13  0.9s
+Test Summary:                                                 | Pass  Total  Time
+Balanced tool groups, no reasoning split and Unicode excerpts |   24     24  0.2s
+Test Summary:                                                   | Pass  Total  Time
+Durable context projections preserve transcripts and provenance |   17     17  2.0s
+Test Summary:                                              | Pass  Total  Time
+Compaction failure is atomic and fixed context is retained |    7      7  0.7s
+Test Summary:                                                       | Pass  Total  Time
+Original tool artifacts are scoped, permissioned and digest checked |    9      9  0.8s
+Test Summary:                                             | Pass  Total  Time
+Optional model summaries bind citations and shared budget |   10     10  2.1s
+Test Summary:                                                 | Pass  Total  Time
+HTTP context overflow recovers before delivery without replay |   13     13  8.2s
+Test Summary:                                                          | Pass  Total  Time
+Model network approval respects the remaining shared wall-clock budget |    7      7  5.5s
+Test Summary:                                                       | Pass  Total  Time
+Reasoning and partial tool arguments fence model retry and recovery |   21     21  4.7s
+Test Summary:                                                             | Pass  Total  Time
+Completed stream calls remain undispatched when a later call is malformed |    8      8  1.8s
+Test Summary:                                                         | Pass  Total  Time
+Provider usage survives failed context attempts and disabled recovery |   14     14  3.4s
+Test Summary:                                                         | Pass  Total  Time
+Context RPC ownership, permissions, asynchronous cancellation and CAS |   16     16  4.4s
+Test Summary:                                                          | Pass  Total  Time
+Manual context checkpoints are shared by RPC and subsequent agent runs |    8      8  2.1s
+Test Summary:                                           | Pass  Total  Time
+Task definition validation and independent graph checks |   15     15  7.5s
+Test Summary:                                                   | Pass  Total   Time
+Claims, dependency release, priority, fences and detached views |   13     13  12.5s
+Test Summary:                                               | Pass  Total  Time
+Safe retries, uncertain effects and explicit reconciliation |   16     16  3.7s
+Test Summary:                                                      | Pass  Total  Time
+Exclusive effects, cancellation propagation and read-only recovery |   16     16  2.1s
+Test Summary:                                                         | Pass  Total  Time
+Large result artifacts, digest verification and descriptor collisions |    6      6  1.2s
+Test Summary:                                       | Pass  Total  Time
+Actual worker DAG binds verified dependency results |    5      5  9.4s
+Test Summary:                                                   | Pass  Total  Time
+Test processes, timeout uncertainty and separate model sessions |   16     16  7.4s
+Test Summary:                                       | Pass  Total   Time
+Two real Julia processes cannot claim the same task |    3      3  16.4s
+{"counts":{"blocked":0,"cancelled":0,"failed":0,"pending":0,"ready":1,"retry_waiting":0,"running":0,"succeeded":0,"uncertain":0},"created_at":"2026-10-05T10:11:35.426Z","id":"cli-tool","journal_bytes":597,"revision":1,"scope":"session","session_id":"cli-owner","status":"ready","task_count":1,"title":"Workflow"}
+{"counts":{"blocked":0,"cancelled":0,"failed":0,"pending":0,"ready":0,"retry_waiting":0,"running":0,"succeeded":1,"uncertain":0},"created_at":"2026-10-05T10:11:35.426Z","id":"cli-tool","journal_bytes":3099,"revision":4,"scope":"session","session_id":"cli-owner","status":"succeeded","task_count":1,"title":"Workflow"}
+{"attempts":1,"cancel_requested":false,"definition":{"arguments":{"path":"source.txt"},"deduplication_key":"","dependencies":[],"id":"read","kind":"tool","operation":"read","priority":0,"retry":{"initial_delay":1,"jitter_fraction":0.1,"max_attempts":1,"maximum_delay":60,"multiplier":2},"safe_retry":false,"timeout":300,"title":"read"},"failure":null,"id":"read","lease":null,"not_before":0,"receipts":[{"attempt":1,"evidence":"Completion acknowledged by execution owner","execution_id":"490511de-5f38-480a-9397-b61ab04a6c32","finished_at":1.791195095491278e9,"hooks_barrier":false,"hooks_started":false,"phase":"succeeded","result_sha256":"ca555ce2b0f7556aaf7d17080f939372b6527e7e015b4dec0aeb728ed0caef0f","started_at":1.791195095446849e9}],"result":{"end_line":2,"path":"source.txt","sha256":"4b6a0df8336e6c161d6bd201436a455396d834fdaccdb83a89063a6073e1c6cd","start_line":1,"text":"1: shared Core\n2: ","total_lines":2},"status":"succeeded","version":4}
+Test Summary:                                            | Pass  Total  Time
+Agent and headless CLI invoke the same durable task tool |    6      6  2.2s
+Test Summary:                                               | Pass  Total  Time
+Asynchronous task protocol, approvals and session ownership |   13     13  2.4s
+Test Summary:                                                | Pass  Total  Time
+Task jobs block config replacement and drain owned processes |    5      5  1.0s
+Test Summary:                                                            | Pass  Total  Time
+Hooks configuration has explicit points, bounds and no permission grants |   29     29  0.6s
+Test Summary:                                                   | Pass  Total  Time
+Hook source identity, read scope, ambiguity and explicit reload |   14     14  2.3s
+Test Summary:                                                                     | Pass  Total  Time
+Real Hook commands have bounded metadata, private output and narrowed environment |   14     14  1.7s
+Test Summary:                                                           | Pass  Total  Time
+Hook approval rechecks source identity and current policy before launch |    8      8  1.1s
+Test Summary:                                                     | Pass  Total  Time
+Hook timeouts, cancellation, malformed output and bounded history |   14     14  1.4s
+Test Summary:                                                                      | Pass  Total  Time
+Actual agent applies Hook context and lifecycle observations without exposing chat |   10     10  3.4s
+Test Summary:                                                                     | Pass  Total  Time
+Before-effect Hook denial prevents writes; post-effect failure preserves receipts |   11     11  1.0s
+Test Summary:                                             | Pass  Total  Time
+Owned processes drain descendants and bound blocked stdin |    8      8  2.4s
+Test Summary:                                                           | Pass  Total  Time
+Hook RPC scopes command approval, cancellation and source-opening proof |   29     29  5.6s
+Test Summary:                                                                    | Pass  Total  Time
+Actual durable workers persist Hook effects and serialize unknown command checks |   12     12  3.3s
+Test Summary:                                                                      | Pass  Total  Time
+Lost leases cannot silently replay declared Hook effects or accept foreign markers |    8      8  0.4s
+Test Summary:                                                    | Pass  Total  Time
+Hooks CLI uses the same commands, permissions and failure status |    6      6  0.8s
+Test Summary:                                                           | Pass  Total  Time
+Model routing config is strict, bounded, immutable and credential blind |   35     35  5.6s
+Test Summary:                                                                   | Pass  Total  Time
+Route plans explain feature, capacity and native replay exclusions without keys |   14     14  2.0s
+Test Summary:                                                           | Pass  Total  Time
+Routing receipts and runtime seats retain strict conversation ownership |   11     11  1.6s
+Test Summary:                                                                              | Pass  Total   Time
+Explicit routing fixes every eligible key before approval and records real source fallback |   17     17  12.1s
+Test Summary:                                                                           | Pass  Total  Time
+Terminal, partial, consumer and explicit fallback restrictions prevent source switching |   28     28  7.9s
+Test Summary:                                                                           | Pass  Total  Time
+Route cancellation, admission and context cost accounting stop work before side effects |    8      8  2.8s
+{"kind":"session_started","payload":{"agent_mode":"act","id":"bc330518-5519-4b7d-88bb-3e55b0c71641","provider":"mock"},"sequence":1,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.534Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+{"kind":"skills_reloaded","payload":{"count":0,"diagnostics":0,"generation":1,"truncated":false},"sequence":2,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.602Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+{"kind":"context_prepared","payload":{"checkpoint_id":null,"instruction_sources":0,"measure":{"byte_limit":262144,"context_window":128000,"envelope_bytes":22817,"estimated_tokens":7644,"fits":true,"input_limit":124928,"max_output":2048,"message_bytes":555,"options_bytes":2,"token_source":"byte_and_unicode_estimate","tools_bytes":22206,"wire_bytes":22817},"original_messages":1,"projected_messages":2,"pruned_results":0},"sequence":3,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.608Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+{"kind":"model_request","payload":{"context_attempt":0,"estimated_input_tokens":7644,"provider":"mock","request_sha256":"e71988e64a774d3cb1bafb29c22f1e5862d00511b0e72ce2e3cc8a3b21497896"},"sequence":4,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.612Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+{"kind":"text_delta","payload":{"text":"离"},"sequence":5,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.613Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+{"kind":"text_delta","payload":{"text":"线"},"sequence":6,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.613Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+{"kind":"text_delta","payload":{"text":"任"},"sequence":7,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.613Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+{"kind":"text_delta","payload":{"text":"务"},"sequence":8,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.613Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+{"kind":"text_delta","payload":{"text":"完"},"sequence":9,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.613Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+{"kind":"text_delta","payload":{"text":"成"},"sequence":10,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.613Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+{"kind":"usage","payload":{"input_tokens":0,"output_tokens":0},"sequence":11,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.613Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+{"kind":"session_completed","payload":{"budget":{"cost":0,"elapsed_seconds":0.122055123,"limits":{"max_cost":10,"max_seconds":3600,"max_steps":100,"max_tokens":1000000},"reported_cost":0,"reserved_cost":0,"reserved_tokens":0,"steps":1,"tokens":0},"text":"离线任务完成"},"sequence":12,"session_id":"bc330518-5519-4b7d-88bb-3e55b0c71641","timestamp":"2026-10-05T10:12:38.615Z","trace_id":"d7161fcb-9272-4ed4-9647-7ac526a212c5"}
+[ Info: Listening on: 127.0.0.1:40023, thread id: 2
+[ Info: Server on 127.0.0.1:40023 closing
+[ Info: Listening on: 127.0.0.1:37677, thread id: 1
+[ Info: Server on 127.0.0.1:37677 closing
+[ Info: Listening on: 127.0.0.1:40003, thread id: 3
+[ Info: Server on 127.0.0.1:40003 closing
+[ Info: Listening on: 127.0.0.1:40343, thread id: 1
+[ Info: Server on 127.0.0.1:40343 closing
+[ Info: Listening on: 127.0.0.1:36509, thread id: 1
+[ Info: Server on 127.0.0.1:36509 closing
+[ Info: Listening on: 127.0.0.1:36261, thread id: 1
+[ Info: Server on 127.0.0.1:36261 closing
+[ Info: Listening on: 127.0.0.1:38601, thread id: 3
+[ Info: Server on 127.0.0.1:38601 closing
+[ Info: Listening on: 127.0.0.1:35497, thread id: 1
+[ Info: Server on 127.0.0.1:35497 closing
+[ Info: Listening on: 127.0.0.1:36887, thread id: 1
+[ Info: Server on 127.0.0.1:36887 closing
+[ Info: Listening on: 127.0.0.1:36789, thread id: 1
+[ Info: Server on 127.0.0.1:36789 closing
+[ Info: Listening on: 127.0.0.1:37355, thread id: 1
+[ Info: Server on 127.0.0.1:37355 closing
+[ Info: Listening on: 127.0.0.1:43979, thread id: 2
+[ Info: Server on 127.0.0.1:43979 closing
+[ Info: Listening on: 127.0.0.1:46689, thread id: 1
+[ Info: Server on 127.0.0.1:46689 closing
+[ Info: Listening on: 127.0.0.1:36803, thread id: 2
+[ Info: Server on 127.0.0.1:36803 closing
+[ Info: Listening on: 127.0.0.1:43931, thread id: 1
+[ Info: Server on 127.0.0.1:43931 closing
+[ Info: Listening on: 127.0.0.1:45657, thread id: 1
+[ Info: Server on 127.0.0.1:45657 closing
+[ Info: Listening on: 127.0.0.1:34011, thread id: 2
+[ Info: Server on 127.0.0.1:34011 closing
+[ Info: Listening on: 127.0.0.1:42633, thread id: 1
+[ Info: Listening on: 127.0.0.1:46027, thread id: 2
+[ Info: Server on 127.0.0.1:46027 closing
+[ Info: Server on 127.0.0.1:42633 closing
+[ Info: Listening on: 127.0.0.1:41843, thread id: 1
+[ Info: Listening on: 127.0.0.1:45011, thread id: 1
+[ Info: Server on 127.0.0.1:45011 closing
+[ Info: Server on 127.0.0.1:41843 closing
+[ Info: Listening on: 127.0.0.1:34143, thread id: 1
+[ Info: Listening on: 127.0.0.1:46247, thread id: 2
+[ Info: Server on 127.0.0.1:46247 closing
+[ Info: Server on 127.0.0.1:34143 closing
+[ Info: Listening on: 127.0.0.1:41433, thread id: 1
+[ Info: Listening on: 127.0.0.1:35733, thread id: 1
+[ Info: Server on 127.0.0.1:35733 closing
+[ Info: Server on 127.0.0.1:41433 closing
+[ Info: Listening on: 127.0.0.1:43593, thread id: 1
+[ Info: Listening on: 127.0.0.1:43557, thread id: 1
+[ Info: Server on 127.0.0.1:43557 closing
+[ Info: Server on 127.0.0.1:43593 closing
+[ Info: Listening on: 127.0.0.1:40115, thread id: 1
+[ Info: Listening on: 127.0.0.1:42089, thread id: 1
+[ Info: Server on 127.0.0.1:42089 closing
+[ Info: Server on 127.0.0.1:40115 closing
+[ Info: Listening on: 127.0.0.1:38465, thread id: 1
+[ Info: Server on 127.0.0.1:38465 closing
+Session: bc330518-5519-4b7d-88bb-3e55b0c71641
+input: Unknown option --unknown
+Test Summary:                                    | Pass  Total  Time
+Headless CLI, offline task and session lifecycle |    9      9  1.6s
