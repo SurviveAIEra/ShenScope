@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 21,790 authored Julia Core code lines across 221 files;
-CLI/TUI add 1,102 lines and optional Julia extensions add 57, counted separately.
-This is 8.716% of the minimum line target, leaving 228,210 lines. These are early implementations,
+Latest verified cloc 2.11 count: 23,453 authored Julia Core code lines across 237 files;
+CLI/TUI add 1,144 lines and optional Julia extensions add 57, counted separately.
+This is 9.3812% of the minimum line target, leaving 226,547 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -736,3 +736,47 @@ Core cache pair; no experimental sysimage or project copy was created. About
 17.5 GiB is free. Development continues with compiler evidence retention,
 comparison/fusion, runtime/state and remaining functional gates alongside the
 active 250,000 authored Core-line target.
+
+Compiler archive checkpoint 032: bounded workspace/conversation-owned immutable
+report assets, a revision-checked atomic catalog, stable pagination, rename,
+explicit removal and verified orphan cleanup. Source inventories store metadata,
+not source copies. Historical validation accepts recorded source hashes/line
+numbers and recomputes graph projections without loading historical code. It
+retains the current fixed-target signature compatibility contract. Unsigned
+digests do not authenticate producers; opened reports explicitly leave current
+source agreement unchecked. Missing/corrupt selected evidence refuses access.
+
+Comparison requires the same target, arguments, Julia version and platform;
+unique source/opcode/kind anchors pair statements while ambiguous/unknown anchors
+remain unpaired. Return types, structural counts, callee classes, uncertain values
+and experimental effects are reported without performance or equivalence claims.
+All operations retain live permission, budget/cancellation and capacity guards.
+Save rechecks source immediately before catalog publication. Staging bytes and
+orphans count against save capacity; cleanup only removes validated unreferenced
+assets and does not recursively remove folders.
+
+CLI compile-and-save requires an existing conversation and expected revision;
+RPC saves resolve owned completed graph jobs. Both editor clients share report
+titles, catalog/open/rename/remove, comparison and explicit cleanup. Recorded
+report labels distinguish historical evidence; conversation/configuration changes
+clear view state. Permissioned catalog refreshes retain an explicit snapshot.
+Actual screenshots exposed theme inheritance for comparison dropdowns, which was
+corrected. Ephemeral operation-result capacity remains an independent limit.
+
+Validation: 218 affected Julia assertions including 81 new archive/CLI assertions,
+actual compiler children, previous-source evidence, two competing real Julia
+processes and cancellation before catalog publication. Real Node/Core transport
+passes Read/Persistence approvals, foreign ownership refusal, stale-write errors,
+cancelled saves and cleanup. Both actual GUI clients pass two-report workflows,
+historical disclosure and manual-refresh cleanup; complete Workbench/client type
+checks pass. Final package/source verification and screenshots are recorded in
+docs/validation/compiler-archive-checkpoint-032.json. The initial excessive JSON
+encoder depth configuration failed and was corrected; its raw failure is retained.
+
+Primary observations extend all seven agent reviews with recorded producer,
+identity/version validation, atomic storage, locking and settled-job boundaries.
+No upstream source is copied or translated. One app checkout, 50 dependencies and
+no unknown repositories remain; about 17.5 GiB is free, with one current Core
+cache pair and no new sysimage or full-directory backup. Core increased by 660
+authored lines. Agent-driven compile-and-save, project inference, graph fusion,
+remaining runtime/state capabilities and the 250,000-line target remain active.

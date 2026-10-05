@@ -1,0 +1,14 @@
+Precompiling ShenScope...
+  75277.9 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 75 seconds. 40 already precompiled.
+conflict: Compiler archive revision changed; refresh the catalog
+input: CLI inference can be archived with compile TARGET --mode graph --save
+input: Compiler report archives require --session ID
+Test Summary:                                                                      | Pass  Total   Time
+Actual compiler reports archive atomically, preserve ownership and use catalog CAS |   34     34  38.9s
+Test Summary:                                                                                    | Pass  Total  Time
+Recorded compiler source inventory survives Core changes and refuses rehashed malformed evidence |   17     17  2.5s
+Test Summary:                                                                           | Pass  Total  Time
+Compiler archive cancellation leaves reviewable orphans and retains referenced evidence |   13     13  6.1s
+Test Summary:                                                                                   | Pass  Total   Time
+CLI archives actual inference in an existing conversation and restores it in a fresh invocation |   11     11  20.0s

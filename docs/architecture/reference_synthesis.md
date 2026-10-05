@@ -565,6 +565,31 @@ upstream implementation is copied or translated. Arbitrary project inference,
 complete exceptions/heap effects, runtime evidence and source-graph fusion remain
 open. See `docs/core/compiler_ir.md` for precise boundaries.
 
+## Compiler archive source observations
+
+Checkpoint 032 follows the handoff's compiler introspection and experimental
+effect-analysis requirements while keeping compiler observations distinct from
+runtime measurement. These are source observations from the same pinned seven
+primary agent checkouts. The archive implementation is independently authored
+Julia; no source is translated or copied. Reviews remain partial across each
+project's complete capability surface.
+
+| Pinned source inspected | Observation | Independently implemented consequence |
+|---|---|---|
+| Codex `codex-rs/history/src/compaction_checkpoint.rs` 1–65 | Recorded producer information remains unknown when absent; malformed latest checkpoints do not grant fallback authority | Unsigned archive digests do not authenticate producers; corrupt selected evidence fails rather than loading an older result |
+| OpenCode `packages/core/src/session/history.ts` 1–60 | Ordered history and baseline selection retain decode failures | Catalog revision/digest checks protect ordering and pagination; strict body validation is required when opening evidence |
+| DeepSeek Harness `packages/session/session-persistence/src/storage-contract.ts` 1–54 | Shared identity and format checks refuse mismatched session storage | Archive assets and catalogs enforce the same workspace/conversation owner and schema |
+| Pi `packages/coding-agent/src/core/session-manager.ts` 159–181, 640–690 | Context edits preserve original records; storage parsing separates validated headers from line-tail repair | Immutable report bodies are retained independently of catalog titles; unsupported/corrupt evidence is exposed without silently repairing it |
+| Kimi Code `packages/agent-core-v2/src/persistence/backends/node-fs/atomicDocumentStore.ts` 1–105 | Codec decoding failures and atomic storage writes have explicit boundaries | Bounded decoding and asset/catalog publication have separate checks and error categories |
+| ZCode `packages/shared/src/node/privateFilePersistence.ts` 1–68 | Process-local queues and OS locks serialize private file writes; rename retries are bounded | Existing Julia OS locks and atomic replacement serialize revision-checked publication; actual two-process races are tested |
+| Qwen Code `packages/core/src/managed-runtime/managed-harness-checkpoint.ts` 1–66 | Awaited approval/runtime work differs from settled completion | RPC archival resolves a completed owned graph job and retains asynchronous approvals/cancellation; a pending save is not a completed archive |
+
+This checkpoint does not implement upstream encrypted checkpoint provenance,
+their database/session formats or their managed automation systems. The Julia
+archive stores source metadata and compiler reports rather than copying project
+directories. Its structural comparison discloses unmatched source anchors and
+does not derive performance gains or security isolation from compiler effects.
+
 No upstream source was copied or translated. The artifact receipt is local
 integrity evidence, not a signature. Relocation, standalone apps, installed IDE
 distribution and clean-machine restore are distinct remaining gates.

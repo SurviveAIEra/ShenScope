@@ -1,0 +1,296 @@
+{
+  "checkpoint": 32,
+  "recorded_at": "2026-10-05T04:20:55.507429+00:00",
+  "scope": "Bounded owned compiler archives, recorded-source validation, catalog CAS, structural comparison, CLI/RPC and both real editor clients",
+  "source_checksums": {
+    "editors/shared/panel.css": "5acd668eb28169d3a344326cf1db3800336b906019013cc9af921970dde35c1a",
+    "editors/shared/src/panel.ts": "ec4ac4273049e78c2c670d9cbc23143b6755cd78266b3562ac9996b0336a31c8",
+    "editors/test/compiler.test.mjs": "86528dee1a9997b0c98081b3a781ffbbbe81e08aa1d207f6fe38bb31c49f62c9",
+    "ide/test/native_smoke.mjs": "8ed8bd8368f36db53ea16cfa6d72b4cae2ceefc5e2541215d65e96ea418463d8",
+    "src/CLI/Diagnostics.jl": "186508fdcad4d7248f5c332b583c532ec0d703b580713fdeac59d44c79432b8d",
+    "src/CLI/Main.jl": "119fdddfdad69832c4ed731e1124634052236c85d15ef63226c851bab2c9e229",
+    "src/Compiler/ArchiveCompare.jl": "919cc3b2459379044a89995cfb26d878562868fb7f1a3e6559bd7d8e2c08e4e4",
+    "src/Compiler/ArchiveFiles.jl": "88e4ae39861aea1922b95ecd368e1aaeeb7b03ace018e0cb6fbba9bbc0771547",
+    "src/Compiler/ArchiveIndex.jl": "33c1390e8e5910fd099d021e16646a723e1fd9005df36f455d75990aa962e0e2",
+    "src/Compiler/ArchiveOperations.jl": "6168137c0a73b42f51135ba6bc57ea04a0ea74384d7fb76525a7560a5fcdaa77",
+    "src/Compiler/ArchiveTypes.jl": "c65bad06ec048e65bafe5416cabd13214eb5a9cb66f32bcbec6d0a0f70a9050d",
+    "src/Compiler/ArchiveValidation.jl": "8b452b3f694b2b8e7b2520518cf9dd9e8a2d926b8597809330cd79ceff833692",
+    "src/Compiler/IRValidation.jl": "a268a58834eeedc4dcd84e153cfa2375f3dcfee24c1e282ada0043643cd9ea2d",
+    "src/Protocol/Diagnostics.jl": "221d3146f504181d04204b497ef9e520c0d0d2e9b039b7d81410b95ba0f07292",
+    "src/Protocol/Server.jl": "4e5e4f304fe0668576f024d1daf298a30dba1745f7502246de8c4e5cb0abcbf5",
+    "src/ShenScope.jl": "8253314cbc8badf017991de7220fbde9df5c0f824c24cd7f306510a1436144a8",
+    "src/Tools/CompilerArchive.jl": "ca47d642804966becf92d2975cb2497a109e454eeb6b9ce264962b11e4e807a5",
+    "src/Tools/Diagnostics.jl": "3793be8d85d28f00d3d2d31da23d42ee18875af1059dfb248d8885f4d561f61a",
+    "test/compiler.jl": "28f3446c0ebe7c2585b863eb3629805a7e92122434925c974abffb8e31107d8a",
+    "test/compiler_archive.jl": "82728f6a0e68609513fa905b1f4573d385ba7628c89177ad70216ea9288e0bcb",
+    "test/fixtures/compiler_archive.jl": "0b98eb30c76f040053998f856115153842b77579901c6841c53c4a7b19c7425a",
+    "test/fixtures/compiler_archive_source_031.json": "b6ad76d8a234f8b2283e7d0b07813cb91f7e3ced2f2774e83feac376af2f3076",
+    "test/integration/compiler_archive_cli.jl": "982e7c5342030f301d077021b6ff398c2626b91d1dab48bb4bebe6cac7d74c08",
+    "test/runtests.jl": "ecaba5d0120e2ad5661e4ff3f82761034255b70a8b5d1747ae7507d1f5e6d739",
+    "test/unit/compiler_archive.jl": "64abb1274c4d243a0adea65a1337b12b4f59fa51ffdaf1e782b6d167ef27c79d"
+  },
+  "core_assertions": {
+    "affected_passed": 218,
+    "new_archive_cli_passed": 81,
+    "sets": {
+      "Actual inferred IR preserves branch definitions, loop flow and compiler scope": 16,
+      "Trusted compiler frames pin source and reject forged graph projections": 18,
+      "Compiler graph workers honor approvals, revocation and restricted execution": 11,
+      "Compiler polling closes actual helpers after live denial and cancellation": 15,
+      "Owned compiler jobs protect conversations, cancel pending approval and retire": 13,
+      "Actual compiler reports archive atomically, preserve ownership and use catalog CAS": 34,
+      "Recorded compiler source inventory survives Core changes and refuses rehashed malformed evidence": 17,
+      "Two real Julia processes cannot both commit the same compiler catalog revision": 6,
+      "Compiler archive cancellation leaves reviewable orphans and retains referenced evidence": 13,
+      "CLI archives actual inference in an existing conversation and restores it in a fresh invocation": 11,
+      "Parser transport bounds blocked pipes, failed framing and command approval": 41,
+      "Nested operation approval ownership survives cancellation and scoped callbacks": 5,
+      "Owned operations isolate cancellation, scopes, retention and notification failures": 18
+    },
+    "command": "julia --startup-file=no --threads=4 --project=. test/compiler.jl",
+    "two_actual_competing_processes": true,
+    "actual_compiler_helpers": true,
+    "historical_fixture_commit": "808a7568c1da9fbcd1da5899faeb24d1e58d0395"
+  },
+  "editor_transport": {
+    "tests_passed": 1,
+    "exit_code": 0,
+    "real_julia_core": true,
+    "checks": [
+      "dynamic/process approval and inference",
+      "foreign ownership refusal",
+      "cancelled persistence approval",
+      "read and persistence allow-once",
+      "catalog CAS conflict",
+      "owned completed-job save",
+      "unsigned historical disclosure",
+      "explicit orphan cleanup",
+      "read-once does not grant later synchronous query"
+    ]
+  },
+  "gui": {
+    "native": {
+      "exit_code": 0,
+      "extensions_disabled": true
+    },
+    "vsix": {
+      "exit_code": 0,
+      "independent_webview": true
+    },
+    "checks": [
+      "two actual inferred report saves",
+      "title change",
+      "stored report opening",
+      "recorded source/producer qualifier",
+      "bounded same-target structural comparison",
+      "manual catalog refresh and snapshot",
+      "explicit orphan cleanup preserving referenced report",
+      "pending-approval cancellation",
+      "40-row statement pages and type/block filters"
+    ],
+    "screenshots": [
+      "native-compiler-overview.png",
+      "native-compiler-ir.png",
+      "native-compiler-archive.png",
+      "native-compiler-comparison.png",
+      "vsix-compiler-overview.png",
+      "vsix-compiler-ir.png",
+      "vsix-compiler-archive.png",
+      "vsix-compiler-comparison.png"
+    ],
+    "theme_dropdowns_visually_inspected": true
+  },
+  "static_checks": {
+    "shared_typescript": true,
+    "shared_build": true,
+    "complete_workbench_client_typecheck": true,
+    "git_diff_check": true,
+    "remote_ci_observed": false
+  },
+  "vsix": {
+    "entries": 275,
+    "exact_core_helper_extension_metadata_files": 266,
+    "exact_client_assets": 3,
+    "bytes": 571743,
+    "sha256": "b6c4bd69f773056e5a53293fbd91788037e6142d790fe3ec04dcf9ed2cfd9aaf",
+    "payload_matches_authored_sources": true,
+    "installed_package_tested": false
+  },
+  "cloc": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 237,
+      "blank": 1259,
+      "comment": 217,
+      "code": 23453
+    },
+    "cli_tui": {
+      "nFiles": 20,
+      "blank": 19,
+      "comment": 7,
+      "code": 1144
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 226547,
+    "line_target_percent": 9.3812,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "after": {
+      "total_gib": 31.451,
+      "free_gib": 17.502,
+      "large_build_allowed": true,
+      "safe_scratch_paths": [
+        "/workspace/ShenScope/.local/tmp",
+        "/workspace/ShenScope/.local/build-scratch"
+      ]
+    },
+    "full_project_copies": 0,
+    "new_worktrees": 0,
+    "new_sysimages": 0,
+    "core_cache_pairs_retained": 1
+  },
+  "repository_audit": {
+    "applications": 1,
+    "dependencies": 50,
+    "unknown": 0,
+    "strict_walk_complete": true
+  },
+  "research": {
+    "primary_sources": [
+      {
+        "name": "codex",
+        "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+        "path": "codex-rs/history/src/compaction_checkpoint.rs",
+        "sha256": "ef7a70e9cd19b922743e2ddd5affb01a40ef020bfb9762fdcf49e598c7b6b97a",
+        "line_ranges": [
+          [
+            1,
+            65
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "opencode",
+        "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+        "path": "packages/core/src/session/history.ts",
+        "sha256": "232f3d6b3c4ef832deab874920de0f513473acc51b5ed56488023ea3ba02d605",
+        "line_ranges": [
+          [
+            1,
+            60
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "deepseek-harness",
+        "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "path": "packages/session/session-persistence/src/storage-contract.ts",
+        "sha256": "062911ece08832418f2fd0dc8fabdd8848897de6b2d97bc7fca54a634e0c99bd",
+        "line_ranges": [
+          [
+            1,
+            54
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "pi-mono",
+        "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+        "path": "packages/coding-agent/src/core/session-manager.ts",
+        "sha256": "450d82c529933214e088b8422f00061815e617f352f6c834689787a314064bff",
+        "line_ranges": [
+          [
+            159,
+            181
+          ],
+          [
+            640,
+            690
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "kimi-code",
+        "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+        "path": "packages/agent-core-v2/src/persistence/backends/node-fs/atomicDocumentStore.ts",
+        "sha256": "2a738b0d4e6e806150d1c2e91b579c035f88ad4fd4aaf571c5e6637a07ef19fa",
+        "line_ranges": [
+          [
+            1,
+            105
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "ZCode",
+        "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+        "path": "packages/shared/src/node/privateFilePersistence.ts",
+        "sha256": "7698ee250ffd3710be3e6d0db3f4207954e1e0d12f1d87f30fce6187f0ee2f9b",
+        "line_ranges": [
+          [
+            1,
+            68
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "qwen-code",
+        "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+        "path": "packages/core/src/managed-runtime/managed-harness-checkpoint.ts",
+        "sha256": "3bfbb5151d4fddcdc7d290dd191807b61fd89304e11855c7110bfbc35424f6f3",
+        "line_ranges": [
+          [
+            1,
+            66
+          ]
+        ],
+        "code_reuse": false
+      }
+    ],
+    "status": "partial source reviews across capabilities; synthesis continues",
+    "handoff_sections": [
+      "7.11 Compiler Introspection",
+      "7.44 Compiler Effect Analysis"
+    ],
+    "upstream_copy_or_translation": false
+  },
+  "failures_retained": [
+    "Initial archive encoding requested depth 96 beyond the existing encoder limit of 64; corrected and full affected tests passed."
+  ],
+  "limitations": [
+    "Only current fixed target signatures are supported; historical renamed/removed signatures may refuse.",
+    "Unsigned evidence and checksums do not authenticate a producer or prove current source agreement.",
+    "Unique source anchors are required for statement pairing; unknown/repeated locations remain unpaired.",
+    "Comparisons do not prove runtime performance, executed dispatch or behavior equivalence.",
+    "Helper execution remains trusted host Core, with no OS-isolation claim.",
+    "Ephemeral owned-result transport capacity is independent of archive body capacity.",
+    "Catalog listing does not validate every referenced body; opening corrupt/missing evidence refuses.",
+    "Orphan cleanup removes validated assets only; staging recovery remains a separate storage lifecycle.",
+    "No installed/relocated/Windows distribution, remote CI or clean-machine restore is claimed.",
+    "Core source remains below the active 250,000-line minimum; development continues."
+  ],
+  "raw_evidence_directory": "docs/validation/compiler-archive-032"
+}

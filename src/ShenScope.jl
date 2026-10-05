@@ -167,6 +167,13 @@ include("Compiler/IREffects.jl")
 include("Compiler/IRReports.jl")
 include("Compiler/IRFrameOperands.jl")
 include("Compiler/IRValidation.jl")
+include("Compiler/ArchiveTypes.jl")
+include("Compiler/ArchiveFiles.jl")
+include("Compiler/ArchiveIndex.jl")
+include("Compiler/ArchiveValidation.jl")
+include("Compiler/ArchiveOperations.jl")
+include("Compiler/ArchiveCompare.jl")
+include("Tools/CompilerArchive.jl")
 include("Tools/Diagnostics.jl")
 include("MCP/Types.jl")
 include("MCP/Schema.jl")
@@ -295,6 +302,9 @@ export RuntimeSourceFile, RuntimeSourceSnapshot, RuntimeImageReceipt, VerifiedRu
 export contract_report, interface_catalog, dispatch_ambiguities, invoke_extension_latest,
     compiler_report, run_compiler_diagnostic, compiler_targets, DiagnosticsTool,
     CompilerIRLimits, compiler_ir_report, compiler_ir_compare
+export CompilerArchiveLimits, CompilerArchiveStore, compiler_archive_store,
+    compiler_archive_list, compiler_archive_get, compiler_archive_save, compiler_archive_label,
+    compiler_archive_delete, compiler_archive_gc, compiler_archive_compare
 export WorkStatus, WorkSpec, WorkRetryPolicy, WorkLease, WorkFailure, WorkReceipt,
     WorkRecord, Workflow, create_workflow, load_workflow, claim_work!, start_work!,
     heartbeat_work!, finish_work!, cancel_work!, recover_workflow!, reconcile_work!, work_view,

@@ -19,10 +19,13 @@ function diagnostics_rpc(server::CoreServer,method::String,params::AbstractDict)
     end
     args=Dict{String,Any}(key=>value for (key,value) in params if key!="session_id")
     validate_schema(args,tool_schema(tool))
+    diagnostics_arguments(args)
     if method=="diagnostics/query"
-        args["action"] in ("contracts","ambiguities","targets") || throw(RPCFault(-32602,"Use diagnostics/start for compiler inference"))
+        (args["action"] in ("contracts","ambiguities","targets","archive_list","archive_get","archive_compare") ||
+            args["action"]=="archive_gc" && get(args,"dry_run",true)) ||
+            throw(RPCFault(-32602,"Use diagnostics/start for inference or archive mutations"))
         permission_decision(policy,PermissionRequest("diagnostics-query",:read,"runtime.diagnostics",server.root,
-            "Read compiler target metadata"))==Allow || throw(ShenScopeError(:permission,"Use diagnostics/start for permissioned reads"))
+            "Read compiler metadata or owned recorded evidence"))==Allow || throw(ShenScopeError(:permission,"Use diagnostics/start for permissioned reads"))
         ctx=RuntimeContext(server.root;session_id=session.id,state_dir=server.state_dir,permissions=policy,
             budget=prior===nothing ? BudgetLedger(limits_from_config(server.config)) : prior.budget)
         return execute(tool,args,ctx)

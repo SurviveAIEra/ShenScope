@@ -1,0 +1,9 @@
+{
+  "entries": 275,
+  "exact_core_helper_extension_metadata_files": 266,
+  "exact_client_assets": 3,
+  "bytes": 571743,
+  "sha256": "b6c4bd69f773056e5a53293fbd91788037e6142d790fe3ec04dcf9ed2cfd9aaf",
+  "payload_matches_authored_sources": true,
+  "installed_package_tested": false
+}

@@ -1,0 +1,1 @@
+PASS: native Workbench without extensions, real Julia inferred IR, approvals, pagination, filters, effect qualifiers, two report archives, rename, bounded comparison, recorded-source disclosure, explicit orphan cleanup and pending-approval cancellation

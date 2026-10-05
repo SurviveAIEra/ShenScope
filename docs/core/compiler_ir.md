@@ -1,5 +1,8 @@
 # Structured Julia compiler evidence
 
+Conversation-owned persistence and recorded-observation comparison are described
+in [compiler_archives.md](compiler_archives.md).
+
 Core obtains real, unoptimized `Base.code_typed` output for six fixed installed
 Core function/signature pairs. It does not evaluate supplied source, load an
 arbitrary project, or execute the target function. This extends the existing

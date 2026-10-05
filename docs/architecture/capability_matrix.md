@@ -58,6 +58,13 @@ Present verified behavior and missing capabilities separately. The initial
 streaming/tool/agent checkpoint and shared editor protocol do not establish
 complete synthesis, superiority, live-model quality or the Core size target.
 
+Compiler checkpoint 032 adds bounded conversation-owned compiler archives,
+recorded-source validation, catalog CAS/pagination, structural comparison and
+explicit orphan cleanup. All seven primary source observations are linked in
+`reference_synthesis.md`. Historical evidence remains unsigned and does not
+authenticate a producer or confirm current source/runtime behavior. Arbitrary
+project inference and compiler/Git/coverage/runtime graph fusion remain open.
+
 Context checkpoint 012 adds primary-source observations for all seven main
 agents in `reference_synthesis.md`: provider-native accounting, scoped
 instructions, immutable projections/checkpoints, evidence read-back and bounded

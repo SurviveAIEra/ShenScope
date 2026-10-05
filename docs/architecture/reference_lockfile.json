@@ -32,7 +32,8 @@
       "codex-rs/protocol/src/memory_citation.rs",
       "scripts/build_codex_package.py",
       "scripts/codex_package/cli.py",
-      "codex-rs/app-server/src/request_processors/diagnostics.rs"
+      "codex-rs/app-server/src/request_processors/diagnostics.rs",
+      "codex-rs/history/src/compaction_checkpoint.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -69,7 +70,8 @@
       "packages/opencode/src/cli/cmd/serve.ts",
       "packages/opencode/src/permission/index.ts",
       "script/publish.ts",
-      "packages/schema/src/lsp-event.ts"
+      "packages/schema/src/lsp-event.ts",
+      "packages/core/src/session/history.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -112,7 +114,8 @@
       "packages/compaction/compaction-tool-result-pruner/src/types.ts",
       "packages/sandbox/sandbox-policy/src/session-mode.ts",
       "packages/sandbox/sandbox/src/diagnostics.ts",
-      "native/system/scripts/verify-launcher-binary.mjs"
+      "native/system/scripts/verify-launcher-binary.mjs",
+      "packages/session/session-persistence/src/storage-contract.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -192,7 +195,8 @@
       "packages/minidb/src/memory-guard.ts",
       "packages/agent-core-v2/src/agent/permissionPolicy/policies/git-control-path-access-ask.ts",
       "apps/kimi-code/scripts/native/check-bundle.mjs",
-      "packages/agent-core-v2/src/app/capability/capabilityService.ts"
+      "packages/agent-core-v2/src/app/capability/capabilityService.ts",
+      "packages/agent-core-v2/src/persistence/backends/node-fs/atomicDocumentStore.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -229,7 +233,8 @@
       "apps/zcode-cli/packages/core/src/memory/origin-session.ts",
       "packages/shared/src/permission-request-preview.ts",
       "scripts/zcode-distribution/installer.mjs",
-      "packages/shared/src/process-diagnostic.ts"
+      "packages/shared/src/process-diagnostic.ts",
+      "packages/shared/src/node/privateFilePersistence.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -268,7 +273,8 @@
       "integrations/external-context/src/memory-content.ts",
       "packages/core/src/sandbox/bwrap-status.ts",
       "scripts/installation/install-qwen-standalone.sh",
-      "packages/cli/src/nonInteractive/tool-result-boundary-diagnostics.ts"
+      "packages/cli/src/nonInteractive/tool-result-boundary-diagnostics.ts",
+      "packages/core/src/managed-runtime/managed-harness-checkpoint.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

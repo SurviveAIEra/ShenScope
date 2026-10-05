@@ -1,0 +1,29 @@
+conflict: Compiler archive revision changed; refresh the catalog
+input: CLI inference can be archived with compile TARGET --mode graph --save
+input: Compiler report archives require --session ID
+Test Summary:                                                                 | Pass  Total   Time
+Actual inferred IR preserves branch definitions, loop flow and compiler scope |   16     16  12.5s
+Test Summary:                                                          | Pass  Total  Time
+Trusted compiler frames pin source and reject forged graph projections |   18     18  7.4s
+Test Summary:                                                               | Pass  Total   Time
+Compiler graph workers honor approvals, revocation and restricted execution |   11     11  24.5s
+Test Summary:                                                             | Pass  Total  Time
+Compiler polling closes actual helpers after live denial and cancellation |   15     15  2.0s
+Test Summary:                                                                 | Pass  Total   Time
+Owned compiler jobs protect conversations, cancel pending approval and retire |   13     13  12.4s
+Test Summary:                                                                      | Pass  Total   Time
+Actual compiler reports archive atomically, preserve ownership and use catalog CAS |   34     34  45.8s
+Test Summary:                                                                                    | Pass  Total  Time
+Recorded compiler source inventory survives Core changes and refuses rehashed malformed evidence |   17     17  1.8s
+Test Summary:                                                                  | Pass  Total  Time
+Two real Julia processes cannot both commit the same compiler catalog revision |    6      6  7.5s
+Test Summary:                                                                           | Pass  Total  Time
+Compiler archive cancellation leaves reviewable orphans and retains referenced evidence |   13     13  2.3s
+Test Summary:                                                                                   | Pass  Total   Time
+CLI archives actual inference in an existing conversation and restores it in a fresh invocation |   11     11  14.5s
+Test Summary:                                                              | Pass  Total  Time
+Parser transport bounds blocked pipes, failed framing and command approval |   41     41  2.6s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  1.0s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  1.4s

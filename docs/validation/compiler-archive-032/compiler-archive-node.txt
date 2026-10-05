@@ -1,0 +1,10 @@
+✔ Real compiler RPC scopes approvals, cancellation and inferred graph evidence (46844.200163ms)
+ℹ 65 actual statements, 7 blocks
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 46952.028556

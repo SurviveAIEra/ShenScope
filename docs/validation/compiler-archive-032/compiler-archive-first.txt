@@ -1,0 +1,58 @@
+Precompiling ShenScope...
+  73365.7 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 74 seconds. 40 already precompiled.
+ERROR: LoadError: Some tests did not pass: 1 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/compiler_archive.jl:1
+in expression starting at /workspace/ShenScope/test/compiler.jl:9
+Test Summary:                                                                 | Pass  Total  Time
+Actual inferred IR preserves branch definitions, loop flow and compiler scope |   16     16  9.6s
+Test Summary:                                                          | Pass  Total  Time
+Trusted compiler frames pin source and reject forged graph projections |   18     18  7.5s
+Test Summary:                                                               | Pass  Total   Time
+Compiler graph workers honor approvals, revocation and restricted execution |   11     11  23.6s
+Test Summary:                                                             | Pass  Total  Time
+Compiler polling closes actual helpers after live denial and cancellation |   15     15  1.0s
+Test Summary:                                                                 | Pass  Total  Time
+Owned compiler jobs protect conversations, cancel pending approval and retire |   13     13  5.9s
+Actual compiler reports archive atomically, preserve ownership and use catalog CAS: Error During Test at /workspace/ShenScope/test/unit/compiler_archive.jl:1
+  Got exception outside of a @test
+  ArgumentError: Invalid JSON encoding capacities
+  Stacktrace:
+    [1] bounded_canonical_json(value::Dict{String, Any}; maximum::Int64, max_depth::Int64, max_nodes::Int64)
+      @ ShenScope /workspace/ShenScope/src/Storage/BoundedJSON.jl:76
+    [2] (::ShenScope.var"#2034#2038"{String, CompilerArchiveStore, Dict{String, Dict{String}}, RuntimeContext, String, RuntimeSourceSnapshot, Dict{String, Any}})(index::Dict{String, Any})
+      @ ShenScope /workspace/ShenScope/src/Compiler/ArchiveOperations.jl:38
+    [3] (::ShenScope.var"#2017#2019"{ShenScope.var"#2034#2038"{String, CompilerArchiveStore, Dict{String, Dict{String}}, RuntimeContext, String, RuntimeSourceSnapshot, Dict{String, Any}}, CompilerArchiveStore, RuntimeContext, Int64})()
+      @ ShenScope /workspace/ShenScope/src/Compiler/ArchiveIndex.jl:75
+    [4] (::ShenScope.var"#169#172"{ShenScope.var"#2018#2020"{CompilerArchiveStore, RuntimeContext}, ShenScope.var"#2017#2019"{ShenScope.var"#2034#2038"{String, CompilerArchiveStore, Dict{String, Dict{String}}, RuntimeContext, String, RuntimeSourceSnapshot, Dict{String, Any}}, CompilerArchiveStore, RuntimeContext, Int64}, String})(io::IOStream)
+      @ ShenScope /workspace/ShenScope/src/Storage/Journal.jl:87
+    [5] open(::ShenScope.var"#169#172"{ShenScope.var"#2018#2020"{CompilerArchiveStore, RuntimeContext}, ShenScope.var"#2017#2019"{ShenScope.var"#2034#2038"{String, CompilerArchiveStore, Dict{String, Dict{String}}, RuntimeContext, String, RuntimeSourceSnapshot, Dict{String, Any}}, CompilerArchiveStore, RuntimeContext, Int64}, String}, ::String, ::Vararg{String}; kwargs::@Kwargs{})
+      @ Base ./io.jl:410
+    [6] open
+      @ ./io.jl:407 [inlined]
+    [7] store_lock(f::ShenScope.var"#2017#2019"{ShenScope.var"#2034#2038"{String, CompilerArchiveStore, Dict{String, Dict{String}}, RuntimeContext, String, RuntimeSourceSnapshot, Dict{String, Any}}, CompilerArchiveStore, RuntimeContext, Int64}, path::String; checkpoint::ShenScope.var"#2018#2020"{CompilerArchiveStore, RuntimeContext})
+      @ ShenScope /workspace/ShenScope/src/Storage/Journal.jl:60
+    [8] store_lock
+      @ /workspace/ShenScope/src/Storage/Journal.jl:57 [inlined]
+    [9] compiler_archive_transaction(f::ShenScope.var"#2034#2038"{String, CompilerArchiveStore, Dict{String, Dict{String}}, RuntimeContext, String, RuntimeSourceSnapshot, Dict{String, Any}}, store::CompilerArchiveStore, ctx::RuntimeContext, expected_revision::Int64)
+      @ ShenScope /workspace/ShenScope/src/Compiler/ArchiveIndex.jl:70
+   [10] compiler_archive_save(store::CompilerArchiveStore, result::Dict{String, Dict{String}}, ctx::RuntimeContext; expected_revision::Int64, title::String)
+      @ ShenScope /workspace/ShenScope/src/Compiler/ArchiveOperations.jl:14
+   [11] (::var"#71#73")(root::String)
+      @ Main /workspace/ShenScope/test/unit/compiler_archive.jl:7
+   [12] mktempdir(fn::var"#71#73", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+   [13] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+   [14] macro expansion
+      @ /workspace/ShenScope/test/unit/compiler_archive.jl:2 [inlined]
+   [15] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [16] top-level scope
+      @ /workspace/ShenScope/test/unit/compiler_archive.jl:2
+   [17] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [18] top-level scope
+      @ /workspace/ShenScope/test/compiler.jl:9
+Test Summary:                                                                      | Pass  Error  Total   Time
+Actual compiler reports archive atomically, preserve ownership and use catalog CAS |    1      1      2  20.0s

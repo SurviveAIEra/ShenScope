@@ -49,15 +49,30 @@ function compiler_ir_validate_location(value,snapshot)
     end
 end
 
-function compiler_ir_validate_method(value,target,snapshot,limits)
+function compiler_ir_validate_method(value,target,snapshot,limits;historical=false)
     fields=["identity","statements","slots","control_flow","slot_flow","ssa_flow","calls","return_type",
         "findings","inference_world","statistics","compiler_inferred","runtime_execution_observed"]
     compiler_ir_fields(value,fields,"method graph")
-    expected=compiler_ir_method_identity(which(target.callable,target.arguments),snapshot)
+    definition=which(target.callable,target.arguments)
     identity=value["identity"]
-    compiler_ir_fields(identity,keys(expected),"method identity")
-    for key in ("module","signature","file","line","source_sha256","argument_slots")
-        identity[key]==expected[key] || throw(ShenScopeError(:diagnostics,"Compiler method identity does not match the trusted target"))
+    compiler_ir_fields(identity,["module","signature","file","line","source_sha256","argument_slots",
+        "method_world_start","method_world_end"],"method identity")
+    if historical
+        identity["module"]==string(definition.module) && identity["signature"]==cliptext(string(definition.sig),2048) &&
+            identity["argument_slots"]==Int(definition.nargs) ||
+            throw(ShenScopeError(:diagnostics,"Archived compiler target signature is unsupported by this Core"))
+        file=compiler_ir_text(identity["file"],"archived method file",4096)
+        startswith(file,"src/") && !occursin('\\',file) &&
+            all(part->part!="" && part!="." && part!="..",split(file,'/')) ||
+            throw(ShenScopeError(:diagnostics,"Archived method source path is invalid"))
+        source=findfirst(item->item.path==file,snapshot.files)
+        source!==nothing && identity["source_sha256"]==snapshot.files[source].sha256 ||
+            throw(ShenScopeError(:diagnostics,"Archived method source is absent from its recorded inventory"))
+    else
+        expected=compiler_ir_method_identity(definition,snapshot)
+        for key in ("module","signature","file","line","source_sha256","argument_slots")
+            identity[key]==expected[key] || throw(ShenScopeError(:diagnostics,"Compiler method identity does not match the trusted target"))
+        end
     end
     compiler_ir_integer(identity["line"],"method line",1,10_000_000)
     compiler_ir_integer(identity["argument_slots"],"method argument slots",0,limits.max_statements)
@@ -164,7 +179,7 @@ function compiler_ir_validate_method(value,target,snapshot,limits)
 end
 
 function compiler_ir_validate_report(value,target::CompilerTarget,snapshot::RuntimeSourceSnapshot;
-        limits=CompilerIRLimits())
+        limits=CompilerIRLimits(),historical=false)
     bounded_canonical_json(value;maximum=COMPILER_IR_MAX_BYTES)
     compiler_ir_fields(value,["schema","target","arguments","runtime","source","methods","methods_observed",
         "methods_truncated","effects","elapsed_seconds","limits","scope","report_sha256"],"report")
@@ -174,8 +189,15 @@ function compiler_ir_validate_report(value,target::CompilerTarget,snapshot::Runt
     value["source"]==Dict("fingerprint"=>snapshot.fingerprint,"uuid"=>string(snapshot.uuid),"version"=>string(snapshot.version)) ||
         throw(ShenScopeError(:conflict,"Compiler report source inventory is stale"))
     compiler_ir_fields(value["runtime"],["julia_version","machine","observed_world"],"runtime")
-    value["runtime"]["julia_version"]==string(Base.VERSION) && value["runtime"]["machine"]==string(Sys.MACHINE) ||
-        throw(ShenScopeError(:diagnostics,"Compiler report platform does not match"))
+    if historical
+        version=compiler_ir_text(value["runtime"]["julia_version"],"archived Julia version",64)
+        tryparse(VersionNumber,version)!==nothing || throw(ShenScopeError(:diagnostics,"Invalid archived Julia version"))
+        machine=compiler_ir_text(value["runtime"]["machine"],"archived compiler platform",256)
+        occursin(r"^[A-Za-z0-9_.+\-]+$",machine) || throw(ShenScopeError(:diagnostics,"Invalid archived compiler platform"))
+    else
+        value["runtime"]["julia_version"]==string(Base.VERSION) && value["runtime"]["machine"]==string(Sys.MACHINE) ||
+            throw(ShenScopeError(:diagnostics,"Compiler report platform does not match"))
+    end
     world=compiler_ir_text(value["runtime"]["observed_world"],"observed world",32)
     tryparse(UInt64,world)!==nothing || throw(ShenScopeError(:diagnostics,"Invalid compiler observed world"))
     expected_limits=Dict(string(field)=>getfield(limits,field) for field in fieldnames(CompilerIRLimits))
@@ -195,7 +217,7 @@ function compiler_ir_validate_report(value,target::CompilerTarget,snapshot::Runt
     digest(canonical(original))==checksum || throw(ShenScopeError(:conflict,"Compiler report hash changed"))
     effects=value["effects"]
     effects isa AbstractDict && get(effects,"experimental",nothing)===true && get(effects,"safety_boundary",nothing)===false &&
-        get(effects,"runtime_side_effects_observed",nothing)===false && get(effects,"julia_version",nothing)==string(Base.VERSION) &&
+        get(effects,"runtime_side_effects_observed",nothing)===false && get(effects,"julia_version",nothing)==value["runtime"]["julia_version"] &&
         get(effects,"available",nothing) isa Bool || throw(ShenScopeError(:diagnostics,"Invalid compiler effect evidence"))
     effect_common=["experimental","safety_boundary","runtime_side_effects_observed","julia_version","available"]
     if effects["available"]
@@ -217,7 +239,7 @@ function compiler_ir_validate_report(value,target::CompilerTarget,snapshot::Runt
         compiler_ir_text(effects["reason"],"effect availability reason",1024)
     end
     for method in methods
-        compiler_ir_validate_method(method,target,snapshot,limits)
+        compiler_ir_validate_method(method,target,snapshot,limits;historical)
     end
     value
 end

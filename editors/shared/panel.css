@@ -375,3 +375,18 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .shenscope-panel .compiler-pagination button { padding: 6px 8px; font-size: 11px; }
 .shenscope-panel .compiler-effect-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding-top: 8px; font-size: 11px; }
 .shenscope-panel .compiler-effect-row span { color: var(--vscode-descriptionForeground); }
+.shenscope-panel .compiler-archive { border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+.shenscope-panel .compiler-archive > summary { cursor: pointer; font-weight: 600; }
+.shenscope-panel .compiler-archive-save { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; margin: 10px 0; }
+.shenscope-panel .compiler-archive input { min-width: 0; width: 100%; box-sizing: border-box; padding: 7px 8px; color: var(--vscode-input-foreground); background: var(--vscode-input-background); border: 1px solid var(--vscode-input-border, var(--border)); border-radius: 5px; }
+.shenscope-panel .compiler-archive-entry { display: flex; flex-direction: column; gap: 5px; border-top: 1px solid var(--border); padding: 12px 0; }
+.shenscope-panel .compiler-archive-entry strong { overflow-wrap: anywhere; }
+.shenscope-panel .compiler-archive-entry small, .shenscope-panel .compiler-comparison small { color: var(--vscode-descriptionForeground); font-size: 11px; }
+.shenscope-panel .compiler-archive-entry > code { font-size: 11px; background: none; padding: 0; color: var(--vscode-descriptionForeground); }
+.shenscope-panel .compiler-archive-rename > summary { cursor: pointer; font-size: 12px; padding: 6px; }
+.shenscope-panel .compiler-archive-rename input { margin-bottom: 6px; }
+.shenscope-panel .compiler-archive-compare { display: grid; gap: 8px; margin: 12px 0; }
+.shenscope-panel .compiler-archive-compare select { min-width: 0; width: 100%; box-sizing: border-box; padding: 7px 8px; color: var(--vscode-dropdown-foreground, var(--text)); background: var(--vscode-dropdown-background, var(--raised)); border: 1px solid var(--vscode-dropdown-border, var(--border)); border-radius: 5px; text-overflow: ellipsis; }
+.shenscope-panel .compiler-comparison { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--border); padding-top: 12px; }
+.shenscope-panel .compiler-comparison pre { max-height: 200px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
+.shenscope-panel .compiler-recorded-note { border-left: 2px solid var(--vscode-editorWarning-foreground); padding-left: 10px; color: var(--muted); font-size: 12px; }

@@ -1,0 +1,1274 @@
+{
+  "name": "ShenScope",
+  "uuid": "3c0e50a5-18b4-4d3a-90e1-bcd141d94adb",
+  "version": "0.1.0",
+  "files": [
+    {
+      "path": "Manifest.toml",
+      "bytes": 6812,
+      "sha256": "c9123d9a98658707cf7d6ccc2f6f23f72dcf1262ad7cc86cc15d73527c4319a4"
+    },
+    {
+      "path": "Project.toml",
+      "bytes": 1078,
+      "sha256": "45f9497c69858a6bcb1873d3d39cb67d3c906314b67babe956c622aa00bffc6f"
+    },
+    {
+      "path": "ext/ShenScopeSparseEvidenceExt.jl",
+      "bytes": 3748,
+      "sha256": "955f00011df3ea682f7bab86dae1a60c00766fdf5b5aa26164aeae21d10d1a9b"
+    },
+    {
+      "path": "src/Analysis/ArchiveLifecycle.jl",
+      "bytes": 5628,
+      "sha256": "4e0bdf252a780d5199cb9478b2ab0015a789dc483d9460f30ed9f570f557c2a9"
+    },
+    {
+      "path": "src/Analysis/ArchiveManifests.jl",
+      "bytes": 8363,
+      "sha256": "c68cc64bdf91be1512e3f81ec2d75630b96cacc1528fb790dbac43aa55fc3ba7"
+    },
+    {
+      "path": "src/Analysis/ArchivePointers.jl",
+      "bytes": 5063,
+      "sha256": "32a70821269591443de46c5b41b6d4eab69d22187e1a7461ac84c6fc0fdccdfa"
+    },
+    {
+      "path": "src/Analysis/ArchiveTypes.jl",
+      "bytes": 4601,
+      "sha256": "53cdb6b2baff1d13f9876ce6365477b429ae8952381a9ad164665af7313123f8"
+    },
+    {
+      "path": "src/Analysis/Builtin.jl",
+      "bytes": 4658,
+      "sha256": "952171a023d5d35bc2b1138ea310a5e1752407248e4fe32a1cde4f6069900dbc"
+    },
+    {
+      "path": "src/Analysis/Cochange.jl",
+      "bytes": 4193,
+      "sha256": "d2d80e5324df8c964f0cbf981a592f38aa7b518316081e6dd84e14b94d171dec"
+    },
+    {
+      "path": "src/Analysis/CombinedEvidence.jl",
+      "bytes": 2608,
+      "sha256": "e4a3f7e284215d0815642c629395bf12856ae70dc3d6adeca0c578d9b0e606a5"
+    },
+    {
+      "path": "src/Analysis/Definitions.jl",
+      "bytes": 5411,
+      "sha256": "0363e71e8a234089993bb551c882c4341a39be4fd9893b09b20ff88d7919c69c"
+    },
+    {
+      "path": "src/Analysis/ExternalTests.jl",
+      "bytes": 6695,
+      "sha256": "71e4ced6c853d0985a8c3763f20dd65d3136b611bb42382274d528a1cf9cd112"
+    },
+    {
+      "path": "src/Analysis/GraphAlgorithms.jl",
+      "bytes": 3387,
+      "sha256": "eae22b1ee11bffa96abd8d7946dfbca0c804305614894ee38c79e5e84a40dc51"
+    },
+    {
+      "path": "src/Analysis/GraphEvidence.jl",
+      "bytes": 4956,
+      "sha256": "d2a105449e495c9512ba4512ddbc6b66b9a65b4a3d54667489f2958238a780d8"
+    },
+    {
+      "path": "src/Analysis/GraphRuntime.jl",
+      "bytes": 1719,
+      "sha256": "1f96439e0a863ee1549bae7ca58766f2ab9910ec06d01e0aacf59ffa90cbdb21"
+    },
+    {
+      "path": "src/Analysis/GraphSnapshots.jl",
+      "bytes": 5210,
+      "sha256": "d2cae67f81ae1b4b2801f6bd3feca1665e717be6960e6ea99ddb64401d8ca9c7"
+    },
+    {
+      "path": "src/Analysis/HistoryEvidence.jl",
+      "bytes": 8356,
+      "sha256": "ea50430f13b6e2a05b1c1c4d9d1a7ff2682243ad453b7a3335de8e23f47157d3"
+    },
+    {
+      "path": "src/Analysis/IsolatedWorker.jl",
+      "bytes": 6124,
+      "sha256": "80e5d91c567b664e1ad363accb1159177c78e3ccc66ee9aa7203dae2b163e9fc"
+    },
+    {
+      "path": "src/Analysis/Jobs.jl",
+      "bytes": 3945,
+      "sha256": "130183caeabe7606c844bfd2d584ba10c0af4be7f45ea0fb5e44ec885b96a2af"
+    },
+    {
+      "path": "src/Analysis/MigrationBatches.jl",
+      "bytes": 2204,
+      "sha256": "ee1d5f08d4ac8cc49ada0fdd08aa15466d30eb3a2670807112a9bb455d758ab9"
+    },
+    {
+      "path": "src/Analysis/MigrationEvidence.jl",
+      "bytes": 5189,
+      "sha256": "885efe5bfe2b69c0a1a33f3bc62f0739a38c2220f75bba849567e8b67b995198"
+    },
+    {
+      "path": "src/Analysis/MigrationGraph.jl",
+      "bytes": 3180,
+      "sha256": "f835ec01fae7de2cdd6ed0276a856288a952a10d7b6e13f0df640032e3059838"
+    },
+    {
+      "path": "src/Analysis/MigrationRuntime.jl",
+      "bytes": 364,
+      "sha256": "298576ee14ed74dcb18bee4aa0e7db25369378af70a35da8444675933f89012c"
+    },
+    {
+      "path": "src/Analysis/MigrationTypes.jl",
+      "bytes": 3217,
+      "sha256": "2cb937324cd1cac68456d785a4ab5b7d6506f3a071f19c2d0e5622bf587f1b19"
+    },
+    {
+      "path": "src/Analysis/Registry.jl",
+      "bytes": 8704,
+      "sha256": "3828c38313a5c168a939d18ba4c0d08c3f0aa2482376ce060c4b97c78d18c79c"
+    },
+    {
+      "path": "src/Analysis/Risk.jl",
+      "bytes": 4028,
+      "sha256": "c997c870325c4d4cba5a6a3a7d270e61275b502544994acb569252df238397b1"
+    },
+    {
+      "path": "src/CLI/Agent.jl",
+      "bytes": 2917,
+      "sha256": "221f16bff4a3da558d0ec454f6478639a9e8c940f882010e79a5ef849fef00bd"
+    },
+    {
+      "path": "src/CLI/Analyzers.jl",
+      "bytes": 5279,
+      "sha256": "9cafc7babcf49598c1808c19ec3fc4878414ef751b79bbf8f26409d993bbed52"
+    },
+    {
+      "path": "src/CLI/Context.jl",
+      "bytes": 2687,
+      "sha256": "ffec5beff1c2091ec47f9ecef23a45e68ed31d204b6cd370520988b9909dfba8"
+    },
+    {
+      "path": "src/CLI/Diagnostics.jl",
+      "bytes": 1088,
+      "sha256": "94918d606bc0b3237cf64aac6593accb4f311c049be5cd07c718a7de70a3c15a"
+    },
+    {
+      "path": "src/CLI/Doctor.jl",
+      "bytes": 671,
+      "sha256": "2b0e0a4b24364f7c043ece2a770b35710947ea4aebf7580815fe19938b67d57c"
+    },
+    {
+      "path": "src/CLI/Extensions.jl",
+      "bytes": 2546,
+      "sha256": "9b57abff8317635d79eb8b46763529b4d6dd4bd5becbe33029598a5e35317e3f"
+    },
+    {
+      "path": "src/CLI/Hooks.jl",
+      "bytes": 1302,
+      "sha256": "c1959c7d327fe7b179b3981610a78996218a14bc33451025f6d6785070e75b3c"
+    },
+    {
+      "path": "src/CLI/MCP.jl",
+      "bytes": 2858,
+      "sha256": "469dbbb21aff0b05714a97d93ba5bc2997c95f41013b03b16544dfa11c0537d8"
+    },
+    {
+      "path": "src/CLI/Main.jl",
+      "bytes": 8605,
+      "sha256": "7afe49d5f897fd0c4108376e0a3023a50e2286fe1000867f18b76083cddbbd94"
+    },
+    {
+      "path": "src/CLI/Memory.jl",
+      "bytes": 3306,
+      "sha256": "8eb2edc17f23953e4ea9cacb54ad9852ddca7e070cead20b7f589e9c8811935d"
+    },
+    {
+      "path": "src/CLI/Models.jl",
+      "bytes": 2443,
+      "sha256": "481cf3e43ee058648ec61b5d2516410ed81e21ad21706c982c285ddc64786023"
+    },
+    {
+      "path": "src/CLI/Project.jl",
+      "bytes": 6850,
+      "sha256": "2c40d8b09d72ef4c6fd068c10f0227a7c7f7e572c5a230a8cf0adff8f5999e15"
+    },
+    {
+      "path": "src/CLI/ProjectWatch.jl",
+      "bytes": 3448,
+      "sha256": "5bae5b0cedad563b1a68a33d04c50226d939504e31736aa77fbf987688f81740"
+    },
+    {
+      "path": "src/CLI/RuntimeImage.jl",
+      "bytes": 1533,
+      "sha256": "a09e6f7744005e44aed2d19691f984d9e08a7553fdec4e82e59558295b3baa43"
+    },
+    {
+      "path": "src/CLI/Security.jl",
+      "bytes": 800,
+      "sha256": "ab8550dae6d40ab7b8aabad2dec17d08af3b60f17549823f1e4259c6dc809830"
+    },
+    {
+      "path": "src/CLI/Serve.jl",
+      "bytes": 393,
+      "sha256": "6b1c22e0126efa5c46b4c3f230f26be7923f6c48a2500c3df6874dd31924a6e3"
+    },
+    {
+      "path": "src/CLI/Skills.jl",
+      "bytes": 1720,
+      "sha256": "a582c0aa7202f338925d12e31db33416c094d48196ff488f7fae8f433f6ab531"
+    },
+    {
+      "path": "src/CLI/TUI.jl",
+      "bytes": 10053,
+      "sha256": "0dbf9d0ce02daa9a910b6d650fb8b336904a19a2dda3fb415bc44a21c487d765"
+    },
+    {
+      "path": "src/CLI/Tasks.jl",
+      "bytes": 2958,
+      "sha256": "5f7dc184445e5bc08ce3483bf4699c5cc7574a94d04584ec813b900ded4b8acb"
+    },
+    {
+      "path": "src/CLI/Terminal.jl",
+      "bytes": 2619,
+      "sha256": "fdafc0c0aed961b566d00065f825c979f2f3909a88afc995cd1ab7205af2e176"
+    },
+    {
+      "path": "src/Compiler/IRControlFlow.jl",
+      "bytes": 5825,
+      "sha256": "bc71b954ddab6654e6dece0e805461b6432f32b3670f58a92740ecee1e2cf756"
+    },
+    {
+      "path": "src/Compiler/IRDataFlow.jl",
+      "bytes": 5662,
+      "sha256": "290b54957badce82184064ba5d73be93d93a16c31c15c0b16956015781a045b0"
+    },
+    {
+      "path": "src/Compiler/IREffects.jl",
+      "bytes": 3692,
+      "sha256": "ce03c3264f96a1e705e612978de3050392af524d1c054b76528dec61368742a7"
+    },
+    {
+      "path": "src/Compiler/IRFrameOperands.jl",
+      "bytes": 6216,
+      "sha256": "fd922df5889d4d3e7cba7a3df2710ebec310da2fc5360c4ef345eabb5fba7bc5"
+    },
+    {
+      "path": "src/Compiler/IROperands.jl",
+      "bytes": 8600,
+      "sha256": "979f3f9d7c1635177e9f78ec0b4162248093c529800112d988d137cb7242a463"
+    },
+    {
+      "path": "src/Compiler/IRReports.jl",
+      "bytes": 5932,
+      "sha256": "12ed3d536fc1768b0f6461c9bbfaa49cf3eefce2350313ccf092c8dbe2c1d9a4"
+    },
+    {
+      "path": "src/Compiler/IRTypes.jl",
+      "bytes": 4591,
+      "sha256": "c1180da8a77e669ae2573f55e8f047faf2be4f48fd2e4814c9e2a5b887bffada"
+    },
+    {
+      "path": "src/Compiler/IRValidation.jl",
+      "bytes": 16046,
+      "sha256": "324e636efada04d715e1f145b3f0fd565d3618e24e31240290ed92432a0432c1"
+    },
+    {
+      "path": "src/Context/Accounting.jl",
+      "bytes": 2948,
+      "sha256": "37237f99e417bce3c054de3e8cd42a920e17e535843fa398a17ba2782ab7ad46"
+    },
+    {
+      "path": "src/Context/Checkpoints.jl",
+      "bytes": 11183,
+      "sha256": "816570db8eab9f671790ea45a397e2e5f45da2e368864ffd85a2202176dd0c90"
+    },
+    {
+      "path": "src/Context/Config.jl",
+      "bytes": 3532,
+      "sha256": "be2da52c653b1efbd54b500d72cead22f7a8e38d566a7bc4bc27b6a800e99616"
+    },
+    {
+      "path": "src/Context/Evidence.jl",
+      "bytes": 5193,
+      "sha256": "483f868a4dd316e195576ff41c20aa66c353dcfa546dfd4515bbaae4ed173621"
+    },
+    {
+      "path": "src/Context/Groups.jl",
+      "bytes": 2744,
+      "sha256": "dbc6a555866174eb5b333576414f6e5cdf19e521e8db6f35050b572f4f48cab4"
+    },
+    {
+      "path": "src/Context/Instructions.jl",
+      "bytes": 5217,
+      "sha256": "9cfe1058ec79025961c92e4e5da2af656dc8ff0d31eb59890b78bb34b1168732"
+    },
+    {
+      "path": "src/Context/Preparation.jl",
+      "bytes": 2696,
+      "sha256": "df3822c60c6909b36864c07b46eacd9733e578418f95010ead5d87b3060504ef"
+    },
+    {
+      "path": "src/Context/Projection.jl",
+      "bytes": 9463,
+      "sha256": "3ba2c6e85732abd4820e4b3b9d92f2cf6f6f5d10281e9986c5712529b4b2008b"
+    },
+    {
+      "path": "src/Context/Pruning.jl",
+      "bytes": 1591,
+      "sha256": "ce9cb0dedf4d24dd89ace9a914d9ff3b0972b4a2ffc081a43a73b305782ff95e"
+    },
+    {
+      "path": "src/Context/Recovery.jl",
+      "bytes": 3554,
+      "sha256": "89ef79401dd69c938abd1fc19df5538024d7c28d64ce554a7001f89e2d9b8705"
+    },
+    {
+      "path": "src/Context/Sessions.jl",
+      "bytes": 5600,
+      "sha256": "6ddec222258021468132037a9d275a59aea2cfce01af9e6e576e97e0eefe44be"
+    },
+    {
+      "path": "src/Context/Summarization.jl",
+      "bytes": 6691,
+      "sha256": "3f20503ba409377758c68b62c2eebded844bfa9bfc540e38529611c9483955fd"
+    },
+    {
+      "path": "src/Context/Types.jl",
+      "bytes": 2443,
+      "sha256": "4d342a9444a4b4dffa55e57c035509e23eafd64149eae8bb569aaed124c4def4"
+    },
+    {
+      "path": "src/Core/AgentLoop.jl",
+      "bytes": 6337,
+      "sha256": "c348137fe56627a63e4d295ce79fcfabf40318ed40a4e3680edc5036ea7869e5"
+    },
+    {
+      "path": "src/Core/Config.jl",
+      "bytes": 5558,
+      "sha256": "d6d20e8697760c63e2e9aed96e0397ef2086ccfe252fa05526be26a7d6dde28a"
+    },
+    {
+      "path": "src/Core/Types.jl",
+      "bytes": 4083,
+      "sha256": "07f92881d7fd2ccdf24a3063d3b9da8d180496f0eda737606c6edc22b242986f"
+    },
+    {
+      "path": "src/Distribution/Images.jl",
+      "bytes": 4255,
+      "sha256": "6e4c529f63dd41a2c8d62e59f049d124f7db7352a563b2378076ecfc26820203"
+    },
+    {
+      "path": "src/Distribution/Launch.jl",
+      "bytes": 2109,
+      "sha256": "4b4f3727feab30d69e73932b8dc073883f34ded02131390f6dec9816f7bb71b5"
+    },
+    {
+      "path": "src/Distribution/Sources.jl",
+      "bytes": 5649,
+      "sha256": "6b699eb0e256195f943e2bcf0d65e1b8dce15c5b327bd7cbbc2bd827a41e2c2a"
+    },
+    {
+      "path": "src/Distribution/Types.jl",
+      "bytes": 2738,
+      "sha256": "1f3269656518a7e9017c7c491a3b462db4171e4a5b89c1d4c893f1bae46f6175"
+    },
+    {
+      "path": "src/Distribution/Verification.jl",
+      "bytes": 7269,
+      "sha256": "5a61efddf3e2a896856104113a1d98f555a0acc33f80882ee0a2c2abfc27b73c"
+    },
+    {
+      "path": "src/Extensions/CompilerDiagnostics.jl",
+      "bytes": 8691,
+      "sha256": "d338943c3051dfe22ef4096dc80a2d1dbfa957ae57d5ecfb6f4adff98290928d"
+    },
+    {
+      "path": "src/Extensions/Contracts.jl",
+      "bytes": 6632,
+      "sha256": "e594d4630e69ea7a373369af87c816e7f651fec38c01dcb15f1c3303286c5e4d"
+    },
+    {
+      "path": "src/Extensions/InstalledPackages.jl",
+      "bytes": 7858,
+      "sha256": "a4d5ecebf8ab73f659f31eec17a18c23185451d138952b456d2a56e4cd109e26"
+    },
+    {
+      "path": "src/Extensions/LifecycleActivation.jl",
+      "bytes": 7366,
+      "sha256": "ef1208483cdaa375132129639272b5d1a6664f8440707506d28d9f5b6be29964"
+    },
+    {
+      "path": "src/Extensions/LifecycleInvocation.jl",
+      "bytes": 4707,
+      "sha256": "63258377286057f8a69610445713694dce2ed96ffa06d0e7b6d8619a66804f1e"
+    },
+    {
+      "path": "src/Extensions/LifecycleRegistry.jl",
+      "bytes": 5709,
+      "sha256": "4e63318f479ab769934a6e2e746c835d5f6d1e453a7031dbe0b2c6527ada5e7b"
+    },
+    {
+      "path": "src/Extensions/LifecycleTypes.jl",
+      "bytes": 5082,
+      "sha256": "e8b0a8b4b9e8c0d96e60a5539952c9dc4ccf705980576ef0ac49ed337b1e1ea6"
+    },
+    {
+      "path": "src/Extensions/ProjectionTypes.jl",
+      "bytes": 3288,
+      "sha256": "6559c6f8d15fa89eed8a39e10b36d80ab804f0f83a7ead9f2c589425e566830f"
+    },
+    {
+      "path": "src/Git/HistoryParsing.jl",
+      "bytes": 4938,
+      "sha256": "80d769baaa1123ed101b5a61b99ec8222e5ed1e77e849a61dab926d4045d2231"
+    },
+    {
+      "path": "src/Git/HistoryProcess.jl",
+      "bytes": 5124,
+      "sha256": "f79307e49ffae3f8b528c495fa17807529f2a3eb42894c12f3b2d5fe5467fa6b"
+    },
+    {
+      "path": "src/Git/HistoryRepository.jl",
+      "bytes": 5350,
+      "sha256": "db740f09cb31c4b962b34b9230e7f0e449f5248d14057032851f42ff80c46642"
+    },
+    {
+      "path": "src/Git/HistorySnapshot.jl",
+      "bytes": 3301,
+      "sha256": "a35c9f60dd100e93ac8c7803c9a0865cf01cc4aab7b8ec076649b9fbaabbbfe6"
+    },
+    {
+      "path": "src/Git/HistoryTypes.jl",
+      "bytes": 2457,
+      "sha256": "90167fecde26c31a4c896f45f1a8ba0840309e45202a10947438154b372b3e17"
+    },
+    {
+      "path": "src/Hooks/Catalog.jl",
+      "bytes": 8585,
+      "sha256": "8c8bfaed0524cd8197f233986c72613357be6ec9a6467e555308cbd3cd73db89"
+    },
+    {
+      "path": "src/Hooks/Config.jl",
+      "bytes": 7352,
+      "sha256": "7e6081bb6867cb8cb7e0a088de6fbc01d54125bd65174e2a199465f699863800"
+    },
+    {
+      "path": "src/Hooks/Lifecycle.jl",
+      "bytes": 6932,
+      "sha256": "a52a095e4432b70099564ca7cd425a950cccdbca9c9688f3b68bc626130fa507"
+    },
+    {
+      "path": "src/Hooks/Runner.jl",
+      "bytes": 11276,
+      "sha256": "9d83359be140e2f99412c159eb77237352fd8cf01683d187786887540914b609"
+    },
+    {
+      "path": "src/Hooks/Types.jl",
+      "bytes": 3105,
+      "sha256": "68edc930f49353cf5d27f36b52b9571fdf3aba302c66188979630e021378b997"
+    },
+    {
+      "path": "src/MCP/Client.jl",
+      "bytes": 20151,
+      "sha256": "5b4e3b4da83a26739bc7f051ea0d8e9ac70a214ba3d10cd94fc6c809df9d3651"
+    },
+    {
+      "path": "src/MCP/Content.jl",
+      "bytes": 11082,
+      "sha256": "052fdd29bd589807c45766edfaf72233ce7a49c9695de1ac87ca3669e33c39f6"
+    },
+    {
+      "path": "src/MCP/Discovery.jl",
+      "bytes": 7828,
+      "sha256": "10a6ca944ae41ac21c7f7b9e5b7f7c7ade2f9fa6daa8b357aeec8a5ca26b7186"
+    },
+    {
+      "path": "src/MCP/HTTP.jl",
+      "bytes": 10760,
+      "sha256": "1df5c9676bbb2ea97139de73bc892e273c134237ecad51b8fce781ea70db0336"
+    },
+    {
+      "path": "src/MCP/JSONRPC.jl",
+      "bytes": 9560,
+      "sha256": "d870be7a17379842473e28d03e8f6db7fd37da2f0de57d31817b06a1292e48da"
+    },
+    {
+      "path": "src/MCP/Manager.jl",
+      "bytes": 4281,
+      "sha256": "48afb68b1fcce5dab8f43651a28cca1f3feeb3620d232b28408bf21b9a52b542"
+    },
+    {
+      "path": "src/MCP/SSE.jl",
+      "bytes": 2969,
+      "sha256": "aa7079b6e0c971ebdf33e71dc8785128762b2c2ebce24b226b59a49c1d03bf84"
+    },
+    {
+      "path": "src/MCP/Schema.jl",
+      "bytes": 15030,
+      "sha256": "2d056480feeb4d25a7ef8bc971c858be76bc664e3ce52b149fce9cd1d4c7ba7f"
+    },
+    {
+      "path": "src/MCP/Stdio.jl",
+      "bytes": 6659,
+      "sha256": "c4d59e74b951cef069ab0361a1ba642e93b4e194b569debc82ce21567e8fd5e6"
+    },
+    {
+      "path": "src/MCP/Types.jl",
+      "bytes": 10696,
+      "sha256": "836d032361c8aae21fd60651c018c0a94dce45b2f1a90ac39eb151c5b7ce54d7"
+    },
+    {
+      "path": "src/Memory/Index.jl",
+      "bytes": 5092,
+      "sha256": "eb2c528a12d187aa553961ad237052a3622b4309089f2e40a5bea69753e6a264"
+    },
+    {
+      "path": "src/Memory/Namespaces.jl",
+      "bytes": 8333,
+      "sha256": "a4f9cb497841ab39e2af288d0de8e998375cc7616ecf92d0a7667000ef336b86"
+    },
+    {
+      "path": "src/Memory/Options.jl",
+      "bytes": 4897,
+      "sha256": "9c40669526a638b89ab27affb4110531c916b519eee2cf459c3d5c0d117f0675"
+    },
+    {
+      "path": "src/Memory/Pagination.jl",
+      "bytes": 5535,
+      "sha256": "52a3e008e0ed20fa6963b0cecc6bb3f9bdd0043aa54b2aaea078370312cb7c84"
+    },
+    {
+      "path": "src/Memory/Ranking.jl",
+      "bytes": 5704,
+      "sha256": "eecf7a69a4894712d64fef2bc7e3533a11ef1bb0b0c1dcd601878519132aa7c0"
+    },
+    {
+      "path": "src/Memory/Records.jl",
+      "bytes": 8532,
+      "sha256": "f57c1e24b7b6c24813aef787b9f05faea8db29b61b34eff27015ab28ea0e0e2a"
+    },
+    {
+      "path": "src/Memory/Retrieval.jl",
+      "bytes": 6284,
+      "sha256": "06c60d194bd094a67cea955606e8d55057b98b12eff268d8c19b1354df92865e"
+    },
+    {
+      "path": "src/Memory/Store.jl",
+      "bytes": 8312,
+      "sha256": "b949d64913682a5f76b67c8c3fd5614a93af0613f3faa5c47fbb8dae549ec2bb"
+    },
+    {
+      "path": "src/Memory/Tokens.jl",
+      "bytes": 5018,
+      "sha256": "4c4c1212b5cb83ca0a0251e436e0ce2b66306c4f68c02421c27a8b6679d6d708"
+    },
+    {
+      "path": "src/Memory/Types.jl",
+      "bytes": 3343,
+      "sha256": "5b5a70580e4e5493171931d29ffc2de46b7a3905eae7b700cc74681d6508e4f5"
+    },
+    {
+      "path": "src/Models/CatalogCache.jl",
+      "bytes": 12604,
+      "sha256": "95799621f7792958cb2d340939ff5d3ff50fa2b069243a136705d5a27e98d5cd"
+    },
+    {
+      "path": "src/Models/CatalogParsing.jl",
+      "bytes": 6660,
+      "sha256": "abed77bf3aa6bbc0997808da8090d1b08a57ed41bb9c66b337b6f8130fc25d02"
+    },
+    {
+      "path": "src/Models/CatalogTypes.jl",
+      "bytes": 6350,
+      "sha256": "048af166bd7f54ca756927830b7f74e1e4beddbf93305a067629740d5873b4c4"
+    },
+    {
+      "path": "src/Models/CircuitServices.jl",
+      "bytes": 4360,
+      "sha256": "3f54ff0122a8224778d731e592b815783721bc2ce3b5b1f8e89e63c54767ac64"
+    },
+    {
+      "path": "src/Models/CircuitState.jl",
+      "bytes": 9425,
+      "sha256": "57241665dc77844b26eeb31b5d136f1eccce57b3820948bbb40eebfcacb48879"
+    },
+    {
+      "path": "src/Models/CircuitTypes.jl",
+      "bytes": 4222,
+      "sha256": "06f57b9fff5c2d19496f4cc3c1a2eb702d07211fd47ce218fb4a2eaf488270bd"
+    },
+    {
+      "path": "src/Models/Delivery.jl",
+      "bytes": 2018,
+      "sha256": "d2436dcd7452a9627756643a26d731de80c49a9b9aae9198e051f1da569f8214"
+    },
+    {
+      "path": "src/Models/Errors.jl",
+      "bytes": 2189,
+      "sha256": "95675a70286627d10decde4028fa449ca739bd42d224b477a3069d795a1e6dbb"
+    },
+    {
+      "path": "src/Models/HTTP.jl",
+      "bytes": 5822,
+      "sha256": "6f9972fe72b8ae5abbe464be60ce4f018abddc29ac5b1a04e12a3bb71ef8973f"
+    },
+    {
+      "path": "src/Models/Provider.jl",
+      "bytes": 5887,
+      "sha256": "54ebdff04329f3464b6b51f50a7628f2ceb71e27d2a66323796bd3f827de04e3"
+    },
+    {
+      "path": "src/Models/Requests.jl",
+      "bytes": 7527,
+      "sha256": "0f5b46135d01318a5c64948f613889a76720fe4c8f3bcef5270999dbccd67e74"
+    },
+    {
+      "path": "src/Models/RetryDecisions.jl",
+      "bytes": 2558,
+      "sha256": "14c58762cb12a9f8223acd52f6f661510b2dc0b35087236acb49629845cd1be2"
+    },
+    {
+      "path": "src/Models/RetryHeaders.jl",
+      "bytes": 3419,
+      "sha256": "d7dcdcf901930f4b2fbedd2f59e0a615d3f9d78c74a29c5169c18bf26d4958ae"
+    },
+    {
+      "path": "src/Models/RetryRuntime.jl",
+      "bytes": 5104,
+      "sha256": "3c8c1cd6397f5fb0c71abca8b9e43d19fe818e7120929789b92e514d301a4778"
+    },
+    {
+      "path": "src/Models/RetryTypes.jl",
+      "bytes": 3663,
+      "sha256": "cfe3932948c7b3d95f8c418ecff8d95f4438deba55ce49cf88c93f1595a34ea9"
+    },
+    {
+      "path": "src/Models/RoutingCapabilities.jl",
+      "bytes": 2061,
+      "sha256": "095e8bac7e376acdf0a896b05dad8ef00603f04548179f80c35be208291ba621"
+    },
+    {
+      "path": "src/Models/RoutingConfig.jl",
+      "bytes": 10096,
+      "sha256": "49e344ca4613333ca6ce7f80b3ea95dc2b80b33d0ff4f68052cdda50d5353545"
+    },
+    {
+      "path": "src/Models/RoutingPlans.jl",
+      "bytes": 5462,
+      "sha256": "c163f80310ab42a80934dbe0633d07777424604ec39b9e9de9815239ba230349"
+    },
+    {
+      "path": "src/Models/RoutingRuntime.jl",
+      "bytes": 4725,
+      "sha256": "93280a330589f653caccd14d618b7edd30931f00f38d565314e2022cc30842ed"
+    },
+    {
+      "path": "src/Models/RoutingState.jl",
+      "bytes": 3720,
+      "sha256": "c40a36a9e32ff0336db95dc5b0a53bd0f290abc50986877a458cd5d85a2438e6"
+    },
+    {
+      "path": "src/Models/RoutingTypes.jl",
+      "bytes": 2402,
+      "sha256": "74fde5a38a6d52362c7e46a6c01c2c10f73c19f76561a1db2b4f3dd678f619ae"
+    },
+    {
+      "path": "src/Models/ServiceRequests.jl",
+      "bytes": 5370,
+      "sha256": "173bf97722844e4b4804431fb8a06f6fb0bce739c14a9ebb8637149508d2c970"
+    },
+    {
+      "path": "src/Models/ServiceTransport.jl",
+      "bytes": 5979,
+      "sha256": "5204a51b5ab474eb3dabb9d24c62f026556fd21b01ed130936be48066e8f39d6"
+    },
+    {
+      "path": "src/Models/Streaming.jl",
+      "bytes": 13218,
+      "sha256": "f367bec96118049ecaa46b87bfa1652615094126de2afa23d57952d4e19c7c4d"
+    },
+    {
+      "path": "src/Models/TokenCounts.jl",
+      "bytes": 9337,
+      "sha256": "cdd16b45cbd798977f29296c4217bf6fcb1faf17215d9a6eb42479eb9b5cab28"
+    },
+    {
+      "path": "src/ProjectData/Backends.jl",
+      "bytes": 16182,
+      "sha256": "c3f53d9178328676bb0d91a37f258e05b757171c9113e89915c16d73a297f572"
+    },
+    {
+      "path": "src/ProjectData/Compaction.jl",
+      "bytes": 4623,
+      "sha256": "568859bf165de86384f465bf5e997ef87f0731ec6413ca29b96de9cc86e0c61e"
+    },
+    {
+      "path": "src/ProjectData/CompilerConfig.jl",
+      "bytes": 13676,
+      "sha256": "fcbf2adef6a202e48c38d8ae4c5e72f55ed947a0f6c3e5437eb9833d28520a3c"
+    },
+    {
+      "path": "src/ProjectData/EvidenceAnchors.jl",
+      "bytes": 3259,
+      "sha256": "3d292ddcaf7f0e04be470cbc5c81f7842fd0ef000b9f6b9d632c132ac6968b8d"
+    },
+    {
+      "path": "src/ProjectData/EvidenceCapture.jl",
+      "bytes": 6728,
+      "sha256": "b736b876a86c0e85b3ef9cc0b8a94d47d0d516ddd7d7c59c6e29ac6d676dfda0"
+    },
+    {
+      "path": "src/ProjectData/EvidenceManager.jl",
+      "bytes": 3379,
+      "sha256": "f65f45e6a6748632371a8b209935c9017828e6fc2481bc8ab6068adae2e964f0"
+    },
+    {
+      "path": "src/ProjectData/EvidencePages.jl",
+      "bytes": 2472,
+      "sha256": "80f3bec86431bbee87127592bc8ddae5355243030453f5b1c0e2d3a780482f53"
+    },
+    {
+      "path": "src/ProjectData/EvidenceRequests.jl",
+      "bytes": 2879,
+      "sha256": "7264637a6d37e3bbe44601672d1f1d542f8c46ac2e9f4f203fb64a9cbac07464"
+    },
+    {
+      "path": "src/ProjectData/EvidenceSearch.jl",
+      "bytes": 1765,
+      "sha256": "50f422fb00000ac17d479a8d0208ab5790e89f104cd3d294739f99e31b07a895"
+    },
+    {
+      "path": "src/ProjectData/EvidenceTraversal.jl",
+      "bytes": 4043,
+      "sha256": "3f573bab17be2d54968e16f8408347115533192f367040e00cc3788a28d74000"
+    },
+    {
+      "path": "src/ProjectData/EvidenceTypes.jl",
+      "bytes": 3022,
+      "sha256": "a827e6df4e8318383817a915f76672a3956980b591a60a58067d45357caade72"
+    },
+    {
+      "path": "src/ProjectData/EvidenceVerification.jl",
+      "bytes": 2806,
+      "sha256": "5040500437b4ee778d18fe929d38ccdd39816a7e3837008cac3c8f565ae4fc31"
+    },
+    {
+      "path": "src/ProjectData/Fingerprints.jl",
+      "bytes": 2028,
+      "sha256": "7d1feb4c10ac1c92ac0067aff9ee29755d5f9e57aea500f7b29304fe77081168"
+    },
+    {
+      "path": "src/ProjectData/Inputs.jl",
+      "bytes": 1972,
+      "sha256": "ae96ebfc9e1578da0fa9be8599ec4a3e4e11af75020d86a4749298b4e19c8e44"
+    },
+    {
+      "path": "src/ProjectData/JSONC.jl",
+      "bytes": 2689,
+      "sha256": "4dacbfd5d98ec03a393fcc7266494239872044d8ee1147df7cbd5d0249b54369"
+    },
+    {
+      "path": "src/ProjectData/JuliaBackend.jl",
+      "bytes": 2824,
+      "sha256": "c0ccf7529fe89e01322995e7ba57026da2573383e8bc8b9da11fad7137da5e10"
+    },
+    {
+      "path": "src/ProjectData/JuliaDeclarations.jl",
+      "bytes": 6292,
+      "sha256": "1d9ed0db7ed5d82d2a34f0e12f4d20b67f342a0a2385510183882031684bffd6"
+    },
+    {
+      "path": "src/ProjectData/JuliaQueries.jl",
+      "bytes": 9057,
+      "sha256": "1e40c45bffa8eddfbc5697f10b223621a021052a3ec2240e57a6bafd85c8c2cf"
+    },
+    {
+      "path": "src/ProjectData/JuliaSignatures.jl",
+      "bytes": 4292,
+      "sha256": "ae87a32f5096c43f91d405a5d2907845cddfaba5e8066bbe06494a2e55bb85e8"
+    },
+    {
+      "path": "src/ProjectData/JuliaSource.jl",
+      "bytes": 5443,
+      "sha256": "fe6a7006f4124d5ff2784fe68cf36464e98d195c3fa7dff31238be1c760f1135"
+    },
+    {
+      "path": "src/ProjectData/JuliaTypes.jl",
+      "bytes": 3199,
+      "sha256": "7285760452b7b82e307ac761dd3225c500a3f607f1c6f119c40ec2aef9045a9f"
+    },
+    {
+      "path": "src/ProjectData/JuliaWalk.jl",
+      "bytes": 5347,
+      "sha256": "3d23d3dd2b020a53e80661bfb757067c5a7ad1437ec71769e97cc52eb42ac3b6"
+    },
+    {
+      "path": "src/ProjectData/Locations.jl",
+      "bytes": 6913,
+      "sha256": "4d7724ff12411346d3392261ae487556385ab0b859c04fef94217ecc1644188a"
+    },
+    {
+      "path": "src/ProjectData/Navigation.jl",
+      "bytes": 13861,
+      "sha256": "9346cf8ac762726b1c6cf4c83dd31dd8fe3d77f44a655da2d2b671698d845dbc"
+    },
+    {
+      "path": "src/ProjectData/Queries.jl",
+      "bytes": 5038,
+      "sha256": "8f47ce20d376617141b9f07208bbbcf794a6fe74d7e9937f5cb38750c23bf449"
+    },
+    {
+      "path": "src/ProjectData/Replay.jl",
+      "bytes": 7031,
+      "sha256": "72617e0e5cd2c38a53ecf3996867a94a63fc9c09a8664686c3043a25ca2a993e"
+    },
+    {
+      "path": "src/ProjectData/State.jl",
+      "bytes": 16958,
+      "sha256": "2dc89dea5003d2402a4fbe85e9376d95fb754aeffebe0afce654041c93757ec5"
+    },
+    {
+      "path": "src/ProjectData/TypeScript.jl",
+      "bytes": 15693,
+      "sha256": "c073b6995d51cde2560ba5afa50c450a0ece380d08a8783402819e8391a7dda9"
+    },
+    {
+      "path": "src/ProjectData/Types.jl",
+      "bytes": 6318,
+      "sha256": "84fd478a4a5497d95303549391967e5c4001432b5f33a658be8c9a829451f82b"
+    },
+    {
+      "path": "src/ProjectData/WatchBatches.jl",
+      "bytes": 3927,
+      "sha256": "21807ff65dcdcd68cd548a2a30d383f9b90336a081405205a2375510aae8abeb"
+    },
+    {
+      "path": "src/ProjectData/WatchRuntime.jl",
+      "bytes": 5104,
+      "sha256": "1fd5c119e08d13aaf7708adc946e4f78cbc7bb604400c93a91730cd896ad19e0"
+    },
+    {
+      "path": "src/ProjectData/WatchSnapshots.jl",
+      "bytes": 7346,
+      "sha256": "1811c9400c42f533e7849acb187b56e10d91c25d13d22eac716f00296a9e90ca"
+    },
+    {
+      "path": "src/ProjectData/WatchTypes.jl",
+      "bytes": 6770,
+      "sha256": "de67ae22f9282aafb40adf5c59f01fe1c7706d5703a84bf5044b35579a93d62f"
+    },
+    {
+      "path": "src/Protocol/Analyzers.jl",
+      "bytes": 3964,
+      "sha256": "28d79b732b9b0475382931d17a0bed0c78a9d205600174e901f1fb83754c2986"
+    },
+    {
+      "path": "src/Protocol/Context.jl",
+      "bytes": 5848,
+      "sha256": "afe48a0d09fdbf85c7331fa8c48514b11eafb1ebfdf495431a8393a8f99972e9"
+    },
+    {
+      "path": "src/Protocol/Diagnostics.jl",
+      "bytes": 2612,
+      "sha256": "e028061e99e0d6d2c90d0151713de3904f4d065de278804ee83b3c465ca7706f"
+    },
+    {
+      "path": "src/Protocol/Extensions.jl",
+      "bytes": 2715,
+      "sha256": "84638266ca7f3c44e52eebd98e1a1b30103789ebd0ab5624e8bd657658bdfce7"
+    },
+    {
+      "path": "src/Protocol/Framing.jl",
+      "bytes": 3091,
+      "sha256": "3e1279a1c30b9b727ef47158054988f1dc613ebaed53d98d98c0433fa38864af"
+    },
+    {
+      "path": "src/Protocol/Hooks.jl",
+      "bytes": 7284,
+      "sha256": "795c33b484faade49b113f410ee4867b60047e7c75831681c13e2f0057863d10"
+    },
+    {
+      "path": "src/Protocol/MCP.jl",
+      "bytes": 4111,
+      "sha256": "80e80782e0b9f68c784766f716aaec5e7267f31c75300405317077143288a455"
+    },
+    {
+      "path": "src/Protocol/Memory.jl",
+      "bytes": 3477,
+      "sha256": "5fdbe65fe653df7c4d63367480db1d7d6ed09a7321eb84a62082dad1c2f985b5"
+    },
+    {
+      "path": "src/Protocol/Models.jl",
+      "bytes": 2460,
+      "sha256": "ecc15ac90df4047900f4a864fc7f3b76ba42f619e9d1aa7e2f96e4f00b6ca5d7"
+    },
+    {
+      "path": "src/Protocol/Project.jl",
+      "bytes": 8273,
+      "sha256": "14ba76f297415383a772dd6fad5b49f5c69f30a7fb92c9925d9dd062627b442d"
+    },
+    {
+      "path": "src/Protocol/ProjectWatch.jl",
+      "bytes": 4552,
+      "sha256": "03b58d5c6bca03822fdeb58a376e09fe6121488a955a6af663425818253a93a8"
+    },
+    {
+      "path": "src/Protocol/Security.jl",
+      "bytes": 2683,
+      "sha256": "f4edb74cfd986a4e337d3ba7b9387e4a86fdcb90b552df56db17db83e4674c23"
+    },
+    {
+      "path": "src/Protocol/Server.jl",
+      "bytes": 27360,
+      "sha256": "f2ab606ce087793e2fc3e754ed27dce88b2e4ee485171985f17c7f5b7540edc6"
+    },
+    {
+      "path": "src/Protocol/Skills.jl",
+      "bytes": 7885,
+      "sha256": "37e8fb5ea14af7ace02065fa218b5ec52be25fcb7a4cfc04b62ebe87e4b42a73"
+    },
+    {
+      "path": "src/Protocol/Tasks.jl",
+      "bytes": 4557,
+      "sha256": "40eb03fff392aa3de56c8e8b54a92334bcac03658a4952c8bdefe78e8a50f67f"
+    },
+    {
+      "path": "src/Protocol/Terminal.jl",
+      "bytes": 2586,
+      "sha256": "1736e5284f8a7f54ea00e966832fc41a00d6db50eb383ea6bf7d7d27966cfc04"
+    },
+    {
+      "path": "src/Runtime/Cancellation.jl",
+      "bytes": 932,
+      "sha256": "93d8074c242f6c3c71dc73111748ef071ee6bbfcae7125d81922bc7b06d0f8e9"
+    },
+    {
+      "path": "src/Runtime/ComputeProcess.jl",
+      "bytes": 8626,
+      "sha256": "018807b620fb965a3ecb885f9a3c7ac0642edaa530dce886df4db7156f9c15f9"
+    },
+    {
+      "path": "src/Runtime/Context.jl",
+      "bytes": 3073,
+      "sha256": "c9013fe8d026439fdb59f1d7acc85c86b57d7a52bde2c8ed7af6f809c710a8ea"
+    },
+    {
+      "path": "src/Runtime/OwnedOperations.jl",
+      "bytes": 8393,
+      "sha256": "279b9f767e37aeef732af1656f06113a9b2b1c3912fe16c570b17429330285aa"
+    },
+    {
+      "path": "src/Runtime/Precompile.jl",
+      "bytes": 4848,
+      "sha256": "dd21524a4b620e56bc32caa53d1787d6b8c032abe4483a64b313765da0295caf"
+    },
+    {
+      "path": "src/Runtime/TerminalEndpoint.jl",
+      "bytes": 3324,
+      "sha256": "51cf2a76052eeb0f2f04e91a321595daa248f4d0624907390735446d81d8218f"
+    },
+    {
+      "path": "src/Runtime/TerminalJournal.jl",
+      "bytes": 4938,
+      "sha256": "c1f34fb8c6d6acec4071cc188c203046915e336e82bdcc1fd0d0e83584ab8914"
+    },
+    {
+      "path": "src/Runtime/TerminalLifecycle.jl",
+      "bytes": 11685,
+      "sha256": "72a6f3623029a5fe2ec286590bf1a199aaea47c07f44f3ceccc2490138c5cdfc"
+    },
+    {
+      "path": "src/Runtime/TerminalOperations.jl",
+      "bytes": 2946,
+      "sha256": "35557b88c316067ac8ee7ab87488705b2f0dfd700a467ef9598a333a1fd39387"
+    },
+    {
+      "path": "src/Runtime/TerminalTypes.jl",
+      "bytes": 2732,
+      "sha256": "48cefdd24fc69e76261a3d7ac0f1221eaa6c0e92a037f8e395661fd1fedee3b5"
+    },
+    {
+      "path": "src/Runtime/TerminalWorker.jl",
+      "bytes": 1950,
+      "sha256": "99b44c2934a78b93d8e507d16c5c521c9c205a1e975cf313ad557d52177b1d71"
+    },
+    {
+      "path": "src/Runtime/ToolScheduler.jl",
+      "bytes": 3358,
+      "sha256": "c22a7342fc00ef72e78e46b67048cc2f997836ad7c286355658e1ab57002fc85"
+    },
+    {
+      "path": "src/Runtime/UTF8.jl",
+      "bytes": 2278,
+      "sha256": "60711f754403e5f153ca4d92cf0ec966a2ff884074c0e77cd5c84fb173915821"
+    },
+    {
+      "path": "src/Security/Budgets.jl",
+      "bytes": 3347,
+      "sha256": "1e449bba1022fd105aa7735f3ae94144fbbc9554c275ac51bd9ec9e399a106aa"
+    },
+    {
+      "path": "src/Security/ComputeLimits.jl",
+      "bytes": 3054,
+      "sha256": "6bc38089606fccb6d550dda9dff7f87d5b4566dfd63968fd81ab741e97620f1d"
+    },
+    {
+      "path": "src/Security/ComputeProtocol.jl",
+      "bytes": 4220,
+      "sha256": "9f0ec0aff7f0dce5baa24d5f2162d8ffa262b3b1445f6cb258973bcbaf8640c9"
+    },
+    {
+      "path": "src/Security/ComputeSeccomp.jl",
+      "bytes": 7983,
+      "sha256": "622a7698f9eb9161f346cdc58f6ec55a1a6f13744ae7933508a8347c5a128092"
+    },
+    {
+      "path": "src/Security/ExecutionEnvironment.jl",
+      "bytes": 1648,
+      "sha256": "7eeca23648bd1f49c8ceedf76684bf46fb7e5fd8eed40cbb159bc9442c1f9195"
+    },
+    {
+      "path": "src/Security/ExecutionEvidence.jl",
+      "bytes": 1716,
+      "sha256": "941767e3324b0e4c7be45bd8af164b977f33827a7d18a0dd6d98c5ce73905e58"
+    },
+    {
+      "path": "src/Security/ExecutionLaunch.jl",
+      "bytes": 1192,
+      "sha256": "ec0b80a4ce6b443c93e1a0e7de873785b4779f02397116703e7181c1637f25a5"
+    },
+    {
+      "path": "src/Security/ExecutionPaths.jl",
+      "bytes": 5324,
+      "sha256": "59fc7dd9eeae084be16f2f71a424a63d9dcb646c6837494715a5bcf3f9142c80"
+    },
+    {
+      "path": "src/Security/ExecutionPlan.jl",
+      "bytes": 6071,
+      "sha256": "d3552e6dbf07e897c9852f5597440aedbb086ccf15c6d8b262111b7903fe1de8"
+    },
+    {
+      "path": "src/Security/ExecutionPolicy.jl",
+      "bytes": 4584,
+      "sha256": "a265e053ea2f053e7bab4d536daf90f29c189a7efd227441c0288e05b30d6d6c"
+    },
+    {
+      "path": "src/Security/ExecutionProbe.jl",
+      "bytes": 6464,
+      "sha256": "1ef22f6ab1bad5a8e4cb05af0d59f29b645415faadbcc3f243e61fdda34b4cd9"
+    },
+    {
+      "path": "src/Security/ExecutionTypes.jl",
+      "bytes": 2955,
+      "sha256": "60637e5c42d087d9d96933ddcefc771fd8a1e48a16776eeed634ab4aeaa82996"
+    },
+    {
+      "path": "src/Security/ExecutionWorker.jl",
+      "bytes": 5132,
+      "sha256": "116b81ff940ba917f00d277406d2fc018df1691b63dc3fa677339a39a9e276bc"
+    },
+    {
+      "path": "src/Security/Files.jl",
+      "bytes": 1908,
+      "sha256": "c4cf1d9f5958fe4511d993d3e72fda1aec2ea7b8462b72fd3579bcdba982e43e"
+    },
+    {
+      "path": "src/Security/Permissions.jl",
+      "bytes": 2183,
+      "sha256": "786caa6259e0ced12a00d9c017ef370a86835dc6815230c8f3fcb7a1913b9214"
+    },
+    {
+      "path": "src/ShenScope.jl",
+      "bytes": 16359,
+      "sha256": "2ef556a95c011e5d9944943b7d88802dc99dc7e8c90123a47baff6c210a75f71"
+    },
+    {
+      "path": "src/Skills/Activation.jl",
+      "bytes": 11042,
+      "sha256": "04ec4c9651634dcb90709dea6b16203afba08d88cffccad0983629d4817d3d7c"
+    },
+    {
+      "path": "src/Skills/Discovery.jl",
+      "bytes": 8861,
+      "sha256": "dc6fe0f3215ad05d17e6a4888a6e5a7489e1e17d5b0ba2c50829be35312c2692"
+    },
+    {
+      "path": "src/Skills/Metadata.jl",
+      "bytes": 5906,
+      "sha256": "1ce20d076dc6b89c3f07fb281adb820481b99b5207f8f17b30be2254f3131a8d"
+    },
+    {
+      "path": "src/Skills/Projection.jl",
+      "bytes": 3294,
+      "sha256": "dfa279a10d7f0224e6dc08a25beb292eb4ad9eaff76d03aeaaccf3ed864528e3"
+    },
+    {
+      "path": "src/Skills/Types.jl",
+      "bytes": 5679,
+      "sha256": "f6168b5fb8bc08a39d8a03268dc6fe5d6c156fa88ea07bea0763aea176153166"
+    },
+    {
+      "path": "src/Storage/AtomicStreams.jl",
+      "bytes": 3001,
+      "sha256": "1e763bbab43f7c3d8d27ad7401be3ccc443901a6287f66e6389eb31a0d3b707b"
+    },
+    {
+      "path": "src/Storage/BoundedJSON.jl",
+      "bytes": 4123,
+      "sha256": "36575d0955d668af0cac9e703043bbb2f5bba4ac295bf41ce48fa492134ded96"
+    },
+    {
+      "path": "src/Storage/JSON.jl",
+      "bytes": 3158,
+      "sha256": "5735ed799976d178611b9a1d0f38e4c95d401553c0f74faea98c81365232c70f"
+    },
+    {
+      "path": "src/Storage/Journal.jl",
+      "bytes": 6835,
+      "sha256": "39a6730391e68cfa096bfe82116c8ea256d7c554ff3e850c7d3e14a877f1b88a"
+    },
+    {
+      "path": "src/Storage/JournalStream.jl",
+      "bytes": 2851,
+      "sha256": "4fd406eab6ed836b53af6b34a7743ae603c7444d8d709dc7e80d7ea7265f9ea3"
+    },
+    {
+      "path": "src/Storage/Staging.jl",
+      "bytes": 5292,
+      "sha256": "36b4e49df606c08f10bf89df4ea38c0a497eddc792552d0da698a645e73a49cb"
+    },
+    {
+      "path": "src/Storage/Versioned.jl",
+      "bytes": 5312,
+      "sha256": "c23bc1abb88cb76d5c5372b032bc42da3ebb1ddba1cc22e04bdfa1a3436efb4c"
+    },
+    {
+      "path": "src/Tasks/Executor.jl",
+      "bytes": 8547,
+      "sha256": "c64e1f812ecccc931581c77a618a6014696fd85bb8111bc3ed96e3b74dc3bca3"
+    },
+    {
+      "path": "src/Tasks/Graph.jl",
+      "bytes": 3200,
+      "sha256": "a236dd93823c5b95eebd2e1a1957a006319c059e43da0eb7b499051af3a9e61c"
+    },
+    {
+      "path": "src/Tasks/Lifecycle.jl",
+      "bytes": 14586,
+      "sha256": "c82c5fa68893b7e5c958328287e9bee4fba0fb490e7b99959c8748025b732d6d"
+    },
+    {
+      "path": "src/Tasks/Queries.jl",
+      "bytes": 3958,
+      "sha256": "a6805c21f5c907a85f3b7c08c765b4ec96693acd7a88484d7729c1437d577d6a"
+    },
+    {
+      "path": "src/Tasks/Results.jl",
+      "bytes": 6622,
+      "sha256": "8a7e2ff1db2ecbaf34da08c6d3fa28f6d27649ba3ac9b717f0436fe4f26b8675"
+    },
+    {
+      "path": "src/Tasks/Runner.jl",
+      "bytes": 7022,
+      "sha256": "811f05ac5a1fac48958ccc224e170f498f51903ff4787bb8bdea745dc401f672"
+    },
+    {
+      "path": "src/Tasks/Serialization.jl",
+      "bytes": 6541,
+      "sha256": "418adc5abbc76c2691c8f02421e534ee8eee865be985d3ac1c87c596538c5167"
+    },
+    {
+      "path": "src/Tasks/Store.jl",
+      "bytes": 8903,
+      "sha256": "a719a3de228f3efc81a8abd2a5fe134697fee81b992774d14b8e6e1fa1735368"
+    },
+    {
+      "path": "src/Tasks/Types.jl",
+      "bytes": 11572,
+      "sha256": "a9368e3ef1c732fc07cee154ae62e9dd091b042a92e4f43089a00f12d4d56dd4"
+    },
+    {
+      "path": "src/Tools/Analyzers.jl",
+      "bytes": 7683,
+      "sha256": "fd9b1ede703734f282678f2d34a04d83428dc37bb33e27dcacdd94135de1b2f0"
+    },
+    {
+      "path": "src/Tools/Context.jl",
+      "bytes": 5923,
+      "sha256": "fd23844f47cb0e89b448695b17ec8e923b1564aeb7ffd59339c3b3efc446eed2"
+    },
+    {
+      "path": "src/Tools/Diagnostics.jl",
+      "bytes": 1998,
+      "sha256": "30a7b3297dba1d7b1c8d1d522b8faf72055635b7871bb5196e2ab73739073032"
+    },
+    {
+      "path": "src/Tools/Extensions.jl",
+      "bytes": 6190,
+      "sha256": "49dbdb8771c38398216ce0cc9420b61e36351a0c76c0b4a9f043513a46741fd6"
+    },
+    {
+      "path": "src/Tools/Files.jl",
+      "bytes": 7148,
+      "sha256": "02bfffb0f27041190e8602cbc13a16435a80c77d1a14bbcbd7a8671cbcefe16a"
+    },
+    {
+      "path": "src/Tools/Hooks.jl",
+      "bytes": 1778,
+      "sha256": "aa22ede7cf7a9feaaf897646f97235c08a1d97ef1f2ca0dcc62751f8c081dfd6"
+    },
+    {
+      "path": "src/Tools/MCP.jl",
+      "bytes": 5533,
+      "sha256": "7d9349acc57ec70175d63fbd2078a03675844f5162b5e5bca20ad2d3b60cfb3f"
+    },
+    {
+      "path": "src/Tools/Memory.jl",
+      "bytes": 5833,
+      "sha256": "a28cfe00bfcac17cd17ad2417e719b34440f2569bcdab9cd2f5e2340b237de44"
+    },
+    {
+      "path": "src/Tools/Models.jl",
+      "bytes": 7889,
+      "sha256": "903fe10eeca2f9e19c194c12418d5f26b0708f75353e1f1fa17c3e69b3bff95f"
+    },
+    {
+      "path": "src/Tools/Processes.jl",
+      "bytes": 15126,
+      "sha256": "874a9571aa415f6b464a9aa5ee0d9a509c9ebf1adc867f80db9817fd424dac88"
+    },
+    {
+      "path": "src/Tools/Project.jl",
+      "bytes": 7786,
+      "sha256": "2468019a5e1f1e37ca6b30da755d9fba7aa0c1278a0e2d78de5cc9e269a6f383"
+    },
+    {
+      "path": "src/Tools/Schema.jl",
+      "bytes": 5229,
+      "sha256": "8c5ab3b66f8d286d7f0f6417fe94d43c60242c46db232dac859fb8613828086e"
+    },
+    {
+      "path": "src/Tools/Security.jl",
+      "bytes": 824,
+      "sha256": "98cdd26844f344abe24afa80d9239cf60713184aeeda422b706b74e615af4a6a"
+    },
+    {
+      "path": "src/Tools/Skills.jl",
+      "bytes": 2083,
+      "sha256": "2408c0980e299367cd1c57a3e78b3226e2699841d3e781f1ec5aab78e26c0dc3"
+    },
+    {
+      "path": "src/Tools/Tasks.jl",
+      "bytes": 6558,
+      "sha256": "0855d5b17cef7a34181a492b9c538d2ac394f52ba30f9d0b56b5b5219229436c"
+    },
+    {
+      "path": "src/Tools/Terminal.jl",
+      "bytes": 3211,
+      "sha256": "618626f48677331ada208de69f69d9f07487bc8c519b6d0ee111d4836d46b084"
+    }
+  ],
+  "fingerprint": "b4e135353ee07e85a81da4bc676d14712227ed360ef785443f057142eb3f4970",
+  "source_commit": "808a7568c1da9fbcd1da5899faeb24d1e58d0395"
+}

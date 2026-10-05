@@ -3,14 +3,49 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
     policy=permissions_from_config(config)
     get(flags,"--allow-process",false) && (policy.rules[:process]=Allow)
     get(flags,"--allow-dynamic",false) && (policy.rules[:dynamic]=Allow)
-    ctx=RuntimeContext(get(flags,"--root",pwd());state_dir,permissions=policy,sandbox=sandbox_from_config(config),
+    get(flags,"--allow-persistence",false) && (policy.rules[:persistence]=Allow)
+    action=positional[2];save=get(flags,"--save",false)
+    archival=action in COMPILER_ARCHIVE_ACTIONS || save
+    archival && !haskey(flags,"--session") && throw(ShenScopeError(:input,"Compiler report archives require --session ID"))
+    save && (action!="compile" || get(flags,"--mode","graph")!="graph" || !haskey(flags,"--expected-revision")) &&
+        throw(ShenScopeError(:input,"Saving inference requires compile --mode graph --expected-revision N"))
+    ctx=RuntimeContext(get(flags,"--root",pwd());session_id=get(flags,"--session","cli-diagnostics"),
+        state_dir,permissions=policy,sandbox=sandbox_from_config(config),
         budget=BudgetLedger(limits_from_config(config)),approve=cli_approval)
-    args=Dict{String,Any}("action"=>positional[2])
-    length(positional)>=3 && (args["target"]=positional[3])
+    if archival
+        session=load_session(state_dir,ctx.session_id)
+        realpath(session.root)==ctx.root || throw(ShenScopeError(:permission,"Compiler archive conversation belongs to another workspace"))
+    end
+    action=="archive_save" && throw(ShenScopeError(:input,"CLI inference can be archived with compile TARGET --mode graph --save"))
+    args=Dict{String,Any}("action"=>action)
+    if action=="compile"
+        length(positional)==3 || throw(ShenScopeError(:input,"Compiler target required"));args["target"]=positional[3]
+        save && (args["mode"]="graph")
+    elseif action in ("archive_get","archive_label","archive_delete")
+        length(positional)==3 || throw(ShenScopeError(:input,"Archive report digest required"));args["report_id"]=positional[3]
+    elseif action=="archive_compare"
+        length(positional)==4 || throw(ShenScopeError(:input,"Two archive report digests required"))
+        args["before_id"]=positional[3];args["after_id"]=positional[4]
+    else
+        length(positional)==2 || throw(ShenScopeError(:input,"Unexpected diagnostics argument"))
+    end
     haskey(flags,"--mode") && (args["mode"]=flags["--mode"])
     haskey(flags,"--timeout") && (args["timeout"]=parse(Float64,flags["--timeout"]))
-    for (flag,key) in (("--max-ir-bytes","max_ir_bytes"),("--max-statements","max_statements"))
-        haskey(flags,flag) && (args[key]=parse(Int,flags[flag]))
+    for (flag,key) in (("--max-ir-bytes","max_ir_bytes"),("--max-statements","max_statements"),
+            ("--limit","limit"),("--offset","offset"),("--expected-revision","expected_revision"))
+        haskey(flags,flag) || continue
+        value=tryparse(Int,flags[flag]);value===nothing && throw(ShenScopeError(:input,flag*" must be an integer"))
+        save && key=="expected_revision" || (args[key]=value)
     end
-    tool=DiagnosticsTool();validate_schema(args,tool_schema(tool));println(canonical(execute(tool,args,ctx)));return 0
+    !save && haskey(flags,"--title") && (args["title"]=flags["--title"])
+    haskey(flags,"--expected-index-sha256") && (args["expected_index_sha256"]=flags["--expected-index-sha256"])
+    get(flags,"--apply-cleanup",false) && (args["dry_run"]=false)
+    tool=DiagnosticsTool();validate_schema(args,tool_schema(tool));diagnostics_arguments(args)
+    result=execute(tool,args,ctx)
+    if save
+        saved=compiler_archive_save(compiler_archive_store(ctx),result,ctx;
+            expected_revision=parse(Int,flags["--expected-revision"]),title=get(flags,"--title","Compiler report"))
+        result=merge(result,Dict("archive"=>saved))
+    end
+    println(canonical(result));return 0
 end

@@ -68,7 +68,19 @@ export class ShenScopePanel {
     private diagnosticsJob?: string;
     private completedDiagnosticsJobs = new Set<string>();
     private diagnosticsResult: any;
+    private diagnosticsResultJob?: string;
+    private diagnosticsRecorded = false;
+    private diagnosticsArchive: any;
+    private diagnosticsArchiveManual = false;
+    private diagnosticsArchiveExpanded = false;
+    private diagnosticsArchiveOffset = 0;
+    private diagnosticsArchiveTitle = 'Compiler report';
+    private diagnosticsCompareBefore = '';
+    private diagnosticsCompareAfter = '';
+    private diagnosticsComparison: any;
+    private diagnosticsCleanup: any;
     private diagnosticsTarget = 'cliptext_string';
+    private diagnosticsTargets: any[] | undefined;
     private diagnosticsMethod = 0;
     private diagnosticsBlock = 0;
     private diagnosticsPage = 0;
@@ -193,7 +205,7 @@ export class ShenScopePanel {
         this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
         this.modelsProfile = ''; this.modelPlanRole = '';
         this.terminalResult = undefined;
-        this.diagnosticsResult = undefined; this.diagnosticsMethod = 0; this.diagnosticsBlock = 0; this.diagnosticsPage = 0;
+        this.resetDiagnostics();
         this.sessionId = undefined; this.extensionsResult = undefined; this.extensionsPackageReceipt = undefined; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
@@ -288,7 +300,7 @@ export class ShenScopePanel {
                     if (this.analyzersBusy()) { throw new Error('Finish the current task before switching conversations.'); }
                     this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
                     this.modelsProfile = ''; this.modelPlanRole = '';
-                    const openingRevision = this.renderRevision; this.sessionId = session.id; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 };
+                    const openingRevision = this.renderRevision; this.resetDiagnostics(); this.sessionId = session.id; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 };
                     const full = await this.bridge.request('sessions/get', { session_id: session.id });
                     if (this.sessionId !== full.id) { return; }
                     this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren();
@@ -390,13 +402,27 @@ export class ShenScopePanel {
     private contextBusy(): boolean { return !!this.diagnosticsJob || this.diagnosticsStarting || !!this.terminalJob || this.terminalStarting || !!this.extensionsJob || this.extensionsStarting || !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.modelsJob || this.modelsStarting; }
 
     private async startDiagnostics(): Promise<void> {
-        if (this.contextBusy()) { throw new Error('Finish the current operation before starting compiler inference.'); }
+        await this.startDiagnosticsAction('compile', { target: this.diagnosticsTarget, mode: 'graph', timeout: 120 });
+    }
+
+    private resetDiagnostics(): void {
+        this.diagnosticsResult = undefined; this.diagnosticsResultJob = undefined; this.diagnosticsRecorded = false;
+        this.diagnosticsTargets = undefined;
+        this.diagnosticsMethod = 0; this.diagnosticsBlock = 0; this.diagnosticsPage = 0;
+        this.diagnosticsArchive = undefined; this.diagnosticsArchiveOffset = 0;
+        this.diagnosticsArchiveManual = false; this.diagnosticsArchiveExpanded = false;
+        this.diagnosticsCompareBefore = ''; this.diagnosticsCompareAfter = '';
+        this.diagnosticsComparison = undefined; this.diagnosticsCleanup = undefined;
+    }
+
+    private async startDiagnosticsAction(action: string, args: Record<string, unknown>): Promise<void> {
+        if (this.contextBusy()) { throw new Error('Finish the current operation before starting compiler work.'); }
         this.diagnosticsStarting = true; this.notice.hidden = true; this.updateActions();
         for (const control of Array.from(this.content.querySelectorAll<HTMLButtonElement>('button'))) { control.disabled = true; }
         try {
             const session_id = await this.ensureSession('Julia compiler');
-            const started = await this.bridge.request('diagnostics/start', { session_id, action: 'compile', target: this.diagnosticsTarget, mode: 'graph', timeout: 120 });
-            if (!this.completedDiagnosticsJobs.has(started.job_id)) { this.diagnosticsJob = started.job_id; this.setStatus('Inferring trusted Core method…'); }
+            const started = await this.bridge.request('diagnostics/start', { session_id, action, ...args });
+            if (!this.completedDiagnosticsJobs.has(started.job_id)) { this.diagnosticsJob = started.job_id; this.setStatus(action === 'compile' ? 'Inferring trusted Core method…' : 'Working with recorded compiler evidence…'); }
         } finally { this.diagnosticsStarting = false; this.updateActions(); }
         if (this.tab === 'Runtime') { await this.renderTab(); }
     }
@@ -414,22 +440,116 @@ export class ShenScopePanel {
         const controls = el('div', '', 'compiler-controls');
         const target = el('select'); target.setAttribute('aria-label', 'Compiler target'); target.disabled = this.contextBusy();
         try {
-            const targets = await this.bridge.request('diagnostics/query', { session_id, action: 'targets' });
+            const targets = this.diagnosticsTargets ?? await this.bridge.request('diagnostics/query', { session_id, action: 'targets' });
             if (revision !== this.renderRevision) { return; }
             for (const item of targets) { const option = el('option', item.name); option.value = item.name; target.append(option); }
             target.value = this.diagnosticsTarget;
             target.onchange = () => { this.diagnosticsTarget = target.value; };
             controls.append(target);
-        } catch { controls.append(el('p', 'Read permission is required to list compiler targets.', 'view-description')); }
+        } catch {
+            controls.append(el('p', 'Read permission is required to list compiler targets.', 'view-description'));
+            const readTargets = this.button('Read compiler targets', () => this.startDiagnosticsAction('targets', {}), 'secondary-button'); readTargets.disabled = this.contextBusy(); controls.append(readTargets);
+        }
         const run = this.button('Infer method', () => this.startDiagnostics(), 'primary-button'); run.disabled = this.contextBusy() || !target.options.length;
         controls.append(run); section.append(controls);
         if (this.diagnosticsJob || this.diagnosticsStarting) {
-            const pending = el('div', '', 'compiler-pending'); pending.append(el('span', 'Compiling or waiting for approval…'));
+            const pending = el('div', '', 'compiler-pending'); pending.append(el('span', 'Compiler operation running or waiting for approval…'));
             if (this.diagnosticsJob) { pending.append(this.button('Cancel inference', () => this.bridge.request('diagnostics/cancel_job', { session_id, job_id: this.diagnosticsJob }), 'secondary-button')); }
             section.append(pending);
         }
+        if (this.capabilities.compiler_report_archives) { await this.compilerArchiveView(section, session_id, revision); }
+        if (revision !== this.renderRevision) { return; }
+        if (this.diagnosticsRecorded && this.diagnosticsResult?.report) {
+            section.append(el('p', 'Recorded report · source currentness is unchecked. The archive validates its stored inventory and graph projections; its producer is unauthenticated.', 'compiler-recorded-note'));
+        }
         if (this.diagnosticsResult?.report) { this.compilerReportView(section, this.diagnosticsResult.report); }
         this.content.append(section);
+    }
+
+    private async compilerArchiveView(section: HTMLElement, session_id: string, revision: number): Promise<void> {
+        const archive = el('details', '', 'compiler-archive'); archive.open = this.diagnosticsArchiveExpanded;
+        archive.ontoggle = () => { this.diagnosticsArchiveExpanded = archive.open; }; archive.append(el('summary', 'Saved compiler reports'));
+        section.append(archive);
+        try {
+            const catalog = this.diagnosticsArchiveManual && this.diagnosticsArchive?.owner?.session_id === session_id ? this.diagnosticsArchive :
+                await this.bridge.request('diagnostics/query', { session_id, action: 'archive_list', offset: this.diagnosticsArchiveOffset, limit: 10,
+                    ...(this.diagnosticsArchiveOffset && this.diagnosticsArchive ? { expected_index_sha256: this.diagnosticsArchive.index_sha256 } : {}) });
+            if (revision !== this.renderRevision) { return; }
+            this.diagnosticsArchive = catalog;
+        } catch (error) {
+            if (revision !== this.renderRevision) { return; }
+            this.diagnosticsArchiveOffset = 0;
+            archive.append(el('p', String(error), 'view-description'), this.button('Read archived reports', () => this.startDiagnosticsAction('archive_list', { limit: 10 }), 'secondary-button'));
+            return;
+        }
+        const catalog = this.diagnosticsArchive;
+        archive.append(el('p', `${catalog.total} saved · ${(catalog.asset_bytes / 1024).toFixed(1)} KiB · revision ${catalog.revision}`, 'session-meta'));
+        if (this.diagnosticsArchiveManual) { archive.append(el('small', 'Approved catalog snapshot. Refresh requests a new permissioned read.')); }
+        const title = el('input'); title.value = this.diagnosticsArchiveTitle; title.setAttribute('aria-label', 'Report title'); title.maxLength = 512;
+        const save = this.button('Save report', () => this.startDiagnosticsAction('archive_save', { job_id: this.diagnosticsResultJob,
+            expected_revision: catalog.revision, title: this.diagnosticsArchiveTitle }), 'secondary-button');
+        const alreadySaved = catalog.items.some((entry: any) => entry.report_sha256 === this.diagnosticsResult?.report?.report_sha256);
+        save.disabled = this.contextBusy() || !this.diagnosticsResultJob || this.diagnosticsRecorded || alreadySaved || !title.value.trim();
+        title.oninput = () => { this.diagnosticsArchiveTitle = title.value; save.disabled = this.contextBusy() || !this.diagnosticsResultJob || this.diagnosticsRecorded || alreadySaved || !title.value.trim(); };
+        const saveControls = el('div', '', 'compiler-archive-save'); saveControls.append(title, save); archive.append(saveControls);
+        for (const entry of catalog.items) {
+            const row = el('div', '', 'compiler-archive-entry'); row.dataset.reportId = entry.report_sha256;
+            const name = el('strong', entry.title); name.title = entry.title;
+            row.append(name, el('small', `${entry.target} · ${entry.created_at.slice(0, 19).replace('T', ' ')} UTC`));
+            const fingerprint = el('code', `${entry.report_sha256.slice(0, 12)} · ${entry.source_fingerprint.slice(0, 12)}`); fingerprint.title = `Report ${entry.report_sha256}; source ${entry.source_fingerprint}`; row.append(fingerprint);
+            const actions = el('div', '', 'compiler-controls');
+            actions.append(this.button('Open report', () => this.startDiagnosticsAction('archive_get', { report_id: entry.report_sha256, expected_index_sha256: catalog.index_sha256 }), 'secondary-button'));
+            const rename = el('details', '', 'compiler-archive-rename'); rename.append(el('summary', 'Rename'));
+            const label = el('input'); label.value = entry.title; label.maxLength = 512; label.setAttribute('aria-label', `Title for ${entry.report_sha256.slice(0, 12)}`);
+            rename.append(label, this.button('Save title', () => this.startDiagnosticsAction('archive_label', { report_id: entry.report_sha256, title: label.value, expected_revision: catalog.revision }), 'secondary-button'));
+            actions.append(rename, this.button('Remove from catalog', () => this.startDiagnosticsAction('archive_delete', { report_id: entry.report_sha256, expected_revision: catalog.revision }), 'secondary-button'));
+            for (const button of Array.from(actions.querySelectorAll('button'))) { button.disabled = this.contextBusy(); }
+            row.append(actions); archive.append(row);
+        }
+        if (!catalog.items.length) { archive.append(el('p', 'No saved reports in this conversation.', 'empty-text')); }
+        const navigation = el('div', '', 'compiler-controls');
+        const previous = this.button('Previous reports', () => { this.diagnosticsArchiveOffset = Math.max(0, this.diagnosticsArchiveOffset - 10); return this.startDiagnosticsAction('archive_list', { offset: this.diagnosticsArchiveOffset, limit: 10, expected_index_sha256: catalog.index_sha256 }); }, 'secondary-button'); previous.disabled = this.contextBusy() || this.diagnosticsArchiveOffset === 0;
+        const next = this.button('Next reports', () => { this.diagnosticsArchiveOffset = catalog.next_offset; return this.startDiagnosticsAction('archive_list', { offset: this.diagnosticsArchiveOffset, limit: 10, expected_index_sha256: catalog.index_sha256 }); }, 'secondary-button'); next.disabled = this.contextBusy() || catalog.next_offset === null;
+        if (catalog.total > 10) { navigation.append(previous, next); }
+        const refresh = this.button('Refresh reports', () => { this.diagnosticsArchiveOffset = 0; return this.startDiagnosticsAction('archive_list', { limit: 10 }); }, 'secondary-button'); refresh.disabled = this.contextBusy(); navigation.append(refresh); archive.append(navigation);
+        this.compilerComparisonControls(archive, catalog);
+        if (catalog.orphan_assets) {
+            archive.append(el('p', `${catalog.orphan_assets} unreferenced evidence files remain after catalog removal or interrupted saves.`, 'view-description'));
+            const review = this.button('Review archive cleanup', () => this.startDiagnosticsAction('archive_gc', { dry_run: true, expected_revision: catalog.revision }), 'secondary-button'); review.disabled = this.contextBusy(); archive.append(review);
+        }
+        if (this.diagnosticsCleanup?.dry_run && this.diagnosticsCleanup.revision === catalog.revision) {
+            const cleanup = el('div', '', 'compiler-archive-cleanup'); cleanup.append(el('p', `${this.diagnosticsCleanup.items.length} validated unreferenced files · ${(this.diagnosticsCleanup.reclaimable_bytes / 1024).toFixed(1)} KiB reclaimable.`));
+            const apply = this.button('Delete unreferenced evidence', () => this.startDiagnosticsAction('archive_gc', { dry_run: false, expected_revision: catalog.revision }), 'secondary-button'); apply.disabled = this.contextBusy() || !this.diagnosticsCleanup.items.length; cleanup.append(apply); archive.append(cleanup);
+        }
+    }
+
+    private compilerComparisonControls(archive: HTMLElement, catalog: any): void {
+        if (catalog.items.length < 2) { return; }
+        const controls = el('div', '', 'compiler-archive-compare');
+        for (const before of [true, false]) {
+            const select = el('select'); select.setAttribute('aria-label', before ? 'Report before' : 'Report after'); select.disabled = this.contextBusy();
+            const placeholder = el('option', before ? 'Before…' : 'After…'); placeholder.value = ''; select.append(placeholder);
+            for (const entry of catalog.items) { const option = el('option', `${entry.title} · ${entry.report_sha256.slice(0, 8)}`); option.value = entry.report_sha256; select.append(option); }
+            select.value = before ? this.diagnosticsCompareBefore : this.diagnosticsCompareAfter;
+            select.onchange = () => { if (before) { this.diagnosticsCompareBefore = select.value; } else { this.diagnosticsCompareAfter = select.value; } void this.guard(() => this.renderTab()); }; controls.append(select);
+        }
+        const compare = this.button('Compare reports', () => this.startDiagnosticsAction('archive_compare', { before_id: this.diagnosticsCompareBefore,
+            after_id: this.diagnosticsCompareAfter, expected_index_sha256: catalog.index_sha256, limit: 64 }), 'secondary-button');
+        compare.disabled = this.contextBusy() || !catalog.items.some((entry: any) => entry.report_sha256 === this.diagnosticsCompareBefore) || !catalog.items.some((entry: any) => entry.report_sha256 === this.diagnosticsCompareAfter);
+        controls.append(compare); archive.append(controls);
+        const result = this.diagnosticsComparison;
+        if (!result) { return; }
+        const view = el('div', '', 'compiler-comparison');
+        view.append(el('h3', 'Recorded observation comparison'), el('p', 'Changes in compiler observations do not establish a performance change or equivalent runtime behavior.', 'view-description'));
+        view.append(el('code', `${result.before.slice(0, 12)} → ${result.after.slice(0, 12)}`));
+        if (!result.comparable) { view.append(el('p', `Comparison unavailable: ${result.reasons.join(', ')}`)); }
+        else {
+            view.append(el('p', `${result.changes_total} observed changes${result.changes_truncated ? ' · display limited' : ''}`));
+            for (const method of result.methods) { view.append(el('p', `${method.file} · ${method.return_type_before.type} → ${method.return_type_after.type}`, 'semantic-signature'),
+                el('small', `${method.uniquely_source_anchored_pairs} uniquely paired statements · ${method.ambiguous_shared_anchors} ambiguous locations · ${method.unpaired_statements_before}/${method.unpaired_statements_after} unpaired`)); }
+            for (const change of result.changes) { const details = el('details'); details.append(el('summary', change.kind.replaceAll('_', ' ')), el('pre', JSON.stringify(change, null, 2))); view.append(details); }
+        }
+        archive.append(view);
     }
 
     private compilerReportView(section: HTMLElement, report: any): void {
@@ -438,6 +558,7 @@ export class ShenScopePanel {
         const provenance = el('p', `${report.source.fingerprint.slice(0, 12)} · source fingerprint`, 'memory-muted'); provenance.title = report.source.fingerprint;
         overview.append(provenance); section.append(overview);
         if (!report.methods.length) { section.append(el('p', 'No inferred method body was returned.', 'empty-text')); return; }
+        if (!report.methods.length) { section.append(el('p', 'This compiler observation contains no inferred methods.', 'empty-text')); return; }
         this.diagnosticsMethod = Math.min(this.diagnosticsMethod, report.methods.length - 1);
         if (report.methods.length > 1) {
             const methods = el('select'); methods.setAttribute('aria-label', 'Inferred method');
@@ -1741,6 +1862,7 @@ export class ShenScopePanel {
         if (this.disposed) { return; }
         if (method === 'transport/closed') { this.active = false; this.setStatus('Disconnected'); this.notice.textContent = params.message; this.notice.hidden = false; this.approvals.replaceChildren(); this.updateActions(); return; }
         if (method === 'config/changed') {
+            this.resetDiagnostics();
             this.modelsProfile = ''; this.modelPlanRole = ''; this.chatModelRole = ''; this.modelsResult = undefined;
             void this.guard(async () => { const snapshot = await this.bridge.request('config/get'); if (this.disposed) { return; } this.config = snapshot.value; this.configRevision = snapshot.sha256; await this.renderTab(); }); return;
         }
@@ -1750,7 +1872,17 @@ export class ShenScopePanel {
             const owned = this.diagnosticsJob === payload.job_id || this.diagnosticsStarting;
             if (this.diagnosticsJob === payload.job_id) { this.diagnosticsJob = undefined; }
             for (const card of Array.from(this.approvals.children)) { const element = card as HTMLElement; if (element.dataset.traceId === params.trace_id || (payload.permission_ids ?? []).includes(element.dataset.requestId)) { card.remove(); } }
-            if (owned && params.kind === 'diagnostics_job_completed') { this.diagnosticsResult = payload.result; this.diagnosticsMethod = 0; this.diagnosticsBlock = 0; this.diagnosticsPage = 0; this.setStatus('Compiler inference complete'); }
+            if (owned && params.kind === 'diagnostics_job_completed') {
+                if (payload.action === 'compile' || payload.action === 'archive_get') {
+                    this.diagnosticsResult = payload.result; this.diagnosticsResultJob = payload.action === 'compile' ? payload.job_id : undefined;
+                    this.diagnosticsRecorded = payload.action === 'archive_get'; this.diagnosticsMethod = 0; this.diagnosticsBlock = 0; this.diagnosticsPage = 0;
+                } else if (payload.action === 'targets') { this.diagnosticsTargets = payload.result.items; }
+                else if (payload.action === 'archive_list') { this.diagnosticsArchive = payload.result; this.diagnosticsArchiveManual = true; }
+                else if (payload.action === 'archive_compare') { this.diagnosticsComparison = payload.result; }
+                else if (payload.action === 'archive_gc') { this.diagnosticsCleanup = payload.result; if (!payload.result.dry_run) { this.diagnosticsArchiveManual = false; this.diagnosticsArchiveOffset = 0; } }
+                else { this.diagnosticsArchiveOffset = 0; this.diagnosticsArchiveManual = false; this.diagnosticsCleanup = undefined; }
+                this.setStatus(payload.action === 'compile' ? 'Compiler inference complete' : 'Compiler archive operation complete');
+            }
             else if (owned) { this.setStatus('Compiler inference stopped'); this.notice.textContent = payload.error ?? 'Compiler inference stopped'; this.notice.hidden = false; }
             this.updateActions(); if (owned && this.tab === 'Runtime') { void this.guard(() => this.renderTab()); } return;
         }
