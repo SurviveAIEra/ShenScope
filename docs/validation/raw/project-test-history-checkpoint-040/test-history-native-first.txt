@@ -1,0 +1,62 @@
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Tests
+Settings
+Models
+Memory
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+Extensions
+Terminal
+Core request timed out
+Project tests
+
+Find this project’s test commands, choose one to run, and inspect its results.
+
+Find test commands
+Project directories · one per line
+Find test commands
+Discovery reads project files and does not execute commands.
+2 commands found
+Package test script
+Declared
+javascript/typescript · .
+"npm" "test"
+Runs the declared package test script. Output format and dependency availability are not inferred.
+Run Package test script
+Python unittest discovery
+Suggested
+python · .
+"python3" "-m" "unittest" "discover" "-v"
+A Python project marker alone does not establish unittest use or any collected tests.
+Run Python unittest discovery
+Scan: 315 files examined; 1 directories excluded. Limits reached: depth. This is a bounded scan, not a complete project inventory.
+Run another test command
+Recent test runs
+Saved test results
+Test commands found
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 120000ms exceeded.
+Call log:
+[2m  - waiting for locator('.shenscope-panel').getByRole('region', { name: 'Captured project test result' }) to be visible[22m
+
+    at /workspace/ShenScope/ide/test/native_smoke.mjs:349:79 {
+  log: [
+    "  - waiting for locator('.shenscope-panel').getByRole('region', { name: 'Captured project test result' }) to be visible"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

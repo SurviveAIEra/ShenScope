@@ -1,0 +1,1 @@
+PASS: native Workbench without extensions, multi-language tests, independent process/persistence approvals, failed and repaired Python unittest, actual editor file opening, Node TAP, saved result naming/read/source/deletion, conversation isolation and narrow/wide layouts

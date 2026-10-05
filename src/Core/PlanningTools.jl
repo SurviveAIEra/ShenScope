@@ -14,7 +14,7 @@ plan_tool_actions(::ProjectTool)=("status","search","impact","test_selection","a
     "hover","incoming_calls","outgoing_calls","implementations","diagnostics","julia_methods","julia_dispatch","julia_structure",
     "evidence_status","evidence_compare","evidence_search","evidence_impact","evidence_tests")
 plan_tool_actions(::TaskTool)=("list","status","tasks","get")
-plan_tool_actions(::TestingTool)=("discover","catalog","report","reports","source")
+plan_tool_actions(::TestingTool)=("discover","catalog","report","reports","source","history_list","history_get","history_source")
 
 struct PlanningToolView{T<:AbstractTool} <: AbstractTool
     tool::T

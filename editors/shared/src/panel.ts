@@ -1,5 +1,5 @@
 import { renderMarkdown } from './markdown.js';
-import { newProjectTestingState, renderProjectTests } from './projectTests.js';
+import { newProjectTestingState, renderProjectTests, type ProjectTestingState } from './projectTests.js';
 export interface PanelBridge {
     request(method: string, params?: Record<string, unknown>): Promise<any>;
     onEvent(listener: (method: string, params: any) => void): () => void;
@@ -487,7 +487,7 @@ export class ShenScopePanel {
     private async startTesting(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Finish or cancel the current operation before working with tests.'); }
         this.testingStarting = true; this.updateActions();
-        if (action === 'run' || action === 'custom') { this.testingState.report = undefined; this.testingState.source = undefined; this.testingState.caseLimit = 40; this.testingState.frameLimit = 16; }
+        if (action === 'run' || action === 'custom') { this.testingState.report = undefined; this.testingState.savedReport = undefined; this.testingState.source = undefined; this.testingState.caseLimit = 40; this.testingState.frameLimit = 16; }
         try {
             const session_id = await this.ensureSession('Project tests');
             const result = await this.bridge.request('testing/start', {session_id, action, ...args});
@@ -499,11 +499,30 @@ export class ShenScopePanel {
         renderProjectTests(this.content, this.testingState, {
             button: (label, action) => this.button(label, action), start: (action, args) => this.startTesting(action, args),
             cancel: async () => { if (this.testingJob && this.sessionId) { await this.bridge.request('testing/cancel_job', {session_id: this.sessionId, job_id: this.testingJob}); this.setStatus('Cancelling test operation…'); } },
-            recent: async () => { const session_id = await this.ensureSession('Project tests'); this.testingState.recent = await this.bridge.request('testing/query', {session_id, action: 'reports'}); await this.renderTab(); },
-            showReport: async run_id => { const session_id = await this.ensureSession('Project tests'); this.testingState.report = await this.bridge.request('testing/query', {session_id, action: 'report', run_id}); this.testingState.source = undefined; await this.renderTab(); },
-            openSource: async source => { const session_id = await this.ensureSession('Project tests'); await this.bridge.request('testing/query', {session_id, action: 'source', run_id: source.run_id, frame_id: source.frame.id, expected_sha256: source.sha256}); await this.bridge.openFile(source.path, source.frame.line); },
+            recent: () => this.queryProjectTests('reports', {}, (state, value) => { state.recent = value; }),
+            showReport: run_id => this.queryProjectTests('report', {run_id}, (state, value) => { state.report = value; state.savedReport = undefined; state.source = undefined; }),
+            saved: () => this.queryProjectTests('history_list', {}, (state, value) => { state.history = value; }),
+            showSaved: run_id => this.queryProjectTests('history_get', {run_id}, (state, saved) => { state.savedReport = saved; state.report = saved.report; state.source = undefined; state.caseLimit = 40; state.frameLimit = 16; }),
+            openSource: async source => { const session_id = await this.ensureSession('Project tests'); const state = this.testingState; await this.bridge.request('testing/query', {session_id, action: source.saved_history_sha256 ? 'history_source' : 'source', run_id: source.run_id, frame_id: source.frame.id, expected_sha256: source.sha256}); if (this.sessionId === session_id && this.testingState === state) { await this.bridge.openFile(source.path, source.frame.line); } },
             render: () => this.renderTab(),
         }, this.contextBusy() || !!this.analyzersJob || this.analyzersStarting, !!this.testingJob || this.testingStarting);
+    }
+    private async queryProjectTests(action: string, args: Record<string, unknown>, apply: (state: ProjectTestingState, value: any) => void): Promise<void> {
+        const session_id = await this.ensureSession('Project tests'); const state = this.testingState;
+        const value = await this.bridge.request('testing/query', {session_id, action, ...args});
+        if (this.sessionId !== session_id || this.testingState !== state) { throw new Error('The conversation changed while reading test records. Open the records in the selected conversation.'); }
+        apply(state, value); if (this.tab === 'Tests') { await this.renderTab(); }
+    }
+    private async refreshSavedTests(run_id?: string): Promise<void> {
+        const session_id = this.sessionId; const state = this.testingState; if (!session_id) { return; }
+        const history = await this.bridge.request('testing/query', {session_id, action: 'history_list'});
+        if (this.sessionId !== session_id || this.testingState !== state) { return; }
+        state.history = history;
+        if (run_id && state.report?.run_id === run_id) {
+            const saved = await this.bridge.request('testing/query', {session_id, action: 'history_get', run_id});
+            if (this.sessionId === session_id && this.testingState === state && state.report?.run_id === run_id) { state.savedReport = saved; }
+        }
+        if (this.tab === 'Tests') { await this.renderTab(); }
     }
 
     private async startDiagnostics(): Promise<void> {
@@ -2178,8 +2197,16 @@ export class ShenScopePanel {
             if (this.testingJob === payload.job_id) { this.testingJob = undefined; }
             if (owned && payload.result) {
                 if (payload.action === 'discover' || payload.action === 'catalog') { this.testingState.catalog = payload.result; this.setStatus('Test commands found'); }
-                else if (payload.action === 'source') { this.testingState.source = payload.result; this.setStatus('Test source preview ready'); }
+                else if (payload.action === 'source' || payload.action === 'history_source') { this.testingState.source = payload.result; this.setStatus('Test source preview ready'); }
                 else if (payload.action === 'reports') { this.testingState.recent = payload.result; this.setStatus('Recent test runs ready'); }
+                else if (payload.action === 'history_list') { this.testingState.history = payload.result; this.setStatus('Saved test results ready'); }
+                else if (payload.action === 'history_get') { this.testingState.savedReport = payload.result; this.testingState.report = payload.result.report; this.testingState.source = undefined; this.setStatus('Saved test result opened'); }
+                else if (['history_save', 'history_label', 'history_delete'].includes(payload.action)) {
+                    this.testingState.historyLabels = {};
+                    if (payload.action === 'history_delete' && this.testingState.savedReport?.report?.run_id === payload.result.run_id) { this.testingState.report = undefined; this.testingState.savedReport = undefined; this.testingState.source = undefined; }
+                    void this.guard(() => this.refreshSavedTests(payload.action === 'history_delete' ? undefined : payload.result.run_id));
+                    this.setStatus('Saved test history updated');
+                }
                 else { this.testingState.report = payload.result; this.setStatus('Test result captured'); }
             } else if (owned) { this.setStatus(payload.status === 'cancelled' ? 'Test operation cancelled' : 'Test operation failed'); this.notice.textContent = payload.error ?? 'Test operation interrupted. Recent runs may contain a captured execution receipt.'; this.notice.hidden = false; }
             this.updateActions(); if (owned && this.tab === 'Tests') { void this.guard(() => this.renderTab()); } return;

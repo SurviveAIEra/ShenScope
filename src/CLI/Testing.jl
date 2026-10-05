@@ -1,15 +1,35 @@
 function cli_testing_command(positional,flags,config,state_dir)
-    length(positional)>=2 || throw(ShenScopeError(:input,"Use tests discover, run CANDIDATE_ID or custom --argv JSON"))
-    action=positional[2];action in ("discover","run","custom") || throw(ShenScopeError(:input,"Unknown project tests command"))
+    length(positional)>=2 || throw(ShenScopeError(:input,"Use tests discover, run, custom, saved, show, rename or forget"))
+    action=positional[2];action in ("discover","run","custom","saved","show","rename","forget") || throw(ShenScopeError(:input,"Unknown project tests command"))
     policy=permissions_from_config(config)
     get(flags,"--allow-process",false) && (policy.rules[:process]=Allow)
-    ctx=RuntimeContext(get(flags,"--root",pwd());session_id=get(flags,"--session",string(uuid4())),state_dir,
+    get(flags,"--allow-persistence",false) && (policy.rules[:persistence]=Allow)
+    ctx=RuntimeContext(get(flags,"--root",pwd());session_id=get(flags,"--session","cli-tests"),state_dir,
         permissions=policy,budget=BudgetLedger(limits_from_config(config)),sandbox=sandbox_from_config(config),approve=cli_approval)
     tool=TestingTool();args=Dict{String,Any}("action"=>action)
+    save=get(flags,"--save",false)
+    save && !(action in ("run","custom")) && throw(ShenScopeError(:input,"--save applies only to tests run or custom"))
+    revision=nothing
+    if save || action in ("rename","forget")
+        haskey(flags,"--expected-revision") || throw(ShenScopeError(:input,"Saving or changing test history requires --expected-revision N"))
+        revision=project_test_history_revision(parse(Int,flags["--expected-revision"]))
+    end
     for (option,key,parser) in (("--timeout","timeout",Float64),("--output-limit","output_limit",Int))
         haskey(flags,option) && (args[key]=parse(parser,flags[option]))
     end
     try
+        if action in ("saved","show","rename","forget")
+            length(positional)==(action=="saved" ? 2 : 3) || throw(ShenScopeError(:input,"Use tests saved or tests show/rename/forget RUN_ID"))
+            isempty(setdiff(keys(args),["action"])) || throw(ShenScopeError(:input,"Saved history commands do not accept execution limits"))
+            args["action"]=Dict("saved"=>"history_list","show"=>"history_get","rename"=>"history_label","forget"=>"history_delete")[action]
+            action=="saved" ? (args["limit"]=parse(Int,get(flags,"--limit","16"));args["offset"]=parse(Int,get(flags,"--offset","0"))) : (args["run_id"]=positional[3])
+            action in ("rename","forget") && (args["expected_revision"]=revision)
+            if action=="rename"
+                haskey(flags,"--title") || throw(ShenScopeError(:input,"Use tests rename RUN_ID --title LABEL --expected-revision N"))
+                args["label"]=flags["--title"]
+            end
+            println(canonical(execute(tool,args,ctx)));return 0
+        end
         if action in ("discover","run")
             length(positional)==(action=="run" ? 3 : 2) || throw(ShenScopeError(:input,"Use tests discover or tests run CANDIDATE_ID"))
             scopes=haskey(flags,"--scope-paths") ? split(flags["--scope-paths"],',') : ["."]
@@ -24,7 +44,20 @@ function cli_testing_command(positional,flags,config,state_dir)
             args["argv"]=parsejson(flags["--argv"]);args["cwd"]=get(flags,"--cwd",".")
             args["framework"]=get(flags,"--framework","raw");args["label"]=get(flags,"--title","Explicit test command")
         end
-        value=execute(tool,args,ctx);println(canonical(value))
+        value=execute(tool,args,ctx)
+        if save
+            saved=try
+                save_project_test_history!(project_test_history_store(ctx),tool.manager,value["run_id"],ctx;expected_revision=revision)
+            catch cause
+                cause isa InterruptException && rethrow()
+                println(canonical(Dict("report"=>value,"saved"=>nothing,"save_error"=>
+                    Dict("code"=>cause isa ShenScopeError ? String(cause.code) : "storage","message"=>sprint(showerror,cause)),"automatic_replay"=>false)))
+                return 2
+            end
+            println(canonical(Dict("report"=>value,"saved"=>saved,"automatic_replay"=>false)))
+        else
+            println(canonical(value))
+        end
         is_successful_tool_result(tool,value) ? 0 : 1
     finally
         close_operations!(tool.operations);cleanup_project_tests!(tool.manager)

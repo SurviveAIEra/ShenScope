@@ -1,0 +1,231 @@
+{
+  "checkpoint": "040",
+  "recorded_at_utc": "2026-10-05T12:48:19.696819+00:00",
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "base_commit": "b55a07926b61eb90271a6739e8330d7c1cc36d0d",
+  "scope": "Explicit bounded saved project-test receipts, restart reads, revision fencing and shared editor controls",
+  "new_assertions": 90,
+  "core_assertions": 299,
+  "suites": [
+    {
+      "log": "docs/validation/raw/project-test-history-checkpoint-040/test-history-final.txt",
+      "assertions": 90,
+      "testsets": 8,
+      "status": "passed"
+    },
+    {
+      "log": "docs/validation/raw/project-test-history-checkpoint-040/test-history-testing-regression.txt",
+      "assertions": 155,
+      "testsets": 9,
+      "status": "passed"
+    },
+    {
+      "log": "docs/validation/raw/project-test-history-checkpoint-040/test-history-operation-regression.txt",
+      "assertions": 54,
+      "testsets": 6,
+      "status": "passed"
+    }
+  ],
+  "core_restart": {
+    "actual_julia_process_restart": true,
+    "observed_execution_count_after_read_rename_delete": 1,
+    "automatic_process_replay": false
+  },
+  "concurrency": {
+    "two_actual_julia_processes": true,
+    "same_expected_revision_results": [
+      "changed",
+      "conflict"
+    ],
+    "saved_receipt_unchanged": true
+  },
+  "clients": {
+    "node_actual_core_tests": 2,
+    "native_extensions_disabled_gui": "passed",
+    "standalone_vsix_development_gui": "passed",
+    "actual_editor_file_opening_asserted": true,
+    "installed_vsix_package_runtime_verified": false
+  },
+  "client_typechecks": {
+    "shared": true,
+    "build": true,
+    "complete_workbench": true
+  },
+  "layouts": {
+    "native": {
+      "narrow": {
+        "client": 197,
+        "scroll": 197
+      },
+      "wide": {
+        "client": 357,
+        "scroll": 357
+      }
+    },
+    "vsix": {
+      "narrow": {
+        "client": 197,
+        "scroll": 197
+      },
+      "wide": {
+        "client": 357,
+        "scroll": 357
+      }
+    }
+  },
+  "screenshots_visually_inspected": [
+    "native-testing-wide.png",
+    "vsix-testing-narrow.png"
+  ],
+  "package": {
+    "file": "dist/shenscope-0.1.0.vsix",
+    "bytes": 665849,
+    "sha256": "97a0ff5754c544fb12e91acc47f700d7c80f4cca4be56edd7ffec66082809d4c",
+    "entries": 322,
+    "matched_core_helper_extension_metadata_files": 313,
+    "matched_assets": [
+      "extension.js",
+      "panel.js",
+      "panel.css"
+    ],
+    "installed_package_runtime_verified": false
+  },
+  "size": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 282,
+      "blank": 1404,
+      "comment": 247,
+      "code": 26623
+    },
+    "cli_tui": {
+      "nFiles": 22,
+      "blank": 21,
+      "comment": 11,
+      "code": 1360
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 223377,
+    "line_target_percent": 10.6492,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "total_gib": 31.451,
+    "free_gib": 17.464,
+    "large_build_allowed": true,
+    "safe_scratch_paths": [
+      "/workspace/ShenScope/.local/tmp",
+      "/workspace/ShenScope/.local/build-scratch"
+    ]
+  },
+  "cache": {
+    "files": [
+      {
+        "name": "aMBxt_CqE99.ji",
+        "bytes": 1720095
+      },
+      {
+        "name": "aMBxt_CqE99.so",
+        "bytes": 60566800
+      }
+    ],
+    "cleanup_performed": false,
+    "reason": "One reusable compiled cache pair; no sysimages or checkout copies were created."
+  },
+  "repository_audit": {
+    "applications": 1,
+    "dependencies": 50,
+    "unknown": 0,
+    "strict_walk_complete": true
+  },
+  "reference_evidence": "docs/validation/project-test-history-040/reference-evidence.json",
+  "source_reuse": "Seven further partial primary-agent source reviews; no upstream code copied or translated.",
+  "retained_failures": [
+    "Initial UI typecheck rejected await in a synchronous event callback and then a missing type import; corrected before final successful check/build.",
+    "Default sandbox Node Git child execution blocked overlay transpilation; authorized pinned-version transpilation succeeded.",
+    "An initial Workbench typecheck invocation referenced the absent standard TypeScript package; the repository typecheck-client script succeeded.",
+    "Default sandbox Node test workers exited without detailed diagnostics; the authorized normal test runner passed both actual Core tests.",
+    "First native GUI run timed out after process approval while other Julia validations ran concurrently. A standalone rerun passed; no command was automatically replayed within either Core session."
+  ],
+  "limits": [
+    "History bounds are per owning conversation, not a global state-directory quota.",
+    "Digests do not authenticate external filesystem edits.",
+    "Framework cases and source references remain reported evidence; no whole-project coverage or historical source certification.",
+    "Normal controller retention is in memory; persistence is explicit.",
+    "Native Testing API integration remains unfinished.",
+    "No live model quality, installed VSIX package runtime, Windows runtime or complete desktop distribution claim."
+  ],
+  "source_checksums": {
+    "editors/shared/src/panel.ts": "7ffbebb719ab15d06b36dabaf161345a8fa43c3cdba7ab9a04dd348122ae57dc",
+    "editors/shared/src/projectTests.ts": "0fbf695b6e791e1ad9b3d3ba7f65a41ff4f09ee1d74f74592afeeb40749d7a85",
+    "editors/test/projectTestHistory.test.mjs": "1742d5e7fd9e9fcc4f049644d847ba33c6661dbe74f1ecbde7a3547cdd1aaef8",
+    "ide/test/native_smoke.mjs": "fc0b0245d90c7d66873f74f1a471a001b5e1fc18d5a5a2877829b4746416e77f",
+    "src/CLI/Main.jl": "83d0a97770cd44c188a6f262d09adc0f9e461779d9926fc63a789ec62ec614bf",
+    "src/CLI/Testing.jl": "acb63085ba398cb4aae11628cdf3d895b8e3f34c89a759910a7878aee89d9833",
+    "src/Core/PlanningTools.jl": "d7faafc931d862685a4522a176f322d508f89018e900670e738de9afb7000b3c",
+    "src/Protocol/Server.jl": "fb2906756ee4e61142b3375da93d52b3310b07afea5d07e6eefec1bbca1a9002",
+    "src/Protocol/Testing.jl": "657f0d6021e054ac3dcbb79ef5e36f40095fa553ca0afc2de56d91b64a3f0060",
+    "src/Runtime/OwnedOperations.jl": "cd37ddaf12a1ce056f1730ee2dc2a65ac1dafdc3059b9b7a0d9ddf0e2d485b46",
+    "src/ShenScope.jl": "8f2e5d5a6d377ef56f870a7a9e1216cdeeb8c288d65eafbcfb5fb5e5745edae4",
+    "src/Testing/Execution.jl": "4e862a2182768be4e69b5bd6ba67d9aa8c91439f79694ffc907f1c7aa01f3fa7",
+    "src/Testing/HistoryFiles.jl": "0888105873f52e58a9c95c6a67084215d631dc679f5581351e1c2f2853b9523e",
+    "src/Testing/HistoryQueries.jl": "37ae004ff544fab0ce8d3868f9cee57db5e046328a87dafc2d572aa60407f901",
+    "src/Testing/HistoryTypes.jl": "ecb6ef3a3d8dcce006f3929ad79903ad02beaf29061bef31b265a2237dd5e910",
+    "src/Testing/HistoryUpdates.jl": "90666735cf5739ff2b083cccafab3d119870d56a87050364fca5705ed299e14f",
+    "src/Testing/HistoryValidation.jl": "4194aad496dc2ce1eb7c56603a9cc9f05a891b281875ce56897335eac760825e",
+    "src/Testing/Source.jl": "570698c21ccc4b4f5718ffb2afde3c45b3df88f889c76f72c29fc3514641f30a",
+    "src/Tools/Testing.jl": "57b5b479ef7d2fce3bfd73e45c498bcd85bcc691c3542471377430d75905f179",
+    "test/fixtures/project_test_history_worker.jl": "bcf31b47cd8531b5c91fe64bc6817cad6900a6ccd9a51012df39d13d5f4f167b",
+    "test/integration/project_test_history.jl": "a8572a1fe414f601791acb98f29a8a5392a35522fa83d743e8a3635931f1d862",
+    "test/project_test_history.jl": "ef9e35ac9cbf95b814894951d3a1ba2fed1678cdd6a27c6a511e72bead5e9c7b",
+    "test/unit/project_test_history.jl": "7e5bebf24c33acd41e58566edeeee046124435c4875bbed105a6553b990f5731"
+  },
+  "artifact_checksums": {
+    "docs/validation/project-test-history-040/native-testing-layout.json": "dd00f472ea3179eb5fcd5db8bd102f5bf97ec2c8a0d7550873f8318a0708b8ed",
+    "docs/validation/project-test-history-040/native-testing-narrow.png": "3eb94c53f02d9ab789f99cc9b6d7de50f2daacb00a74fd192f4f0a1bb3708cba",
+    "docs/validation/project-test-history-040/native-testing-wide.png": "396dac17557a80e9d703c6acd306ac26132b75f00d740b63fb4b06803dfaf374",
+    "docs/validation/project-test-history-040/package-parity.json": "66bba20bbb47955abe8af105c6edf59f52e65eaba0e57f6bc3f21d04011dac57",
+    "docs/validation/project-test-history-040/reference-evidence.json": "5faac9bc8565d594a668c0718b5d5b2a06d50a38f04c6466900d71b2f81d7dba",
+    "docs/validation/project-test-history-040/test-history-cache.json": "e0f755d0138c82d6f126344488e70b6cbc3b4b6267cc0d1654acddac266397be",
+    "docs/validation/project-test-history-040/test-history-size.json": "00b98b77c34e5e1aedae92e3f5b17cba603bcb815238db937b960aca9dba1cdf",
+    "docs/validation/project-test-history-040/test-history-storage-before.json": "8bf4491ecb1399f68c657ac4a4d795bf099d87fd03cd23e4d42c8ef3712e032d",
+    "docs/validation/project-test-history-040/test-history-storage-final.json": "27ff73b6b7c0d5f34ed34effef7201ba3455679d0cf59622af2ada9781e49b31",
+    "docs/validation/project-test-history-040/vsix-testing-layout.json": "dd00f472ea3179eb5fcd5db8bd102f5bf97ec2c8a0d7550873f8318a0708b8ed",
+    "docs/validation/project-test-history-040/vsix-testing-narrow.png": "83ecbb039f1fbba18bc912a40f1afe005d6c2f78a41bd19e07eb18a72a8b251b",
+    "docs/validation/project-test-history-040/vsix-testing-wide.png": "f8074a0a9b1ea5f86b295408075fefbe6a0a6052244c6ad4a5f44f054fe24f3a",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-final.txt": "965ee7fc5b634e6136c731982b3a7d20283d3d2273c131d6ab89ebc8c83c9b1a",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-first.txt": "019263c11a26385592a8fd70d467af7b8bbe38074e31c8b419e5ba39d82300ed",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-load.txt": "3bb58b3993461faaae5e27b7fb97a010898132fb000b03a2069bebdd51157003",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-native-first.txt": "df21820ff8afbfae8868400a25c44b7cd76de8047fb47d6c138cde6a145dc028",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-native-second.txt": "536f4a9d8335cca5a3c8c1c6bb4b4a7d0963df437adbda2281ed9c92d8b44fc0",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-node-authorized.txt": "c249801de4dcab3b863cf6e3c633a575b05c0a1120e097e22dfdd466d6e1512f",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-node-final.txt": "bf33659e7ba7839dda22fab140ec67d3d64f861b6acb79e262eef7705c4bf7da",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-operation-regression.txt": "acee81dc37a3e3399e5eed84afd02852bb6fcbf9e5db5c30b73aeb45700e9273",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-package.txt": "ab00a88fe3988930bdaf575f37c954c70926a226038e834cb2d00cfafa770136",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-repository-audit.txt": "9eca1040aa8752cb933d5b6373d675175647e90c881071855bc0d0f4cf17e510",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-smoke-first.txt": "3d11788accbdd5fd3faa272a78249f67fe74bc6c60f954b5beb27065c35cb28e",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-testing-regression.txt": "cbff7bd9f14ba75c3afe853173e622381c5d520b2ba107bbe8750ca250a36725",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-transpile-authorized.txt": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-transpile.txt": "3319fa9401284261191c5fa37acbb72dd5160c2c8d0b322314b50778acbde98a",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-vsix-first.txt": "1b2c836b79927047d57e713cc6e2dda36cb2a32968ea63f879cb4cbeb5db0b15",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-workbench-typecheck-final.txt": "13f94dd6ebfafd0dd7058f4e027a45b58c86fe9cfd9dcd44072af86dc9f2ea49",
+    "docs/validation/raw/project-test-history-checkpoint-040/test-history-workbench-typecheck.txt": "e9e88bb9c956767b4fab29469be25b40bf48134275559d2960d0516c9cb6262d"
+  },
+  "whole_task": "IN_PROGRESS; 250000 authored Core lines and remaining functional gates are not reached."
+}

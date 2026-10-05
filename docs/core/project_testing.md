@@ -105,8 +105,11 @@ agent runs, mode changes and configuration changes cannot overlap these jobs.
 Controller catalogs and receipts are bounded **in-memory** state (32 catalogs,
 32 reports and 16 MiB retained reports by default); they do not survive Core
 restart. Normal agent tool messages save execution receipts in the existing
-conversation journal. This is distinct from a durable standalone test-results
-store. Native VS Code Testing API integration, durable controller history,
+conversation journal. Explicitly saved standalone test results are now available
+through `history_save` and the shared Tests view; see
+[`project_test_history.md`](project_test_history.md). Saving has separate
+Persistence permission and revision checks, and never replays the command.
+Native VS Code Testing API integration,
 coverage artifacts, project-wide test identity/reconciliation and broader
 framework adapters remain pending.
 

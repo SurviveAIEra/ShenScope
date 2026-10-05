@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "name": "aMBxt_CqE99.ji",
+      "bytes": 1720095
+    },
+    {
+      "name": "aMBxt_CqE99.so",
+      "bytes": 60566800
+    }
+  ],
+  "cleanup_performed": false,
+  "reason": "One reusable compiled cache pair; no sysimages or checkout copies were created."
+}

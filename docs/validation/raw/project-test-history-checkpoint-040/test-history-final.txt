@@ -1,0 +1,19 @@
+Precompiling ShenScope...
+ 154246.7 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 155 seconds. 41 already precompiled.
+Test Summary:                                                                         | Pass  Total   Time
+Saved test receipts retain observed evidence, ownership, revisions and current source |   28     28  32.2s
+Test Summary:                                                                  | Pass  Total  Time
+Saved history rejects corrupt, foreign, unsupported and unsafe receipt content |   15     15  4.6s
+Test Summary:                                                                      | Pass  Total  Time
+Saved history enforces count and serialized-byte capacity without retiring records |   11     11  1.4s
+Test Summary:                                                             | Pass  Total  Time
+Saved history refuses state symlinks and keeps raw control output bounded |    5      5  0.4s
+Test Summary:                                                                 | Pass  Total   Time
+Two Julia processes fence saved-history edits with the same expected revision |    5      5  18.6s
+Test Summary:                                                                     | Pass  Total  Time
+CLI saves failed test receipts and reads them independently of process permission |    7      7  5.6s
+Test Summary:                                                                 | Pass  Total  Time
+Post-publication cancellation and sink failure preserve owned commit evidence |    6      6  2.0s
+Test Summary:                                                             | Pass  Total  Time
+Saved-history RPC permissions, controller reads and late delivery fencing |   13     13  8.1s

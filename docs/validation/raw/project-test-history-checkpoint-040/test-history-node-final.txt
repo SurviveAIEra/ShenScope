@@ -1,0 +1,20 @@
+✖ editors/test/projectTestHistory.test.mjs (9454.038724ms)
+✖ editors/test/projectTesting.test.mjs (6648.329193ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9596.897315
+
+✖ failing tests:
+
+test at editors/test/projectTestHistory.test.mjs:1:1
+✖ editors/test/projectTestHistory.test.mjs (9454.038724ms)
+  'test failed'
+
+test at editors/test/projectTesting.test.mjs:1:1
+✖ editors/test/projectTesting.test.mjs (6648.329193ms)
+  'test failed'

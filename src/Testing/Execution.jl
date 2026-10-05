@@ -34,7 +34,7 @@ function run_project_test_candidate!(manager::ProjectTestManager,candidate::Proj
         "limitations"=>["The Core observed a process result. Case outcomes and summaries are framework-reported output, not independent correctness proof.",
             "A zero exit code does not prove any tests were collected or the whole project was tested.",
             "Only selected project marker content is rechecked before launch; other source files can change during execution.",
-            "Read-only retention is bounded and in memory. Tool results can be saved by the owning conversation; controller reports do not survive Core restart."])
+            "Controller retention is bounded and in memory. Explicit history_save persists an owned receipt separately with Persistence permission and revision checks; reading it never replays the command."])
     report["sha256"]=digest(fit_project_test_report!(report,manager.max_report_bytes))
     # Preserve the execution receipt even when cancellation or a revoked output
     # read prevents delivery. A query can retrieve it after an explicit policy

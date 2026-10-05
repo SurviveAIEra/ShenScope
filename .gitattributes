@@ -8,3 +8,4 @@ docs/validation/runtime-evidence-036/*.txt -whitespace
 docs/validation/compiler-sampling-037/*.txt -whitespace
 docs/validation/raw/agent-plans-checkpoint-038/*.txt -whitespace
 docs/validation/raw/project-testing-checkpoint-039/*.txt -whitespace
+docs/validation/raw/project-test-history-checkpoint-040/*.txt -whitespace

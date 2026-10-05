@@ -205,7 +205,7 @@ if(plansOnly){
     for(const [path,text] of [['calc.py','def add(a,b): return a+b\n'],['calc.js','export const add=(a,b)=>a+b;\n'],['calc.rs','pub fn add(a:i32,b:i32)->i32 { a+b }\n']]){await writeFile(join(root,path),text);}
 }
 if(testingOnly){
-    await writeFile(config,`[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\nprocess = 'ask'\npersistence = 'allow'\nnetwork = 'deny'\n`);
+    await writeFile(config,`[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\nprocess = 'ask'\npersistence = 'ask'\nnetwork = 'deny'\n`);
     await writeFile(join(root,'pyproject.toml'),"[project]\nname='calc'\nversion='0.1.0'\n");
     await writeFile(join(root,'calc.py'),'def add(a,b): return a-b\n');
     await writeFile(join(root,'test_calc.py'),'import unittest\nfrom calc import add\nclass Addition(unittest.TestCase):\n    def test_add(self): self.assertEqual(add(2,3),5)\n');
@@ -353,6 +353,12 @@ try {
         const source=panel.getByRole('region',{name:'Current test source preview'});await source.waitFor({timeout:120_000});
         assert.match(await source.textContent(),/not a snapshot from the test run/);
         await panel.getByRole('button',{name:'Open referenced file',exact:true}).click();
+        await page.locator('.tabs-container .tab').filter({hasText:'test_calc.py'}).first().waitFor({timeout:120_000});
+        await panel.getByRole('button',{name:'Save this test result',exact:true}).click();await approve(panel,'testing.history · persistence','Allow once');
+        await panel.getByRole('button',{name:'Open saved Python unittest discovery',exact:true}).waitFor({timeout:120_000});
+        await panel.getByRole('textbox',{name:'Saved result name for Python unittest discovery',exact:true}).fill('Before repair');
+        await panel.getByRole('button',{name:'Rename saved Python unittest discovery',exact:true}).click();await approve(panel,'testing.history · persistence','Allow once');
+        await panel.getByRole('button',{name:'Open saved Before repair',exact:true}).waitFor({timeout:120_000});
         await source.locator('h3').scrollIntoViewIfNeeded();
         const narrow=await panel.evaluate(element=>({client:element.clientWidth,scroll:element.scrollWidth}));assert.ok(narrow.scroll<=narrow.client,JSON.stringify(narrow));
         await panel.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-testing-narrow.png`)});
@@ -367,14 +373,21 @@ try {
         await panel.locator('.testing-report h3').filter({hasText:'Command completed'}).waitFor({timeout:120_000});
         assert.match(await panel.locator('.testing-case-summary').textContent(),/1 passed/);assert.match(await report.textContent(),/TAP/);
         await panel.getByRole('button',{name:'Recent test runs',exact:true}).click();
-        await waitCount(panel.locator('.testing-history button'),4);
+        await waitCount(panel.locator('.testing-recent-history button'),4);
+        await panel.getByRole('button',{name:'Open saved Before repair',exact:true}).click();
+        await panel.locator('.testing-report h3').filter({hasText:'Command failed'}).waitFor({timeout:120_000});
+        assert.match(await report.textContent(),/1 failed/);
+        await panel.getByRole('button',{name:'Preview test_calc.py:4',exact:true}).click();await source.waitFor({timeout:120_000});
+        await panel.getByRole('button',{name:'Open referenced file',exact:true}).click();
         await resizeSidebar(page,360);await panel.locator('.testing-report h3').scrollIntoViewIfNeeded();
         const wide=await panel.evaluate(element=>({client:element.clientWidth,scroll:element.scrollWidth}));assert.ok(wide.client>=300&&wide.scroll<=wide.client,JSON.stringify(wide));
         await writeFile(join(project,`.local/${vsix?'vsix':'native'}-testing-layout.json`),JSON.stringify({narrow,wide},null,2)+'\n');
         await panel.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-testing-wide.png`)});
+        await panel.getByRole('button',{name:'Delete saved Before repair',exact:true}).click();await approve(panel,'testing.history · persistence','Allow once');
+        await panel.getByText('No saved test results in this conversation.',{exact:true}).waitFor({timeout:120_000});
         await panel.locator('.panel-header').getByRole('button',{name:'New conversation',exact:true}).click();
         await panel.getByRole('combobox',{name:'More views'}).selectOption('Tests');assert.equal(await panel.locator('.testing-report').count(),0);assert.equal(await panel.locator('.testing-candidate').count(),0);
-        console.log(`PASS: ${vsix?'VSIX':'native Workbench without extensions'}, read-only multi-language discovery, actual process approvals, failing and repaired Python unittest, current source preview/open, Node TAP result, receipt history, conversation isolation and narrow/wide layouts`);
+        console.log(`PASS: ${vsix?'VSIX':'native Workbench without extensions'}, multi-language tests, independent process/persistence approvals, failed and repaired Python unittest, actual editor file opening, Node TAP, saved result naming/read/source/deletion, conversation isolation and narrow/wide layouts`);
     }
     if (plansOnly) {
         const mode=panel.getByRole('combobox',{name:'Agent execution mode'});await mode.selectOption('plan');

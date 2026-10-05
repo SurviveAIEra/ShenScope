@@ -1,0 +1,12 @@
+Test Summary:                                                                                      | Pass  Total  Time
+Owned result limits preserve deep structured data and fail closed without expanding other managers |    7      7  8.2s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  2.1s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  6.4s
+Test Summary:                                                                              | Pass  Total     Time
+Published compiler catalogs survive notification failures and interrupted owned completion |   10     10  1m03.8s
+Test Summary:                                                                           | Pass  Total   Time
+Read denial after publication hides result bodies and commit receipts on both RPC paths |    7      7  13.7s
+Test Summary:                                                                     | Pass  Total     Time
+Owned archive reads retain valid evidence exceeding the former two MiB result cap |    7      7  1m41.4s

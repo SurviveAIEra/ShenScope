@@ -2,6 +2,12 @@ function read_project_test_source(manager::ProjectTestManager,run_id,frame_id,ct
         context_lines=3,expected_sha256=nothing)
     radius=project_test_integer(context_lines,"test source context",0,20)
     report=read_project_test_report(manager,run_id,ctx)
+    project_test_report_source(report,frame_id,ctx;context_lines=radius,expected_sha256)
+end
+
+function project_test_report_source(report::AbstractDict,frame_id,ctx::RuntimeContext;
+        context_lines=3,expected_sha256=nothing)
+    radius=project_test_integer(context_lines,"test source context",0,20)
     id=project_test_text(frame_id,"reported frame ID",64)
     position=findfirst(frame->frame["id"]==id,report["parsed"]["frames"])
     position===nothing && throw(ShenScopeError(:testing,"Reported source frame is absent from the owned test result"))

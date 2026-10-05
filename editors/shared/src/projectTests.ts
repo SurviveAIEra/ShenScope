@@ -6,11 +6,14 @@ export interface ProjectTestingState {
     report?: any;
     source?: any;
     recent?: any;
+    history?: any;
+    savedReport?: any;
+    historyLabels: Record<string, string>;
     caseLimit: number;
     frameLimit: number;
 }
 export function newProjectTestingState(): ProjectTestingState {
-    return {scopes: '.', argv: '', framework: 'raw', caseLimit: 40, frameLimit: 16};
+    return {scopes: '.', argv: '', framework: 'raw', caseLimit: 40, frameLimit: 16, historyLabels: {}};
 }
 export interface ProjectTestingActions {
     button(label: string, action: () => Promise<void>): HTMLButtonElement;
@@ -18,6 +21,8 @@ export interface ProjectTestingActions {
     cancel(): Promise<void>;
     recent(): Promise<void>;
     showReport(id: string): Promise<void>;
+    saved(): Promise<void>;
+    showSaved(id: string): Promise<void>;
     openSource(source: any): Promise<void>;
     render(): Promise<void>;
 }
@@ -66,7 +71,20 @@ export function renderProjectTests(container: HTMLElement, state: ProjectTesting
     format.value = state.framework; format.addEventListener('change', () => { state.framework = format.value; }); formatLabel.append(format);
     custom.append(argvLabel, formatLabel, button('Run selected command', async () => { const command = JSON.parse(state.argv); if (!Array.isArray(command) || !command.length || command.some(value => typeof value !== 'string')) { throw new Error('Enter a nonempty JSON array of command arguments.'); } await actions.start('custom', {argv: command, framework: state.framework}); }, true),
         node('small', 'Commands execute project code and use your process permissions. Choose Plain output when the format is unknown.', 'testing-muted')); container.append(custom);
-    if (state.report) { renderReport(container, state, actions, button); }
+    if (state.report) {
+        renderReport(container, state, actions, button);
+        const save = node('section', '', 'testing-save');
+        if (state.savedReport?.report?.run_id === state.report.run_id) {
+            save.append(node('small', `Saved result · ${state.savedReport.entry.label}`, 'testing-muted'));
+        } else {
+            save.append(button('Save this test result', async () => {
+                await actions.saved();
+                await actions.start('history_save', {run_id: state.report.run_id, expected_revision: state.history.revision});
+            }));
+        }
+        save.append(node('small', 'Saving uses persistence permissions and stores this result only. It does not copy project files or rerun the command.', 'testing-muted'));
+        container.append(save);
+    }
     if (state.source) {
         const source = node('section', '', 'info-card testing-source'); source.setAttribute('aria-label', 'Current test source preview');
         source.append(node('h3', state.source.path), node('small', 'Current source · not a snapshot from the test run', 'testing-muted'));
@@ -74,13 +92,33 @@ export function renderProjectTests(container: HTMLElement, state: ProjectTesting
         for (const line of state.source.lines ?? []) { excerpt.append(node('span', `${line.line}  ${line.text}\n`, line.reported ? 'testing-source-focus' : '')); }
         source.append(excerpt, button('Open referenced file', () => actions.openSource(state.source)), button('Close test source preview', async () => { state.source = undefined; await actions.render(); })); container.append(source);
     }
-    const history = node('section', '', 'testing-history'); history.append(button('Recent test runs', actions.recent));
+    const history = node('section', '', 'testing-history testing-recent-history'); history.append(button('Recent test runs', actions.recent));
     if (state.recent) {
         history.append(node('small', 'Recent controller results are kept in memory and may be retired. They do not survive a Core restart.', 'testing-muted'));
         for (const report of state.recent.reports ?? []) { history.append(button(`${report.label} · ${outcomeNames[report.outcome] ?? report.outcome}`, () => actions.showReport(report.run_id))); }
         if (!state.recent.reports?.length) { history.append(node('p', 'No retained test executions in this conversation.', 'testing-muted')); }
     }
     container.append(history);
+    const saved = node('section', '', 'testing-history'); saved.setAttribute('aria-label', 'Saved project test results');
+    saved.append(button('Saved test results', actions.saved));
+    if (state.history) {
+        saved.append(node('small', `${state.history.total} saved results · revision ${state.history.revision} · available after Core restart in this workspace and conversation`, 'testing-muted'));
+        for (const entry of state.history.items ?? []) {
+            const row = node('article', '', 'info-card testing-saved-entry');
+            row.append(button(`Open saved ${entry.label}`, () => actions.showSaved(entry.run_id)), node('small', `${outcomeNames[entry.outcome] ?? entry.outcome} · ${entry.saved_at}`, 'testing-muted'));
+            const label = node('label', 'Saved result name', 'field'); const input = node('input');
+            input.value = state.historyLabels[entry.run_id] ?? entry.label; input.disabled = busy;
+            input.setAttribute('aria-label', `Saved result name for ${entry.label}`);
+            input.addEventListener('input', () => { state.historyLabels[entry.run_id] = input.value; }); label.append(input); row.append(label);
+            row.append(button(`Rename saved ${entry.label}`, () => actions.start('history_label', {run_id: entry.run_id,
+                label: state.historyLabels[entry.run_id] ?? entry.label, expected_revision: state.history.revision})),
+                button(`Delete saved ${entry.label}`, () => actions.start('history_delete', {run_id: entry.run_id, expected_revision: state.history.revision})));
+            saved.append(row);
+        }
+        if (!state.history.items?.length) { saved.append(node('p', 'No saved test results in this conversation.', 'testing-muted')); }
+        if (state.history.next_offset !== null) { saved.append(button('Load all saved test results', () => actions.start('history_list', {limit: 32}))); }
+    }
+    container.append(saved);
 }
 
 function renderReport(container: HTMLElement, state: ProjectTestingState, actions: ProjectTestingActions, button: (label: string, action: () => Promise<void>, primary?: boolean) => HTMLButtonElement): void {
@@ -107,7 +145,7 @@ function renderReport(container: HTMLElement, state: ProjectTestingState, action
     if (parsed.frames.length) {
         const references = node('section', '', 'testing-references'); references.append(node('h4', 'Files referenced by the output'));
         references.append(node('small', 'References are reported locations. Preview verifies the current workspace file; it does not tie a file to a specific case.', 'testing-muted'));
-        for (const frame of parsed.frames.slice(0, state.frameLimit)) { references.append(button(`Preview ${frame.path}:${frame.line}`, () => actions.start('source', {run_id: report.run_id, frame_id: frame.id}))); }
+        for (const frame of parsed.frames.slice(0, state.frameLimit)) { references.append(button(`Preview ${frame.path}:${frame.line}`, () => actions.start(state.savedReport?.report?.run_id === report.run_id ? 'history_source' : 'source', {run_id: report.run_id, frame_id: frame.id}))); }
         if (parsed.frames.length > state.frameLimit) { references.append(button('Show more source references', async () => { state.frameLimit += 16; await actions.render(); })); } card.append(references);
     }
     if (Object.keys(parsed.framework_summary).length) { const summary = node('details', '', 'testing-output'); summary.append(node('summary', 'Framework summary'), node('pre', JSON.stringify(parsed.framework_summary, null, 2))); card.append(summary); }

@@ -142,18 +142,27 @@ function start_operation!(work::Function,manager::OperationManager,owner::Runtim
 end
 
 function record_operation_commit!(manager::OperationManager,job::OwnedOperation,event::AgentEvent)
-    manager.event_prefix=="diagnostics" && event.kind==:compiler_archive_committed || return nothing
+    compiler=manager.event_prefix=="diagnostics" && event.kind==:compiler_archive_committed
+    testing=manager.event_prefix=="testing" && event.kind==:testing_history_committed
+    compiler || testing || return nothing
     payload=event.payload
-    payload isa AbstractDict && Set(keys(payload))==Set(["revision","index_sha256","reports"]) ||
-        throw(ShenScopeError(:protocol,"Invalid compiler publication receipt"))
-    revision=payload["revision"];reports=payload["reports"];hash=payload["index_sha256"]
+    fields=compiler ? ["revision","index_sha256","reports"] : ["revision","history_sha256","reports","action","run_id"]
+    payload isa AbstractDict && Set(keys(payload))==Set(fields) ||
+        throw(ShenScopeError(:protocol,"Invalid operation publication receipt"))
+    revision=payload["revision"];reports=payload["reports"];hash=payload[compiler ? "index_sha256" : "history_sha256"]
     revision isa Integer && !(revision isa Bool) && 1<=revision<=typemax(Int)-1 &&
         reports isa Integer && !(reports isa Bool) && 0<=reports<=512 &&
         hash isa String && occursin(r"^[0-9a-f]{64}$",hash) ||
-        throw(ShenScopeError(:protocol,"Invalid compiler publication receipt values"))
-    receipt=Dict{String,Any}("kind"=>"compiler.archive","workspace"=>digest(job.context.root),
-        "session_id"=>job.context.session_id,"revision"=>Int(revision),"index_sha256"=>hash,"reports"=>Int(reports),
+        throw(ShenScopeError(:protocol,"Invalid operation publication receipt values"))
+    if testing
+        reports<=32 && payload["action"] in ("save","label","delete") && payload["run_id"] isa String ||
+            throw(ShenScopeError(:protocol,"Invalid saved test publication receipt"))
+        valid_id(payload["run_id"])
+    end
+    receipt=Dict{String,Any}("kind"=>(compiler ? "compiler.archive" : "testing.history"),"workspace"=>digest(job.context.root),
+        "session_id"=>job.context.session_id,"revision"=>Int(revision),(compiler ? "index_sha256" : "history_sha256")=>hash,"reports"=>Int(reports),
         "attestation"=>"reported by the running Core; not authenticated against external filesystem mutation")
+    testing && merge!(receipt,Dict("action"=>payload["action"],"run_id"=>payload["run_id"]))
     bounded_canonical_json(receipt;maximum=2048,max_depth=4,max_nodes=32)
     lock(manager.mutex) do
         length(job.committed_effects)<4 || throw(ShenScopeError(:capacity,"Operation commit-receipt capacity reached"))

@@ -38,7 +38,8 @@
       "codex-rs/exec-server/src/local_file_system_read.rs",
       "codex-rs/exec-server/src/rpc_timing.rs",
       "codex-rs/otel/src/metrics/runtime_metrics.rs",
-      "codex-rs/core/src/tools/handlers/unified_exec/exec_command.rs"
+      "codex-rs/core/src/tools/handlers/unified_exec/exec_command.rs",
+      "codex-rs/state/src/runtime/thread_metadata.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -82,7 +83,8 @@
       "packages/core/src/session/message-updater.ts",
       "packages/app/e2e/performance/timeline/session-timeline-profile.ts",
       "packages/opencode/src/agent/agent.ts",
-      "packages/core/src/tool/bash.ts"
+      "packages/core/src/tool/bash.ts",
+      "packages/core/src/session.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -131,7 +133,8 @@
       "packages/fs/tool-fs/src/read.ts",
       "packages/client/ui-chat/src/client/contract/turn-metrics.ts",
       "packages/client/ui-chat/src/client/performance-usage.ts",
-      "packages/terminal/terminal-bash/src/session.ts"
+      "packages/terminal/terminal-bash/src/session.ts",
+      "packages/api/gateway/src/client/journal-stream.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -266,7 +269,8 @@
       "packages/ui/src/ToolCallBlocks/renderers/read.tsx",
       "packages/ui/src/resource-manager/resourceUsageView.ts",
       "packages/desktop/src/main/resourceManagerHostSampling.ts",
-      "apps/zcode-cli/packages/contracts/src/interfaces/execution.port.ts"
+      "apps/zcode-cli/packages/contracts/src/interfaces/execution.port.ts",
+      "apps/zcode-cli/packages/contracts/src/interfaces/session-store.port.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -311,7 +315,8 @@
       "packages/vscode-ide-companion/src/webview/utils/fileLinks.ts",
       "packages/core/src/telemetry/metrics.ts",
       "packages/core/src/telemetry/event-loop-lag-metrics.ts",
-      "packages/core/src/managed-runtime/local-shell-result-capture.ts"
+      "packages/core/src/managed-runtime/local-shell-result-capture.ts",
+      "packages/core/src/services/chatRecordingService.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

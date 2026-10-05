@@ -80,6 +80,11 @@ include("Testing/Frameworks.jl")
 include("Testing/Reports.jl")
 include("Testing/Execution.jl")
 include("Testing/Source.jl")
+include("Testing/HistoryTypes.jl")
+include("Testing/HistoryFiles.jl")
+include("Testing/HistoryValidation.jl")
+include("Testing/HistoryQueries.jl")
+include("Testing/HistoryUpdates.jl")
 include("Tools/Testing.jl")
 include("Runtime/TerminalTypes.jl")
 include("Runtime/TerminalJournal.jl")
@@ -346,6 +351,9 @@ export RuntimeSourceFile, RuntimeSourceSnapshot, RuntimeImageReceipt, VerifiedRu
 export ProjectTestDiscoveryLimits, ProjectTestMarker, ProjectTestCandidate, ProjectTestCatalog, ProjectTestManager, TestingTool,
     discover_project_tests!, read_project_test_catalog, run_project_tests!, run_project_test_command!,
     read_project_test_report, list_project_test_reports, read_project_test_source, cleanup_project_tests!
+export ProjectTestHistoryLimits, ProjectTestHistoryStore, project_test_history_store,
+    list_project_test_history, read_project_test_history, read_saved_project_test_source,
+    save_project_test_history!, label_project_test_history!, delete_project_test_history!
 export contract_report, interface_catalog, dispatch_ambiguities, invoke_extension_latest,
     compiler_report, run_compiler_diagnostic, compiler_targets, DiagnosticsTool,
     CompilerIRLimits, compiler_ir_report, compiler_ir_compare

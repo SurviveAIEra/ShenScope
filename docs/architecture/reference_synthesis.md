@@ -732,3 +732,21 @@ reviews, not upstream test-framework adapter equivalence or comprehensive
 synthesis. Declaration discovery, framework parsing, ownership and source
 previews are authored Julia implementations; no upstream code is copied or
 translated.
+
+## Explicit saved test receipts (checkpoint 040)
+
+Further partial source reviews of all seven primary agents inform the separation
+of durable evidence, client projections, atomic publication, scoped ownership
+and tool lifecycle metadata. Codex bounded metadata reads, OpenCode durable
+session services, DeepSeek journal page/notification distinctions, Pi immutable
+session entries, Kimi atomic document contracts, ZCode completed/error tool
+evidence and Qwen owned conversation recording are recorded with exact files,
+pins and inspected ranges in
+`docs/validation/project-test-history-040/reference-evidence.json`.
+
+The original Julia design saves selected owned test receipts in one bounded
+atomic snapshot per conversation, uses revision checks across processes, and
+retains publication evidence when subsequent delivery is interrupted. Opening
+a record never reruns its command. These reviews remain partial; they do not
+establish equivalence with every upstream persistence facility or comprehensive
+synthesis of the seven projects.

@@ -284,3 +284,10 @@ PTY TUI, VSIX and native Workbench share the Core state. Seven further partial
 primary-agent reviews inform the original design; no upstream code is copied.
 Specialized project intelligence still reports exact language coverage rather
 than claiming complete support for every language.
+
+Project tests now have explicitly saved receipts separate from the bounded
+in-memory controller history. Reads after Core restart never execute a command;
+save/rename/delete require independent Persistence permission and a current
+revision. Both clients use the same Core-owned history and current-source
+previews. Limits and evidence are in `docs/core/project_test_history.md` and
+checkpoint 040. Native editor Testing API integration remains unfinished.

@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: Actual Core restart retains selected test evidence without process replay
+ok 1 - Actual Core restart retains selected test evidence without process replay
+  ---
+  duration_ms: 76694.505265
+  type: 'test'
+  ...
+# Subtest: Actual Core test discovery, scoped approvals, two project languages and current source receipts
+ok 2 - Actual Core test discovery, scoped approvals, two project languages and current source receipts
+  ---
+  duration_ms: 48889.029604
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 77036.129707

@@ -1,0 +1,121 @@
+[
+  {
+    "project": "codex",
+    "repository": "openai/codex",
+    "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+    "license": "Apache-2.0",
+    "path": "codex-rs/state/src/runtime/thread_metadata.rs",
+    "sha256": "621cba38353f9294916abd830a03e60aa75daa94c2eebe50dc9f164bf89b4863",
+    "inspected_lines": [
+      [
+        1,
+        47
+      ]
+    ],
+    "observation": "Bounded owner-addressed metadata reads; projection is separate from durable receipt content.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "opencode",
+    "repository": "anomalyco/opencode",
+    "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+    "license": "MIT",
+    "path": "packages/core/src/session.ts",
+    "sha256": "6a82ac892612207fe3cdce0de556a7e4a06bf701557ebfe09607633641f224be",
+    "inspected_lines": [
+      [
+        180,
+        223
+      ]
+    ],
+    "observation": "Durable session service separates database, event, execution and location responsibilities.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "deepseek-harness",
+    "repository": "deepseek-ai/deepseek-harness",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "license": "MIT",
+    "path": "packages/api/gateway/src/client/journal-stream.ts",
+    "sha256": "b867f384cc49fca6d8c0cd4731e0e0ec2b6819c2dacefdca78aa51cb8b1ae013",
+    "inspected_lines": [
+      [
+        1,
+        58
+      ]
+    ],
+    "observation": "Reconnect distinguishes replaced/prepended/appended durable pages from cursorless notifications.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "pi-mono",
+    "repository": "badlogic/pi-mono",
+    "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+    "license": "MIT",
+    "path": "packages/coding-agent/src/core/session-manager.ts",
+    "sha256": "450d82c529933214e088b8422f00061815e617f352f6c834689787a314064bff",
+    "inspected_lines": [
+      [
+        975,
+        1000
+      ]
+    ],
+    "observation": "Immutable session tree entries and projected active context keep original records distinct.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "kimi-code",
+    "repository": "MoonshotAI/kimi-code",
+    "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+    "license": "MIT",
+    "path": "packages/agent-core-v2/src/persistence/backends/node-fs/atomicDocumentStore.ts",
+    "sha256": "2a738b0d4e6e806150d1c2e91b579c035f88ad4fd4aaf571c5e6637a07ef19fa",
+    "inspected_lines": [
+      [
+        17,
+        65
+      ]
+    ],
+    "observation": "Document codec and atomic storage publication are separate contracts.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "ZCode",
+    "repository": "zai-org/ZCode",
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "license": "Apache-2.0",
+    "path": "apps/zcode-cli/packages/contracts/src/interfaces/session-store.port.ts",
+    "sha256": "d40bba70c0f904691be599e33bfacdb369f00034e79f75a1b6490328658eba0d",
+    "inspected_lines": [
+      [
+        710,
+        752
+      ]
+    ],
+    "observation": "Tool lifecycle preserves running, completed and failed evidence with explicit time and metadata.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "qwen-code",
+    "repository": "QwenLM/qwen-code",
+    "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+    "license": "Apache-2.0",
+    "path": "packages/core/src/services/chatRecordingService.ts",
+    "sha256": "63c368eebb1298e3d3881a409b0e0500e3dbae4fa4019f5ba74d4855240154f3",
+    "inspected_lines": [
+      [
+        1305,
+        1340
+      ]
+    ],
+    "observation": "Project-specific conversation storage rejects inappropriate session ownership before recording.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  }
+]

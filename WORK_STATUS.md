@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest verified cloc 2.11 count: 26,244 authored Julia Core code lines across 277 files;
-CLI/TUI add 1,326 lines and optional Julia extensions add 57, counted separately.
-This is 10.4976% of the minimum line target, leaving 223,756 lines. These are early implementations,
+Latest verified cloc 2.11 count: 26,623 authored Julia Core code lines across 282 files;
+CLI/TUI add 1,360 lines and optional Julia extensions add 57, counted separately.
+This is 10.6492% of the minimum line target, leaving 223,377 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -1058,3 +1058,45 @@ still finds one application checkout, 50 dependencies and no unknown repositorie
 17.466 GiB remains free; one Core cache pair is reused, with no whole-project
 copies, worktrees or sysimages. Core increased by 913 authored lines. Continue
 general project workflows and the remaining functional/250,000-line gates.
+
+## Checkpoint 040: explicitly saved project test results
+
+Owned test receipts can now be saved, read after Core restart, renamed or deleted
+without launching their commands. One atomic snapshot per workspace/conversation
+holds at most 32 records, 4 MiB per receipt and 16 MiB serialized total. Saving
+requires independent Read/Persistence permissions and expected revisions; no
+automatic retirement, project-folder copies or per-revision backup trees.
+Cross-process locks and final digest checks fence stale writes. Normal staging
+is removed; only identified dead Core stages older than one hour can be reclaimed.
+
+Publication evidence survives later notification failure or cancelled job
+completion. Current Read denial hides both result bodies and commit receipts.
+Read-only Plan mode exposes saved-history queries but cannot write them. Source
+previews verify current workspace files independently of the historic result;
+saved output is not proof of whole-project coverage or a historic source snapshot.
+
+90 new Core assertions across eight testsets pass, including real two-Julia-
+process contention, ownership, corrupt data, capacity, permissions, CLI failures,
+current-source hashes and post-publication cancellation. Project-testing
+regression adds 155 assertions and shared operation/commit regression adds 54;
+299 assertions across 23 testsets pass. Two real Node/Core tests pass, including
+a Core process restart and a counter confirming the saved command executed once.
+Both actual clients pass independent process/persistence approval, saving/naming/
+reopening/deleting results, current source previews and actual editor file opening.
+Layouts fit 197/357 px without horizontal panel overflow; shared/full Workbench
+typechecks and client builds pass. Initial sandbox/typecheck failures and one
+native GUI timeout are retained; the final standalone GUI runs both pass.
+
+The VSIX has 322 entries; 313 Core/helper/extension/metadata files and all three
+assets match authored source. It is 665,849 bytes, SHA-256
+`97a0ff5754c544fb12e91acc47f700d7c80f4cca4be56edd7ffec66082809d4c`.
+Development VSIX execution is verified; package installation and a complete
+desktop distribution are not. Native Testing API integration, broader reporting
+formats/coverage and the other product gates remain unfinished.
+
+Seven further pinned partial primary-agent reviews are recorded. Strict audit
+still finds one application checkout, 50 dependencies and no unknown repositories.
+One reusable 60,566,800-byte Core cache library and its 1,720,095-byte metadata
+file remain; no new sysimage or directory duplication. Core adds 379 authored
+lines, now 26,623. Evidence: `docs/validation/project-test-history-checkpoint-040.json`.
+Continue native Testing integration and the functional/250,000-line gates.
