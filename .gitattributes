@@ -1,3 +1,4 @@
 # Raw verification output preserves whitespace emitted by test and build tools.
 docs/validation/compiler-ir-031/*.txt -whitespace
 docs/validation/compiler-archive-032/*.txt -whitespace
+docs/validation/compiler-operations-033/*.txt -whitespace

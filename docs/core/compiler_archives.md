@@ -14,6 +14,13 @@ owned, completed `compile` job with `mode=graph`; clients cannot submit a report
 body as proof that compilation occurred. An expired or retired job must be
 compiled again before saving.
 
+The `compile_archive` diagnostics action performs actual graph inference and
+publication without depending on an IDE's job ID. Agent calls and CLI
+`compile --save` share this path. It checks explicit persistence denial and an
+already stale catalog before inference, then uses the ordinary revision-checked
+save after computation. A concurrent writer can still invalidate that revision;
+there is no invisible retry of compilation or publication.
+
 Reading uses the recorded inventory rather than requiring that the current Core
 has the same source hashes or method line numbers. It checks the package UUID,
 fixed target signature, report digest, asset digest, strict field inventory,
@@ -45,6 +52,21 @@ Cancellation before catalog publication can leave an unreferenced asset, which
 is visible in catalog storage statistics. A matching orphan can be reused by a
 later save. Active reads and writes recheck cancellation, shared wall-clock
 budget and live Read/Persistence denial.
+
+After atomic catalog publication, notification failure is reported separately
+as `commit_notification_failed`; it does not retroactively fail storage. Owned
+diagnostics jobs retain bounded `committed_effects` records before notifying the
+owner. Cancellation or budget expiry after publication can still stop job
+completion; polling exposes the recorded catalog revision/digest so callers can
+inspect committed state instead of replaying a mutation. These are reports by
+the running Core rather than authenticated external attestation. They are
+ephemeral job evidence; the archive catalog is the persisted state to inspect
+after job retirement or process restart.
+
+Read denial before result delivery rejects the owned result. Both synchronous
+polling and asynchronous Core notifications hide result bodies and commit
+evidence while Read is denied. The existing inventory, schema, provenance and
+permission limits still apply.
 
 Save counts referenced assets, orphans and staging bytes against its capacity.
 Staging files are counted separately in listing results. Cleanup below only
@@ -84,7 +106,11 @@ grant. Inference and mutations use `diagnostics/start` and the existing owned
 poll/cancel/approval protocol. Save requires the completed compiler `job_id` and
 expected catalog revision. Read operations accept an expected catalog digest
 for stable pagination, opening or comparison. Owned operation results retain
-their independent transport capacity and can fail with a capacity error.
+their independent transport capacity: diagnostics allows 3 MiB plus 4 KiB,
+64 JSON levels and 600,000 encoder nodes under an 8 MiB retained-result cap.
+Other operation managers retain their existing defaults. Oversized or overdeep
+results still fail explicitly. The same body and permission checks apply to
+reads even when dynamic/process execution is denied.
 
 CLI archives require an existing conversation ID and matching workspace:
 

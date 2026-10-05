@@ -89,6 +89,8 @@ test('Real compiler RPC scopes approvals, cancellation and inferred graph eviden
         assert.equal((await query({ action: 'archive_list' })).total, 0);
         const saved = await archiveOperation({ action: 'archive_save', job_id: started.job_id, expected_revision: 0, title: 'Editor persisted inference 中文' });
         assert.equal(saved.status, 'complete'); assert.equal(saved.result.revision, 1);
+        assert.equal(saved.committed_effects.length, 1); assert.equal(saved.committed_effects[0].revision, 1);
+        assert.equal(saved.committed_effects[0].session_id, owner.id);
         const opened = await query({ action: 'archive_get', report_id: report.report_sha256 });
         assert.deepEqual(opened.report, report); assert.equal(opened.source_currentness, 'not_checked'); assert.equal(opened.producer_authenticated, false);
         await assert.rejects(client.request('diagnostics/query', { session_id: other.id, action: 'archive_get', report_id: report.report_sha256 }), /conversation|archive/);
@@ -96,8 +98,10 @@ test('Real compiler RPC scopes approvals, cancellation and inferred graph eviden
         assert.equal(comparison.changes_total, 0); assert.equal(comparison.performance_change_proven, false);
         const labelled = await archiveOperation({ action: 'archive_label', report_id: report.report_sha256, expected_revision: 1, title: 'Renamed evidence' });
         assert.equal(labelled.status, 'complete'); assert.equal(labelled.result.revision, 2);
+        assert.equal(labelled.committed_effects[0].revision, 2);
         const stale = await archiveOperation({ action: 'archive_delete', report_id: report.report_sha256, expected_revision: 1 });
         assert.equal(stale.status, 'failed'); assert.equal(stale.error_code, 'conflict');
+        assert.equal(stale.committed_effects.length, 0);
         const deleted = await archiveOperation({ action: 'archive_delete', report_id: report.report_sha256, expected_revision: 2 });
         assert.equal(deleted.result.revision, 3);
         const cleanup = await query({ action: 'archive_gc', dry_run: true, expected_revision: 3 });

@@ -1,0 +1,38 @@
+Precompiling ShenScope...
+  75007.6 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 75 seconds. 40 already precompiled.
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:45
+in expression starting at /workspace/ShenScope/test/compiler_operations.jl:6
+Test Summary:                                                                                      | Pass  Total  Time
+Owned result limits preserve deep structured data and fail closed without expanding other managers |    7      7  2.1s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  0.9s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  1.5s
+Test Summary:                                                                              | Pass  Total   Time
+Published compiler catalogs survive notification failures and interrupted owned completion |   10     10  16.0s
+Owned archive reads retain valid evidence exceeding the former two MiB result cap: Error During Test at /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:45
+  Got exception outside of a @test
+  RPCFault(-32002, "Initialize first", nothing)
+  Stacktrace:
+   [1] dispatch_rpc(server::CoreServer, method::String, params::Dict{Any, Any})
+     @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:207
+   [2] (::var"#69#73")(root::String)
+     @ Main /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:51
+   [3] mktempdir(fn::var"#69#73", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [4] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [5] macro expansion
+     @ /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:46 [inlined]
+   [6] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [7] top-level scope
+     @ /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:46
+   [8] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [9] top-level scope
+     @ /workspace/ShenScope/test/compiler_operations.jl:6
+Test Summary:                                                                     | Error  Total  Time
+Owned archive reads retain valid evidence exceeding the former two MiB result cap |     1      1  2.5s

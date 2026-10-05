@@ -590,6 +590,30 @@ archive stores source metadata and compiler reports rather than copying project
 directories. Its structural comparison discloses unmatched source anchors and
 does not derive performance gains or security isolation from compiler effects.
 
+## Compiler operations and published-state observations
+
+Checkpoint 033 extends independently authored compiler operations with an agent
+compile-and-save action, bounded rich-result retention and visible publication
+records after interrupted completion. Seven primary source observations inform
+the interface boundaries; they do not constitute complete reviews or source
+translation.
+
+| Pinned source inspected | Observation | Julia consequence |
+|---|---|---|
+| Codex `codex-rs/core/src/tools/registry.rs` 195–217 | Tool response content and history truncation metadata are separate | Full bounded compiler evidence/receipts remain distinct from model-facing trimmed tool messages |
+| OpenCode `packages/core/src/tool/tool.ts` 1–62 | Tool inputs, structured outputs and model representations have distinct contracts | `compile_archive` executes one Core path for agent and CLI, while original output archival and model previews retain their existing limits |
+| DeepSeek Harness `packages/core/tools/src/types.ts` 1–60 | Started/settled nested dispatch events distinguish durable outcomes and structured error identity | Catalog publication is recorded separately from successful owned-job completion; late budget/cancellation errors preserve visible commit evidence |
+| Pi `packages/coding-agent/src/modes/interactive/components/tool-execution.ts` 121–160 | Error/partial presentation and bounded expandable output preserve status | The shared UI reports an interrupted operation with recorded publication, rather than describing all stopped work as inference failure |
+| Kimi Code `packages/agent-core-v2/src/agent/toolResultTruncation/toolResultTruncationService.ts` 1–82 | Retention, persisted spill pointers and model preview fallback are separate | Diagnostics result limits accommodate bounded archive inventories without changing other managers' defaults or asserting complete model delivery |
+| ZCode `packages/ui/src/ToolCallBlocks/toolResultDisplay.ts` 1–44 | Retrieval readiness, task status and truncation have different fields | Owned result byte/depth/node limits and commit evidence have explicit fields rather than one success flag |
+| Qwen Code `packages/core/src/core/nonInteractiveToolExecutor.ts` 1–55 | Noninteractive execution reuses the scheduler and distinguishes recording callbacks | Agent/CLI compile-and-save share Core execution; async result delivery and polling apply the same live Read refusal |
+
+Publication records are ephemeral reports by the running Core. They do not
+authenticate an external host, provide generic transactional rollback, or make
+post-restart replay safe. Historical metadata remains unsigned. The adversarial
+long-path inventory validation test is functional evidence, not a performance
+benchmark or a claim of efficient large-project indexing.
+
 No upstream source was copied or translated. The artifact receipt is local
 integrity evidence, not a signature. Relocation, standalone apps, installed IDE
 distribution and clean-machine restore are distinct remaining gates.

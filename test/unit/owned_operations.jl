@@ -3,6 +3,31 @@ function await_owned_operation(manager,id;timeout=10.0)
     manager.jobs[id]
 end
 
+@testset "Owned result limits preserve deep structured data and fail closed without expanding other managers" begin
+    mktempdir() do root
+        owner=RuntimeContext(root;state_dir=joinpath(root,"state"))
+        value=Dict{String,Any}("leaf"=>"preserved")
+        for _ in 1:30;value=Dict{String,Any}("child"=>value);end
+        standard=OperationManager();expanded=OperationManager(;max_result_depth=40,max_result_nodes=256)
+        try
+            rejected=start_operation!(_->value,standard,owner;kind="deep")
+            @test await_owned_operation(standard,rejected["job_id"]).error_code==:capacity
+            retained=start_operation!(_->value,expanded,owner;kind="deep")
+            @test await_owned_operation(expanded,retained["job_id"]).status==:complete
+            @test owned_operation(expanded,retained["job_id"],owner)["result"]==value
+            exhausted=OperationManager(;max_result_nodes=5)
+            job=start_operation!(_->Dict("rows"=>collect(1:20)),exhausted,owner;kind="nodes")
+            @test await_owned_operation(exhausted,job["job_id"]).error_code==:capacity
+            close_operations!(exhausted)
+            @test_throws ArgumentError OperationManager(;max_result_depth=true)
+            @test_throws ArgumentError OperationManager(;max_result_depth=65)
+            @test_throws ArgumentError OperationManager(;max_result_nodes=1_000_001)
+        finally
+            close_operations!(standard);close_operations!(expanded)
+        end
+    end
+end
+
 @testset "Nested operation approval ownership survives cancellation and scoped callbacks" begin
     mktempdir() do root
         events = AgentEvent[];seen = Ref{Any}(nothing)

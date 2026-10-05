@@ -5,7 +5,7 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
     get(flags,"--allow-dynamic",false) && (policy.rules[:dynamic]=Allow)
     get(flags,"--allow-persistence",false) && (policy.rules[:persistence]=Allow)
     action=positional[2];save=get(flags,"--save",false)
-    archival=action in COMPILER_ARCHIVE_ACTIONS || save
+    archival=action in COMPILER_ARCHIVE_ACTIONS || action=="compile_archive" || save
     archival && !haskey(flags,"--session") && throw(ShenScopeError(:input,"Compiler report archives require --session ID"))
     save && (action!="compile" || get(flags,"--mode","graph")!="graph" || !haskey(flags,"--expected-revision")) &&
         throw(ShenScopeError(:input,"Saving inference requires compile --mode graph --expected-revision N"))
@@ -17,8 +17,8 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
         realpath(session.root)==ctx.root || throw(ShenScopeError(:permission,"Compiler archive conversation belongs to another workspace"))
     end
     action=="archive_save" && throw(ShenScopeError(:input,"CLI inference can be archived with compile TARGET --mode graph --save"))
-    args=Dict{String,Any}("action"=>action)
-    if action=="compile"
+    args=Dict{String,Any}("action"=>save ? "compile_archive" : action)
+    if action in ("compile","compile_archive")
         length(positional)==3 || throw(ShenScopeError(:input,"Compiler target required"));args["target"]=positional[3]
         save && (args["mode"]="graph")
     elseif action in ("archive_get","archive_label","archive_delete")
@@ -35,17 +35,12 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
             ("--limit","limit"),("--offset","offset"),("--expected-revision","expected_revision"))
         haskey(flags,flag) || continue
         value=tryparse(Int,flags[flag]);value===nothing && throw(ShenScopeError(:input,flag*" must be an integer"))
-        save && key=="expected_revision" || (args[key]=value)
+        args[key]=value
     end
-    !save && haskey(flags,"--title") && (args["title"]=flags["--title"])
+    haskey(flags,"--title") && (args["title"]=flags["--title"])
     haskey(flags,"--expected-index-sha256") && (args["expected_index_sha256"]=flags["--expected-index-sha256"])
     get(flags,"--apply-cleanup",false) && (args["dry_run"]=false)
     tool=DiagnosticsTool();validate_schema(args,tool_schema(tool));diagnostics_arguments(args)
     result=execute(tool,args,ctx)
-    if save
-        saved=compiler_archive_save(compiler_archive_store(ctx),result,ctx;
-            expected_revision=parse(Int,flags["--expected-revision"]),title=get(flags,"--title","Compiler report"))
-        result=merge(result,Dict("archive"=>saved))
-    end
     println(canonical(result));return 0
 end

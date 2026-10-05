@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest verified cloc 2.11 count: 23,453 authored Julia Core code lines across 237 files;
-CLI/TUI add 1,144 lines and optional Julia extensions add 57, counted separately.
-This is 9.3812% of the minimum line target, leaving 226,547 lines. These are early implementations,
+Latest verified cloc 2.11 count: 23,531 authored Julia Core code lines across 237 files;
+CLI/TUI add 1,139 lines and optional Julia extensions add 57, counted separately.
+This is 9.4124% of the minimum line target, leaving 226,469 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -780,3 +780,40 @@ no unknown repositories remain; about 17.5 GiB is free, with one current Core
 cache pair and no new sysimage or full-directory backup. Core increased by 660
 authored lines. Agent-driven compile-and-save, project inference, graph fusion,
 remaining runtime/state capabilities and the 250,000-line target remain active.
+
+Compiler operation checkpoint 033: the normal agent diagnostics tool can compile
+and save a graph report with an expected catalog revision. CLI compile-and-save
+uses the same implementation. Invalid modes, irrelevant parameters, persistence
+denial and an already-stale revision refuse before inference; a concurrent writer
+may still cause a final CAS conflict. The compiler target table remains fixed.
+
+Owned diagnostics explicitly retain up to 3 MiB plus wrapper overhead, with
+bounded depth/node counts and 8 MiB aggregate retention. Other operation managers
+keep their existing default bounds. A synthetic unsigned long-path source
+inventory exercises a real stored report and framed read larger than the former
+result cap, without making source copies or claiming large-project performance.
+
+Publication events record bounded workspace/conversation receipts before client
+notification. A sink failure after atomic publication does not undo storage or
+report the mutation as uncommitted. A cancellation or budget failure after that
+point retains the receipt while reporting the operation's actual terminal state.
+These are ephemeral unsigned Core reports, not external attestation, durable
+generic side-effect receipts or automatic rollback. Live Read denial before
+delivery fails the operation and filters results/receipts from both polling and
+notifications. The editor tells users to refresh after a recorded publication.
+
+Validation: 261 compiler/operation assertions and 36 distinct shared protocol
+assertions pass, including 43 new assertions. Real Node/Core transport checks
+publication receipts and conflict refusal. Native Workbench and standalone VSIX
+actual GUI regressions, shared checks/build and full Workbench typecheck pass.
+The initial missing initialize in a new fixture and the late-Read-denial failure
+are retained with the successful regression in
+docs/validation/compiler-operations-checkpoint-033.json. The actual agent fixture
+uses MockProvider; live-model quality is not claimed.
+
+Source observations extend all seven primary agent reviews. No upstream source
+is copied or translated. The strict audit still finds one application repository,
+50 dependencies and no unknown repositories. About 17.5 GiB is free, with no new
+project copies, worktrees or sysimages. Core increased by 78 authored lines;
+compiler source navigation, project inference, graph fusion and the remaining
+product/size gates continue.

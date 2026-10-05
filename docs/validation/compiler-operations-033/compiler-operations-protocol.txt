@@ -1,0 +1,6 @@
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.7s
+Test Summary:                                                    | Pass  Total  Time
+Protocol version, config ownership, secrets and session commands |   15     15  3.0s
+Test Summary:                                        | Pass  Total   Time
+Agent protocol permission ownership and cancellation |   13     13  24.1s

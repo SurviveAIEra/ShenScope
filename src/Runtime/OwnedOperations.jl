@@ -13,6 +13,7 @@ mutable struct OwnedOperation
     result_bytes::Int
     notification_failed::Bool
     pending_permissions::Set{String}
+    committed_effects::Vector{Dict{String,Any}}
 end
 
 mutable struct OperationManager
@@ -24,16 +25,20 @@ mutable struct OperationManager
     max_jobs::Int
     max_result_bytes::Int
     max_retained_bytes::Int
+    max_result_depth::Int
+    max_result_nodes::Int
     closed::Bool
 end
 
 function OperationManager(;event_prefix="operation",max_running=4,max_per_session=1,
-        max_jobs=64,max_result_bytes=4*1024^2,max_retained_bytes=16*1024^2)
+        max_jobs=64,max_result_bytes=4*1024^2,max_retained_bytes=16*1024^2,
+        max_result_depth=24,max_result_nodes=100_000)
     occursin(r"^[a-z][a-z0-9_]{0,31}$",event_prefix) || throw(ArgumentError("Invalid operation event prefix"))
-    values = (max_running,max_per_session,max_jobs,max_result_bytes,max_retained_bytes)
+    values = (max_running,max_per_session,max_jobs,max_result_bytes,max_retained_bytes,max_result_depth,max_result_nodes)
     all(value -> value isa Integer && !(value isa Bool),values) &&
         1 <= max_per_session <= max_running <= 64 && max_running <= max_jobs <= 1024 &&
-        128 <= max_result_bytes <= max_retained_bytes <= 64*1024^2 ||
+        128 <= max_result_bytes <= max_retained_bytes <= 64*1024^2 &&
+        1<=max_result_depth<=64 && 1<=max_result_nodes<=1_000_000 ||
         throw(ArgumentError("Invalid owned operation capacities"))
     OperationManager(Dict(),ReentrantLock(),String(event_prefix),values...,false)
 end
@@ -45,7 +50,8 @@ function operation_view(job::OwnedOperation)
         "metadata"=>deepcopy(job.metadata),"status"=>String(job.status),"result"=>deepcopy(job.result),
         "error"=>job.error,"error_code"=>job.error_code === nothing ? nothing : String(job.error_code),
         "started_at"=>job.started_at,"finished_at"=>job.finished_at,"result_bytes"=>job.result_bytes,
-        "notification_failed"=>job.notification_failed,"permission_ids"=>sort!(collect(job.pending_permissions)))
+        "notification_failed"=>job.notification_failed,"permission_ids"=>sort!(collect(job.pending_permissions)),
+        "committed_effects"=>deepcopy(job.committed_effects))
 end
 
 function operations_running(manager::OperationManager;session_id=nothing)
@@ -55,7 +61,8 @@ function operations_running(manager::OperationManager;session_id=nothing)
 end
 
 function retain_operation!(manager::OperationManager,job::OwnedOperation,result::AbstractDict)
-    bytes = ncodeunits(bounded_canonical_json(result;maximum=manager.max_result_bytes))
+    bytes = ncodeunits(bounded_canonical_json(result;maximum=manager.max_result_bytes,
+        max_depth=manager.max_result_depth,max_nodes=manager.max_result_nodes))
     bytes <= manager.max_result_bytes || throw(ShenScopeError(:capacity,"Operation result exceeds its transport capacity"))
     lock(manager.mutex) do
         completed = sort!([prior for prior in values(manager.jobs) if prior.status != :running];by=prior -> prior.finished_at)
@@ -78,8 +85,9 @@ function start_operation!(work::Function,manager::OperationManager,owner::Runtim
     check_cancelled(owner.cancellation)
     context = child_context(owner)
     job = OwnedOperation(string(uuid4()),kind,context,deepcopy(Dict{String,Any}(metadata)),:running,
-        nothing,nothing,nothing,nothing,time(),nothing,0,false,Set{String}())
+        nothing,nothing,nothing,nothing,time(),nothing,0,false,Set{String}(),Dict{String,Any}[])
     context.sink = event -> begin
+        record_operation_commit!(manager,job,event)
         if event.kind in (:permission_request,:permission_resolved)
             id = event.payload["id"]
             lock(manager.mutex) do
@@ -131,6 +139,27 @@ function start_operation!(work::Function,manager::OperationManager,owner::Runtim
         end
     end
     Dict("job_id"=>job.id,"started"=>true)
+end
+
+function record_operation_commit!(manager::OperationManager,job::OwnedOperation,event::AgentEvent)
+    manager.event_prefix=="diagnostics" && event.kind==:compiler_archive_committed || return nothing
+    payload=event.payload
+    payload isa AbstractDict && Set(keys(payload))==Set(["revision","index_sha256","reports"]) ||
+        throw(ShenScopeError(:protocol,"Invalid compiler publication receipt"))
+    revision=payload["revision"];reports=payload["reports"];hash=payload["index_sha256"]
+    revision isa Integer && !(revision isa Bool) && 1<=revision<=typemax(Int)-1 &&
+        reports isa Integer && !(reports isa Bool) && 0<=reports<=512 &&
+        hash isa String && occursin(r"^[0-9a-f]{64}$",hash) ||
+        throw(ShenScopeError(:protocol,"Invalid compiler publication receipt values"))
+    receipt=Dict{String,Any}("kind"=>"compiler.archive","workspace"=>digest(job.context.root),
+        "session_id"=>job.context.session_id,"revision"=>Int(revision),"index_sha256"=>hash,"reports"=>Int(reports),
+        "attestation"=>"reported by the running Core; not authenticated against external filesystem mutation")
+    bounded_canonical_json(receipt;maximum=2048,max_depth=4,max_nodes=32)
+    lock(manager.mutex) do
+        length(job.committed_effects)<4 || throw(ShenScopeError(:capacity,"Operation commit-receipt capacity reached"))
+        push!(job.committed_effects,receipt)
+    end
+    nothing
 end
 
 function owned_operation(manager::OperationManager,id::AbstractString,ctx::RuntimeContext;cancel=false)

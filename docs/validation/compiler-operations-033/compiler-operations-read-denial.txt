@@ -1,0 +1,55 @@
+ERROR: LoadError: Some tests did not pass: 2 passed, 1 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:45
+in expression starting at /workspace/ShenScope/test/compiler_operations.jl:6
+Test Summary:                                                                                      | Pass  Total  Time
+Owned result limits preserve deep structured data and fail closed without expanding other managers |    7      7  2.3s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  0.7s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  1.4s
+Test Summary:                                                                              | Pass  Total   Time
+Published compiler catalogs survive notification failures and interrupted owned completion |   10     10  15.6s
+Read denial after publication hides result bodies and commit receipts on both RPC paths: Test Failed at /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:65
+  Expression: job.status == :failed && job.error_code == :permission
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#69#73")(root::String)
+   @ Main /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:65
+ [3] mktempdir(fn::var"#69#73", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:46 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:46
+Read denial after publication hides result bodies and commit receipts on both RPC paths: Error During Test at /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:45
+  Got exception outside of a @test
+  ArgumentError: Collection is empty, must contain exactly 1 element
+  Stacktrace:
+    [1] _only
+      @ ./iterators.jl:1550 [inlined]
+    [2] only
+      @ ./iterators.jl:1545 [inlined]
+    [3] (::var"#69#73")(root::String)
+      @ Main /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:71
+    [4] mktempdir(fn::var"#69#73", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [5] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [6] macro expansion
+      @ /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:46 [inlined]
+    [7] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+    [8] top-level scope
+      @ /workspace/ShenScope/test/unit/compiler_commit_receipts.jl:46
+    [9] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [10] top-level scope
+      @ /workspace/ShenScope/test/compiler_operations.jl:6
+Test Summary:                                                                           | Pass  Fail  Error  Total  Time
+Read denial after publication hides result bodies and commit receipts on both RPC paths |    2     1      1      4  7.4s

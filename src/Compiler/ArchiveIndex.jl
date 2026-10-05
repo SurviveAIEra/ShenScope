@@ -48,7 +48,8 @@ function compiler_archive_index_entry(index,id::String)
     index["reports"][position]
 end
 
-function compiler_archive_publish_index(store::CompilerArchiveStore,ctx::RuntimeContext,previous,rows;guard=()->nothing)
+function compiler_archive_publish_index(store::CompilerArchiveStore,ctx::RuntimeContext,previous,rows;
+        guard=()->nothing,notification_failed=Ref(false))
     revision=compiler_archive_revision(previous["revision"])+1
     index=Dict{String,Any}("schema"=>COMPILER_ARCHIVE_SCHEMA,"owner"=>compiler_archive_owner(store),
         "revision"=>revision,"reports"=>sort!(collect(rows);by=row->row["report_sha256"]))
@@ -59,7 +60,13 @@ function compiler_archive_publish_index(store::CompilerArchiveStore,ctx::Runtime
         current=compiler_archive_read_index(store,ctx;category=:persistence)
         current["index_sha256"]==previous["index_sha256"] || throw(ShenScopeError(:conflict,"Compiler archive changed before catalog publication"))
     end)
-    emit!(ctx,:compiler_archive_committed,Dict("revision"=>revision,"index_sha256"=>index["index_sha256"],"reports"=>length(rows)))
+    try
+        emit!(ctx,:compiler_archive_committed,Dict("revision"=>revision,"index_sha256"=>index["index_sha256"],"reports"=>length(rows)))
+    catch
+        # The catalog is already durable. A disconnected notification sink
+        # cannot turn its successful atomic publication into a storage failure.
+        notification_failed[]=true
+    end
     index
 end
 

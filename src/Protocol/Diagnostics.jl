@@ -1,5 +1,23 @@
 server_diagnostics_tool(server::CoreServer)=only(tool for tool in server.tools if tool isa DiagnosticsTool)
 
+function diagnostics_hide_evidence!(view::AbstractDict)
+    view["result_hidden_by_permission"]=get(view,"result",nothing)!==nothing
+    view["result"]=nothing;view["committed_effects"]=Any[]
+    view["commit_evidence_hidden_by_permission"]=true
+    view
+end
+
+function diagnostics_event_payload(server::CoreServer,event::AgentEvent)
+    event.kind in (:compiler_archive_committed,:diagnostics_job_completed,:diagnostics_job_failed) || return event.payload
+    owner=get(server.contexts,event.session_id,nothing)
+    policy=owner===nothing ? permissions_from_config(server.config) : owner.permissions
+    denied=permission_decision(policy,PermissionRequest("diagnostics-delivery",:read,"runtime.diagnostics",
+        server.root,"Deliver compiler evidence"))==Deny
+    denied || return event.payload
+    event.kind==:compiler_archive_committed && return Dict("evidence_hidden_by_permission"=>true)
+    diagnostics_hide_evidence!(deepcopy(event.payload))
+end
+
 function diagnostics_rpc(server::CoreServer,method::String,params::AbstractDict)
     method in ("diagnostics/query","diagnostics/start","diagnostics/job","diagnostics/cancel_job") ||
         throw(RPCFault(-32601,"Unknown compiler diagnostics method"))
@@ -11,9 +29,9 @@ function diagnostics_rpc(server::CoreServer,method::String,params::AbstractDict)
         ctx=RuntimeContext(server.root;session_id=session.id,state_dir=server.state_dir)
         view=owned_operation(tool.operations,rpc_string(params,"job_id";max_bytes=128),ctx;
             cancel=method=="diagnostics/cancel_job")
-        if view["result"]!==nothing && permission_decision(policy,PermissionRequest("diagnostics-result",:read,
+        if permission_decision(policy,PermissionRequest("diagnostics-result",:read,
                 "runtime.diagnostics",server.root,"Read compiler evidence"))==Deny
-            view["result"]=nothing;view["result_hidden_by_permission"]=true
+            diagnostics_hide_evidence!(view)
         end
         return view
     end
@@ -34,8 +52,12 @@ function diagnostics_rpc(server::CoreServer,method::String,params::AbstractDict)
     owner=prior===nothing || iscancelled(prior.cancellation) ? server_context(server,session.id) : prior
     arguments=deepcopy(args)
     start_operation!(tool.operations,owner;kind=String(args["action"]),metadata=Dict(
-            "target"=>get(args,"target",""),"mode"=>get(args,"mode","typed"),"trusted_core_only"=>true)) do context
+            "target"=>get(args,"target",""),"mode"=>get(args,"mode",args["action"]=="compile_archive" ? "graph" : "typed"),
+            "trusted_core_only"=>true)) do context
         result=execute(tool,arguments,context)
+        permission_decision(context.permissions,PermissionRequest("diagnostics-publication",:read,"runtime.diagnostics",
+            context.root,"Publish compiler result"))==Deny &&
+            throw(ShenScopeError(:permission,"Compiler result reads were revoked before delivery"))
         result isa AbstractDict ? result : Dict("items"=>result)
     end
 end

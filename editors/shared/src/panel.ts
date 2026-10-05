@@ -1873,7 +1873,7 @@ export class ShenScopePanel {
             if (this.diagnosticsJob === payload.job_id) { this.diagnosticsJob = undefined; }
             for (const card of Array.from(this.approvals.children)) { const element = card as HTMLElement; if (element.dataset.traceId === params.trace_id || (payload.permission_ids ?? []).includes(element.dataset.requestId)) { card.remove(); } }
             if (owned && params.kind === 'diagnostics_job_completed') {
-                if (payload.action === 'compile' || payload.action === 'archive_get') {
+                if (payload.action === 'compile' || payload.action === 'compile_archive' || payload.action === 'archive_get') {
                     this.diagnosticsResult = payload.result; this.diagnosticsResultJob = payload.action === 'compile' ? payload.job_id : undefined;
                     this.diagnosticsRecorded = payload.action === 'archive_get'; this.diagnosticsMethod = 0; this.diagnosticsBlock = 0; this.diagnosticsPage = 0;
                 } else if (payload.action === 'targets') { this.diagnosticsTargets = payload.result.items; }
@@ -1883,7 +1883,12 @@ export class ShenScopePanel {
                 else { this.diagnosticsArchiveOffset = 0; this.diagnosticsArchiveManual = false; this.diagnosticsCleanup = undefined; }
                 this.setStatus(payload.action === 'compile' ? 'Compiler inference complete' : 'Compiler archive operation complete');
             }
-            else if (owned) { this.setStatus('Compiler inference stopped'); this.notice.textContent = payload.error ?? 'Compiler inference stopped'; this.notice.hidden = false; }
+            else if (owned) {
+                this.setStatus(payload.action === 'compile' ? 'Compiler inference stopped' : 'Compiler archive operation stopped');
+                const committed = (payload.committed_effects ?? []).length > 0;
+                if (committed) { this.diagnosticsArchiveManual = false; this.diagnosticsArchiveOffset = 0; this.diagnosticsCleanup = undefined; }
+                this.notice.textContent = `${payload.error ?? 'Compiler operation stopped'}${committed ? ' Catalog publication was recorded. Refresh reports to inspect committed changes.' : ''}`; this.notice.hidden = false;
+            }
             this.updateActions(); if (owned && this.tab === 'Runtime') { void this.guard(() => this.renderTab()); } return;
         }
         if (params.kind === 'terminal_job_completed' || params.kind === 'terminal_job_failed') {

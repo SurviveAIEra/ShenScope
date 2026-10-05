@@ -222,3 +222,12 @@ The parent recomputes graph projections and checks live permissions/source pins.
 Arbitrary project inference, full exception/heap/runtime evidence, profiling and
 fusion with project/Git/coverage facts remain pending. A separate helper process
 is explicitly host execution, and configured restricted sandboxes refuse it.
+
+Checkpoint 033 adds agent/CLI compile-and-save, bounded rich owned result
+retention and ephemeral publication receipts that survive later cancellation or
+budget failure. Live Read revocation filters both polling and notification
+evidence. The deterministic actual compiler/agent fixture uses MockProvider;
+synthetic large metadata is a capacity test, not an indexing benchmark. Generic
+durable side-effect accounting, arbitrary project inference and source/Git/runtime
+fusion remain pending. The seven primary sources have further partial reviews;
+complete synthesis across their capabilities is still unfinished.

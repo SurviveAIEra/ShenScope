@@ -2,11 +2,12 @@ struct DiagnosticsTool <: AbstractTool
     operations::OperationManager
 end
 DiagnosticsTool()=DiagnosticsTool(OperationManager(;event_prefix="diagnostics",max_running=2,
-    max_jobs=16,max_result_bytes=COMPILER_IR_MAX_BYTES+4096,max_retained_bytes=8*1024^2))
+    max_jobs=16,max_result_bytes=COMPILER_ARCHIVE_ASSET_BYTES+4096,max_retained_bytes=8*1024^2,
+    max_result_depth=64,max_result_nodes=600_000))
 tool_name(::DiagnosticsTool)="diagnostics"
 tool_description(::DiagnosticsTool)="Inspect Julia contracts and ambiguities, infer fixed trusted Core methods, and manage conversation-owned compiler report archives. Graphs and comparisons describe compiler observations, without project inference, target execution or measured performance claims."
 tool_schema(::DiagnosticsTool)=object_schema(Dict(
-    "action"=>Dict("type"=>"string","enum"=>["contracts","ambiguities","targets","compile",COMPILER_ARCHIVE_ACTIONS...]),
+    "action"=>Dict("type"=>"string","enum"=>["contracts","ambiguities","targets","compile","compile_archive",COMPILER_ARCHIVE_ACTIONS...]),
     "target"=>Dict("type"=>"string","enum"=>[target.name for target in compiler_targets()]),
     "mode"=>Dict("type"=>"string","enum"=>["typed","lowered","graph"]),
     "timeout"=>Dict("type"=>"number","minimum"=>0.1,"maximum"=>120),
@@ -20,6 +21,7 @@ tool_schema(::DiagnosticsTool)=object_schema(Dict(
 function execute(tool::DiagnosticsTool,args::AbstractDict,ctx::RuntimeContext)
     action=args["action"]
     diagnostics_arguments(args)
+    action=="compile_archive" && return diagnostics_compile_archive(args,ctx)
     action in COMPILER_ARCHIVE_ACTIONS && return diagnostics_archive_execute(tool,args,ctx)
     authorize!(ctx,:read,"runtime.diagnostics",ctx.root)
     action=="contracts" && return interface_catalog()

@@ -3,8 +3,9 @@ const COMPILER_ARCHIVE_ACTIONS=["archive_save","archive_list","archive_get","arc
 
 function diagnostics_arguments(args::AbstractDict)
     action=get(args,"action",nothing)
-    allowed=if action=="compile"
-        ["target","mode","timeout","max_ir_bytes","max_statements"]
+    allowed=if action in ("compile","compile_archive")
+        fields=["target","mode","timeout","max_ir_bytes","max_statements"]
+        action=="compile_archive" ? vcat(fields,["title","expected_revision"]) : fields
     elseif action=="archive_save"
         ["job_id","expected_revision","title"]
     elseif action=="archive_list"
@@ -26,12 +27,29 @@ function diagnostics_arguments(args::AbstractDict)
     end
     all(key->key=="action" || key in allowed,keys(args)) ||
         throw(ShenScopeError(:diagnostics,"Unexpected parameter for diagnostics action "*action))
-    required=action=="compile" ? ["target"] : action=="archive_save" ? ["job_id","expected_revision"] :
+    required=action=="compile" ? ["target"] : action=="compile_archive" ? ["target","expected_revision"] :
+        action=="archive_save" ? ["job_id","expected_revision"] :
         action=="archive_get" ? ["report_id"] : action=="archive_label" ? ["report_id","title","expected_revision"] :
         action=="archive_delete" ? ["report_id","expected_revision"] : action=="archive_compare" ? ["before_id","after_id"] :
         action=="archive_gc" && !get(args,"dry_run",true) ? ["expected_revision"] : String[]
     all(key->haskey(args,key),required) || throw(ShenScopeError(:diagnostics,"Required diagnostics action parameter missing"))
     nothing
+end
+
+function diagnostics_compile_archive(args::AbstractDict,ctx::RuntimeContext)
+    compiler_target(args["target"])
+    get(args,"mode","graph")=="graph" || throw(ShenScopeError(:diagnostics,"Compile-and-save requires graph mode"))
+    expected=compiler_archive_revision(args["expected_revision"])
+    title=compiler_ir_text(get(args,"title","Compiler report"),"archive title",512)
+    store=compiler_archive_store(ctx)
+    compiler_archive_checkpoint(store,ctx,:persistence)
+    compiler_archive_authorize(store,ctx,:read)
+    index=compiler_archive_read_index(store,ctx)
+    index["revision"]==expected || throw(ShenScopeError(:conflict,"Compiler archive revision changed before inference"))
+    result=run_compiler_diagnostic(ctx,args["target"];mode="graph",timeout=get(args,"timeout",60.0),
+        max_ir_bytes=get(args,"max_ir_bytes",64*1024),max_statements=get(args,"max_statements",2048))
+    saved=compiler_archive_save(store,result,ctx;expected_revision=expected,title)
+    merge(result,Dict("archive"=>saved))
 end
 
 function diagnostics_archive_execute(tool,args::AbstractDict,ctx::RuntimeContext)

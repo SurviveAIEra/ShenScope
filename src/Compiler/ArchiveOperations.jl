@@ -49,12 +49,13 @@ function compiler_archive_save(store::CompilerArchiveStore,result::AbstractDict,
         emit!(ctx,:compiler_archive_asset_saved,Dict("report_sha256"=>id,"asset_bytes"=>bytes))
         entry=Dict("report_sha256"=>id,"asset_sha256"=>digest(raw),"asset_bytes"=>bytes,"target"=>report["target"],
             "source_fingerprint"=>snapshot.fingerprint,"created_at"=>asset["created_at"],"title"=>title)
-        committed=compiler_archive_publish_index(store,ctx,index,vcat(index["reports"],[entry]);guard=()->begin
+        notification_failed=Ref(false)
+        committed=compiler_archive_publish_index(store,ctx,index,vcat(index["reports"],[entry]);notification_failed,guard=()->begin
             runtime_source_snapshot(ctx;authorized=true).fingerprint==snapshot.fingerprint ||
                 throw(ShenScopeError(:conflict,"Core source changed before compiler archive catalog publication"))
         end)
         Dict("saved"=>true,"already_saved"=>false,"revision"=>committed["revision"],
-            "index_sha256"=>committed["index_sha256"],"entry"=>entry)
+            "index_sha256"=>committed["index_sha256"],"entry"=>entry,"commit_notification_failed"=>notification_failed[])
     end
 end
 
@@ -67,8 +68,10 @@ function compiler_archive_label(store::CompilerArchiveStore,id::String,title::St
             return Dict("changed"=>false,"revision"=>index["revision"],"index_sha256"=>index["index_sha256"],"entry"=>deepcopy(entry))
         end
         rows[position]["title"]=title
-        committed=compiler_archive_publish_index(store,ctx,index,rows)
-        Dict("changed"=>true,"revision"=>committed["revision"],"index_sha256"=>committed["index_sha256"],"entry"=>rows[position])
+        notification_failed=Ref(false)
+        committed=compiler_archive_publish_index(store,ctx,index,rows;notification_failed)
+        Dict("changed"=>true,"revision"=>committed["revision"],"index_sha256"=>committed["index_sha256"],"entry"=>rows[position],
+            "commit_notification_failed"=>notification_failed[])
     end
 end
 
@@ -77,9 +80,11 @@ function compiler_archive_delete(store::CompilerArchiveStore,id::String,ctx::Run
     compiler_archive_transaction(store,ctx,expected_revision) do index
         compiler_archive_index_entry(index,id)
         rows=filter(row->row["report_sha256"]!=id,index["reports"])
-        committed=compiler_archive_publish_index(store,ctx,index,rows)
+        notification_failed=Ref(false)
+        committed=compiler_archive_publish_index(store,ctx,index,rows;notification_failed)
         Dict("deleted"=>true,"report_sha256"=>id,"revision"=>committed["revision"],
-            "index_sha256"=>committed["index_sha256"],"asset_removal"=>"retained until explicit orphan cleanup")
+            "index_sha256"=>committed["index_sha256"],"asset_removal"=>"retained until explicit orphan cleanup",
+            "commit_notification_failed"=>notification_failed[])
     end
 end
 
