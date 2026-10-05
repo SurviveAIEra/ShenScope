@@ -21,6 +21,13 @@ units, collection lifetimes and display scope. Sample fractions remain inclusive
 retained occurrences, not CPU utilization. Arbitrary project profiling and all
 remaining product/size gates remain open.
 
+Checkpoint 039 adds general project test discovery/execution and current-source
+references. Real Python, JavaScript, Go, C and C++ repair fixtures pass; custom
+argument-vector commands are language independent. Structured reporting covers
+unittest, pytest text, top-level TAP, Go JSON and CTest text, plus raw output.
+The shared Tests view works in both editors. Durable controller history, native
+Testing API integration and comprehensive framework coverage remain pending.
+
 | Project | Model/loop/context strengths to assess | Tools/security/state strengths to assess | Interface/ecosystem/workflow strengths to assess |
 |---|---|---|---|
 | Codex | Request preparation, streaming, restored evidence, request-wide budget estimates | Permission/sandbox boundary, tool ownership, cancellation, Git review | TUI ergonomics, app-server protocol, durable session UX, headless automation |

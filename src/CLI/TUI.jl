@@ -183,16 +183,20 @@ function run_tui(provider::AbstractModelProvider,ctx::RuntimeContext,session::Se
                         terminal_push!(state,"Finish or cancel the conversation control command first.")
                         continue
                     end
-                    if startswith(prompt,"/mode") || startswith(prompt,"/plan")
+                    if startswith(prompt,"/mode") || startswith(prompt,"/plan") || startswith(prompt,"/test")
                         if state.active
-                            terminal_push!(state,"Finish or cancel the current run before using /mode or /plan.")
+                            terminal_push!(state,"Finish or cancel the current run before using conversation or test controls.")
                             continue
                         end
                         ctx.cancellation=CancellationToken();state.active=true;state.control_busy=true;state.status="Conversation control…"
                         job=@async try
                             # Control commands do not become model prompts. The
                             # UI task remains responsive to scoped approvals.
-                            terminal_control_command!(state,prompt,session,ctx)
+                            if startswith(prompt,"/test")
+                                terminal_testing_command!(state,prompt,ctx,tools)
+                            else
+                                terminal_control_command!(state,prompt,session,ctx)
+                            end
                             state.status="Ready"
                         catch error
                             state.status=error isa ShenScopeError ? error.message : "Conversation control failed"
@@ -232,6 +236,7 @@ function run_tui(provider::AbstractModelProvider,ctx::RuntimeContext,session::Se
         job!==nothing && wait(job)
         for tool in tools;tool isa TaskTool && cleanup_tasks!(tool.manager);end
         for tool in tools;tool isa ProcessTool && cleanup_processes!(tool.manager,ctx.session_id);end
+        for tool in tools;tool isa TestingTool && (close_operations!(tool.operations);cleanup_project_tests!(tool.manager;session_id=ctx.session_id));end
         for tool in tools;tool isa MCPControlTool && cleanup_mcp!(tool.manager);end
         for tool in tools;tool isa SkillsTool && cleanup_skills!(tool.manager);end
         for tool in tools;tool isa HooksTool && cleanup_hooks!(tool.manager);end

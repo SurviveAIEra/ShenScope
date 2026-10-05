@@ -1,0 +1,40 @@
+Precompiling ShenScope...
+ 140050.3 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 141 seconds. 41 already precompiled.
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/project_testing.jl:1
+in expression starting at /workspace/ShenScope/test/project_testing.jl:4
+Bounded multi-language discovery reads declarations and owns catalogs: Error During Test at /workspace/ShenScope/test/unit/project_testing.jl:1
+  Got exception outside of a @test
+  permission: Test working directory must be an ordinary workspace directory
+  Stacktrace:
+    [1] project_test_workspace_directory(ctx::RuntimeContext, value::String)
+      @ ShenScope /workspace/ShenScope/src/Testing/Types.jl:122
+    [2] #693
+      @ ./none:0 [inlined]
+    [3] iterate
+      @ ./generator.jl:48 [inlined]
+    [4] collect(itr::Base.Generator{Vector{String}, ShenScope.var"#693#697"{RuntimeContext}})
+      @ Base ./array.jl:791
+    [5] discover_project_tests!(manager::ProjectTestManager, ctx::RuntimeContext; scopes::Vector{String}, limits::ProjectTestDiscoveryLimits)
+      @ ShenScope /workspace/ShenScope/src/Testing/Discovery.jl:89
+    [6] discover_project_tests!
+      @ /workspace/ShenScope/src/Testing/Discovery.jl:85 [inlined]
+    [7] (::var"#7#9")(root::String)
+      @ Main /workspace/ShenScope/test/unit/project_testing.jl:16
+    [8] mktempdir(fn::var"#7#9", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [9] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+   [10] macro expansion
+      @ /workspace/ShenScope/test/unit/project_testing.jl:2 [inlined]
+   [11] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [12] top-level scope
+      @ /workspace/ShenScope/test/unit/project_testing.jl:2
+   [13] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [14] top-level scope
+      @ /workspace/ShenScope/test/project_testing.jl:4
+Test Summary:                                                         | Error  Total  Time
+Bounded multi-language discovery reads declarations and owns catalogs |     1      1  6.1s

@@ -1,0 +1,38 @@
+Precompiling ShenScope...
+  96760.6 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 97 seconds. 41 already precompiled.
+ERROR: LoadError: Some tests did not pass: 15 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/project_testing.jl:100
+in expression starting at /workspace/ShenScope/test/project_testing.jl:5
+Test Summary:                                                         | Pass  Total  Time
+Bounded multi-language discovery reads declarations and owns catalogs |   18     18  6.3s
+Test Summary:                                                                        | Pass  Total  Time
+Framework reports retain counts, cases, malformed records and safe source references |   19     19  4.2s
+Test Summary:                                                       | Pass  Total   Time
+Testing schemas and plan mode retain discovery and reject execution |    7      7  12.8s
+Test Summary:                                                       | Pass  Total     Time
+Actual agent failure, hash edit and rerun in five project languages |   48     48  1m35.4s
+Test Summary:                                                               | Pass  Total  Time
+Framework failure with zero exit remains a failed tool and after-test check |    3      3  6.9s
+Test Summary:                                                                         | Pass  Total  Time
+Selected declarations rechecked after approval; read/process gates and current source |   11     11  4.4s
+Execution timeout, cancellation, revocation, output and retention bounds: Test Failed at /workspace/ShenScope/test/integration/project_testing.jl:104
+  Expression: no_tests["outcome"] == "command_succeeded" && ((no_tests["parsed"])["framework_summary"])["tests"] == 0
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#46#49")(root::String)
+   @ Main /workspace/ShenScope/test/integration/project_testing.jl:104
+ [3] mktempdir(fn::var"#46#49", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/project_testing.jl:101 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/integration/project_testing.jl:101
+Test Summary:                                                            | Pass  Fail  Total  Time
+Execution timeout, cancellation, revocation, output and retention bounds |   15     1     16  4.9s

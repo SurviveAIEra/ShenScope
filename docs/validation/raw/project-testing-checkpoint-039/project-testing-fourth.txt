@@ -1,0 +1,129 @@
+ERROR: LoadError: Some tests did not pass: 43 passed, 5 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/project_testing.jl:1
+in expression starting at /workspace/ShenScope/test/project_testing.jl:5
+Test Summary:                                                         | Pass  Total   Time
+Bounded multi-language discovery reads declarations and owns catalogs |   18     18  14.3s
+Test Summary:                                                                        | Pass  Total  Time
+Framework reports retain counts, cases, malformed records and safe source references |   19     19  4.0s
+Test Summary:                                                       | Pass  Total   Time
+Testing schemas and plan mode retain discovery and reject execution |    7      7  12.8s
+go project repair: Test Failed at /workspace/ShenScope/test/integration/project_testing.jl:23
+  Expression: length(results) == 2 && (!((results[1])["ok"]) && (results[2])["ok"])
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#20#27"{String})(root::String)
+   @ Main /workspace/ShenScope/test/integration/project_testing.jl:23
+ [3] mktempdir(fn::var"#20#27"{String}, parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/project_testing.jl:4 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] macro expansion
+   @ /workspace/ShenScope/test/integration/project_testing.jl:4 [inlined]
+ [8] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [9] top-level scope
+   @ /workspace/ShenScope/test/integration/project_testing.jl:2
+go project repair: Test Failed at /workspace/ShenScope/test/integration/project_testing.jl:26
+  Expression: last["outcome"] == "command_succeeded" && last["exit_code"] == 0
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#20#27"{String})(root::String)
+   @ Main /workspace/ShenScope/test/integration/project_testing.jl:26
+ [3] mktempdir(fn::var"#20#27"{String}, parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/project_testing.jl:4 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] macro expansion
+   @ /workspace/ShenScope/test/integration/project_testing.jl:4 [inlined]
+ [8] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [9] top-level scope
+   @ /workspace/ShenScope/test/integration/project_testing.jl:2
+go project repair: Test Failed at /workspace/ShenScope/test/integration/project_testing.jl:27
+  Expression: !(isempty((first["parsed"])["frames"]))
+   Evaluated: !(isempty(Dict{String, Any}[]))
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#20#27"{String})(root::String)
+   @ Main /workspace/ShenScope/test/integration/project_testing.jl:27
+ [3] mktempdir(fn::var"#20#27"{String}, parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/project_testing.jl:4 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] macro expansion
+   @ /workspace/ShenScope/test/integration/project_testing.jl:4 [inlined]
+ [8] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [9] top-level scope
+   @ /workspace/ShenScope/test/integration/project_testing.jl:2
+go project repair: Test Failed at /workspace/ShenScope/test/integration/project_testing.jl:29
+  Expression: ((first["parsed"])["observed_case_counts"])["failed"] >= 1
+   Evaluated: 0 >= 1
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#20#27"{String})(root::String)
+   @ Main /workspace/ShenScope/test/integration/project_testing.jl:29
+ [3] mktempdir(fn::var"#20#27"{String}, parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/project_testing.jl:4 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] macro expansion
+   @ /workspace/ShenScope/test/integration/project_testing.jl:4 [inlined]
+ [8] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [9] top-level scope
+   @ /workspace/ShenScope/test/integration/project_testing.jl:2
+go project repair: Test Failed at /workspace/ShenScope/test/integration/project_testing.jl:30
+  Expression: ((last["parsed"])["observed_case_counts"])["passed"] >= 1
+   Evaluated: 0 >= 1
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#20#27"{String})(root::String)
+   @ Main /workspace/ShenScope/test/integration/project_testing.jl:30
+ [3] mktempdir(fn::var"#20#27"{String}, parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/project_testing.jl:4 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] macro expansion
+   @ /workspace/ShenScope/test/integration/project_testing.jl:4 [inlined]
+ [8] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [9] top-level scope
+   @ /workspace/ShenScope/test/integration/project_testing.jl:2
+Test Summary:                                                       | Pass  Fail  Total   Time
+Actual agent failure, hash edit and rerun in five project languages |   43     5     48  46.2s
+  python project repair                                             |   10           10  42.8s
+  javascript project repair                                         |   10           10   0.6s
+  go project repair                                                 |    5     5     10   1.9s
+  c project repair                                                  |    9            9   0.6s
+  cpp project repair                                                |    9            9   0.3s

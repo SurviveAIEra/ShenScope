@@ -44,7 +44,7 @@ function parse_cli(args::Vector{String})
         "--package-name","--package-uuid","--package-version","--entry-sha256","--project-sha256","--contribution","--generation","--arguments",
         "--argv","--input","--rows","--columns","--timeout","--mode","--max-ir-bytes","--max-statements",
         "--expected-revision","--expected-index-sha256","--method-index","--statement-id","--context-lines",
-        "--fixture","--iterations","--repetitions","--max-samples","--max-frames","--sample-rate","--sample-delay","--profile-buffer-words","--observation-kind","--query","--agent-mode"])
+        "--fixture","--iterations","--repetitions","--max-samples","--max-frames","--sample-rate","--sample-delay","--profile-buffer-words","--observation-kind","--query","--agent-mode","--framework","--cwd","--output-limit"])
     switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints","--no-evidence-bridges","--accept-cleanup-failure","--save","--apply-cleanup"])
     i=1
     while i<=length(args)
@@ -120,6 +120,7 @@ function cli_main(args=ARGS)
         println("Options: --root PATH --state-dir PATH --config PATH --profile NAME --session ID --json")
         println("Chat mode: --agent-mode plan|act; sessions mode ID [plan|act] --expected-revision N")
         println("Conversation plan: plan get|history --session ID; plan replace|progress JSON_FILE --session ID --expected-revision N")
+        println("Project tests: tests discover [--scope-paths DIR,DIR]; tests run CANDIDATE_ID; tests custom --argv JSON [--framework unittest|pytest|tap|go_json|ctest|raw] [--allow-process]")
         println("Explicit permissions: --allow-edit --allow-process --allow-network --allow-persistence --allow-dynamic --allow-mcp")
         println("Offline protocol fixture: --script JSON_FILE")
         println("Project navigation: project definitions|references|hover|incoming_calls|outgoing_calls|implementations FILE LINE COLUMN --backend typescript")

@@ -99,7 +99,8 @@ function after_tool_hooks!(call::ToolCall, result::ToolResult, ctx::RuntimeConte
     result.ok && call.name in ("edit", "write", "patch") && push!(points, HookAfterEdit)
     testing = testing && result.value isa AbstractDict && haskey(result.value,"exit_code")
     if testing
-        metadata["ok"] = get(result.value,"exit_code",-1) == 0 && !get(result.value,"timed_out",false)
+        metadata["ok"] = result.ok && get(result.value,"exit_code",-1) == 0 && !get(result.value,"timed_out",false) &&
+            !get(result.value,"cancelled",false) && !get(result.value,"permission_revoked",false)
         push!(points, HookAfterTest)
     end
     for point in points

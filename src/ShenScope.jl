@@ -71,6 +71,16 @@ include("Tools/Plan.jl")
 include("Tools/Models.jl")
 include("Tools/Files.jl")
 include("Tools/Processes.jl")
+include("Testing/Types.jl")
+include("Testing/Candidates.jl")
+include("Testing/Discovery.jl")
+include("Testing/Catalog.jl")
+include("Testing/Output.jl")
+include("Testing/Frameworks.jl")
+include("Testing/Reports.jl")
+include("Testing/Execution.jl")
+include("Testing/Source.jl")
+include("Tools/Testing.jl")
 include("Runtime/TerminalTypes.jl")
 include("Runtime/TerminalJournal.jl")
 include("Runtime/TerminalEndpoint.jl")
@@ -265,6 +275,7 @@ include("Protocol/Skills.jl")
 include("Protocol/Hooks.jl")
 include("Protocol/Context.jl")
 include("Protocol/Plans.jl")
+include("Protocol/Testing.jl")
 include("Protocol/Analyzers.jl")
 include("Protocol/Models.jl")
 include("Protocol/Memory.jl")
@@ -332,6 +343,9 @@ export ProviderConfig, HTTPProvider, MockProvider, provider_name, capabilities,
 export RuntimeSourceFile, RuntimeSourceSnapshot, RuntimeImageReceipt, VerifiedRuntimeImage,
     runtime_source_snapshot, runtime_source_view, runtime_image_receipt, runtime_image_view,
     runtime_image_inspect, runtime_image_verify, runtime_image_write_receipt, runtime_image_launch_arguments
+export ProjectTestDiscoveryLimits, ProjectTestMarker, ProjectTestCandidate, ProjectTestCatalog, ProjectTestManager, TestingTool,
+    discover_project_tests!, read_project_test_catalog, run_project_tests!, run_project_test_command!,
+    read_project_test_report, list_project_test_reports, read_project_test_source, cleanup_project_tests!
 export contract_report, interface_catalog, dispatch_ambiguities, invoke_extension_latest,
     compiler_report, run_compiler_diagnostic, compiler_targets, DiagnosticsTool,
     CompilerIRLimits, compiler_ir_report, compiler_ir_compare
@@ -385,6 +399,7 @@ include("CLI/Analyzers.jl")
 include("CLI/Models.jl")
 include("CLI/TUI.jl")
 include("CLI/Plans.jl")
+include("CLI/Testing.jl")
 include("CLI/Tasks.jl")
 include("CLI/Diagnostics.jl")
 include("CLI/Extensions.jl")
@@ -396,6 +411,7 @@ include("CLI/Agent.jl")
 include("CLI/Memory.jl")
 include("CLI/Security.jl")
 const CLI_COMMAND_HANDLERS = Dict{String,Function}(
+    "tests"=>cli_testing_command,
     "mcp"=>cli_mcp_command, "skills"=>cli_skills_command, "hooks"=>cli_hooks_command,
     "context"=>cli_context_command, "plan"=>cli_plan_command, "analyzers"=>cli_analyzers_command,
     "models"=>cli_models_command, "tasks"=>cli_tasks_command,

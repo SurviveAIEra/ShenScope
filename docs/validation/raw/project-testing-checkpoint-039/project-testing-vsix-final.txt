@@ -1,0 +1,1 @@
+PASS: VSIX, read-only multi-language discovery, actual process approvals, failing and repaired Python unittest, current source preview/open, Node TAP result, receipt history, conversation isolation and narrow/wide layouts

@@ -1,0 +1,1 @@
+PASS: real TUI test discovery, explicit command selection, responsive process approval, Python unittest result and clean exit

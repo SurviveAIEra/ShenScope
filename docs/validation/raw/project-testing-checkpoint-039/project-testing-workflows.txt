@@ -1,0 +1,65 @@
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/providers.jl:26
+in expression starting at /workspace/ShenScope/test/agent_workflows.jl:7
+Test Summary:                         | Pass  Total  Time
+Cancellation tree and dynamic context |    7      7  1.0s
+Test Summary:                                | Pass  Total  Time
+Concurrent budget reservation and accounting |    9      9  1.3s
+Test Summary:                             | Pass  Total  Time
+Permission decisions and path containment |    7      7  0.8s
+Test Summary:                                      | Pass  Total  Time
+Durable journal, torn tails and revision conflicts |    6      6  3.1s
+Test Summary:                                   | Pass  Total  Time
+Session reconstruction and unknown side effects |   11     11  8.2s
+Test Summary:                                             | Pass  Total  Time
+Atomic replacement remains complete to concurrent readers |    3      3  0.4s
+Test Summary:                                   | Pass  Total  Time
+Oversized unterminated journal input is bounded |    2      2  0.1s
+Test Summary:                                                                   | Pass  Total  Time
+Contended journal locks check cancellation and release after failed checkpoints |    6      6  0.4s
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.6s
+Test Summary:                                                    | Pass  Total   Time
+Protocol version, config ownership, secrets and session commands |   15     15  31.7s
+Test Summary:                                        | Pass  Total   Time
+Agent protocol permission ownership and cancellation |   13     13  37.5s
+Test Summary:                                                        | Pass  Total  Time
+Terminal rendering sanitizes control sequences and handles wide text |   16     16  1.2s
+Test Summary:                                   | Pass  Total  Time
+SSE Unicode fragmentation, multiline and limits |    3      3  0.6s
+OpenAI-compatible real HTTP tool stream and native replay: Error During Test at /workspace/ShenScope/test/integration/providers.jl:26
+  Got exception outside of a @test
+  IOError: bind: operation not permitted (EPERM)
+  Stacktrace:
+    [1] bind(sock::Sockets.TCPServer, host::IPv4, port::UInt16; ipv6only::Bool, reuseaddr::Bool, kws::@Kwargs{})
+      @ Sockets /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Sockets/src/Sockets.jl:271
+    [2] bind
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Sockets/src/Sockets.jl:254 [inlined]
+    [3] bind
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Sockets/src/Sockets.jl:284 [inlined]
+    [4] #listen#10
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Sockets/src/Sockets.jl:624 [inlined]
+    [5] listen
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Sockets/src/Sockets.jl:622 [inlined]
+    [6] listen
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Sockets/src/Sockets.jl:629 [inlined]
+    [7] mock_http(f::var"#84#89"{String, Vector{Dict{String, Any}}}, handler::Function)
+      @ Main /workspace/ShenScope/test/integration/providers.jl:4
+    [8] (::var"#83#88")(root::String)
+      @ Main /workspace/ShenScope/test/integration/providers.jl:33
+    [9] mktempdir(fn::var"#83#88", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+   [10] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+   [11] macro expansion
+      @ /workspace/ShenScope/test/integration/providers.jl:27 [inlined]
+   [12] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [13] top-level scope
+      @ /workspace/ShenScope/test/integration/providers.jl:27
+   [14] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [15] top-level scope
+      @ /workspace/ShenScope/test/agent_workflows.jl:7
+Test Summary:                                             | Error  Total  Time
+OpenAI-compatible real HTTP tool stream and native replay |     1      1  5.3s

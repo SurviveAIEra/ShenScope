@@ -62,7 +62,7 @@ end
 function core_tools(; tasks = true, mcp = true, skills = true, hooks = true, context = true, config = Dict(), config_source=nothing, credential_lookup = key -> get(ENV, key, ""))
     process=ProcessTool()
     project=ProjectTool()
-    tools = AbstractTool[ReadTool(),SearchTool(),EditTool(),WriteTool(),PatchTool(),process,TerminalTool(),GitTool(process),MemoryTool(),SecurityTool(),project,DiagnosticsTool(),ExtensionsTool(),AnalyzersTool(AnalyzerManager(),project.manager),ModelsTool(config;credential_lookup),PlanTool()]
+    tools = AbstractTool[ReadTool(),SearchTool(),EditTool(),WriteTool(),PatchTool(),process,TerminalTool(),GitTool(process),MemoryTool(),SecurityTool(),project,DiagnosticsTool(),ExtensionsTool(),AnalyzersTool(AnalyzerManager(),project.manager),ModelsTool(config;credential_lookup),PlanTool(),TestingTool()]
     mcp && push!(tools, MCPControlTool(MCPManager(config; credential_lookup)))
     skills && push!(tools, SkillsTool(SkillManager(config)))
     hooks && push!(tools, HooksTool(HookManager(config;config_source,credential_lookup)))

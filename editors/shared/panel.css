@@ -447,3 +447,22 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
   .shenscope-panel .compiler-pagination button, .shenscope-panel .runtime-evidence-pagination button { width: 100%; }
 }
 .shenscope-panel .compiler-profile summary, .shenscope-panel .compiler-sampling summary { cursor: pointer; font-size: 11px; }
+.shenscope-panel .testing-candidates, .shenscope-panel .testing-history, .shenscope-panel .testing-references { display: flex; flex-direction: column; gap: 10px; min-width: 0; margin: 14px 0; }
+.shenscope-panel .testing-candidate-heading { display: flex; align-items: start; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+.shenscope-panel .testing-candidate-heading strong, .shenscope-panel .testing-report h3, .shenscope-panel .testing-source h3 { min-width: 0; overflow-wrap: anywhere; }
+.shenscope-panel .testing-muted { display: block; color: var(--muted); font-size: 11px; line-height: 1.6; margin: 7px 0; overflow-wrap: anywhere; }
+.shenscope-panel .testing-command, .shenscope-panel .testing-output pre, .shenscope-panel .testing-source-lines { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; max-height: 280px; overflow-y: auto; font-family: var(--vscode-editor-font-family, monospace); font-size: 11px; line-height: 1.7; }
+.shenscope-panel .testing-command { padding: 9px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); }
+.shenscope-panel .testing-candidate button, .shenscope-panel .testing-history button, .shenscope-panel .testing-source button { width: 100%; margin-top: 6px; white-space: normal; text-align: left; overflow-wrap: anywhere; }
+.shenscope-panel .testing-custom summary, .shenscope-panel .testing-output summary { cursor: pointer; line-height: 1.7; }
+.shenscope-panel .testing-custom .field { margin-top: 12px; }
+.shenscope-panel .testing-custom select { width: 100%; min-width: 0; padding: 7px; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 5px; }
+.shenscope-panel .testing-case-summary { font-weight: 600; font-size: 12px; }
+.shenscope-panel .testing-cases { list-style: none; padding: 0; margin: 12px 0; }
+.shenscope-panel .testing-case { display: flex; flex-direction: column; align-items: start; gap: 4px; padding: 9px 0; border-top: 1px solid var(--border); overflow-wrap: anywhere; }
+.shenscope-panel .testing-case-status { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+.shenscope-panel .testing-case-failed .testing-case-status, .shenscope-panel .testing-case-error .testing-case-status, .shenscope-panel .testing-warning { color: var(--vscode-errorForeground, #f48771); }
+.shenscope-panel .testing-references button { text-align: left; white-space: normal; overflow-wrap: anywhere; }
+.shenscope-panel .testing-output { margin: 12px 0; font-size: 11px; }
+.shenscope-panel .testing-output code { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
+.shenscope-panel .testing-source-focus { display: block; background: var(--vscode-editor-findMatchHighlightBackground, #394967); }

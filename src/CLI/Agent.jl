@@ -43,6 +43,7 @@ function cli_agent_command(positional,flags,config,state_dir)
             tool isa MemoryTool && cleanup_memory!(tool.manager)
             tool isa SecurityTool && cleanup_execution!(tool.manager)
                 tool isa ProcessTool && cleanup_processes!(tool.manager,id)
+                tool isa TestingTool && (close_operations!(tool.operations);cleanup_project_tests!(tool.manager;session_id=id))
             end
         end
         println(stderr,"Session: ",session.id)

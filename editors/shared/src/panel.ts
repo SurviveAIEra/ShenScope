@@ -1,4 +1,5 @@
 import { renderMarkdown } from './markdown.js';
+import { newProjectTestingState, renderProjectTests } from './projectTests.js';
 export interface PanelBridge {
     request(method: string, params?: Record<string, unknown>): Promise<any>;
     onEvent(listener: (method: string, params: any) => void): () => void;
@@ -132,6 +133,10 @@ export class ShenScopePanel {
     private completedHooksJobs = new Set<string>();
     private contextJob?: string;
     private contextStarting = false;
+    private testingStarting = false;
+    private testingJob?: string;
+    private completedTestingJobs = new Set<string>();
+    private testingState = newProjectTestingState();
     private contextResult?: { action: string; result: any };
     private completedContextJobs = new Set<string>();
     private analyzersJob?: string;
@@ -175,7 +180,7 @@ export class ShenScopePanel {
             const button = this.button(label, () => this.selectTab(name), 'nav-button', glyph); this.navigation.set(name, button); nav.append(button);
         }
         const more = el('select', '', 'more-views'); more.setAttribute('aria-label', 'More views');
-        for (const name of ['More', 'Settings', 'Models', 'Memory', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context', 'Analyzers', 'Extensions', 'Terminal']) { const option = el('option', name); option.value = name; more.append(option); }
+        for (const name of ['More', 'Tests', 'Settings', 'Models', 'Memory', 'Tools', 'Runtime', 'Security', 'MCP', 'Skills', 'Hooks', 'Context', 'Analyzers', 'Extensions', 'Terminal']) { const option = el('option', name); option.value = name; more.append(option); }
         more.addEventListener('change', () => { if (more.value !== 'More') { void this.guard(() => this.selectTab(more.value)); } more.value = 'More'; }); nav.append(more);
         this.status.setAttribute('role', 'status'); this.status.setAttribute('aria-live', 'polite'); this.notice.setAttribute('role', 'alert'); this.notice.hidden = true;
         root.append(header, nav, this.notice, this.approvals, this.content, this.status);
@@ -223,6 +228,7 @@ export class ShenScopePanel {
         this.terminalResult = undefined;
         this.resetDiagnostics();
         this.agentMode = 'act'; this.agentModeRevision = 0; this.planResult = undefined; this.planRequest++; this.renderPlanReview();
+        this.testingState = newProjectTestingState();
         this.sessionId = undefined; this.extensionsResult = undefined; this.extensionsPackageReceipt = undefined; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
@@ -249,11 +255,13 @@ export class ShenScopePanel {
         if (!this.sendButton || !this.cancelButton) { return; } const label = this.active ? 'Send guidance' : 'Send message';
         this.sendButton.setAttribute('aria-label', label); this.sendButton.title = `${label} (Ctrl / ⌘ Enter)`;
         this.sendButton.disabled = !this.config || !this.composer.value.trim() || this.agentModeChanging || !!this.hooksJob || this.hooksStarting || !!this.contextJob || this.contextStarting || !!this.analyzersJob || this.analyzersStarting || !!this.modelsJob || this.modelsStarting; this.cancelButton.hidden = !this.active;
+        this.sendButton.disabled ||= !!this.testingJob || this.testingStarting;
         this.composer.placeholder = this.active ? 'Guide the running task…' : 'Ask, plan, or build something…';
     }
     private async send(): Promise<void> {
         await this.guard(async () => {
             if (this.agentModeChanging) { throw new Error('Wait for the conversation mode to save.'); }
+            if (this.testingJob || this.testingStarting) { throw new Error('Finish or cancel the project test operation before sending a message.'); }
             if (this.modelsJob || this.modelsStarting) { throw new Error('Finish or cancel the model operation before sending a message.'); }
             if (this.analyzersJob || this.analyzersStarting) { throw new Error('Finish or cancel the analyzer operation before sending a message.'); }
             const prompt = this.composer.value.trim(); if (!prompt || !this.config) { return; } this.notice.hidden = true;
@@ -303,6 +311,7 @@ export class ShenScopePanel {
         if (this.tab === 'Models' && this.capabilities.model_catalog) { await this.modelsView(revision); return; }
         if (this.tab === 'Extensions' && this.capabilities.julia_extension_lifecycle) { await this.extensionsView(revision); return; }
         if (this.tab === 'Terminal' && this.capabilities.terminal_pty) { await this.terminalView(revision); return; }
+        if (this.tab === 'Tests' && this.capabilities.project_testing) { this.testingView(); return; }
         this.content.append(el('h2', this.tab === 'Intelligence' ? 'Project intelligence' : this.tab, 'view-title'));
         if (this.tab === 'Tools') {
             const tools = await this.bridge.request('tools/list'); if (revision !== this.renderRevision) { return; }
@@ -328,6 +337,7 @@ export class ShenScopePanel {
                     this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
                     this.modelsProfile = ''; this.modelPlanRole = '';
                     const openingRevision = this.renderRevision; this.resetDiagnostics(); this.sessionId = session.id; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 };
+                    this.testingState = newProjectTestingState();
                     const full = await this.bridge.request('sessions/get', { session_id: session.id });
                     if (this.sessionId !== full.id) { return; }
                     this.agentMode = full.agent_mode?.mode ?? 'act'; this.agentModeRevision = full.agent_mode?.revision ?? 0; this.planResult = undefined; this.planRequest++; this.renderPlanReview();
@@ -472,7 +482,29 @@ export class ShenScopePanel {
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
         }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
     }
-    private contextBusy(): boolean { return !!this.diagnosticsJob || this.diagnosticsStarting || !!this.terminalJob || this.terminalStarting || !!this.extensionsJob || this.extensionsStarting || !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.modelsJob || this.modelsStarting; }
+    private contextBusy(): boolean { return !!this.testingJob || this.testingStarting || !!this.diagnosticsJob || this.diagnosticsStarting || !!this.terminalJob || this.terminalStarting || !!this.extensionsJob || this.extensionsStarting || !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.modelsJob || this.modelsStarting; }
+
+    private async startTesting(action: string, args: Record<string, unknown> = {}): Promise<void> {
+        if (this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Finish or cancel the current operation before working with tests.'); }
+        this.testingStarting = true; this.updateActions();
+        if (action === 'run' || action === 'custom') { this.testingState.report = undefined; this.testingState.source = undefined; this.testingState.caseLimit = 40; this.testingState.frameLimit = 16; }
+        try {
+            const session_id = await this.ensureSession('Project tests');
+            const result = await this.bridge.request('testing/start', {session_id, action, ...args});
+            if (!this.completedTestingJobs.has(result.job_id)) { this.testingJob = result.job_id; this.setStatus(action === 'discover' ? 'Finding test commands…' : 'Working with project tests…'); }
+        } finally { this.testingStarting = false; this.updateActions(); }
+        if (this.tab === 'Tests') { await this.renderTab(); }
+    }
+    private testingView(): void {
+        renderProjectTests(this.content, this.testingState, {
+            button: (label, action) => this.button(label, action), start: (action, args) => this.startTesting(action, args),
+            cancel: async () => { if (this.testingJob && this.sessionId) { await this.bridge.request('testing/cancel_job', {session_id: this.sessionId, job_id: this.testingJob}); this.setStatus('Cancelling test operation…'); } },
+            recent: async () => { const session_id = await this.ensureSession('Project tests'); this.testingState.recent = await this.bridge.request('testing/query', {session_id, action: 'reports'}); await this.renderTab(); },
+            showReport: async run_id => { const session_id = await this.ensureSession('Project tests'); this.testingState.report = await this.bridge.request('testing/query', {session_id, action: 'report', run_id}); this.testingState.source = undefined; await this.renderTab(); },
+            openSource: async source => { const session_id = await this.ensureSession('Project tests'); await this.bridge.request('testing/query', {session_id, action: 'source', run_id: source.run_id, frame_id: source.frame.id, expected_sha256: source.sha256}); await this.bridge.openFile(source.path, source.frame.line); },
+            render: () => this.renderTab(),
+        }, this.contextBusy() || !!this.analyzersJob || this.analyzersStarting, !!this.testingJob || this.testingStarting);
+    }
 
     private async startDiagnostics(): Promise<void> {
         await this.startDiagnosticsAction('compile', { target: this.diagnosticsTarget, mode: 'graph', timeout: 120 });
@@ -2132,6 +2164,7 @@ export class ShenScopePanel {
         if (method === 'transport/closed') { this.active = false; this.setStatus('Disconnected'); this.notice.textContent = params.message; this.notice.hidden = false; this.approvals.replaceChildren(); this.updateActions(); return; }
         if (method === 'config/changed') {
             this.resetDiagnostics();
+            this.testingState = newProjectTestingState();
             this.planResult = undefined; this.planRequest++; this.renderPlanReview();
             this.modelsProfile = ''; this.modelPlanRole = ''; this.chatModelRole = ''; this.modelsResult = undefined;
             void this.guard(async () => { const snapshot = await this.bridge.request('config/get'); if (this.disposed) { return; } this.config = snapshot.value; this.configRevision = snapshot.sha256; await this.renderTab(); }); return;
@@ -2139,6 +2172,18 @@ export class ShenScopePanel {
         if (method !== 'agent/event' || params.session_id !== this.sessionId) { return; } const payload = params.payload;
         if (params.kind === 'agent_plan_updated') { this.planRequest++; this.planResult = { plan: payload.plan, summary: payload.summary }; this.renderPlanReview(); return; }
         if (params.kind === 'agent_mode_changed') { this.agentMode = payload.mode; this.agentModeRevision = payload.revision; this.renderPlanReview(); this.updateActions(); return; }
+        if (params.kind === 'testing_job_completed' || params.kind === 'testing_job_failed') {
+            this.completedTestingJobs.add(payload.job_id); while (this.completedTestingJobs.size > 64) { this.completedTestingJobs.delete(this.completedTestingJobs.values().next().value!); }
+            const owned = this.testingJob === payload.job_id || this.testingStarting;
+            if (this.testingJob === payload.job_id) { this.testingJob = undefined; }
+            if (owned && payload.result) {
+                if (payload.action === 'discover' || payload.action === 'catalog') { this.testingState.catalog = payload.result; this.setStatus('Test commands found'); }
+                else if (payload.action === 'source') { this.testingState.source = payload.result; this.setStatus('Test source preview ready'); }
+                else if (payload.action === 'reports') { this.testingState.recent = payload.result; this.setStatus('Recent test runs ready'); }
+                else { this.testingState.report = payload.result; this.setStatus('Test result captured'); }
+            } else if (owned) { this.setStatus(payload.status === 'cancelled' ? 'Test operation cancelled' : 'Test operation failed'); this.notice.textContent = payload.error ?? 'Test operation interrupted. Recent runs may contain a captured execution receipt.'; this.notice.hidden = false; }
+            this.updateActions(); if (owned && this.tab === 'Tests') { void this.guard(() => this.renderTab()); } return;
+        }
         if (params.kind === 'diagnostics_job_completed' || params.kind === 'diagnostics_job_failed') {
             this.completedDiagnosticsJobs.add(payload.job_id); while (this.completedDiagnosticsJobs.size > 64) { this.completedDiagnosticsJobs.delete(this.completedDiagnosticsJobs.values().next().value!); }
             const owned = this.diagnosticsJob === payload.job_id || this.diagnosticsStarting;

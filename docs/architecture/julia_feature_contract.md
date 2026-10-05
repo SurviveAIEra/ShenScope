@@ -54,3 +54,9 @@ Core fixtures. Buffer/retention/stack/inline-lookup bounds remain explicit;
 inclusive frame fractions do not measure CPU utilization. Owned sampling reports
 join the same canonical declaration/source facts without reexecution. The
 bounded prefix does not establish whole-window or exclusive target attribution.
+
+Checkpoint 039 uses Julia's typed dispatch, Tasks, child cancellation and shared
+permission/budget contexts to implement general project testing. Target projects
+are not restricted to Julia. Actual Python/JavaScript/Go/C/C++ agent repair
+fixtures pass; specialized reporting and source-pattern coverage remain bounded.
+Core/compiler diagnostics retain their distinct fixed-Core scope.

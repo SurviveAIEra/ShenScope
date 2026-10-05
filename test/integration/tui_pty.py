@@ -11,9 +11,15 @@ import sys
 
 root_project = Path(__file__).resolve().parents[2]
 plans = '--plans' in sys.argv
+testing = '--testing' in sys.argv
 with tempfile.TemporaryDirectory(prefix='shenscope-tui-') as directory:
     root = Path(directory)
     script = root / 'script.json'
+    if testing:
+        (root / 'pyproject.toml').write_text("[project]\nname='calc'\nversion='0.1.0'\n")
+        (root / 'test_calc.py').write_text('import unittest\nclass Addition(unittest.TestCase):\n    def test_add(self): self.assertEqual(2+3,5)\n')
+        candidate_argv = [str(root_project / 'bin/shenscope'), 'tests', 'discover', '--root', str(root), '--config', str(root / 'config.toml')]
+        candidate = json.loads(subprocess.check_output(candidate_argv, cwd=root_project, env=dict(os.environ, JULIA_DEPOT_PATH=os.environ.get('JULIA_DEPOT_PATH','/workspace/julia-depot'))))['candidates'][0]['id']
     script.write_text(json.dumps([
         {'calls': [{'name': 'write', 'arguments': {'path': 'approved.txt', 'content': '中文'}}]},
         {'text': 'TUI completed'},
@@ -57,7 +63,19 @@ with tempfile.TemporaryDirectory(prefix='shenscope-tui-') as directory:
                     raise AssertionError('TUI output exceeded test cap')
     try:
         wait_for(b'Ready')
-        if plans:
+        if testing:
+            os.write(master, b'/tests\r')
+            wait_for(b'none executed')
+            os.write(master, ('/test ' + candidate + '\r').encode())
+            wait_for(b'Approve process')
+            os.write(master, b'a')
+            wait_for(b'command_succeeded')
+            wait_for(b'framework reports')
+            os.write(master, b'\x04')
+            assert process.wait(timeout=10) == 0
+            assert b'\x1b[?1049h' in received
+            print('PASS: real TUI test discovery, explicit command selection, responsive process approval, Python unittest result and clean exit')
+        elif plans:
             os.write(master, b'/mode\r')
             wait_for(b'Agent mode: plan')
             os.write(master, b'Inspect and plan\r')
@@ -74,15 +92,16 @@ with tempfile.TemporaryDirectory(prefix='shenscope-tui-') as directory:
             os.write(master, b'Apply the approved change\r')
         else:
             os.write(master, '创建文件\r'.encode())
-        wait_for(b'Approve edit')
-        assert not (root / 'approved.txt').exists()
-        os.write(master, b'a')
-        wait_for(b'Act change finished' if plans else b'Complete')
-        assert (root / 'approved.txt').read_text() == '中文'
-        os.write(master, b'\x04')
-        assert process.wait(timeout=10) == 0
-        assert b'\x1b[?1049h' in received
-        print('PASS: real TUI Plan/Act control, responsive persistence approval, saved plan, blocked mutation, approved Unicode Act edit and clean exit' if plans else 'PASS: real TUI task, scoped approval, Unicode edit, clean exit')
+        if not testing:
+            wait_for(b'Approve edit')
+            assert not (root / 'approved.txt').exists()
+            os.write(master, b'a')
+            wait_for(b'Act change finished' if plans else b'Complete')
+            assert (root / 'approved.txt').read_text() == '中文'
+            os.write(master, b'\x04')
+            assert process.wait(timeout=10) == 0
+            assert b'\x1b[?1049h' in received
+            print('PASS: real TUI Plan/Act control, responsive persistence approval, saved plan, blocked mutation, approved Unicode Act edit and clean exit' if plans else 'PASS: real TUI task, scoped approval, Unicode edit, clean exit')
     finally:
         if process.poll() is None:
             process.terminate()

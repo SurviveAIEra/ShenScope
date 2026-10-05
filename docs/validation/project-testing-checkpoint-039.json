@@ -1,0 +1,651 @@
+{
+  "checkpoint": "039",
+  "recorded_at_utc": "2026-10-05 11:43:56 UTC",
+  "status": "IMPLEMENTED_MOCK_VERIFIED",
+  "base_commit": "efa2054981df396b59c8d30e3f8548196471c546",
+  "scope": "General project test discovery, explicit execution, framework reports and current-source references; Core Julia does not restrict project language.",
+  "core_assertions": 933,
+  "new_assertions": 155,
+  "suites": [
+    {
+      "log": "docs/validation/raw/project-testing-checkpoint-039/project-testing-seventh.txt",
+      "testsets": 9,
+      "assertions": 155,
+      "exit_code": 0,
+      "rows": [
+        {
+          "name": "Bounded multi-language discovery reads declarations and owns catalogs",
+          "passed": 18,
+          "total": 18
+        },
+        {
+          "name": "Framework reports retain counts, cases, malformed records and safe source references",
+          "passed": 19,
+          "total": 19
+        },
+        {
+          "name": "Testing schemas and plan mode retain discovery and reject execution",
+          "passed": 7,
+          "total": 7
+        },
+        {
+          "name": "Actual agent failure, hash edit and rerun in five project languages",
+          "passed": 48,
+          "total": 48
+        },
+        {
+          "name": "Framework failure with zero exit remains a failed tool and after-test check",
+          "passed": 3,
+          "total": 3
+        },
+        {
+          "name": "Selected declarations rechecked after approval; read/process gates and current source",
+          "passed": 11,
+          "total": 11
+        },
+        {
+          "name": "Execution timeout, cancellation, revocation, output and retention bounds",
+          "passed": 16,
+          "total": 16
+        },
+        {
+          "name": "Testing RPC approvals, owning jobs, no replay and independent result reads",
+          "passed": 26,
+          "total": 26
+        },
+        {
+          "name": "CLI candidate discovery, real failing command and terminal test controls",
+          "passed": 7,
+          "total": 7
+        }
+      ]
+    },
+    {
+      "log": "docs/validation/raw/project-testing-checkpoint-039/project-testing-workflows-authorized.txt",
+      "testsets": 65,
+      "assertions": 778,
+      "exit_code": 0,
+      "rows": [
+        {
+          "name": "Cancellation tree and dynamic context",
+          "passed": 7,
+          "total": 7
+        },
+        {
+          "name": "Concurrent budget reservation and accounting",
+          "passed": 9,
+          "total": 9
+        },
+        {
+          "name": "Permission decisions and path containment",
+          "passed": 7,
+          "total": 7
+        },
+        {
+          "name": "Durable journal, torn tails and revision conflicts",
+          "passed": 6,
+          "total": 6
+        },
+        {
+          "name": "Session reconstruction and unknown side effects",
+          "passed": 11,
+          "total": 11
+        },
+        {
+          "name": "Atomic replacement remains complete to concurrent readers",
+          "passed": 3,
+          "total": 3
+        },
+        {
+          "name": "Oversized unterminated journal input is bounded",
+          "passed": 2,
+          "total": 2
+        },
+        {
+          "name": "Contended journal locks check cancellation and release after failed checkpoints",
+          "passed": 6,
+          "total": 6
+        },
+        {
+          "name": "Bounded JSON-RPC framing and UTF-8 lengths",
+          "passed": 8,
+          "total": 8
+        },
+        {
+          "name": "Protocol version, config ownership, secrets and session commands",
+          "passed": 15,
+          "total": 15
+        },
+        {
+          "name": "Agent protocol permission ownership and cancellation",
+          "passed": 13,
+          "total": 13
+        },
+        {
+          "name": "Terminal rendering sanitizes control sequences and handles wide text",
+          "passed": 16,
+          "total": 16
+        },
+        {
+          "name": "SSE Unicode fragmentation, multiline and limits",
+          "passed": 3,
+          "total": 3
+        },
+        {
+          "name": "OpenAI-compatible real HTTP tool stream and native replay",
+          "passed": 7,
+          "total": 7
+        },
+        {
+          "name": "Anthropic signature and tool continuation",
+          "passed": 5,
+          "total": 5
+        },
+        {
+          "name": "OpenAI Responses encrypted reasoning and call stream",
+          "passed": 3,
+          "total": 3
+        },
+        {
+          "name": "Gemini and Ollama native protocols",
+          "passed": 5,
+          "total": 5
+        },
+        {
+          "name": "Retry before delivery, no replay after delivery, malformed calls",
+          "passed": 5,
+          "total": 5
+        },
+        {
+          "name": "Workspace tools conflict guard, schema and transactional validation",
+          "passed": 9,
+          "total": 9
+        },
+        {
+          "name": "Process execution, bounded logs, ownership, input and timeout",
+          "passed": 12,
+          "total": 12
+        },
+        {
+          "name": "Agent repairs a failing Python test with real tool execution",
+          "passed": 10,
+          "total": 10
+        },
+        {
+          "name": "Context settings and exact model envelopes",
+          "passed": 50,
+          "total": 50
+        },
+        {
+          "name": "Instruction scope discovery, permissions and source revisions",
+          "passed": 13,
+          "total": 13
+        },
+        {
+          "name": "Balanced tool groups, no reasoning split and Unicode excerpts",
+          "passed": 24,
+          "total": 24
+        },
+        {
+          "name": "Durable context projections preserve transcripts and provenance",
+          "passed": 17,
+          "total": 17
+        },
+        {
+          "name": "Compaction failure is atomic and fixed context is retained",
+          "passed": 7,
+          "total": 7
+        },
+        {
+          "name": "Original tool artifacts are scoped, permissioned and digest checked",
+          "passed": 9,
+          "total": 9
+        },
+        {
+          "name": "Optional model summaries bind citations and shared budget",
+          "passed": 10,
+          "total": 10
+        },
+        {
+          "name": "HTTP context overflow recovers before delivery without replay",
+          "passed": 13,
+          "total": 13
+        },
+        {
+          "name": "Model network approval respects the remaining shared wall-clock budget",
+          "passed": 7,
+          "total": 7
+        },
+        {
+          "name": "Reasoning and partial tool arguments fence model retry and recovery",
+          "passed": 21,
+          "total": 21
+        },
+        {
+          "name": "Completed stream calls remain undispatched when a later call is malformed",
+          "passed": 8,
+          "total": 8
+        },
+        {
+          "name": "Provider usage survives failed context attempts and disabled recovery",
+          "passed": 14,
+          "total": 14
+        },
+        {
+          "name": "Context RPC ownership, permissions, asynchronous cancellation and CAS",
+          "passed": 16,
+          "total": 16
+        },
+        {
+          "name": "Manual context checkpoints are shared by RPC and subsequent agent runs",
+          "passed": 8,
+          "total": 8
+        },
+        {
+          "name": "Task definition validation and independent graph checks",
+          "passed": 15,
+          "total": 15
+        },
+        {
+          "name": "Claims, dependency release, priority, fences and detached views",
+          "passed": 13,
+          "total": 13
+        },
+        {
+          "name": "Safe retries, uncertain effects and explicit reconciliation",
+          "passed": 16,
+          "total": 16
+        },
+        {
+          "name": "Exclusive effects, cancellation propagation and read-only recovery",
+          "passed": 16,
+          "total": 16
+        },
+        {
+          "name": "Large result artifacts, digest verification and descriptor collisions",
+          "passed": 6,
+          "total": 6
+        },
+        {
+          "name": "Actual worker DAG binds verified dependency results",
+          "passed": 5,
+          "total": 5
+        },
+        {
+          "name": "Test processes, timeout uncertainty and separate model sessions",
+          "passed": 16,
+          "total": 16
+        },
+        {
+          "name": "Two real Julia processes cannot claim the same task",
+          "passed": 3,
+          "total": 3
+        },
+        {
+          "name": "Agent and headless CLI invoke the same durable task tool",
+          "passed": 6,
+          "total": 6
+        },
+        {
+          "name": "Asynchronous task protocol, approvals and session ownership",
+          "passed": 13,
+          "total": 13
+        },
+        {
+          "name": "Task jobs block config replacement and drain owned processes",
+          "passed": 5,
+          "total": 5
+        },
+        {
+          "name": "Hooks configuration has explicit points, bounds and no permission grants",
+          "passed": 29,
+          "total": 29
+        },
+        {
+          "name": "Hook source identity, read scope, ambiguity and explicit reload",
+          "passed": 14,
+          "total": 14
+        },
+        {
+          "name": "Real Hook commands have bounded metadata, private output and narrowed environment",
+          "passed": 14,
+          "total": 14
+        },
+        {
+          "name": "Hook approval rechecks source identity and current policy before launch",
+          "passed": 8,
+          "total": 8
+        },
+        {
+          "name": "Hook timeouts, cancellation, malformed output and bounded history",
+          "passed": 14,
+          "total": 14
+        },
+        {
+          "name": "Actual agent applies Hook context and lifecycle observations without exposing chat",
+          "passed": 10,
+          "total": 10
+        },
+        {
+          "name": "Before-effect Hook denial prevents writes; post-effect failure preserves receipts",
+          "passed": 11,
+          "total": 11
+        },
+        {
+          "name": "Owned processes drain descendants and bound blocked stdin",
+          "passed": 8,
+          "total": 8
+        },
+        {
+          "name": "Hook RPC scopes command approval, cancellation and source-opening proof",
+          "passed": 29,
+          "total": 29
+        },
+        {
+          "name": "Actual durable workers persist Hook effects and serialize unknown command checks",
+          "passed": 12,
+          "total": 12
+        },
+        {
+          "name": "Lost leases cannot silently replay declared Hook effects or accept foreign markers",
+          "passed": 8,
+          "total": 8
+        },
+        {
+          "name": "Hooks CLI uses the same commands, permissions and failure status",
+          "passed": 6,
+          "total": 6
+        },
+        {
+          "name": "Model routing config is strict, bounded, immutable and credential blind",
+          "passed": 35,
+          "total": 35
+        },
+        {
+          "name": "Route plans explain feature, capacity and native replay exclusions without keys",
+          "passed": 14,
+          "total": 14
+        },
+        {
+          "name": "Routing receipts and runtime seats retain strict conversation ownership",
+          "passed": 11,
+          "total": 11
+        },
+        {
+          "name": "Explicit routing fixes every eligible key before approval and records real source fallback",
+          "passed": 17,
+          "total": 17
+        },
+        {
+          "name": "Terminal, partial, consumer and explicit fallback restrictions prevent source switching",
+          "passed": 28,
+          "total": 28
+        },
+        {
+          "name": "Route cancellation, admission and context cost accounting stop work before side effects",
+          "passed": 8,
+          "total": 8
+        },
+        {
+          "name": "Headless CLI, offline task and session lifecycle",
+          "passed": 9,
+          "total": 9
+        }
+      ]
+    }
+  ],
+  "agent_fixture_languages": [
+    "python",
+    "javascript",
+    "go",
+    "c",
+    "cpp"
+  ],
+  "real_runners_and_compilers": true,
+  "model": "MockProvider",
+  "live_model_quality_verified": false,
+  "structured_reporting_formats": [
+    "unittest",
+    "pytest_text",
+    "top_level_tap",
+    "go_json",
+    "ctest_text",
+    "raw_no_invented_cases"
+  ],
+  "runtime": {
+    "platform": "Linux",
+    "julia": "1.11.7",
+    "julia_threads": 4,
+    "go_executable": "/workspace/toolchains/go-1.27.1/bin/go",
+    "go": "1.27.1",
+    "node": "24.19.0",
+    "python": "3.12.14"
+  },
+  "clients": {
+    "node_core": {
+      "log": "docs/validation/raw/project-testing-checkpoint-039/project-testing-node-final.txt",
+      "tests": 1,
+      "exit_code": 0
+    },
+    "actual_tui": {
+      "log": "docs/validation/raw/project-testing-checkpoint-039/project-testing-tui.txt",
+      "exit_code": 0
+    },
+    "native_gui": {
+      "log": "docs/validation/raw/project-testing-checkpoint-039/project-testing-native-final.txt",
+      "extensions_disabled": true,
+      "exit_code": 0
+    },
+    "vsix_gui": {
+      "log": "docs/validation/raw/project-testing-checkpoint-039/project-testing-vsix-final.txt",
+      "extension_development_window": true,
+      "exit_code": 0
+    }
+  },
+  "client_typechecks": {
+    "shared": true,
+    "complete_workbench": true,
+    "build": true
+  },
+  "layouts": {
+    "native": {
+      "narrow": {
+        "client": 197,
+        "scroll": 197
+      },
+      "wide": {
+        "client": 357,
+        "scroll": 357
+      }
+    },
+    "vsix": {
+      "narrow": {
+        "client": 197,
+        "scroll": 197
+      },
+      "wide": {
+        "client": 357,
+        "scroll": 357
+      }
+    }
+  },
+  "screenshots_visually_inspected": [
+    "vsix-testing-narrow.png",
+    "native-testing-wide.png"
+  ],
+  "package": {
+    "entries": 317,
+    "core_payload_files_matched": 308,
+    "client_assets_matched": 3,
+    "client_assets": [
+      "extension/dist/panel.js",
+      "extension/dist/panel.css",
+      "extension/dist/extension.js"
+    ],
+    "bytes": 655470,
+    "sha256": "ee6db8b30223490a8cdde76ea7c86d4a0f659657bce08f7391f194c81e3386a0",
+    "installed_package_tested": false,
+    "extension_development_webview_tested": true
+  },
+  "source_checksums": {
+    "editors/shared/panel.css": "28bd6ae7b526dac14f42e85de0fdd8b0d6324b7cb37d71c6e40d4fdd119cef1c",
+    "editors/shared/src/panel.ts": "3257752d931843436eaa288b19c412b77059ac403edcb6beea0186c490737771",
+    "editors/shared/src/projectTests.ts": "fa4f520a4e6cf34de51317099325dc0d60e21235d3dfd5e7f9430cd7815e5cd7",
+    "editors/shared/src/rpcMethods.ts": "203a8b8b5e8fe3613f415ee0de829ee235b8636ce224f87624e47fa7262f6bea",
+    "editors/test/projectTesting.test.mjs": "5e53a4f86105d26e561ef30e9def3b016916485c429c33107459cc6688fd1f49",
+    "ide/test/native_smoke.mjs": "166148eabae03967c3279d9dd6bdd3e28bb21aeb5d0f5719a1cba898b90f268c",
+    "scripts/apply_codeoss_overlay.py": "3cf4126e90c9dc0f31fb8183c1d216da35454f5dfbff1c025f08f29ad63b1e6f",
+    "scripts/transpile_codeoss_panel.mjs": "555e54e66a257939a439bcf56b50d549cc5f99422f7e80c83d021f7ca9eaefb2",
+    "src/CLI/Agent.jl": "96eea283266eaa3b33432125b4e50d043c4568e6ed51b912099ad1ce94f68ab2",
+    "src/CLI/Main.jl": "af53c66803935d616f1452eb8c5b315da97d9165ddff593bd78844b182b05e17",
+    "src/CLI/TUI.jl": "ee1a8f62e164a9336d09f227237c26b14c04cbcf8a5131a1fa4f20b4dc2008c9",
+    "src/CLI/Testing.jl": "759f546c545e8d4bd0b0ba7a7092b4c2e06284e744cd9cbccee964a80b420721",
+    "src/Core/PlanningTools.jl": "4c98f04a95ae2d032d0531fe4c0813d6e099e1a3d8cefc31ed369a5d648e8b47",
+    "src/Hooks/Lifecycle.jl": "89ed842cdc8bc7dca2362fdd4801852695c257c0ad7ce1b72b85b4f4bef2cb86",
+    "src/Protocol/Server.jl": "41f928a4a2a42927f0b2b89f7af9ae566f6a4ce47c727d8d3a76222356b0af8e",
+    "src/Protocol/Testing.jl": "2996691924e7eec8c7305878625d68f5e00570528d809f74d337822681f5daba",
+    "src/Runtime/ToolScheduler.jl": "5abc7ac6164e70f123e4282eba1df8852585cda983e8a8948b4326b931535863",
+    "src/ShenScope.jl": "307e8e168f49accc510cbadd88b31e96e2d2f0b7657422b2a4bdd8413f38e991",
+    "src/Testing/Candidates.jl": "2935cae41b5225715a9182489c64da8be6bc65885ae64139c6643c044affff61",
+    "src/Testing/Catalog.jl": "251279a3ab6af40158fbb6eabbab1cc9aa825630f9783f039cc5c993a76f3a3c",
+    "src/Testing/Discovery.jl": "8c325a56f6e9f3e07f93778e254165c44b7c1c8f24f6d5d7720efebb14e17186",
+    "src/Testing/Execution.jl": "69ca9cf137f50610ab9fa620f11554a611aca75ddd236901a1bf23e883b674b1",
+    "src/Testing/Frameworks.jl": "ecc37ed481bef728b1f32e8bdf76f41379e1b37ab1b9eba96fba344201763aa5",
+    "src/Testing/Output.jl": "ff7f0a9be3fb46715ffa817dd8665b9476c7418983791d6e1922167a34a7f934",
+    "src/Testing/Reports.jl": "9516fce146611a5a021bdd837d0749b7b2a1bf0c6e176701ce0b2be350d70c5b",
+    "src/Testing/Source.jl": "958310dc37940a49ed769806c5437087af897755cd5c835d232b12ab6476858b",
+    "src/Testing/Types.jl": "26785826fc13a83c302acc34019231e4335c83d8ceae0f106873b7d65d1e940d",
+    "src/Tools/Schema.jl": "a9149e32aac06845111cb0fa95833dcb959f86161d7113cd59291b3568f9fb83",
+    "src/Tools/Tasks.jl": "4b950ef504e23d4c0925b8ad6565dc146ca983e9b9b03d68e67978d88dc6f9e7",
+    "src/Tools/Testing.jl": "758a797f2fc0ec131b267dfe72d4608178d05c093ec614a1d10606dfa46a1f7d",
+    "test/fixtures/project_testing.jl": "9e84459f25097a0006a5432a2682010d73f03c283bee376f07e0714fb917286a",
+    "test/integration/project_testing.jl": "a599fc18a081dad41a9d51080b74b4a8bdc6c9c1ea1d8dff20c84a324bd03d53",
+    "test/integration/tui_pty.py": "f86922a1ce9b5fa4123949e1280dfde8eb816b08510177d15f0f346b4f578b1a",
+    "test/project_testing.jl": "4d77d158ecbce788d304b55b4a1a6c15d8d4d7d6b8dcde89c083316029a77f26",
+    "test/runtests.jl": "c5589206a4cd9697526dc1a3d8b90d3715e3b948263c789c4dc680ea7ab531ad",
+    "test/unit/project_testing.jl": "2de356b0b1646df2fdee9aac322a0aacf999c8823c9c44bcee6ff626d82998f4",
+    "test/unit/testing_protocol.jl": "996bdfd91036df08209bf9317a4eaab7b0732e270eb304984d4293371ef86ed8"
+  },
+  "reference_evidence": "docs/validation/project-testing-039/reference-evidence.json",
+  "source_reuse": "No upstream implementation copied or translated.",
+  "size": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 277,
+      "blank": 1397,
+      "comment": 243,
+      "code": 26244
+    },
+    "cli_tui": {
+      "nFiles": 22,
+      "blank": 21,
+      "comment": 11,
+      "code": 1326
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 223756,
+    "line_target_percent": 10.4976,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "total_gib": 31.451,
+    "free_gib": 17.466,
+    "large_build_allowed": true,
+    "safe_scratch_paths": [
+      "/workspace/ShenScope/.local/tmp",
+      "/workspace/ShenScope/.local/build-scratch"
+    ]
+  },
+  "cache": {
+    "files": [
+      {
+        "name": "aMBxt_CqE99.so",
+        "bytes": 60384928
+      },
+      {
+        "name": "aMBxt_CqE99.ji",
+        "bytes": 1688141
+      }
+    ],
+    "cleanup_performed": false,
+    "reason": "One reusable compiled cache pair; free space exceeds the build reserve."
+  },
+  "repository_audit": {
+    "applications": 1,
+    "dependencies": 50,
+    "unknown": 0,
+    "strict_walk_complete": true
+  },
+  "retained_failures": [
+    "Directory dot normalization and top-level empty dirname were corrected.",
+    "Raw Go JSON was incorrectly matched as a generic source frame; frames now decode Output events.",
+    "Agent fixture incorrectly assumed run_agent! returned Session rather than reply text; fixed fixture.",
+    "The PATH go program was not a Go compiler; the already installed Go SDK is explicitly selected in the test fixture.",
+    "The zero-test fixture incorrectly required a successful runner exit; zero collection is recorded independently.",
+    "Node test-runner inherited NODE_TEST_CONTEXT changed nested reporter output; sanitized only the test client environment.",
+    "GUI history assertion ran before asynchronous render; it now waits for the completed list.",
+    "Default sandbox blocked Node synchronous Git child completion and loopback HTTP fixtures; authorized local validation succeeded.",
+    "Initial packaging audit guessed a media path; final audit reads and compares the actual three dist assets."
+  ],
+  "limits": [
+    "Controller catalogs/reports are bounded in memory and do not survive restart; ordinary agent receipts persist in conversation messages.",
+    "Framework output is reported evidence; no independent correctness or complete project coverage is certified.",
+    "Selected markers are hash-rechecked, but all project sources are not pinned during execution.",
+    "Source previews verify current workspace files, not execution snapshots; framework column units remain unspecified.",
+    "Raw capture and JSON receipt transport have explicit independent bounds; directory listing materializes one directory.",
+    "Native Testing API, JUnit XML/coverage, durable controller history and other framework adapters remain pending.",
+    "No installed VSIX package, desktop distribution, Windows, live model or comprehensive upstream synthesis claim."
+  ],
+  "whole_task": "IN_PROGRESS",
+  "artifact_checksums": {
+    "docs/validation/project-testing-039/native-testing-layout.json": "dd00f472ea3179eb5fcd5db8bd102f5bf97ec2c8a0d7550873f8318a0708b8ed",
+    "docs/validation/project-testing-039/native-testing-narrow.png": "ebc3425b703293974406033acf2863b101137cdba181e660a00354c148145f6e",
+    "docs/validation/project-testing-039/native-testing-wide.png": "1d7da4baedcd8c5795bc45f063d205e5f8affb7a3de5041c93dc898387b795c9",
+    "docs/validation/project-testing-039/package-parity.json": "ba4111a3d0687fa8d6761b2d52c221740a5ad47b46079cc880f57f16884b34f8",
+    "docs/validation/project-testing-039/project-testing-cache.json": "0a2c0f884fec81d5bb67df6075e4e7f02369c24f3fab25be66251673427355e8",
+    "docs/validation/project-testing-039/project-testing-size.json": "c87ae7edeb941c206989256576d441ecf6f6be04576dca5d73e4b7f47c6de309",
+    "docs/validation/project-testing-039/project-testing-storage.json": "065bfa2ca708bd09c48c628152e8434011b362c127845a655421f0b08877350c",
+    "docs/validation/project-testing-039/reference-evidence.json": "1ae29ecbd579c6f56baabd1d68306bdf85f8356c106a9bc2910e2784490d4097",
+    "docs/validation/project-testing-039/vsix-testing-layout.json": "dd00f472ea3179eb5fcd5db8bd102f5bf97ec2c8a0d7550873f8318a0708b8ed",
+    "docs/validation/project-testing-039/vsix-testing-narrow.png": "16488c59913948d8541f6584677943e48de3c7716c586f9caeb8fd840eda0b69",
+    "docs/validation/project-testing-039/vsix-testing-wide.png": "c0cdba379933fa8f601e88e9824492993f5118f0627fd06340e3b19899ef313f",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-audit.txt": "9eca1040aa8752cb933d5b6373d675175647e90c881071855bc0d0f4cf17e510",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-editor-build.txt": "456325254e03a678a382bc8457be1d4edf674fefcb4ff0bb54bb37906c13505d",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-fifth.txt": "e833a8be63b77869baf957a8cdafe7fb8c28e3390107088976ea5b9f02068a1e",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-first.txt": "e530d99561afa5aa33667cf8e3dd4c1fc5d46ef3d0a2b9f267da578273f94f2c",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-fourth.txt": "b106688f34e59d33419039fb902529f045187cf91dfc04f1b732de018b1767dc",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-native-final.txt": "b75589b53a946ae73f3bf8c0cfe666a468a470d102703b5b6a94bf6db4706923",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-native.txt": "f3ed557d31031914604cfce45bbd06f47f270f16393fe42e496453f4d3c4a770",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-node-final.txt": "748cf23827d56960a52780521a62bbf734704246859d3027ae4e3cacdaa7b0bd",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-node.txt": "ba86c520eb731612d8891de17dbd8da73989a5716cf24b7e7614432986d9f0a2",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-package.txt": "a34ceaef57d6e92cc5c597782758222fbc125d5cffee5526a848cb7d3415a374",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-second.txt": "f45c066131e472dfd466194de879384d702c6101a139b2fe56d2eddf97bc433f",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-seventh.txt": "e02723002880f5220b4aea3bf847f842d703542b2a09ff225117524ccaf5284e",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-sixth.txt": "31a83e68748c0e62cce7c9d543ded349655085fdd65f5d9b6c07d6591ec3bf26",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-third.txt": "446b416290a0178a3fd78aa11ca98fecea06f2bf39c2d8692c34604b5abbf5ed",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-transpile-authorized.txt": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-transpile.txt": "2310fd33429dac193313ef64649318a342e73221a50ae035f7614ef6fdb968e2",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-tui.txt": "2a5d3633aa592c7fbc11433c7b302d43c04bc01715dec41a01137e22981b6434",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-vsix-final.txt": "9aa21fc3aacc68abe1cb298a8d04b3859eb3494f54fcffd71f05d6b600b60c5c",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-vsix.txt": "bbc24a50e5d7545dee0838fedd5c01a2cfdf72fed1ef72279176a96ae3c8b98c",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-workbench-typecheck.txt": "13f94dd6ebfafd0dd7058f4e027a45b58c86fe9cfd9dcd44072af86dc9f2ea49",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-workflows-authorized.txt": "83cac7d82137f8ab91517941548130e7d3fe8c074baf4b2c1af40ad183d90dd5",
+    "docs/validation/raw/project-testing-checkpoint-039/project-testing-workflows.txt": "39a4b17d24403d79ac8cf683758a6d3a9b4d1952ce745783a8969ad08250daed"
+  }
+}

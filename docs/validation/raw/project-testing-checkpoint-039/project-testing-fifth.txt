@@ -1,0 +1,42 @@
+Precompiling ShenScope...
+  92233.7 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 92 seconds. 41 already precompiled.
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/project_testing.jl:69
+in expression starting at /workspace/ShenScope/test/project_testing.jl:5
+Test Summary:                                                         | Pass  Total  Time
+Bounded multi-language discovery reads declarations and owns catalogs |   18     18  5.9s
+Test Summary:                                                                        | Pass  Total  Time
+Framework reports retain counts, cases, malformed records and safe source references |   19     19  3.0s
+Test Summary:                                                       | Pass  Total   Time
+Testing schemas and plan mode retain discovery and reject execution |    7      7  10.7s
+Test Summary:                                                       | Pass  Total   Time
+Actual agent failure, hash edit and rerun in five project languages |   48     48  30.0s
+Test Summary:                                                               | Pass  Total  Time
+Framework failure with zero exit remains a failed tool and after-test check |    3      3  2.4s
+Selected declarations rechecked after approval; read/process gates and current source: Error During Test at /workspace/ShenScope/test/integration/project_testing.jl:69
+  Got exception outside of a @test
+  ArgumentError: Collection is empty, must contain exactly 1 element
+  Stacktrace:
+    [1] _only
+      @ ./iterators.jl:1550 [inlined]
+    [2] only(x::Vector{Dict{String}})
+      @ Base.Iterators ./iterators.jl:1545
+    [3] (::var"#38#42")(root::String)
+      @ Main /workspace/ShenScope/test/integration/project_testing.jl:72
+    [4] mktempdir(fn::var"#38#42", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [5] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [6] macro expansion
+      @ /workspace/ShenScope/test/integration/project_testing.jl:70 [inlined]
+    [7] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+    [8] top-level scope
+      @ /workspace/ShenScope/test/integration/project_testing.jl:70
+    [9] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [10] top-level scope
+      @ /workspace/ShenScope/test/project_testing.jl:5
+Test Summary:                                                                         | Error  Total  Time
+Selected declarations rechecked after approval; read/process gates and current source |     1      1  1.9s

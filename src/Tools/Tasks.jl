@@ -125,6 +125,7 @@ function cleanup_tasks!(manager::TaskManager)
     end
     for tool in values(manager.executor.tools)
         tool isa ProjectTool && cleanup_projects!(tool.manager)
+        tool isa TestingTool && (close_operations!(tool.operations);cleanup_project_tests!(tool.manager))
     end
     nothing
 end

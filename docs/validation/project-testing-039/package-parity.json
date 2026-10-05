@@ -1,0 +1,14 @@
+{
+  "entries": 317,
+  "core_payload_files_matched": 308,
+  "client_assets_matched": 3,
+  "client_assets": [
+    "extension/dist/panel.js",
+    "extension/dist/panel.css",
+    "extension/dist/extension.js"
+  ],
+  "bytes": 655470,
+  "sha256": "ee6db8b30223490a8cdde76ea7c86d4a0f659657bce08f7391f194c81e3386a0",
+  "installed_package_tested": false,
+  "extension_development_webview_tested": true
+}

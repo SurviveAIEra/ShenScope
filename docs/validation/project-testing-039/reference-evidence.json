@@ -1,0 +1,121 @@
+[
+  {
+    "project": "codex",
+    "repository": "openai/codex",
+    "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+    "license": "Apache-2.0",
+    "path": "codex-rs/core/src/tools/handlers/unified_exec/exec_command.rs",
+    "sha256": "d1d33fb5a2710dcf3fc4bebe59cae4d363fc219be8d773fbb58b441681bdc16d",
+    "inspected_lines": [
+      [
+        406,
+        457
+      ]
+    ],
+    "observation": "Cancellation/permission context and bounded denied-execution evidence.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "opencode",
+    "repository": "anomalyco/opencode",
+    "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+    "license": "MIT",
+    "path": "packages/core/src/tool/bash.ts",
+    "sha256": "a79fabfe48f831bdff6b3140beccecdc44796d43071ee68356b1052f394c4303",
+    "inspected_lines": [
+      [
+        159,
+        197
+      ]
+    ],
+    "observation": "Timeout, bounded capture and explicit forced cleanup.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "deepseek-harness",
+    "repository": "deepseek-ai/deepseek-harness",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "license": "MIT",
+    "path": "packages/terminal/terminal-bash/src/session.ts",
+    "sha256": "34fb3752c3a69af771c88310e14bbd11aaed6771498d10ce52a4b12aa449dffb",
+    "inspected_lines": [
+      [
+        1,
+        60
+      ]
+    ],
+    "observation": "UTF-8 tail retention, explicit truncation and bounded pending chunks.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "pi-mono",
+    "repository": "badlogic/pi-mono",
+    "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+    "license": "MIT",
+    "path": "packages/coding-agent/src/core/tools/bash.ts",
+    "sha256": "de2b54d4f4bfbb844ce6d8077f63d715f7d8e80079dd9689b561e45b6679c81b",
+    "inspected_lines": [
+      [
+        1,
+        60
+      ]
+    ],
+    "observation": "Model-facing failure preserves a structured caller result.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "kimi-code",
+    "repository": "MoonshotAI/kimi-code",
+    "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+    "license": "MIT",
+    "path": "packages/agent-core-v2/src/agent/tools/os/bash/process-task.ts",
+    "sha256": "04d9c6e8377889c9bdb6e724ff041be7d2e6ffdf33e878300f8c2bbf9dfb1a24",
+    "inspected_lines": [
+      [
+        73,
+        108
+      ]
+    ],
+    "observation": "Abort, completion/failure and final disposal remain distinct.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "ZCode",
+    "repository": "zai-org/ZCode",
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "license": "Apache-2.0",
+    "path": "apps/zcode-cli/packages/contracts/src/interfaces/execution.port.ts",
+    "sha256": "261276b50e83f0a60201ea20ea34574d31a7be129e422ac07a3a53e5752e7d98",
+    "inspected_lines": [
+      [
+        1,
+        60
+      ]
+    ],
+    "observation": "Argument-vector and shell execution have separate contracts.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "qwen-code",
+    "repository": "QwenLM/qwen-code",
+    "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+    "license": "Apache-2.0",
+    "path": "packages/core/src/managed-runtime/local-shell-result-capture.ts",
+    "sha256": "b9453d2608bf323a21c19e51117c06f1360e4ad443598b71377dffb434a781bf",
+    "inspected_lines": [
+      [
+        1,
+        60
+      ]
+    ],
+    "observation": "Digests, separate streams and bounded sealed result capture.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  }
+]

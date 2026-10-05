@@ -713,3 +713,22 @@ These eight further source observations across all seven primary projects are
 partial research. The Core uses original typed Julia documents, ScopedValue,
 streaming journal history and OS run fences. No source is copied or translated;
 no comprehensive-synthesis or live-model planning-quality claim is made.
+
+### General project execution observations (checkpoint 039)
+
+| Primary source and inspected lines | Observation | Application in original Julia Core |
+|---|---|---|
+| Codex `tools/handlers/unified_exec/exec_command.rs` 406–457 | Cancellation/permission context accompanies argv; denied execution retains bounded output evidence | Selected declaration checks run after approval; receipt delivery never silently retries execution. |
+| OpenCode `packages/core/src/tool/bash.ts` 159–197 | Timeout, forced cleanup and bounded capture remain distinct from exit status | Process facts, truncation and framework-reported case outcomes remain separate. |
+| DeepSeek harness `terminal-bash/src/session.ts` 1–60 | UTF-8 tail retention exposes truncation | Existing Core head/tail streams retain byte counts; interpretation discloses partial retained output. |
+| Pi `core/tools/bash.ts` 1–60 | Nonzero exit can be a model-facing failure while retaining a structured value for callers | Failed test tools preserve execution receipts and case/source data. |
+| Kimi `os/bash/process-task.ts` 73–108 | Abort, completion, failure and final disposal remain explicit | Owned asynchronous test jobs distinguish cancellation, command failure and result retention. |
+| ZCode `contracts/src/interfaces/execution.port.ts` 1–60 | Argument vectors and shell commands have different contracts | Any-language custom tests accept explicit argv and workspace cwd. |
+| Qwen `managed-runtime/local-shell-result-capture.ts` 1–60 | Digests, stream identities and sealed bounded output preserve provenance | Receipt hashes and separate stdout/stderr evidence survive interpretation and transport trimming. |
+
+Full paths, pinned commits, licenses, inspected ranges and file hashes are in
+the checkpoint's reference evidence. These are seven further partial source
+reviews, not upstream test-framework adapter equivalence or comprehensive
+synthesis. Declaration discovery, framework parsing, ownership and source
+previews are authored Julia implementations; no upstream code is copied or
+translated.

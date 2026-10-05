@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest verified cloc 2.11 count: 25,331 authored Julia Core code lines across 266 files;
-CLI/TUI add 1,262 lines and optional Julia extensions add 57, counted separately.
-This is 10.1324% of the minimum line target, leaving 224,669 lines. These are early implementations,
+Latest verified cloc 2.11 count: 26,244 authored Julia Core code lines across 277 files;
+CLI/TUI add 1,326 lines and optional Julia extensions add 57, counted separately.
+This is 10.4976% of the minimum line target, leaving 223,756 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -1024,3 +1024,37 @@ repositories. About 17.5 GiB remains free with one Core cache pair and no projec
 copies, worktrees or new sysimages. Core increased by 569 authored lines. General
 project workflows, remaining product gates and the 250,000-line goal continue;
 the whole request remains IN_PROGRESS.
+
+General project testing checkpoint 039: bounded read-only marker discovery,
+owned catalogs, selected-marker revalidation after approval and any-language
+argument-vector execution. Exit/signal/timeout/cancel/revocation evidence is
+separate from framework-reported cases, counts and untrusted file references.
+Current source previews use ordinary Read policy and an expected content hash;
+no execution source snapshot or complete test coverage is inferred. Zero-exit
+framework failures remain failed tool and after-test Hook outcomes. Read denial
+also filters retained RPC results and outgoing testing notifications.
+
+Actual failing-test/hash-edit/rerun fixtures pass for Python, JavaScript, Go, C
+and C++, using MockProvider and real runners/compilers. No live-model quality
+claim is made. New targeted suite: 155 assertions in nine testsets. Affected
+agent/tool/storage/RPC/provider/Hook/task/CLI suite: 778 in 65 testsets (933
+distinct passing assertions). Node/Core, real PTY TUI, native extensions-disabled
+GUI and VSIX development Webview tests pass. Both layouts are 197/197 px narrow
+and 357/357 px wide with no horizontal overflow; final screenshots were viewed.
+Full Workbench and shared client typechecks pass.
+
+The final VSIX has 317 entries; 308 Core/helper/extension/metadata files and all
+three client assets match source (655,470 bytes, SHA-256
+`ee6db8b30223490a8cdde76ea7c86d4a0f659657bce08f7391f194c81e3386a0`).
+Package installation and a finished desktop distribution are not verified.
+Controller receipts are bounded in memory and do not survive Core restart;
+normal agent results remain in conversation journals. Native Testing API,
+durable controller history, coverage and more frameworks are pending.
+
+Evidence and retained failures: `docs/validation/project-testing-checkpoint-039.json`.
+Research adds seven pinned source observations across all primary projects,
+with original Julia implementation and no copying/translation. Strict audit
+still finds one application checkout, 50 dependencies and no unknown repositories.
+17.466 GiB remains free; one Core cache pair is reused, with no whole-project
+copies, worktrees or sysimages. Core increased by 913 authored lines. Continue
+general project workflows and the remaining functional/250,000-line gates.
