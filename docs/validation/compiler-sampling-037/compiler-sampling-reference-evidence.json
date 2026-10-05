@@ -1,0 +1,93 @@
+[
+  {
+    "name": "codex",
+    "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+    "path": "codex-rs/otel/src/metrics/runtime_metrics.rs",
+    "line_ranges": [
+      [
+        25,
+        55
+      ]
+    ],
+    "sha256": "19ef05befdee8aff734207763f09ac251cef1d3cb588fccced0f0e3dca813ea6",
+    "code_reuse": false
+  },
+  {
+    "name": "opencode",
+    "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+    "path": "packages/app/e2e/performance/timeline/session-timeline-profile.ts",
+    "line_ranges": [
+      [
+        1,
+        40
+      ]
+    ],
+    "sha256": "9dc8776c3f1e02fe4d62fc5277a52b16263aa4651c600b3bc282d6fc093b514d",
+    "code_reuse": false
+  },
+  {
+    "name": "deepseek-harness",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "path": "packages/client/ui-chat/src/client/performance-usage.ts",
+    "line_ranges": [
+      [
+        1,
+        34
+      ]
+    ],
+    "sha256": "8297e867be1f20632d5e32c9f2dbb3c65e075a35d53f968797817a86bfff4540",
+    "code_reuse": false
+  },
+  {
+    "name": "pi-mono",
+    "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+    "path": "packages/coding-agent/src/core/tools/truncate.ts",
+    "line_ranges": [
+      [
+        1,
+        100
+      ]
+    ],
+    "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762",
+    "code_reuse": false
+  },
+  {
+    "name": "kimi-code",
+    "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+    "path": "packages/telemetry/src/systemMetrics.ts",
+    "line_ranges": [
+      [
+        1,
+        100
+      ]
+    ],
+    "sha256": "1974b5a715a60596582917790ecff7d2f80a76c01791d818d6a4ede60c71546b",
+    "code_reuse": false
+  },
+  {
+    "name": "ZCode",
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "path": "packages/desktop/src/main/resourceManagerHostSampling.ts",
+    "line_ranges": [
+      [
+        1,
+        93
+      ]
+    ],
+    "sha256": "2aef15722eb08cc76af05d7b318fb07f156e17d2741fddaaa4e22421478da7ee",
+    "code_reuse": false
+  },
+  {
+    "name": "qwen-code",
+    "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+    "path": "packages/core/src/telemetry/event-loop-lag-metrics.ts",
+    "line_ranges": [
+      [
+        1,
+        60
+      ]
+    ],
+    "sha256": "8ada81ea41a9edcb595dfadef216c9a8c3778c6b308004fa424c6a38e8057741",
+    "code_reuse": false
+  }
+]

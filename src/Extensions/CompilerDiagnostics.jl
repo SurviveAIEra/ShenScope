@@ -88,13 +88,19 @@ function compiler_worker_main()
                     throw(ShenScopeError(:diagnostics,"A source fingerprint is supported only for structured compiler graphs"))
                 end
                 report
-            elseif operation=="profile"
+            elseif operation in ("profile","sample")
                 allowed=Set(["id","operation","target","fixture","limits","source_fingerprint"])
                 all(key->key in allowed,keys(request)) || throw(ShenScopeError(:diagnostics,"Unknown profiling field"))
-                fingerprint=compiler_archive_hash(get(request,"source_fingerprint",nothing),"profile source fingerprint")
-                limits=compiler_profile_limits_from_view(request["limits"])
-                compiler_profile_report(request["target"];fixture=get(request,"fixture","default"),limits,
-                    expected_source_fingerprint=fingerprint)
+                fingerprint=compiler_archive_hash(get(request,"source_fingerprint",nothing),"runtime source fingerprint")
+                if operation=="profile"
+                    limits=compiler_profile_limits_from_view(request["limits"])
+                    compiler_profile_report(request["target"];fixture=get(request,"fixture","default"),limits,
+                        expected_source_fingerprint=fingerprint)
+                else
+                    limits=compiler_sampling_limits_from_view(request["limits"])
+                    compiler_sampling_report(request["target"];fixture=get(request,"fixture","default"),limits,
+                        expected_source_fingerprint=fingerprint)
+                end
             else
                 throw(ShenScopeError(:diagnostics,"Unknown diagnostics operation"))
             end
@@ -120,7 +126,7 @@ end
 
 function run_trusted_runtime_diagnostic(validate::Function,ctx::RuntimeContext,selected::CompilerTarget;
         operation::String,request::AbstractDict,timeout=60.0,pin_source=true,reason::String)
-    operation in ("compiler","profile") && get(request,"target",nothing)==selected.name &&
+    operation in ("compiler","profile","sample") && get(request,"target",nothing)==selected.name &&
         timeout isa Real && !(timeout isa Bool) && isfinite(timeout) && 0.1<=timeout<=120 ||
         throw(ShenScopeError(:diagnostics,"Invalid trusted diagnostic request or timeout"))
     ctx.sandbox isa HostSandbox || throw(ShenScopeError(:capability,"Trusted Core diagnostics do not support the configured restricted sandbox"))
@@ -147,6 +153,18 @@ function run_trusted_runtime_diagnostic(validate::Function,ctx::RuntimeContext,s
         execution=Dict("separate_process"=>true,"os_sandbox"=>false,"timeout_seconds"=>timeout)
         Dict("report"=>result,"execution"=>execution)
     finally;worker_close!(worker);end
+end
+
+function run_sampling_diagnostic(ctx::RuntimeContext,target::AbstractString;fixture="default",timeout=60.0,
+        iterations=8,duration_seconds=0.1,delay_seconds=0.001,max_samples=128,max_frames=4,buffer_words=20_000)
+    selected=compiler_profile_target(target)
+    compiler_profile_fixture(target,fixture)
+    limits=CompilerSamplingLimits(;iterations,duration_seconds,delay_seconds,max_samples,max_frames,buffer_words)
+    request=Dict{String,Any}("target"=>target,"fixture"=>fixture,"limits"=>compiler_sampling_limits_view(limits))
+    run_trusted_runtime_diagnostic(ctx,selected;operation="sample",request,timeout,
+            reason="Collect bounded periodic backtraces during a fixed trusted Core workload in a separate Julia process") do report,snapshot
+        compiler_sampling_validate_report(report,selected,snapshot;limits,fixture)
+    end
 end
 
 function run_compiler_diagnostic(ctx::RuntimeContext,target::AbstractString;mode="typed",timeout=60.0,

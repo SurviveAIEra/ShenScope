@@ -20,7 +20,7 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
     action=="compiler_source" && throw(ShenScopeError(:input,"CLI previews use archive_source REPORT_ID --session ID"))
     action in ("evidence","evidence_source") && throw(ShenScopeError(:input,"CLI source association uses inspect TARGET; owned job queries use RPC"))
     args=Dict{String,Any}("action"=>save ? "compile_archive" : action)
-    if action in ("compile","compile_archive","profile","inspect")
+    if action in ("compile","compile_archive","profile","sample","inspect")
         length(positional)==3 || throw(ShenScopeError(:input,"Compiler target required"));args["target"]=positional[3]
         save && (args["mode"]="graph")
     elseif action in ("archive_get","archive_label","archive_delete","archive_source")
@@ -36,7 +36,8 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
     for (flag,key) in (("--max-ir-bytes","max_ir_bytes"),("--max-statements","max_statements"),
             ("--limit","limit"),("--offset","offset"),("--expected-revision","expected_revision"),
             ("--method-index","method_index"),("--statement-id","statement_id"),("--context-lines","context_lines"),
-            ("--iterations","iterations"),("--repetitions","repetitions"),("--max-samples","max_samples"),("--max-frames","max_frames"))
+            ("--iterations","iterations"),("--repetitions","repetitions"),("--max-samples","max_samples"),("--max-frames","max_frames"),
+            ("--profile-buffer-words","buffer_words"))
         haskey(flags,flag) || continue
         value=tryparse(Int,flags[flag]);value===nothing && throw(ShenScopeError(:input,flag*" must be an integer"))
         args[key]=value
@@ -45,6 +46,13 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
     haskey(flags,"--fixture") && (args["fixture"]=flags["--fixture"])
     haskey(flags,"--query") && (args["query"]=flags["--query"])
     haskey(flags,"--observation-kind") && (args["observation_kind"]=flags["--observation-kind"])
+    if action=="sample"
+        for (flag,key) in (("--duration","duration_seconds"),("--sample-delay","delay_seconds"))
+            haskey(flags,flag) || continue
+            value=tryparse(Float64,flags[flag]);value===nothing && throw(ShenScopeError(:input,flag*" must be a number"))
+            args[key]=value
+        end
+    end
     if haskey(flags,"--sample-rate")
         rate=tryparse(Float64,flags["--sample-rate"]);rate===nothing && throw(ShenScopeError(:input,"--sample-rate must be a number"))
         args["sample_rate"]=rate

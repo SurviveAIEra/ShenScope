@@ -1,0 +1,14 @@
+Test Summary:                                                                                      | Pass  Total  Time
+Owned result limits preserve deep structured data and fail closed without expanding other managers |    7      7  2.5s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  1.0s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  1.8s
+Test Summary:                                                                        | Pass  Total  Time
+Periodic sampling rejects unbounded inputs and decodes a bounded address-free prefix |   32     32  5.1s
+Test Summary:                                                                         | Pass  Total   Time
+Real periodic backtraces retain checked source frames and explicit measurement limits |   46     46  10.3s
+Test Summary:                                                                                 | Pass  Total   Time
+Sampling helpers use scoped approvals and owned reports join source facts without reexecution |   24     24  52.0s
+Test Summary:                                         | Pass  Total     Time
+CLI and real agent share fixed Core periodic sampling |    6      6  1m33.1s

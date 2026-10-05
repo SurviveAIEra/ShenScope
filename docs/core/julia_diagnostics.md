@@ -37,8 +37,8 @@ timeout, cancellation and explicit process cleanup. The child inherits only
 listed toolchain paths and a few platform variables, not model credentials.
 It uses installed modules without producing another full project/cache copy.
 The result explicitly reports `os_sandbox=false`: there is no enforced network,
-write or memory isolation here. Arbitrary generated analyzers must await the
-separate OS sandbox implementation; this helper is not that execution facility.
+write or memory isolation here. Arbitrary generated analyzers use the separately
+restricted compute facility; this helper is not that execution facility.
 Compiler versions may change inferred types and IR, so reports record Julia's
 version and separate compilation time from execution benchmarks.
 

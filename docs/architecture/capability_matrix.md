@@ -14,6 +14,13 @@ actually inspected source paths are in `reference_lockfile.json`. README claims
 require further source/test verification before they become acceptance evidence.
 No upstream agent implementation is copied, embedded or translated into Julia.
 
+Checkpoint 037 extends fixed-Core diagnostics with actual periodic helper
+backtraces, independent coverage/truncation limits and source associations across
+owned compiler/allocation/sampling reports. Seven further primary reviews inform
+units, collection lifetimes and display scope. Sample fractions remain inclusive
+retained occurrences, not CPU utilization. Arbitrary project profiling and all
+remaining product/size gates remain open.
+
 | Project | Model/loop/context strengths to assess | Tools/security/state strengths to assess | Interface/ecosystem/workflow strengths to assess |
 |---|---|---|---|
 | Codex | Request preparation, streaming, restored evidence, request-wide budget estimates | Permission/sandbox boundary, tool ownership, cancellation, Git review | TUI ergonomics, app-server protocol, durable session UX, headless automation |

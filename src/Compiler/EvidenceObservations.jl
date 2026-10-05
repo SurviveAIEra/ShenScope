@@ -1,12 +1,14 @@
-function runtime_evidence_validate_reports(compiler,profile,snapshot::RuntimeSourceSnapshot)
-    compiler!==nothing || profile!==nothing || throw(ShenScopeError(:diagnostics,"Select a compiler or runtime measurement report"))
-    reports=filter(!isnothing,[compiler,profile])
+function runtime_evidence_validate_reports(compiler,profile,snapshot::RuntimeSourceSnapshot;sampling=nothing)
+    reports=filter(!isnothing,[compiler,profile,sampling])
+    isempty(reports) && throw(ShenScopeError(:diagnostics,"Select a compiler or runtime measurement report"))
     first_report=first(reports);target=compiler_target(first_report["target"])
     all(report->report["target"]==target.name && report["arguments"]==string(target.arguments),reports) ||
         throw(ShenScopeError(:diagnostics,"Runtime evidence reports require the same target and concrete signature"))
     compiler===nothing || compiler_ir_validate_report(compiler,target,snapshot;limits=compiler_archive_limits(compiler))
     profile===nothing || compiler_profile_validate_report(profile,target,snapshot;
         limits=compiler_profile_limits_from_view(profile["limits"]),fixture=profile["fixture"]["name"])
+    sampling===nothing || compiler_sampling_validate_report(sampling,target,snapshot;
+        limits=compiler_sampling_limits_from_view(sampling["limits"]),fixture=sampling["fixture"]["name"])
     target.name
 end
 
@@ -28,7 +30,7 @@ function runtime_evidence_push!(rows,kind,handle,source,details,report_sha256,li
         "report_sha256"=>report_sha256))
 end
 
-function runtime_evidence_observations(compiler,profile,snapshot::RuntimeSourceSnapshot,work::RuntimeEvidenceWork)
+function runtime_evidence_observations(compiler,profile,snapshot::RuntimeSourceSnapshot,work::RuntimeEvidenceWork;sampling=nothing)
     rows=Dict{String,Any}[]
     if compiler!==nothing
         for (method_index,method) in enumerate(compiler["methods"])
@@ -63,6 +65,24 @@ function runtime_evidence_observations(compiler,profile,snapshot::RuntimeSourceS
                     "attribution_scope"=>"retained allocation frame; helper background activity may contribute")
                 runtime_evidence_push!(rows,"allocation",Dict("sample_id"=>sample["id"],"frame_index"=>frame===nothing ? 0 : frame_index),
                     position,details,profile["report_sha256"],work.limits)
+            end
+        end
+    end
+    if sampling!==nothing
+        for sample in sampling["samples"]
+            frames=sample["core_frames"]
+            for frame_index in 1:max(1,length(frames))
+                runtime_evidence_tick!(work)
+                frame=isempty(frames) ? nothing : frames[frame_index]
+                position=frame===nothing ? runtime_evidence_position(snapshot,nothing,nothing;scope="unattributed") :
+                    runtime_evidence_position(snapshot,frame["file"],frame["line"])
+                details=Dict("sample_id"=>sample["id"],"frame"=>frame===nothing ? nothing : deepcopy(frame),
+                    "frame_lists_truncated"=>sample["core_frames_truncated"],"stack_scan_truncated"=>sample["stack_scan_truncated"],
+                    "lookup_scan_truncated"=>sample["lookup_scan_truncated"],"periodic_backtrace_observed"=>true,
+                    "selected_target_binding_confirmed"=>false,"cpu_utilization_measured"=>false,
+                    "attribution_scope"=>"inclusive retained periodic backtrace; helper background activity may contribute")
+                runtime_evidence_push!(rows,"sampling",Dict("sample_id"=>sample["id"],"frame_index"=>frame===nothing ? 0 : frame_index),
+                    position,details,sampling["report_sha256"],work.limits)
             end
         end
     end

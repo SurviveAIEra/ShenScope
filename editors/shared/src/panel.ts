@@ -84,6 +84,8 @@ export class ShenScopePanel {
     private diagnosticsAction = '';
     private diagnosticsProfile: any;
     private diagnosticsProfileJob: string | undefined;
+    private diagnosticsSampling: any;
+    private diagnosticsSamplingJob: string | undefined;
     private diagnosticsEvidence: any;
     private diagnosticsEvidenceSource: any;
     private diagnosticsEvidenceArgs: Record<string, unknown> | undefined;
@@ -423,7 +425,8 @@ export class ShenScopePanel {
         this.diagnosticsComparison = undefined; this.diagnosticsCleanup = undefined;
         this.diagnosticsSource = undefined; this.diagnosticsRevealSource = false;
         this.diagnosticsAction = ''; this.diagnosticsProfile = undefined;
-        this.diagnosticsProfileJob = undefined; this.clearRuntimeEvidence();
+        this.diagnosticsProfileJob = undefined; this.diagnosticsSampling = undefined;
+        this.diagnosticsSamplingJob = undefined; this.clearRuntimeEvidence();
     }
 
     private clearRuntimeEvidence(): void {
@@ -434,6 +437,7 @@ export class ShenScopePanel {
         const args: Record<string, unknown> = {};
         if (this.diagnosticsResultJob && this.diagnosticsResult?.report?.target === this.diagnosticsTarget) { args.compiler_job_id = this.diagnosticsResultJob; }
         if (this.diagnosticsProfileJob && this.diagnosticsProfile?.report?.target === this.diagnosticsTarget) { args.profile_job_id = this.diagnosticsProfileJob; }
+        if (this.diagnosticsSamplingJob && this.diagnosticsSampling?.report?.target === this.diagnosticsTarget) { args.sampling_job_id = this.diagnosticsSamplingJob; }
         if (!Object.keys(args).length) { return; }
         this.clearRuntimeEvidence(); this.diagnosticsEvidenceArgs = args;
         await this.startDiagnosticsAction('evidence', { ...args, limit: 12 });
@@ -471,9 +475,10 @@ export class ShenScopePanel {
             const session_id = await this.ensureSession('Julia compiler');
             this.diagnosticsAction = action;
             if (action === 'profile') { this.diagnosticsProfile = undefined; this.diagnosticsProfileJob = undefined; this.clearRuntimeEvidence(); }
+            if (action === 'sample') { this.diagnosticsSampling = undefined; this.diagnosticsSamplingJob = undefined; this.clearRuntimeEvidence(); }
             if (action === 'compile' || action === 'compile_archive' || action === 'archive_get') { this.clearRuntimeEvidence(); }
             const started = await this.bridge.request('diagnostics/start', { session_id, action, ...args });
-            if (!this.completedDiagnosticsJobs.has(started.job_id)) { this.diagnosticsJob = started.job_id; this.setStatus(action === 'profile' ? 'Measuring fixed Core fixture…' : action === 'compile' ? 'Inferring trusted Core method…' : 'Working with recorded compiler evidence…'); }
+            if (!this.completedDiagnosticsJobs.has(started.job_id)) { this.diagnosticsJob = started.job_id; this.setStatus(action === 'sample' ? 'Sampling fixed Core backtraces…' : action === 'profile' ? 'Measuring fixed Core fixture…' : action === 'compile' ? 'Inferring trusted Core method…' : action === 'evidence' || action === 'evidence_source' ? 'Reading runtime source evidence…' : 'Working with recorded compiler evidence…'); }
         } finally { this.diagnosticsStarting = false; this.updateActions(); }
         if (this.tab === 'Runtime') { await this.renderTab(); }
     }
@@ -511,9 +516,15 @@ export class ShenScopePanel {
             updateMeasure(); target.addEventListener('change', updateMeasure); controls.append(measure);
             section.append(el('p', 'Measurement executes a supported trusted Core method with fixed test input. Warmup, timing and allocation sampling are separate passes.', 'view-description'));
         }
+        if (this.capabilities.compiler_periodic_sampling) {
+            const sample = this.button('Sample method', () => this.startDiagnosticsAction('sample', { target: this.diagnosticsTarget, timeout: 120 }), 'secondary-button');
+            sample.disabled = this.contextBusy() || !target.options.length || !['digest_string', 'cliptext_string', 'canonical_dictionary'].includes(target.value);
+            controls.append(sample);
+            section.append(el('p', 'Periodic sampling collects bounded helper backtraces during a fixed Core workload. Frame occurrences are inclusive sample counts, not CPU utilization.', 'view-description'));
+        }
         if (this.diagnosticsJob || this.diagnosticsStarting) {
             const pending = el('div', '', 'compiler-pending'); pending.append(el('span', 'Compiler operation running or waiting for approval…'));
-            if (this.diagnosticsJob) { pending.append(this.button(this.diagnosticsAction === 'profile' ? 'Cancel measurement' : 'Cancel inference', () => this.bridge.request('diagnostics/cancel_job', { session_id, job_id: this.diagnosticsJob }), 'secondary-button')); }
+            if (this.diagnosticsJob) { pending.append(this.button(this.diagnosticsAction === 'sample' ? 'Cancel sampling' : this.diagnosticsAction === 'profile' ? 'Cancel measurement' : 'Cancel inference', () => this.bridge.request('diagnostics/cancel_job', { session_id, job_id: this.diagnosticsJob }), 'secondary-button')); }
             section.append(pending);
         }
         if (this.capabilities.compiler_report_archives) { await this.compilerArchiveView(section, session_id, revision); }
@@ -523,10 +534,12 @@ export class ShenScopePanel {
         }
         if (this.diagnosticsResult?.report) { this.compilerReportView(section, this.diagnosticsResult.report); }
         if (this.diagnosticsProfile?.report) { this.compilerProfileView(section, this.diagnosticsProfile.report); }
+        if (this.diagnosticsSampling?.report) { this.compilerSamplingView(section, this.diagnosticsSampling.report); }
         if (this.capabilities.runtime_evidence_association) {
             const connect = this.button('Connect source facts', () => this.connectRuntimeEvidence(), 'secondary-button');
             connect.disabled = this.contextBusy() || !((this.diagnosticsResultJob && this.diagnosticsResult?.report?.target === this.diagnosticsTarget) ||
-                (this.diagnosticsProfileJob && this.diagnosticsProfile?.report?.target === this.diagnosticsTarget));
+                (this.diagnosticsProfileJob && this.diagnosticsProfile?.report?.target === this.diagnosticsTarget) ||
+                (this.diagnosticsSamplingJob && this.diagnosticsSampling?.report?.target === this.diagnosticsTarget));
             section.append(connect, el('p', 'Associate current owned report positions with hash-verified Core declarations. Reads source facts without running the target.', 'view-description'));
             if (this.diagnosticsEvidence) { this.runtimeEvidenceView(section, this.diagnosticsEvidence); }
         }
@@ -539,7 +552,7 @@ export class ShenScopePanel {
             el('small', `${evidence.report_stamps.map((item: any) => item.kind).join(' + ')} · JuliaSyntax ${evidence.provider_stamps[0].parser_version}`),
             el('p', 'Containing declarations are candidates. Source association does not establish a runtime binding or semantic equivalence.', 'view-description'));
         const controls = el('div', '', 'compiler-controls'); const kind = el('select'); kind.setAttribute('aria-label', 'Evidence observation kind');
-        for (const [value, label] of [['all', 'All observations'], ['method', 'Method inference'], ['statement', 'IR statements'], ['allocation', 'Allocation frames']]) {
+        for (const [value, label] of [['all', 'All observations'], ['method', 'Method inference'], ['statement', 'IR statements'], ['allocation', 'Allocation frames'], ['sampling', 'Periodic backtrace frames']]) {
             const option = el('option', label); option.value = value; kind.append(option);
         }
         kind.value = evidence.observation_kind; kind.disabled = this.contextBusy();
@@ -556,6 +569,7 @@ export class ShenScopePanel {
                 source.setAttribute('aria-label', `Preview ${item.kind} observation source`); source.disabled = this.contextBusy(); row.append(source);
             } else { row.append(el('small', 'No retained authored source position.')); }
             if (item.kind === 'allocation') { row.append(el('code', `${item.details.sampled_type} · ${item.details.sampled_bytes} sampled B`), el('small', 'This sample may appear in several frame rows; bytes are not additive across observations.')); }
+            if (item.kind === 'sampling') { row.append(el('small', 'Inclusive retained backtrace occurrence; helper background activity may contribute. This is not exclusive CPU time.')); }
             const candidates = el('details', '', 'runtime-evidence-candidates'); candidates.append(el('summary', `${item.candidate_count} declaration candidates`));
             for (const witness of item.declaration_candidates) { const declaration = witness.declaration; candidates.append(el('code', declaration.qualified_name), el('small', `${declaration.provider} · L${declaration.location.start_line}–${declaration.location.end_line} · same source hash`)); }
             row.append(candidates); view.append(row);
@@ -581,6 +595,39 @@ export class ShenScopePanel {
         if (source.recorded_report) { preview.append(el('small', 'This checks one recorded file against the installed source. The complete historical inventory and producer remain unverified.')); }
         if (this.diagnosticsRevealSource) { this.diagnosticsRevealSource = false; queueMicrotask(() => { if (preview.isConnected) { preview.scrollIntoView({ block: 'nearest' }); } }); }
         return preview;
+    }
+
+    private compilerSamplingView(section: HTMLElement, report: any): void {
+        const view = el('section', '', 'compiler-sampling'); view.setAttribute('aria-label', 'Core periodic backtrace sampling');
+        const summary = report.sampling_summary;
+        view.append(el('h3', `Periodic backtraces · ${report.target}`), el('p', `${report.fixture.name} fixture · inclusive retained samples`, 'view-description'));
+        const metrics = el('div', '', 'compiler-metrics');
+        for (const [label, value] of [['Backtraces kept', `${summary.retained_backtraces}/${summary.observed_backtraces}`],
+            ['Core frame coverage', `${summary.backtraces_with_core_frames}/${summary.retained_backtraces}`],
+            ['Requested window', `${report.run.requested_loop_seconds.toFixed(3)} s`],
+            ['Instrumented elapsed', `${report.run.instrumented_elapsed_seconds.toFixed(3)} s`]]) {
+            const metric = el('div', '', 'compiler-metric'); metric.append(el('small', label), el('strong', value)); metrics.append(metric);
+        }
+        view.append(metrics, el('p', `${(report.limits.delay_seconds * 1000).toFixed(2)} ms requested delay · buffer ${report.buffer.full ? 'filled' : 'not filled'} · ${summary.samples_truncated ? 'bounded sample prefix retained' : 'all observed backtraces retained'}`, 'view-description'),
+            el('p', `${summary.core_frame_lists_truncated} frame lists · ${summary.stack_scans_truncated} stack scans · ${summary.lookup_scans_truncated} frame lookups truncated`, 'view-description'));
+        const frames = el('div', '', 'compiler-sampling-frames');
+        for (const frame of summary.top_frames.slice(0, 12)) {
+            const row = el('div', '', 'compiler-profile-row'); row.append(el('code', `${frame.function} · ${frame.file}:${frame.line}`),
+                el('span', `${frame.retained_backtraces} backtraces · ${(frame.fraction_of_retained_backtraces * 100).toFixed(1)}% of retained · ${frame.role}`)); frames.append(row);
+        }
+        if (!summary.top_frames.length) { frames.append(el('p', 'No authored Core frames were retained. This does not establish absence of CPU work.', 'view-description')); }
+        view.append(el('h4', 'Inclusive Core frame occurrences'), frames,
+            el('p', 'Fractions can overlap across frames. They are not CPU utilization, exclusive function time or a performance improvement.', 'view-description'));
+        const scope = el('details', '', 'compiler-sampling-notes'); scope.append(el('summary', 'Sampling scope'));
+        for (const note of report.measurement_notes) { scope.append(el('p', note, 'view-description')); }
+        scope.append(el('small', `Julia ${report.runtime.julia_version} · source ${report.source.fingerprint.slice(0, 12)}`)); view.append(scope); section.append(view);
+    }
+
+    private diagnosticsCompletionStatus(action: string, complete: boolean): string {
+        const label = action === 'sample' ? 'Core backtrace sampling' : action === 'profile' ? 'Compiler measurement' :
+            action === 'compile' ? 'Compiler inference' : action === 'evidence' ? 'Runtime source association' :
+            action === 'evidence_source' ? 'Runtime source preview' : 'Compiler archive operation';
+        return `${label} ${complete ? 'complete' : 'stopped'}`;
     }
 
     private compilerProfileView(section: HTMLElement, report: any): void {
@@ -2038,6 +2085,7 @@ export class ShenScopePanel {
                     this.diagnosticsSource = undefined;
                 } else if (payload.action === 'targets') { this.diagnosticsTargets = payload.result.items; }
                 else if (payload.action === 'profile') { this.diagnosticsProfile = payload.result; this.diagnosticsProfileJob = payload.job_id; }
+                else if (payload.action === 'sample') { this.diagnosticsSampling = payload.result; this.diagnosticsSamplingJob = payload.job_id; }
                 else if (payload.action === 'evidence') { this.diagnosticsEvidence = payload.result; }
                 else if (payload.action === 'evidence_source') { this.diagnosticsEvidenceSource = payload.result; this.diagnosticsRevealSource = true; }
                 else if (payload.action === 'compiler_source' || payload.action === 'archive_source') { this.diagnosticsSource = payload.result; this.diagnosticsRevealSource = true; }
@@ -2045,10 +2093,10 @@ export class ShenScopePanel {
                 else if (payload.action === 'archive_compare') { this.diagnosticsComparison = payload.result; }
                 else if (payload.action === 'archive_gc') { this.diagnosticsCleanup = payload.result; if (!payload.result.dry_run) { this.diagnosticsArchiveManual = false; this.diagnosticsArchiveOffset = 0; } }
                 else { this.diagnosticsArchiveOffset = 0; this.diagnosticsArchiveManual = false; this.diagnosticsCleanup = undefined; }
-                this.setStatus(payload.action === 'profile' ? 'Compiler measurement complete' : payload.action === 'compile' ? 'Compiler inference complete' : 'Compiler archive operation complete');
+                this.setStatus(this.diagnosticsCompletionStatus(payload.action, true));
             }
             else if (owned) {
-                this.setStatus(payload.action === 'profile' ? 'Compiler measurement stopped' : payload.action === 'compile' ? 'Compiler inference stopped' : 'Compiler archive operation stopped');
+                this.setStatus(this.diagnosticsCompletionStatus(payload.action, false));
                 const committed = (payload.committed_effects ?? []).length > 0;
                 if (committed) { this.diagnosticsArchiveManual = false; this.diagnosticsArchiveOffset = 0; this.diagnosticsCleanup = undefined; }
                 this.notice.textContent = `${payload.error ?? 'Compiler operation stopped'}${committed ? ' Catalog publication was recorded. Refresh reports to inspect committed changes.' : ''}`; this.notice.hidden = false;

@@ -5,3 +5,4 @@ docs/validation/compiler-operations-033/*.txt -whitespace
 docs/validation/compiler-source-034/*.txt -whitespace
 docs/validation/compiler-profile-035/*.txt -whitespace
 docs/validation/runtime-evidence-036/*.txt -whitespace
+docs/validation/compiler-sampling-037/*.txt -whitespace

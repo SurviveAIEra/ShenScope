@@ -7,8 +7,7 @@ function compiler_profile_validate_frame(value,snapshot)
         throw(ShenScopeError(:conflict,"Allocation source frame is absent or has a different source hash"))
     compiler_ir_integer(value["line"],"allocation source line",1,10_000_000)
     compiler_ir_text(value["function"],"allocation function",256)
-    driver=startswith(file,"src/Compiler/Profile") || file=="src/Extensions/CompilerDiagnostics.jl"
-    value["role"]==(driver ? "driver" : "core") && value["inlined"] isa Bool ||
+    value["role"]==compiler_runtime_frame_role(file) && value["inlined"] isa Bool ||
         throw(ShenScopeError(:diagnostics,"Allocation frame role or inline flag changed"))
     nothing
 end

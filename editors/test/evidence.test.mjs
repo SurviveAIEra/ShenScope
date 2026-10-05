@@ -25,9 +25,11 @@ test('Owned compiler and sampled runtime positions join hash-pinned Julia declar
         const owner=await client.request('sessions/create',{title:'Runtime evidence'});const other=await client.request('sessions/create',{title:'Other owner'});
         const compiler=await job(owner.id,{action:'compile',target:'cliptext_string',mode:'graph',timeout:120});
         const profile=await job(owner.id,{action:'profile',target:'cliptext_string',iterations:2,repetitions:1,max_samples:8,max_frames:3,timeout:120});
-        const args={compiler_job_id:compiler.job_id,profile_job_id:profile.job_id};
+        const sampling=await job(owner.id,{action:'sample',target:'cliptext_string',duration_seconds:0.1,max_samples:16,max_frames:3,timeout:120});
+        const args={compiler_job_id:compiler.job_id,profile_job_id:profile.job_id,sampling_job_id:sampling.job_id};
         const first=await client.request('diagnostics/query',{session_id:owner.id,action:'evidence',...args,limit:8});
-        assert.equal(first.report_stamps.length,2);assert.ok(first.summary.observation_kinds.statement>40);assert.ok(first.summary.observation_kinds.allocation>=8);
+        assert.equal(first.report_stamps.length,3);assert.ok(first.summary.observation_kinds.statement>40);assert.ok(first.summary.observation_kinds.allocation>=8);
+        assert.ok(first.summary.observation_kinds.sampling>0);assert.equal(first.sampling_summary.sampling.cpu_utilization_measured,false);
         assert.equal(first.provider_stamps[0].provider,'julia_syntax');assert.equal(first.provider_stamps[0].source_evaluated,false);
         assert.equal(first.summary.allocation_observation_bytes_are_additive,false);assert.ok(!JSON.stringify(first).includes(project));
         const next=await client.request('diagnostics/query',{session_id:owner.id,action:'evidence',...args,limit:8,offset:first.next_offset,expected_evidence_sha256:first.evidence_sha256});
@@ -38,6 +40,13 @@ test('Owned compiler and sampled runtime positions join hash-pinned Julia declar
             observation_key:row.key,expected_evidence_sha256:first.evidence_sha256,context_lines:2});
         assert.equal(preview.source_sha256,row.source.source_sha256);assert.equal(preview.observation_kind,'allocation');
         assert.equal(preview.lines.filter(line=>line.focus).length,1);
+        const backtraces=await client.request('diagnostics/query',{session_id:owner.id,action:'evidence',...args,limit:128,observation_kind:'sampling'});
+        const sampled=backtraces.items.find(item=>item.source.file);assert.ok(sampled);
+        assert.equal(sampled.details.periodic_backtrace_observed,true);assert.equal(sampled.details.selected_target_binding_confirmed,false);
+        const stackSource=await client.request('diagnostics/query',{session_id:owner.id,action:'evidence_source',...args,
+            observation_key:sampled.key,expected_evidence_sha256:first.evidence_sha256});
+        assert.equal(stackSource.source_sha256,sampled.source.source_sha256);assert.equal(stackSource.observation_kind,'sampling');
+        assert.equal(stackSource.lines.filter(line=>line.focus).length,1);
         await assert.rejects(client.request('diagnostics/query',{session_id:other.id,action:'evidence',...args}),/another/);
         await assert.rejects(client.request('diagnostics/query',{session_id:owner.id,action:'evidence',...args,expected_evidence_sha256:'0'.repeat(64)}),/changed/);
         await assert.rejects(client.request('diagnostics/query',{session_id:owner.id,action:'evidence_source',...args,observation_key:'0'.repeat(64),expected_evidence_sha256:first.evidence_sha256}),/absent/);

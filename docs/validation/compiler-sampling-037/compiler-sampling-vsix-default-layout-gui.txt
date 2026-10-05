@@ -1,0 +1,1 @@
+PASS: VSIX webview, real Julia inferred IR, fixed-fixture runtime measurement and allocation samples, periodic helper backtraces and scope qualifiers, three-report JuliaSyntax declaration association, hash-verified allocation and sampling source previews, readable narrow source heading, no panel horizontal overflow and actual Workbench sash resize with wide screenshots

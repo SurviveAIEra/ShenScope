@@ -52,7 +52,7 @@ function diagnostics_rpc(server::CoreServer,method::String,params::AbstractDict)
     owner=prior===nothing || iscancelled(prior.cancellation) ? server_context(server,session.id) : prior
     arguments=deepcopy(args)
     start_operation!(tool.operations,owner;kind=String(args["action"]),metadata=Dict(
-            "target"=>get(args,"target",""),"mode"=>get(args,"mode",args["action"]=="compile_archive" ? "graph" : args["action"]=="profile" ? "profile" : "typed"),
+            "target"=>get(args,"target",""),"mode"=>get(args,"mode",args["action"]=="compile_archive" ? "graph" : args["action"]=="profile" ? "profile" : args["action"]=="sample" ? "sampling" : "typed"),
             "trusted_core_only"=>true)) do context
         result=execute(tool,arguments,context)
         permission_decision(context.permissions,PermissionRequest("diagnostics-publication",:read,"runtime.diagnostics",

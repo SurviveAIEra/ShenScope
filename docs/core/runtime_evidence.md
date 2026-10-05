@@ -1,22 +1,23 @@
 # Runtime and declaration evidence
 
 Diagnostics `evidence` associates positions in existing owned completed compiler
-and/or measurement jobs with installed Core declarations. It uses the existing
+and/or allocation-profile/periodic-sampling jobs with installed Core declarations. It uses the existing
 JuliaSyntax adapter and stable `FileFacts`/`CodeSymbol` model. It does not run the
 target, load a project, expand macros or create a persistent index. Joins consume
 canonical facts independently of CodeGraph private schemas. Additional adapters
 and arbitrary project inference are pending.
 
 ```
-diagnostics/start {session_id, action:"evidence", compiler_job_id?, profile_job_id?,
+diagnostics/start {session_id, action:"evidence", compiler_job_id?, profile_job_id?, sampling_job_id?,
                    observation_kind:"all", offset:0, limit:40}
-diagnostics/start {session_id, action:"evidence_source", compiler_job_id?, profile_job_id?,
+diagnostics/start {session_id, action:"evidence_source", compiler_job_id?, profile_job_id?, sampling_job_id?,
                    observation_key, expected_evidence_sha256, context_lines:4}
 ```
 
 Select at least one owned workspace/conversation job. Compiler jobs must contain
 completed graph inference; profiles must contain completed fixed-fixture
-measurements. Combining requires the same target, signature, supported runtime
+measurements; sampling jobs must contain completed periodic backtrace reports.
+Combining requires the same target, signature, supported runtime
 and current complete Core inventory. Parent validation checks report bodies and
 derived projections. Historical archives and caller-supplied files are excluded.
 `diagnostics/query` supports allowed Read requests; use `diagnostics/start` for
@@ -49,7 +50,7 @@ binding or column identity. Excess contenders refuse instead of being dropped.
 
 The evidence digest pins reports, complete source inventory, selected facts and
 all observations. Subsequent pages can require it. Pages have bounded text and
-method/statement/allocation filters. Previews require it and select an observation
+method/statement/allocation/sampling filters. Previews require it and select an observation
 key rather than a filename. Live Read denial, cancellation, shared budgets and
 source changes stop reads. Preview windows reuse UTF-8/file-hash/line-length guards.
 
@@ -61,7 +62,8 @@ benchmark. Each request reparses its bounded selection; no hidden cache is used.
 
 Compiler rows describe inference; allocation rows describe a separate fixture/
 helper run and can include background activity. One sample can appear in several
-frame observations; summing their bytes would double-count. Actual timing and
+frame observations; summing their bytes would double-count. Periodic backtrace
+frame occurrences are inclusive and cannot be added as CPU utilization. Actual timing and
 retained-prefix allocation totals remain separate. Source association does not
 prove runtime bindings, semantic equivalence, test coverage, retained heap or
 performance gain. Digests are unsigned. Ephemeral jobs can be retired by

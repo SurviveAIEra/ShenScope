@@ -678,3 +678,21 @@ cross-platform and comparative performance validation remain unfinished.
 These further partial reviews inform identity and boundaries. They do not imply
 that upstream agents implement this Julia join algorithm or that every upstream
 capability has been synthesized. No source is copied or translated.
+
+### Periodic sampling observations (checkpoint 037)
+
+| Primary source and inspected lines | Observation | Application in the original Julia implementation |
+|---|---|---|
+| Codex `codex-rs/otel/src/metrics/runtime_metrics.rs` 25–55 | Counts and duration metrics retain separate families and units | Backtrace counts, loop elapsed time and instrumented elapsed time remain distinct. |
+| OpenCode `packages/app/e2e/performance/timeline/session-timeline-profile.ts` 1–40 | Profiling start/stop and sample-time deltas carry explicit collection semantics | Julia periodic backtraces are collected in their own pass; counts alone do not become exclusive CPU time. |
+| DeepSeek harness `packages/client/ui-chat/src/client/performance-usage.ts` 1–34 | Live performance views depend on accepted host settings and clean disposal | Owned results and collection controls retain lifecycle boundaries and explicit cleanup. |
+| Pi `packages/coding-agent/src/core/tools/truncate.ts` 1–100 | Independent limits expose the cause of truncation | Buffer, retained backtraces, instruction scans and inline-frame scans have distinct coverage fields. |
+| Kimi Code `packages/telemetry/src/systemMetrics.ts` 1–100 | CPU deltas, elapsed time and RSS describe different quantities | No CPU utilization or RSS measurement is inferred from sampled frame fractions. |
+| ZCode `packages/desktop/src/main/resourceManagerHostSampling.ts` 1–93 | Host/identity checks, cancellation and marked cached fallback constrain sampling | Fixed target/source ownership and current fingerprints are required; stale results refuse instead of silently substituting a cache. |
+| Qwen Code `packages/core/src/telemetry/event-loop-lag-metrics.ts` 1–60 | Event-loop lag percentiles preserve milliseconds and collection category | Sampling delay/window and wall time keep explicit units; stack counts do not claim scheduler-lag or utilization measurements. |
+
+These readings are further partial reviews, not claims of equivalent upstream
+Julia samplers or comprehensive capability synthesis. The implementation uses
+Julia 1.11 `Profile` and the authored fixed-fixture/worker/source-fact contracts.
+No upstream implementation is copied or translated. Arbitrary project sampling,
+exclusive CPU time, task attribution and comparative performance remain pending.

@@ -44,7 +44,7 @@ function parse_cli(args::Vector{String})
         "--package-name","--package-uuid","--package-version","--entry-sha256","--project-sha256","--contribution","--generation","--arguments",
         "--argv","--input","--rows","--columns","--timeout","--mode","--max-ir-bytes","--max-statements",
         "--expected-revision","--expected-index-sha256","--method-index","--statement-id","--context-lines",
-        "--fixture","--iterations","--repetitions","--max-samples","--max-frames","--sample-rate","--observation-kind","--query"])
+        "--fixture","--iterations","--repetitions","--max-samples","--max-frames","--sample-rate","--sample-delay","--profile-buffer-words","--observation-kind","--query"])
     switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints","--no-evidence-bridges","--accept-cleanup-failure","--save","--apply-cleanup"])
     i=1
     while i<=length(args)
@@ -118,6 +118,7 @@ function cli_main(args=ARGS)
         println("Julia extensions: extensions list | inspect_package PACKAGE --package-uuid UUID; pinned ephemeral invoke uses --package-name, --package-version, --entry-sha256, --project-sha256 and --contribution")
         println("PTY terminal: terminal platform | terminal run --argv '[\"python3\",\"script.py\"]' [--input TEXT] [--rows 24 --columns 80] [--timeout 120] [--json]")
         println("Runtime image: runtime-image loaded | source | inspect RECEIPT | verify RECEIPT | plan RECEIPT")
+        println("Core diagnostics: diagnostics profile|inspect TARGET; diagnostics sample TARGET [--duration 0.1 --sample-delay 0.001 --profile-buffer-words 20000]")
         println("Project migration: project migration FILE ... --change-kind signature|rename|remove|move|behavior --order dependency_first|callers_first --max-depth N")
         println("Project changes: project watch --backend NAME [--automatic] [--poll-seconds N] [--duration N]")
         println("Memory: memory retrieve QUERY --namespace NAME --scope workspace|session|user --tags-all TAGS --match any|all")

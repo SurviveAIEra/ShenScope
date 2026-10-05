@@ -1,0 +1,28 @@
+Precompiling ShenScope...
+ 111652.5 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 112 seconds. 41 already precompiled.
+ERROR: LoadError: Some tests did not pass: 45 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/compiler_sampling.jl:42
+in expression starting at /workspace/ShenScope/test/compiler_sampling.jl:5
+Test Summary:                                                                                      | Pass  Total  Time
+Owned result limits preserve deep structured data and fail closed without expanding other managers |    7      7  3.7s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  1.3s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  2.0s
+Test Summary:                                                                        | Pass  Total  Time
+Periodic sampling rejects unbounded inputs and decodes a bounded address-free prefix |   32     32  4.9s
+Real periodic backtraces retain checked source frames and explicit measurement limits: Test Failed at /workspace/ShenScope/test/unit/compiler_sampling.jl:70
+  Expression: validate(changed)
+    Expected: ShenScopeError
+  No exception thrown
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/ShenScope/test/unit/compiler_sampling.jl:70 [inlined]
+ [2] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [3] top-level scope
+   @ /workspace/ShenScope/test/unit/compiler_sampling.jl:43
+Test Summary:                                                                         | Pass  Fail  Total  Time
+Real periodic backtraces retain checked source frames and explicit measurement limits |   45     1     46  8.5s

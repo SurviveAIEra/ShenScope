@@ -192,6 +192,7 @@ function capability_manifest()
         "terminal_pty"=>terminal_platform_view(),"structured_compiler_ir"=>true,"compiler_report_archives"=>true,
         "compiler_source_preview"=>true,
             "compiler_runtime_profile"=>true,
+            "compiler_periodic_sampling"=>true,
             "runtime_evidence_association"=>true,
         "durable_tasks"=>true,"dynamic_analyzers"=>true,"context_checkpoints"=>true,"context_recovery"=>true,
         "model_catalog"=>true,"model_counting"=>true,"model_health"=>true,"model_routing"=>true,

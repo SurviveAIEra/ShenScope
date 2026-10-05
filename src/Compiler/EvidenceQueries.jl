@@ -31,6 +31,7 @@ function runtime_evidence_page(snapshot::RuntimeEvidenceSnapshot,ctx::RuntimeCon
     result=Dict("schema"=>RUNTIME_EVIDENCE_SCHEMA,"evidence_sha256"=>snapshot.fingerprint,"target"=>snapshot.target,
         "source_fingerprint"=>snapshot.source.fingerprint,"report_stamps"=>snapshot.report_stamps,
         "provider_stamps"=>snapshot.provider_stamps,"summary"=>snapshot.summary,"profile_summary"=>snapshot.profile_summary,
+        "sampling_summary"=>snapshot.sampling_summary,
         "items"=>deepcopy(selected[offset+1:stop]),"offset"=>offset,"limit"=>limit,"total"=>total,
         "next_offset"=>stop<total ? stop : nothing,"query"=>query,"observation_kind"=>observation_kind,
         "producer_authenticated"=>false,"limitations"=>copy(RUNTIME_EVIDENCE_NOTES))

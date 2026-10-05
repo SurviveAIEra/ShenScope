@@ -1,7 +1,8 @@
 function diagnostics_owned_runtime_report(tool,job_id,ctx::RuntimeContext,kind::String)
+    kind in ("compiler","profile","sampling") || throw(ShenScopeError(:diagnostics,"Unknown owned runtime report kind"))
     view=owned_operation(tool.operations,job_id,ctx)
-    action_ok=kind=="compiler" ? view["action"] in ("compile","compile_archive") : view["action"]=="profile"
-    mode=kind=="compiler" ? "graph" : "profile"
+    action_ok=kind=="compiler" ? view["action"] in ("compile","compile_archive") : view["action"]==(kind=="sampling" ? "sample" : "profile")
+    mode=kind=="compiler" ? "graph" : kind
     action_ok && view["status"]=="complete" && view["result"] isa AbstractDict &&
         get(view["metadata"],"mode",nothing)==mode ||
         throw(ShenScopeError(:diagnostics,"Runtime evidence requires an owned completed "*kind*" job"))
@@ -23,8 +24,9 @@ function diagnostics_runtime_evidence(tool,args::AbstractDict,ctx::RuntimeContex
     authorize!(ctx,:read,"runtime.diagnostics",root;reason="Read owned reports and hash-verified installed Core declaration facts")
     compiler=haskey(args,"compiler_job_id") ? diagnostics_owned_runtime_report(tool,args["compiler_job_id"],ctx,"compiler") : nothing
     profile=haskey(args,"profile_job_id") ? diagnostics_owned_runtime_report(tool,args["profile_job_id"],ctx,"profile") : nothing
+    sampling=haskey(args,"sampling_job_id") ? diagnostics_owned_runtime_report(tool,args["sampling_job_id"],ctx,"sampling") : nothing
     snapshot=runtime_source_snapshot(ctx;root,authorized=true)
-    evidence=runtime_evidence_build(compiler,profile,snapshot,ctx;authorized=true)
+    evidence=runtime_evidence_build(compiler,profile,snapshot,ctx;sampling,authorized=true)
     expected=get(args,"expected_evidence_sha256",nothing)
     if args["action"]=="evidence_source"
         return runtime_evidence_source(evidence,args["observation_key"],ctx;

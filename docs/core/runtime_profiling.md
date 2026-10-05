@@ -39,8 +39,10 @@ Sampled bytes need not equal timing-pass allocated bytes even at rate one; these
 are different passes with different instrumentation and accounting. Output hashes,
 byte lengths and loop-consumption checks agree across warmup, timing and sampling.
 Short timings are sensitive to timer resolution, scheduling and remaining JIT
-work. No CPU sampling or statistically established performance improvement is
-claimed. Reports do not benchmark arbitrary project workloads.
+work. This allocation report provides no periodic backtraces or statistically
+established performance improvement. The separate [sampling service](runtime_sampling.md)
+collects fixed-Core backtraces with its own scope and limits. Neither benchmarks
+arbitrary project workloads.
 
 ## Bounds and ownership
 
@@ -63,7 +65,7 @@ Only the owning workspace/conversation can inspect or cancel a job or answer its
 approvals. Temporary Read denial filters retained results and notifications;
 configuration replacement retires old jobs. Results are ephemeral and are not
 added to the IR archive catalog. CLI JSON can be captured through ordinary shell
-redirection. Persistence, project profiling, CPU/heap profiles, distribution and
+redirection. Persistence, project profiling, exclusive CPU/heap profiles, distribution and
 cross-platform validation remain separate capabilities.
 
 The UI shows batch timing/allocation metrics, warmup, sample retention, allocation

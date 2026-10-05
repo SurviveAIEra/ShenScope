@@ -22,6 +22,15 @@ async function waitCount(locator, count, timeout = 60_000) {
     }
     assert.equal(await locator.count(), count, 'Expected the completed page to render');
 }
+async function resizeSidebar(page, width) {
+    const sidebar = await page.locator('.part.sidebar').boundingBox(); assert.ok(sidebar);
+    const sashes = await page.locator('.monaco-sash.vertical').evaluateAll(elements => elements.map(element => {
+        const box = element.getBoundingClientRect(); return { x: box.x, y: box.y, width: box.width, height: box.height }; }));
+    const sash = sashes.filter(box => box.height > sidebar.height * 0.5).sort((a, b) => Math.abs(a.x - sidebar.x - sidebar.width) - Math.abs(b.x - sidebar.x - sidebar.width))[0];
+    assert.ok(sash && Math.abs(sash.x - sidebar.x - sidebar.width) < 12, JSON.stringify({ sidebar, sashes }));
+    await page.mouse.move(sash.x + sash.width / 2, sash.y + sash.height / 2); await page.mouse.down();
+    await page.mouse.move(sash.x + sash.width / 2 + width - sidebar.width, sash.y + sash.height / 2, { steps: 12 }); await page.mouse.up();
+}
 async function approve(panel, action, decision = 'Allow session') {
     const pending = panel.locator('.permission-card').filter({ hasText: action }).first();
     await pending.waitFor({ timeout: 60_000 });
@@ -52,7 +61,8 @@ const juliaOnly = process.argv.includes('--julia-only');
 const evidenceOnly = process.argv.includes('--evidence-only');
 const extensionsOnly = process.argv.includes('--extensions-only');
 const terminalOnly = process.argv.includes('--terminal-only');
-const compilerOnly = process.argv.includes('--compiler-only');
+const samplingOnly = process.argv.includes('--sampling-only');
+const compilerOnly = process.argv.includes('--compiler-only') || samplingOnly;
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
@@ -269,6 +279,7 @@ try {
         assert.notEqual(frame, page.mainFrame()); panel = frame.locator('.shenscope-panel');
     }
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
+    if (samplingOnly) { await resizeSidebar(page, 200); }
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
     if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly && !extensionsOnly && !terminalOnly && !compilerOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
@@ -321,6 +332,8 @@ try {
         const previewLayout = await sourcePreview.evaluate(element => ({ width: element.getBoundingClientRect().width,
             available: element.closest('.panel-content').clientWidth - 32 }));
         assert.ok(previewLayout.width <= previewLayout.available + 2, JSON.stringify(previewLayout));
+        const titleWidth = await sourcePreview.locator('.compiler-source-heading strong').evaluate(element => element.getBoundingClientRect().width);
+        if (previewLayout.width < 250) { assert.ok(titleWidth >= previewLayout.width - 24, `Source title is squeezed: ${titleWidth} of ${previewLayout.width}`); }
         await sourcePreview.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-source.png`) });
         await panel.getByRole('button', { name: 'Close source preview', exact: true }).click();
         await waitCount(panel.locator('.compiler-source-preview'), 0);
@@ -336,10 +349,22 @@ try {
         await measurement.locator('.compiler-profile-notes > summary').click();
         assert.match(await measurement.textContent(), /need not equal timing-pass allocation bytes/);
         await measurement.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-profile.png`) });
+        await panel.getByRole('button', { name: 'Sample method', exact: true }).click();
+        await approve(panel, 'runtime.diagnostics · dynamic', 'Allow once');
+        await approve(panel, 'project.backend · process', 'Allow once');
+        await panel.locator('.status').filter({ hasText: 'Core backtrace sampling complete' }).waitFor({ timeout: 120_000 });
+        const sampling = panel.getByRole('region', { name: 'Core periodic backtrace sampling', exact: true }); await sampling.waitFor();
+        assert.match(await sampling.textContent(), /Periodic backtraces · cliptext_string/);
+        assert.match(await sampling.textContent(), /not CPU utilization, exclusive function time/);
+        assert.ok(await sampling.locator('.compiler-sampling-frames .compiler-profile-row').count() > 0);
+        const samplingLayout = await sampling.evaluate(element => ({ width: element.getBoundingClientRect().width, available: element.closest('.panel-content').clientWidth - 32 }));
+        assert.ok(samplingLayout.width <= samplingLayout.available + 2, JSON.stringify(samplingLayout));
+        await sampling.locator('h3').scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-sampling.png`) });
         await panel.getByRole('button', { name: 'Connect source facts', exact: true }).click();
         await panel.locator('.runtime-evidence').waitFor({ timeout: 120_000 });
         const sourceEvidence = panel.locator('.runtime-evidence');
-        assert.match(await sourceEvidence.textContent(), /compiler \+ profile/);
+        assert.match(await sourceEvidence.textContent(), /compiler \+ profile \+ sampling/);
         assert.match(await sourceEvidence.textContent(), /does not establish a runtime binding/);
         await sourceEvidence.getByRole('button', { name: 'Next evidence', exact: true }).click();
         await sourceEvidence.getByRole('button', { name: 'Previous evidence', exact: true }).waitFor({ state: 'visible' });
@@ -357,6 +382,31 @@ try {
         await runtimeSource.scrollIntoViewIfNeeded();
         await runtimeSource.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-runtime-evidence-source.png`) });
         await runtimeSource.getByRole('button', { name: 'Close source preview', exact: true }).click();
+        await panel.getByRole('combobox', { name: 'Evidence observation kind' }).selectOption('sampling');
+        await panel.locator('.runtime-evidence-row[data-kind="sampling"]').first().waitFor({ timeout: 120_000 });
+        await panel.getByRole('button', { name: 'Preview sampling observation source', exact: true }).first().click();
+        await runtimeSource.waitFor();
+        assert.equal(await runtimeSource.locator('.compiler-source-row[data-focus="true"]').count(), 1);
+        await sourceEvidence.locator('h3').scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-sampling-evidence.png`) });
+        await runtimeSource.scrollIntoViewIfNeeded();
+        await runtimeSource.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-sampling-evidence-source.png`) });
+        await runtimeSource.getByRole('button', { name: 'Close source preview', exact: true }).click();
+        if (samplingOnly) {
+            const narrow = await panel.locator('.panel-content').evaluate(element => ({ width: element.clientWidth, scrollWidth: element.scrollWidth }));
+            assert.ok(narrow.scrollWidth <= narrow.width + 2, JSON.stringify(narrow));
+            assert.ok(narrow.width <= 210, JSON.stringify(narrow));
+            await resizeSidebar(page, 360);
+            await panel.locator('.panel-content').evaluate(element => element.scrollTop = 0);
+            const wide = await panel.evaluate(element => ({ width: element.getBoundingClientRect().width }));
+            assert.ok(wide.width >= 300, JSON.stringify(wide));
+            await sampling.locator('h3').scrollIntoViewIfNeeded();
+            await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-sampling-wide.png`) });
+            await panel.getByRole('button', { name: 'Preview sampling observation source', exact: true }).first().click();
+            await runtimeSource.waitFor(); await runtimeSource.scrollIntoViewIfNeeded();
+            await runtimeSource.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-sampling-source-wide.png`) });
+            await writeFile(join(project, `.local/${vsix ? 'vsix' : 'native'}-sampling-layout.json`), JSON.stringify({ narrow, wide, sourceTitleWidth: titleWidth, sourcePreviewWidth: previewLayout.width }, null, 2));
+        } else {
         await panel.locator('.panel-content').evaluate(element => { element.scrollTop = 0; });
         await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-overview.png`) });
         await panel.getByRole('button', { name: 'Next statements', exact: true }).click();
@@ -432,7 +482,8 @@ try {
         await waitEnabled(panel.getByRole('button', { name: 'Infer method', exact: true }));
         await panel.locator('.status').filter({ hasText: 'Compiler inference stopped' }).waitFor();
         assert.equal(requests.length, 0);
-        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench without extensions'}, real Julia inferred IR, fixed-fixture runtime measurement and allocation samples, JuliaSyntax declaration association, hash-verified allocation source preview, narrow evidence/navigation sizing, current and recorded compiler source previews, approvals, pagination, filters, effect qualifiers, two report archives, rename, bounded comparison, recorded-source disclosure, explicit orphan cleanup and pending-approval cancellation`);
+        }
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench without extensions'}, real Julia inferred IR, fixed-fixture runtime measurement and allocation samples, periodic helper backtraces and scope qualifiers, three-report JuliaSyntax declaration association, hash-verified allocation and sampling source previews, ${samplingOnly ? 'readable narrow source heading, no panel horizontal overflow and actual Workbench sash resize with wide screenshots' : 'narrow evidence/navigation sizing, current and recorded compiler source previews, approvals, pagination, filters, effect qualifiers, two report archives, rename, bounded comparison, recorded-source disclosure, explicit orphan cleanup and pending-approval cancellation'}`);
     }
     if(terminalOnly){
         await panel.getByRole('combobox',{name:'More views'}).selectOption('Terminal');

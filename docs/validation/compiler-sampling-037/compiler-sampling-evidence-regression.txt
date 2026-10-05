@@ -1,0 +1,14 @@
+Test Summary:                                                                                      | Pass  Total  Time
+Owned result limits preserve deep structured data and fail closed without expanding other managers |    7      7  3.0s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  0.9s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  2.0s
+Test Summary:                                                                   | Pass  Total  Time
+Runtime declaration interval joins agree with an independent containment oracle |   62     62  4.8s
+Test Summary:                                                     | Pass  Total   Time
+Actual inferred source joins are bounded, paged and hash verified |   34     34  44.3s
+Test Summary:                                                                               | Pass  Total   Time
+Owned runtime evidence joins actual helper allocations and compiler facts without execution |   13     13  28.9s
+Test Summary:                                                                       | Pass  Total     Time
+CLI and real agent diagnostics inspect combine actual fixed-Core execution evidence |    7      7  2m23.1s

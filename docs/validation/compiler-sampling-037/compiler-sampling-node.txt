@@ -1,0 +1,11 @@
+✔ Owned compiler and sampled runtime positions join hash-pinned Julia declarations (150543.722769ms)
+✔ Real owned profile jobs record bounded allocation evidence and scope approvals (77098.834749ms)
+✔ Owned periodic sampling scopes approvals, cancellation and address-free measured backtraces (49279.71585ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 150683.237057

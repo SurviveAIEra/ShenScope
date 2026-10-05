@@ -1,3 +1,6 @@
+compiler_runtime_frame_role(file)=startswith(file,"src/Compiler/Profile") || startswith(file,"src/Compiler/Sampling") ||
+    file=="src/Extensions/CompilerDiagnostics.jl" ? "driver" : "core"
+
 function compiler_profile_frame(frame,snapshot::RuntimeSourceSnapshot,inventory)
     frame.line>0 || return nothing
     file=String(frame.file)
@@ -7,9 +10,8 @@ function compiler_profile_frame(frame,snapshot::RuntimeSourceSnapshot,inventory)
     source=get(inventory,relative,nothing)
     source===nothing && return nothing
     function_name=cliptext(String(frame.func),256)
-    driver=startswith(relative,"src/Compiler/Profile") || relative=="src/Extensions/CompilerDiagnostics.jl"
     Dict("file"=>relative,"line"=>Int(frame.line),"function"=>function_name,
-        "source_sha256"=>source.sha256,"inlined"=>Bool(frame.inlined),"role"=>driver ? "driver" : "core")
+        "source_sha256"=>source.sha256,"inlined"=>Bool(frame.inlined),"role"=>compiler_runtime_frame_role(relative))
 end
 
 function compiler_profile_allocation_samples(allocations,snapshot,limits::CompilerProfileLimits)

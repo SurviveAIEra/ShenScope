@@ -1,0 +1,12 @@
+Test Summary:                                                                     | Pass  Total  Time
+Runtime profile limits and fixture contracts refuse unbounded or irrelevant input |   17     17  0.3s
+Test Summary:                                                                      | Pass  Total   Time
+Actual timed workloads and allocation samples have independently checked summaries |   44     44  27.4s
+Test Summary:                                                                 | Pass  Total   Time
+Real runtime profile helper shares permissions, source checks and termination |   15     15  36.9s
+Test Summary:                                                              | Pass  Total   Time
+Agent and CLI execute fixed profile workloads through the same Core action |    7      7  53.0s
+Test Summary:                                                               | Pass  Total   Time
+Compiler graph workers honor approvals, revocation and restricted execution |   11     11  47.4s
+Test Summary:                                                             | Pass  Total  Time
+Compiler polling closes actual helpers after live denial and cancellation |   15     15  1.0s

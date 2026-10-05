@@ -1,9 +1,10 @@
 const RUNTIME_EVIDENCE_SCHEMA="shenscope.runtime-evidence/1"
-const RUNTIME_EVIDENCE_KINDS=("all","method","statement","allocation")
+const RUNTIME_EVIDENCE_KINDS=("all","method","statement","allocation","sampling")
 const RUNTIME_EVIDENCE_NOTES=["Source joins are declaration candidates, not runtime binding or semantic-equivalence proofs.",
     "Compiler statements describe inference; allocation stack samples describe a separate fixture/helper execution.",
     "One allocation can appear in several retained frames; observation rows must not be summed as allocation totals.",
-    "Only selected installed Core files are parsed; no user project, macro expansion or package loading occurs."]
+    "Only selected installed Core files are parsed; no user project, macro expansion or package loading occurs.",
+    "Periodic backtrace occurrences are inclusive retained samples, not exclusive CPU time or additive utilization."]
 
 struct RuntimeEvidenceLimits
     files::Int
@@ -46,6 +47,7 @@ struct RuntimeEvidenceSnapshot
     declarations::Vector{RuntimeEvidenceDeclaration}
     summary::Dict{String,Any}
     profile_summary::Union{Nothing,Dict{String,Any}}
+    sampling_summary::Union{Nothing,Dict{String,Any}}
     fingerprint::String
 end
 

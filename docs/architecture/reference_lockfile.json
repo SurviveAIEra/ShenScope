@@ -36,7 +36,8 @@
       "codex-rs/history/src/compaction_checkpoint.rs",
       "codex-rs/core/src/tools/registry.rs",
       "codex-rs/exec-server/src/local_file_system_read.rs",
-      "codex-rs/exec-server/src/rpc_timing.rs"
+      "codex-rs/exec-server/src/rpc_timing.rs",
+      "codex-rs/otel/src/metrics/runtime_metrics.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -77,7 +78,8 @@
       "packages/core/src/session/history.ts",
       "packages/core/src/tool/tool.ts",
       "packages/core/src/tool/read.ts",
-      "packages/core/src/session/message-updater.ts"
+      "packages/core/src/session/message-updater.ts",
+      "packages/app/e2e/performance/timeline/session-timeline-profile.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -124,7 +126,8 @@
       "packages/session/session-persistence/src/storage-contract.ts",
       "packages/core/tools/src/types.ts",
       "packages/fs/tool-fs/src/read.ts",
-      "packages/client/ui-chat/src/client/contract/turn-metrics.ts"
+      "packages/client/ui-chat/src/client/contract/turn-metrics.ts",
+      "packages/client/ui-chat/src/client/performance-usage.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -165,7 +168,8 @@
       "scripts/build-coding-agent-bundle.mjs",
       "packages/coding-agent/src/core/diagnostics.ts",
       "packages/coding-agent/src/modes/interactive/components/tool-execution.ts",
-      "packages/coding-agent/src/core/usage-totals.ts"
+      "packages/coding-agent/src/core/usage-totals.ts",
+      "packages/coding-agent/src/core/tools/truncate.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -210,7 +214,8 @@
       "packages/agent-core-v2/src/persistence/backends/node-fs/atomicDocumentStore.ts",
       "packages/agent-core-v2/src/agent/toolResultTruncation/toolResultTruncationService.ts",
       "packages/agent-core-v2/src/agent/usage/usageEvents.ts",
-      "packages/agent-core-v2/src/agent/tools/os/grep/grepTool.ts"
+      "packages/agent-core-v2/src/agent/tools/os/grep/grepTool.ts",
+      "packages/telemetry/src/systemMetrics.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -251,7 +256,8 @@
       "packages/shared/src/node/privateFilePersistence.ts",
       "packages/ui/src/ToolCallBlocks/toolResultDisplay.ts",
       "packages/ui/src/ToolCallBlocks/renderers/read.tsx",
-      "packages/ui/src/resource-manager/resourceUsageView.ts"
+      "packages/ui/src/resource-manager/resourceUsageView.ts",
+      "packages/desktop/src/main/resourceManagerHostSampling.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -294,7 +300,8 @@
       "packages/core/src/managed-runtime/managed-harness-checkpoint.ts",
       "packages/core/src/core/nonInteractiveToolExecutor.ts",
       "packages/vscode-ide-companion/src/webview/utils/fileLinks.ts",
-      "packages/core/src/telemetry/metrics.ts"
+      "packages/core/src/telemetry/metrics.ts",
+      "packages/core/src/telemetry/event-loop-lag-metrics.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

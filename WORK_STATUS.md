@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest verified cloc 2.11 count: 24,452 authored Julia Core code lines across 250 files;
-CLI/TUI add 1,151 lines and optional Julia extensions add 57, counted separately.
-This is 9.7808% of the minimum line target, leaving 225,548 lines. These are early implementations,
+Latest verified cloc 2.11 count: 24,762 authored Julia Core code lines across 255 files;
+CLI/TUI add 1,160 lines and optional Julia extensions add 57, counted separately.
+This is 9.9048% of the minimum line target, leaving 225,238 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -939,3 +939,38 @@ one application checkout, 50 dependencies and no unknown repositories. About
 or new sysimages. Core increased by 410 authored lines. CPU sampling, remaining
 runtime/state/model capabilities and all remaining size/functional gates continue;
 the 250,000-line target remains far from reached.
+
+Periodic sampling checkpoint 037: actual Julia Profile periodic backtraces run
+three fixed Core fixtures in one-thread trusted helpers. Warmup, requested loop
+window and instrumented elapsed remain separate. Finite buffers retain only a
+bounded prefix; sample/frame/stack/inline-lookup truncation is explicit. Parent
+validation recomputes unique source-frame occurrences and inclusive fractions.
+Task/instruction identities and external paths are omitted. Fractions are not
+CPU utilization or exclusive target time, and empty samples do not prove no work.
+
+Owned sampling reports can join compiler and allocation reports with the same
+current target/signature/source inventory. Evidence reads do not execute targets.
+Sampling observations preserve sample/frame handles, independent provenance and
+hash-verified source previews. Declarations remain candidates. The ordinary
+agent tool, CLI, scoped RPC, VSIX and native Workbench share these contracts.
+
+Validation: 138 sampling/owned assertions, 308 compiler regressions, 109 profile
+regressions and 146 evidence regressions pass. Excluding 86 repeated assertions
+leaves 615 distinct affected assertions, including 108 new ones. Three real
+Node/Core tests pass, with the final sampling test additionally rerun after its
+failure-event wait was improved. Both complete compiler GUI workflows pass.
+Visual inspection then found a squeezed narrow source heading and panel
+pagination overflow: final focused native/VSIX workflows verify readable source
+headings, no panel horizontal overflow and actual sidebar sash resizing for wide
+screenshots. Shared checks/build, full Workbench typecheck and exact VSIX source
+payload checks pass. Raw logs and the initial structurally-valid sample-count
+fixture failure are preserved in docs/validation/compiler-sampling-checkpoint-037.json.
+No live-model, comparative speed, Windows or installed-distribution claim is made.
+
+Seven further primary source reviews preserve collection/unit/scope distinctions;
+no upstream implementation is copied or translated. Strict audit still finds one
+application checkout, 50 dependencies and no unknown repositories. About 17.5 GiB
+remains free, with one Core cache pair and no project copies, worktrees or new
+sysimages. Core increased by 310 authored lines. Remaining agent modes/planning,
+context/state/model/project/runtime/distribution capabilities and the 250,000-line
+functional and size gates continue. The task remains IN_PROGRESS.

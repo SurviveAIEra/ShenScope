@@ -9,8 +9,10 @@ function diagnostics_arguments(args::AbstractDict)
     elseif action in ("profile","inspect")
         fields=["target","fixture","timeout","iterations","repetitions","max_samples","max_frames","sample_rate"]
         action=="inspect" ? vcat(fields,["offset","limit","query","observation_kind"]) : fields
+    elseif action=="sample"
+        ["target","fixture","timeout","iterations","duration_seconds","delay_seconds","max_samples","max_frames","buffer_words"]
     elseif action in ("evidence","evidence_source")
-        fields=["compiler_job_id","profile_job_id","expected_evidence_sha256"]
+        fields=["compiler_job_id","profile_job_id","sampling_job_id","expected_evidence_sha256"]
         vcat(fields,action=="evidence_source" ? ["observation_key","context_lines"] : ["offset","limit","query","observation_kind"])
     elseif action=="archive_save"
         ["job_id","expected_revision","title"]
@@ -36,10 +38,10 @@ function diagnostics_arguments(args::AbstractDict)
     end
     all(key->key=="action" || key in allowed,keys(args)) ||
         throw(ShenScopeError(:diagnostics,"Unexpected parameter for diagnostics action "*action))
-    action in ("evidence","evidence_source") && !any(key->haskey(args,key),("compiler_job_id","profile_job_id")) &&
+    action in ("evidence","evidence_source") && !any(key->haskey(args,key),("compiler_job_id","profile_job_id","sampling_job_id")) &&
         throw(ShenScopeError(:diagnostics,"Select an owned compiler or runtime measurement job"))
     required=action=="evidence_source" ? ["observation_key","expected_evidence_sha256"] :
-        action in ("compile","profile","inspect") ? ["target"] : action=="compile_archive" ? ["target","expected_revision"] :
+        action in ("compile","profile","sample","inspect") ? ["target"] : action=="compile_archive" ? ["target","expected_revision"] :
         action=="archive_save" ? ["job_id","expected_revision"] :
         action in ("archive_get","archive_source") ? ["report_id"] : action=="compiler_source" ? ["job_id"] :
         action=="archive_label" ? ["report_id","title","expected_revision"] :

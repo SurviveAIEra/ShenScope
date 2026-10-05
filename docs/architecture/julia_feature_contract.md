@@ -19,7 +19,7 @@ for the current source tree.
 | Precompilation, sysimage, PackageCompiler | Measure/install bundled runtime without requiring Julia knowledge | Actual generic Linux image build, source/dependency receipts, fresh-process metadata observations and real image-based RPC/model/extension tests verified; standalone distribution/relocation pending |
 | FFI, cfunction/embedding | Reuse native parsers/libraries; isolate compiler/backend helpers | Linux x86_64 compute seccomp, inherited-descriptor closure, descriptor/shared-mapping audit and direct syscall refusal verified; general host-tool and other-platform isolation pending |
 | Mmap, lazy iterators/AbstractArray, sparse arrays, SIMD | Bound memory, stream/query graph subsets and update local adjacency | Optional real sparse evidence matrices and bounded graph queries verified on fixtures; large-graph/Mmap/SIMD performance evidence pending |
-| Logging scopes, Profile/Profile.Allocs, Test | Trace operations; compiler/performance evidence before optimization/promotion | Structured scoped events, actual fixed-Core @timed workloads and separate bounded Profile.Allocs samples verified across tool/CLI/RPC/both IDEs; arbitrary project/CPU/heap profiling and optimization evidence pending |
+| Logging scopes, Profile/Profile.Allocs, Test | Trace operations; compiler/performance evidence before optimization/promotion | Structured scoped events, actual fixed-Core @timed workloads, separate bounded Profile.Allocs samples and bounded periodic backtraces implemented across tool/CLI/RPC/both IDEs; arbitrary project, exclusive CPU/heap profiling and optimization evidence pending |
 | GC, finalizers, WeakRef | Bounded caches with explicit external-resource cleanup | Explicit process cleanup, streamed frame replay and current-fact journal compaction verified on Linux; large-project cache measurements pending |
 | File watching, timers/conditions/events, LibGit2 | Changes feed batched graph deltas and invalidate dependent queries | FileWatching/Task/Channel/Timers, recursive reconciliation, four-backend stable batches and Git CLI history/cochange evidence verified; a LibGit2 implementation remains optional |
 | Distributed/RemoteChannel, GPU | Optional later execution backends with capability negotiation | Pending, outside the initial verified path |
@@ -47,4 +47,10 @@ fresh JuliaSyntax declarations, owned compiler positions and actual allocation
 stack samples retain hashes and independent identities. Containment witnesses
 remain candidates, not runtime bindings or semantic equivalence. CodeGraph
 private schemas are not required. Arbitrary workspace inference, additional
-providers and CPU/coverage/heap integration remain pending.
+providers and project CPU/coverage/heap integration remain pending.
+
+Checkpoint 037 adds actual `Profile` periodic helper backtraces for three fixed
+Core fixtures. Buffer/retention/stack/inline-lookup bounds remain explicit;
+inclusive frame fractions do not measure CPU utilization. Owned sampling reports
+join the same canonical declaration/source facts without reexecution. The
+bounded prefix does not establish whole-window or exclusive target attribution.
