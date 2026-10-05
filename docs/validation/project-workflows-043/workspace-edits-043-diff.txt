@@ -1,0 +1,23 @@
+ERROR: LoadError: Some tests did not pass: 647 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/workspace_diff.jl:3
+in expression starting at /workspace/ShenScope/test/workspace_edits.jl:5
+Test Summary:                                                                                  | Pass  Total   Time
+Workspace proposals preview Unicode edits and refuse stale, overlapping and foreign operations |   11     11  13.0s
+Test Summary:                                                                            | Pass  Total  Time
+Workspace application retains receipts and rolls back without overwriting external edits |   14     14  1.7s
+Test Summary:                                                                  | Pass  Total  Time
+Workspace edit permissions, plan mode and bounded proposals remain independent |    4      4  0.3s
+Bounded source differences preserve both sides and group separate changes: Test Failed at /workspace/ShenScope/test/unit/workspace_diff.jl:19
+  Expression: length(diff.hunks) == 2 && (diff.added_lines == 3 && diff.removed_lines == 3)
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] macro expansion
+   @ /workspace/ShenScope/test/unit/workspace_diff.jl:19 [inlined]
+ [3] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [4] top-level scope
+   @ /workspace/ShenScope/test/unit/workspace_diff.jl:4
+Test Summary:                                                             | Pass  Fail  Total  Time
+Bounded source differences preserve both sides and group separate changes |  647     1    648  2.9s

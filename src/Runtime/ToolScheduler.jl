@@ -63,7 +63,10 @@ function core_tools(; tasks = true, mcp = true, skills = true, hooks = true, con
     process=ProcessTool()
     project=ProjectTool()
     tools = AbstractTool[ReadTool(),SearchTool(),EditTool(),WriteTool(),PatchTool(),process,TerminalTool(),GitTool(process),MemoryTool(),SecurityTool(),project,DiagnosticsTool(),ExtensionsTool(),AnalyzersTool(AnalyzerManager(),project.manager),ModelsTool(config;credential_lookup),PlanTool(),TestingTool()]
-    push!(tools, ProblemsTool(project.manager))
+    problems = ProblemsTool(project.manager)
+    push!(tools, problems, LanguageTool(problems.manager))
+    push!(tools, WorkspaceTool(only(tool for tool in tools if tool isa TestingTool).manager))
+    push!(tools, ValidationTool(only(tool for tool in tools if tool isa TestingTool).manager, problems.manager))
     mcp && push!(tools, MCPControlTool(MCPManager(config; credential_lookup)))
     skills && push!(tools, SkillsTool(SkillManager(config)))
     hooks && push!(tools, HooksTool(HookManager(config;config_source,credential_lookup)))

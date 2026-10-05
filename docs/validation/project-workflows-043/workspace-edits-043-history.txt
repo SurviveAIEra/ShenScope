@@ -1,0 +1,18 @@
+Test Summary:                                                                                  | Pass  Total   Time
+Workspace proposals preview Unicode edits and refuse stale, overlapping and foreign operations |   11     11  16.4s
+Test Summary:                                                                            | Pass  Total  Time
+Workspace application retains receipts and rolls back without overwriting external edits |   14     14  2.9s
+Test Summary:                                                                  | Pass  Total  Time
+Workspace edit permissions, plan mode and bounded proposals remain independent |    4      4  0.5s
+Test Summary:                                                             | Pass  Total  Time
+Bounded source differences preserve both sides and group separate changes |  648    648  1.6s
+Test Summary:                                               | Pass  Total  Time
+Source difference capacities never imply a complete preview |    4      4  0.3s
+Test Summary:                                                                   | Pass  Total  Time
+Saved proposals survive restart and require fresh source checks and a new apply |   11     11  7.5s
+Test Summary:                                                                          | Pass  Total  Time
+History owns receipts, refuses tampering, enforces CAS and preserves files on deletion |   11     11  1.0s
+Test Summary:                                                     | Pass  Total  Time
+History has bounded records and stores no complete source backups |    5      5  0.5s
+Test Summary:                                                           | Pass  Total   Time
+Applied Python and JavaScript changes bind actual verification receipts |   12     12  26.0s

@@ -50,6 +50,7 @@ struct ProblemFileReport
     omitted_items::Int
     status::String
     version::Union{Nothing,Int}
+    unicode_line_separators::Bool
 end
 
 struct ProblemSnapshot

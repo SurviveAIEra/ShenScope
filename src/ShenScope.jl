@@ -238,6 +238,49 @@ include("MCP/Client.jl")
 include("MCP/Discovery.jl")
 include("MCP/Content.jl")
 include("MCP/Manager.jl")
+include("LanguageServices/Types.jl")
+include("LanguageServices/Configuration.jl")
+include("LanguageServices/Framing.jl")
+include("LanguageServices/Uris.jl")
+include("LanguageServices/Capabilities.jl")
+include("LanguageServices/Transport.jl")
+include("LanguageServices/Requests.jl")
+include("LanguageServices/Lifecycle.jl")
+include("LanguageServices/Documents.jl")
+include("LanguageServices/Diagnostics.jl")
+include("LanguageServices/ResultSources.jl")
+include("LanguageServices/Hover.jl")
+include("LanguageServices/Symbols.jl")
+include("LanguageServices/Edits.jl")
+include("LanguageServices/Signatures.jl")
+include("LanguageServices/Completions.jl")
+include("LanguageServices/CallHierarchy.jl")
+include("LanguageServices/Navigation.jl")
+include("LanguageServices/Manager.jl")
+include("LanguageServices/Catalog.jl")
+include("Tools/LanguageServices.jl")
+include("Workspace/EditTypes.jl")
+include("Workspace/EditValidation.jl")
+include("Workspace/EditPlans.jl")
+include("Workspace/DiffTypes.jl")
+include("Workspace/DiffSearch.jl")
+include("Workspace/DiffProjection.jl")
+include("Workspace/EditPreviews.jl")
+include("Workspace/EditLocks.jl")
+include("Workspace/EditApplication.jl")
+include("Workspace/EditSources.jl")
+include("Workspace/Verification.jl")
+include("Workspace/HistoryTypes.jl")
+include("Workspace/HistoryValidation.jl")
+include("Workspace/History.jl")
+include("Workspace/HistoryRecovery.jl")
+include("Tools/Workspace.jl")
+include("Validation/Types.jl")
+include("Validation/OutputParsing.jl")
+include("Validation/Sources.jl")
+include("Validation/Reports.jl")
+include("Validation/Execution.jl")
+include("Tools/Validation.jl")
 include("Tools/MCP.jl")
 include("Skills/Types.jl")
 include("Skills/Metadata.jl")
@@ -293,6 +336,9 @@ include("Protocol/Context.jl")
 include("Protocol/Plans.jl")
 include("Protocol/Testing.jl")
 include("Protocol/Problems.jl")
+include("Protocol/LanguageServices.jl")
+include("Protocol/Workspace.jl")
+include("Protocol/Validation.jl")
 include("Protocol/Analyzers.jl")
 include("Protocol/Models.jl")
 include("Protocol/Memory.jl")
@@ -326,6 +372,25 @@ export ProblemLimits, ProjectProblem, ProblemFileReport, ProblemSnapshot, Proble
     capture_indexed_problems!, list_problem_snapshots, problem_snapshot_read,
     query_problem_snapshot, compare_problem_snapshots, read_problem_source,
     project_problem_editor_snapshot, close_problems!
+export LanguageServiceLimits, LanguageServerSpec, LanguageServiceManager, LanguageClient, LanguageTool,
+    language_server_spec, start_language_service!, stop_language_service!, list_language_services,
+    synchronize_language_document!, close_language_document!, save_language_document!,
+    query_language_server, pull_language_diagnostics!, wait_language_diagnostics,
+    capture_language_problems!, close_language_services!
+export LanguageCatalogStore, language_catalog_store, save_language_configuration!,
+    read_language_configuration, list_language_configurations, remove_language_configuration!,
+    start_configured_language_service!, query_language_call_hierarchy
+export WorkspaceEditLimits, WorkspaceEditManager, WorkspaceEditPlan, WorkspaceTool,
+    prepare_workspace_edits!, preview_workspace_edits, apply_workspace_edits!,
+    read_workspace_edit_plan, read_workspace_edit_source, list_workspace_edit_plans,
+    discard_workspace_edit_plan!, verify_workspace_edits!, close_workspace_edits!
+export WorkspaceDiffOptions, WorkspaceDiffLine, WorkspaceDiffHunk, WorkspaceSourceDiff,
+    workspace_source_diff, workspace_diff_projection
+export WorkspaceHistoryLimits, WorkspaceHistoryStore, workspace_history_store,
+    save_workspace_history!, read_workspace_history, list_workspace_history,
+    remove_workspace_history!, inspect_workspace_history_sources, restore_workspace_proposal!
+export ValidationLimits, ProjectValidationManager, ValidationTool, run_project_validation!,
+    read_validation_report, list_validation_reports, close_validation!
 export ProjectEvidenceSnapshot, EvidenceSourceStamp, EvidenceSymbol, EvidenceRelation,
     EvidenceAnchor, project_evidence_snapshot
 export ExtensionContribution, ExtensionBundle, ExtensionRegistry, InstalledExtensionSpec,

@@ -1,0 +1,4 @@
+Test Summary:                                                                                         | Pass  Total     Time
+Language, workspace and validation jobs keep ownership, busy guards and pending-approval cancellation |   33     33  1m42.7s
+Test Summary:                                                    | Pass  Total  Time
+Server shutdown drains validation before closing shared managers |    5      5  0.2s

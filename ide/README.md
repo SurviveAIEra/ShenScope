@@ -1,8 +1,13 @@
 # ShenScope native IDE
 
-The sidebar is a native Code-OSS `ViewPane`. The shared utility process owns
-Julia Core; it works with extensions disabled. All agent/configuration/session
-logic stays in Julia. The standalone VSIX is a separate supported client.
+**There is no complete downloadable IDE installer yet.** This is a standalone
+development IDE based on Code-OSS. It can run from the source-build workflow below.
+Installers, bundled Julia, upgrades and uninstall support remain unfinished.
+
+The ShenScope sidebar is part of the editor itself and works with extensions
+disabled. A Code-OSS shared utility process starts Julia Core. Agent,
+configuration and session logic stays in Julia. The standalone VSIX is a
+separate client for an existing VS Code installation.
 
 Use the single pinned `/workspace/references/vscode` checkout. Do not copy it.
 `scripts/apply_codeoss_overlay.py` installs only authored overlay files and

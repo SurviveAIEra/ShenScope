@@ -1,0 +1,45 @@
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/language_services.jl:8
+in expression starting at /workspace/ShenScope/test/language_services.jl:4
+Test Summary:                                                           | Pass  Total  Time
+LSP framing handles every split, UTF-8 lengths and malformed boundaries |  318    318  4.6s
+Test Summary:                                                                  | Pass  Total   Time
+LSP contracts distinguish UTF-16 text lines, protected URIs and edit proposals |   14     14  14.2s
+Real Pyright checks Python, navigates source and replaces versioned reports: Error During Test at /workspace/ShenScope/test/integration/language_services.jl:8
+  Got exception outside of a @test
+  permission: Workspace source may not follow symlinks
+  Stacktrace:
+    [1] workspace_snapshot_path(ctx::RuntimeContext, requested::String; must_exist::Bool)
+      @ ShenScope /workspace/ShenScope/src/Workspace/SourceSnapshots.jl:15
+    [2] workspace_snapshot_path
+      @ /workspace/ShenScope/src/Workspace/SourceSnapshots.jl:10 [inlined]
+    [3] language_process_target(spec::LanguageServerSpec, ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/LanguageServices/Configuration.jl:35
+    [4] language_transport(client::LanguageClient)
+      @ ShenScope /workspace/ShenScope/src/LanguageServices/Transport.jl:6
+    [5] (::ShenScope.var"#2920#2926"{LanguageClient})()
+      @ ShenScope /workspace/ShenScope/src/LanguageServices/Lifecycle.jl:10
+    [6] lock(f::ShenScope.var"#2920#2926"{LanguageClient}, l::ReentrantLock)
+      @ Base ./lock.jl:232
+    [7] start_language_client!
+      @ /workspace/ShenScope/src/LanguageServices/Lifecycle.jl:2 [inlined]
+    [8] start_language_service!(manager::LanguageServiceManager, spec::LanguageServerSpec, ctx::RuntimeContext)
+      @ ShenScope /workspace/ShenScope/src/LanguageServices/Manager.jl:16
+    [9] (::var"#7#11")(root::String)
+      @ Main /workspace/ShenScope/test/integration/language_services.jl:16
+   [10] mktempdir(fn::var"#7#11", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+   [11] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+   [12] macro expansion
+      @ /workspace/ShenScope/test/integration/language_services.jl:9 [inlined]
+   [13] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [14] top-level scope
+      @ /workspace/ShenScope/test/integration/language_services.jl:9
+   [15] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [16] top-level scope
+      @ /workspace/ShenScope/test/language_services.jl:4
+Test Summary:                                                               | Error  Total   Time
+Real Pyright checks Python, navigates source and replaces versioned reports |     1      1  12.7s

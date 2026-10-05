@@ -768,3 +768,18 @@ pinned native Workbench controller/profile/result interfaces. Code-OSS interface
 inspection is ABI research, not a translation of upstream agent code. These
 reviews remain partial and do not claim that all advantages of the seven
 projects have been audited or incorporated.
+
+## General workflow checkpoint 043
+
+Seven additional partial primary-source reviews inspect observed-version edits,
+mutation ordering, line-ending contracts, review diffs and symlink policy. Exact
+revisions/file hashes/ranges are in
+`../validation/project-workflows-043/reference-evidence.json`. Julia's implementation
+combines typed source snapshots, original bounded diff search, shared per-file
+locks, source/mode checks, preserved external edits during rollback, explicit
+plan transitions and saved proposal/receipt versions. No upstream agent code is
+copied or translated. Checkpoint 042 LSP observations additionally inform strict
+framing, capability negotiation and versioned diagnostics. Actual Pyright and
+TypeScript LSP, general project compiler checks and source-edit repair fixtures
+verify the bounded implementation; unsaved buffers, whole-project semantic
+coverage, general OS isolation and native Problems client publication remain open.

@@ -84,24 +84,12 @@ function execute(::SearchTool,args::AbstractDict,ctx::RuntimeContext)
     return Dict("matches"=>matches,"limited"=>false,"scanned"=>scanned)
 end
 
-function prepare_edit(args::AbstractDict,ctx::RuntimeContext)
-    p,text=read_workspace_text(ctx,args["path"])
-    digest(text)==args["expected_sha256"] || throw(ShenScopeError(:conflict,"File changed since observation"))
-    old=args["old"];new=args["new"]
-    isempty(old) && throw(ShenScopeError(:arguments,"Empty match is not allowed"))
-    length(findall(old,text))==1 || throw(ShenScopeError(:conflict,"Replacement must match exactly once"))
-    return p,text,replace(text,old=>new;count=1)
-end
-
 function execute(::EditTool,args::AbstractDict,ctx::RuntimeContext)
-    p=workspace_path(ctx.root,args["path"];must_exist=true)
-    authorize!(ctx,:edit,"edit",p)
-    return store_lock(joinpath(ctx.state_dir,"file-locks",digest(p))) do
-        target,before,after=prepare_edit(args,ctx)
-        atomic_write(target,after;mode=filemode(target)&0o777)
-        emit!(ctx,:file_changed,Dict("path"=>relpath(target,ctx.root),"before_sha256"=>digest(before),"after_sha256"=>digest(after)))
-        return Dict("path"=>relpath(target,ctx.root),"sha256"=>digest(after),"changed"=>before!=after)
-    end
+    rows, receipt = apply_literal_workspace_patch([args], ctx; origin="edit")
+    row = only(rows)
+    result = Dict("path"=>row["path"],"sha256"=>row["after_sha256"],"changed"=>row["changed"])
+    emit!(ctx,:file_changed,row)
+    result
 end
 
 function execute(::WriteTool,args::AbstractDict,ctx::RuntimeContext)
@@ -117,24 +105,39 @@ end
 
 function execute(::PatchTool,args::AbstractDict,ctx::RuntimeContext)
     authorize!(ctx,:edit,"patch",ctx.root;reason="Apply hash-protected multi-file patch")
-    # Validation-before-write prevents malformed later edits from leaving an
-    # earlier partial patch. Rollback handles ordinary I/O errors, not power loss.
-    plan=[prepare_edit(a,ctx) for a in args["edits"]]
-    length(unique(p[1] for p in plan))==length(plan) || throw(ShenScopeError(:arguments,"Duplicate patch path"))
-    applied=Tuple{String,String,UInt}[]
-    try
-        for (p,before,after) in plan
-            check_cancelled(ctx.cancellation)
-            digest(read(p,String))==digest(before) || throw(ShenScopeError(:conflict,"Patch file changed during validation"))
-            mode=filemode(p)&0o777
-            atomic_write(p,after;mode)
-            push!(applied,(p,before,mode))
-        end
-    catch
-        for (p,before,mode) in reverse(applied);atomic_write(p,before;mode);end
-        rethrow()
-    end
-    result=[Dict("path"=>relpath(p,ctx.root),"sha256"=>digest(after)) for (p,_,after) in plan]
+    rows, receipt = apply_literal_workspace_patch(args["edits"], ctx; origin="patch")
+    result=[Dict("path"=>row["path"],"sha256"=>row["after_sha256"]) for row in rows]
     emit!(ctx,:patch_applied,result)
     return result
+end
+
+function literal_workspace_edit(args::AbstractDict,ctx::RuntimeContext)
+    snapshot=read_workspace_snapshot(ctx,args["path"];expected_sha256=args["expected_sha256"],tool="patch.source")
+    old=args["old"]
+    old isa AbstractString && !isempty(old) || throw(ShenScopeError(:arguments,"Empty match is not allowed"))
+    matches=findall(old,snapshot.source.source)
+    length(matches)==1 || throw(ShenScopeError(:conflict,"Replacement must match exactly once"))
+    first_byte=first(only(matches))
+    after_byte=first_byte+ncodeunits(old)
+    line,column=source_position(snapshot.source,first_byte)
+    last_line,last_column=source_position(snapshot.source,after_byte)
+    location=SourceRange(snapshot.path,line,last_line;start_column=column,end_column=last_column)
+    Dict("path"=>snapshot.path,"expected_sha256"=>snapshot.sha256,
+        "edits"=>[Dict("location"=>range_dict(location),"new_text"=>args["new"])])
+end
+
+function apply_literal_workspace_patch(edits,ctx::RuntimeContext;origin="patch")
+    edits isa AbstractVector && 1 <= length(edits) <= 100 ||
+        throw(ShenScopeError(:arguments,"A patch requires a bounded nonempty replacement list"))
+    manager=WorkspaceEditManager(;limits=WorkspaceEditLimits(;maximum_files=100))
+    try
+        files=[literal_workspace_edit(edit,ctx) for edit in edits]
+        plan=prepare_workspace_edits!(manager,ctx,files;title="Literal source replacements",origin)
+        receipt=apply_workspace_edits!(manager,plan["plan_id"],ctx;expected_plan_sha256=plan["plan_sha256"])
+        receipt["outcome"]=="applied" || throw(ShenScopeError(:patch,
+            "Patch did not complete: "*receipt["outcome"]*"; rollback conflicts: "*join(receipt["rollback_conflicts"],", ")))
+        receipt["files"],receipt
+    finally
+        close_workspace_edits!(manager)
+    end
 end

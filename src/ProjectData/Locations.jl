@@ -5,9 +5,12 @@ struct SourceMap
     ends::Vector{Int}
     checkpoints::Dict{Int,Vector{Tuple{Int,Int}}}
     mutex::ReentrantLock
+    unicode_line_separators::Bool
 end
 
-function SourceMap(path::AbstractString, source::AbstractString; maximum=8 * 1024 * 1024)
+function SourceMap(path::AbstractString, source::AbstractString; maximum=8 * 1024 * 1024,
+        unicode_line_separators=true)
+    unicode_line_separators isa Bool || throw(ArgumentError("Invalid source line-break policy"))
     isvalid(source) && ncodeunits(source) <= maximum ||
         throw(ShenScopeError(:source_position, "Source exceeds capacity or is not UTF-8"))
     text = String(source)
@@ -16,7 +19,7 @@ function SourceMap(path::AbstractString, source::AbstractString; maximum=8 * 102
     while index <= ncodeunits(text)
         character = text[index]
         after = nextind(text, index)
-        if character in ('\r', '\n', '\u2028', '\u2029')
+        if character in ('\r', '\n') || unicode_line_separators && character in ('\u2028', '\u2029')
             push!(ends, index)
             character == '\r' && after <= ncodeunits(text) && text[after] == '\n' && (after = nextind(text, after))
             push!(starts, after)
@@ -24,7 +27,7 @@ function SourceMap(path::AbstractString, source::AbstractString; maximum=8 * 102
         index = after
     end
     push!(ends, ncodeunits(text) + 1)
-    SourceMap(String(path), text, starts, ends, Dict{Int,Vector{Tuple{Int,Int}}}(), ReentrantLock())
+    SourceMap(String(path), text, starts, ends, Dict{Int,Vector{Tuple{Int,Int}}}(), ReentrantLock(), unicode_line_separators)
 end
 
 function source_line_checkpoints(source::SourceMap, line::Integer)

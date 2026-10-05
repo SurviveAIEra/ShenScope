@@ -39,7 +39,8 @@
       "codex-rs/exec-server/src/rpc_timing.rs",
       "codex-rs/otel/src/metrics/runtime_metrics.rs",
       "codex-rs/core/src/tools/handlers/unified_exec/exec_command.rs",
-      "codex-rs/state/src/runtime/thread_metadata.rs"
+      "codex-rs/state/src/runtime/thread_metadata.rs",
+      "codex-rs/apply-patch/src/lib.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -84,7 +85,8 @@
       "packages/app/e2e/performance/timeline/session-timeline-profile.ts",
       "packages/opencode/src/agent/agent.ts",
       "packages/core/src/tool/bash.ts",
-      "packages/core/src/session.ts"
+      "packages/core/src/session.ts",
+      "packages/opencode/src/tool/edit.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -134,7 +136,8 @@
       "packages/client/ui-chat/src/client/contract/turn-metrics.ts",
       "packages/client/ui-chat/src/client/performance-usage.ts",
       "packages/terminal/terminal-bash/src/session.ts",
-      "packages/api/gateway/src/client/journal-stream.ts"
+      "packages/api/gateway/src/client/journal-stream.ts",
+      "packages/fs/tool-fs/src/edit.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -226,7 +229,8 @@
       "packages/telemetry/src/systemMetrics.ts",
       "packages/agent-core-v2/src/features/plan/tools/exit-plan-mode/exitPlanModeTool.ts",
       "packages/agent-core-v2/src/features/plan/planOps.ts",
-      "packages/agent-core-v2/src/agent/tools/os/bash/process-task.ts"
+      "packages/agent-core-v2/src/agent/tools/os/bash/process-task.ts",
+      "packages/agent-core-v2/src/agent/tools/edit/edit.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -270,7 +274,8 @@
       "packages/ui/src/resource-manager/resourceUsageView.ts",
       "packages/desktop/src/main/resourceManagerHostSampling.ts",
       "apps/zcode-cli/packages/contracts/src/interfaces/execution.port.ts",
-      "apps/zcode-cli/packages/contracts/src/interfaces/session-store.port.ts"
+      "apps/zcode-cli/packages/contracts/src/interfaces/session-store.port.ts",
+      "apps/zcode-cli/packages/core/src/tool/handlers/edit.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -316,7 +321,8 @@
       "packages/core/src/telemetry/metrics.ts",
       "packages/core/src/telemetry/event-loop-lag-metrics.ts",
       "packages/core/src/managed-runtime/local-shell-result-capture.ts",
-      "packages/core/src/services/chatRecordingService.ts"
+      "packages/core/src/services/chatRecordingService.ts",
+      "packages/core/src/tools/edit.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

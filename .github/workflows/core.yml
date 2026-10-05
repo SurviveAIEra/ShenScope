@@ -69,6 +69,17 @@ jobs:
       - run: julia --project=. -e 'using Pkg; Pkg.instantiate()'
       - run: julia --startup-file=no --threads=4 --project=. test/semantic.jl
       - run: julia --startup-file=no --threads=4 --project=. test/problems.jl
+      - run: python scripts/setup_language_servers.py
+        env:
+          SHENSCOPE_LANGUAGE_SERVERS: ${{ runner.temp }}/shenscope-language-servers/node_modules
+      - run: julia --startup-file=no --threads=4 --project=. test/language_services.jl
+        env:
+          SHENSCOPE_LANGUAGE_SERVERS: ${{ runner.temp }}/shenscope-language-servers/node_modules
+      - run: julia --startup-file=no --threads=4 --project=. test/workspace_edits.jl
+      - run: julia --startup-file=no --threads=4 --project=. test/project_workflow_protocol.jl
+      - run: julia --startup-file=no --threads=4 --project=. test/project_validation.jl
+        env:
+          SHENSCOPE_TEST_GO: go
       - run: npm run check && npm run build && npm test
         working-directory: editors
         env:

@@ -1,0 +1,121 @@
+[
+  {
+    "project": "codex",
+    "repository": "openai/codex",
+    "license": "Apache-2.0",
+    "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+    "path": "codex-rs/apply-patch/src/lib.rs",
+    "sha256": "5e6f736f3a4b66c1d651baa9b85ce6e6921de170faf901e6c2f78ad9a383eaf9",
+    "inspected_lines": [
+      [
+        1,
+        85
+      ]
+    ],
+    "observation": "Explicit file-update modes and symlink policy must be separate from display patches.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "opencode",
+    "repository": "anomalyco/opencode",
+    "license": "MIT",
+    "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+    "path": "packages/opencode/src/tool/edit.ts",
+    "sha256": "f84d9d242137e1f18ce912188efb7a97b71bf4f255e0a69f16a1fe9d1ff236d4",
+    "inspected_lines": [
+      [
+        1,
+        90
+      ]
+    ],
+    "observation": "Per-file serialized mutation and review diffs are coupled to language-service reporting.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "deepseek-harness",
+    "repository": "deepseek-ai/deepseek-harness",
+    "license": "MIT",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "path": "packages/fs/tool-fs/src/edit.ts",
+    "sha256": "0f1123c896bd0a4c53e47f724340e2a90dddc008c6c9f4a869e20c7654814519",
+    "inspected_lines": [
+      [
+        1,
+        100
+      ]
+    ],
+    "observation": "Literal unique-match edits rely on observed versions and explicit filesystem policy.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "pi-mono",
+    "repository": "badlogic/pi-mono",
+    "license": "MIT",
+    "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+    "path": "packages/coding-agent/src/core/tools/edit.ts",
+    "sha256": "31a368c14cf5437ecac157765660001b16063302d9bd746303d6d1b1dcb5625d",
+    "inspected_lines": [
+      [
+        1,
+        95
+      ]
+    ],
+    "observation": "Batch disjoint edits refer to original content and have separate display and external-patch meanings.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "kimi-code",
+    "repository": "MoonshotAI/kimi-code",
+    "license": "MIT",
+    "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+    "path": "packages/agent-core-v2/src/agent/tools/edit/edit.ts",
+    "sha256": "7041e1d31bbe766e3e00c7f86ade466d1887c575770b51a2022f196df1095eae",
+    "inspected_lines": [
+      [
+        1,
+        34
+      ]
+    ],
+    "observation": "Read-view line endings and explicit replace-all semantics need a clear edit contract.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "ZCode",
+    "repository": "zai-org/ZCode",
+    "license": "Apache-2.0",
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "path": "apps/zcode-cli/packages/core/src/tool/handlers/edit.ts",
+    "sha256": "55f45074e954f8c5f8d4e1a466d3d55a221627ab7892234e3d3d4808a4ebd90e",
+    "inspected_lines": [
+      [
+        1,
+        95
+      ]
+    ],
+    "observation": "Conversation read state, stale-source errors and review results must remain distinguishable.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "qwen-code",
+    "repository": "QwenLM/qwen-code",
+    "license": "Apache-2.0",
+    "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+    "path": "packages/core/src/tools/edit.ts",
+    "sha256": "e2d196b45adb96ab14a14fb1b0583a6a5694e9a39a73949d69964b9d587af71c",
+    "inspected_lines": [
+      [
+        1,
+        90
+      ]
+    ],
+    "observation": "Runtime file versions, prior-read checks and literal replacement form separate policy boundaries.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  }
+]

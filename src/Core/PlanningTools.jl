@@ -16,6 +16,9 @@ plan_tool_actions(::ProjectTool)=("status","search","impact","test_selection","a
 plan_tool_actions(::TaskTool)=("list","status","tasks","get")
 plan_tool_actions(::TestingTool)=("discover","catalog","report","reports","source","history_list","history_get","history_source","editor_catalog","editor_result")
 plan_tool_actions(::ProblemsTool)=("capture","list","get","query","compare","source","editor")
+plan_tool_actions(::LanguageTool)=("status","problems","configured","configuration")
+plan_tool_actions(::WorkspaceTool)=("prepare","list","get","preview","source","discard","history_list","history_get","history_sources","history_restore")
+plan_tool_actions(::ValidationTool)=("get","list")
 
 struct PlanningToolView{T<:AbstractTool} <: AbstractTool
     tool::T

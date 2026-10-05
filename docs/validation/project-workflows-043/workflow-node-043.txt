@@ -1,0 +1,52 @@
+
+> shenscope-editor-tooling@0.1.0 test
+> node --test test/*.test.mjs
+
+✔ Real compiler RPC scopes approvals, cancellation and inferred graph evidence (86151.060711ms)
+ℹ 65 actual statements, 7 blocks
+✔ Owned compiler and sampled runtime positions join hash-pinned Julia declarations (164957.697881ms)
+✔ Native testing adapter recovers a dropped start response and cancels pending approvals without replay (45587.650619ms)
+✔ Persisted chat modes and reported plans remain owning and language independent (71652.053585ms)
+✔ Real owned profile jobs record bounded allocation evidence and scope approvals (59753.751745ms)
+✔ Actual Core restart retains selected test evidence without process replay (65415.41769ms)
+✔ Actual Core test discovery, scoped approvals, two project languages and current source receipts (39831.900475ms)
+✔ Owned periodic sampling scopes approvals, cancellation and address-free measured backtraces (47130.777563ms)
+✔ Real PTY RPC keeps input, resize, replay and interruption in the owning conversation (15067.934942ms)
+✔ Node editor transport talks to real Julia Core with scoped approvals and Unicode (49514.166777ms)
+ℹ Core initialized: 2978 ms
+ℹ Conversation created: 3013 ms
+ℹ Agent request accepted: 28433 ms
+ℹ Edit approved: 47962 ms
+ℹ Archive approved: 48120 ms
+ℹ Conversation and artifact verified: 48583 ms
+✔ Julia source indexing and dispatch evidence travel through the real editor transport (54576.419445ms)
+ℹ Julia Core initialized: 5277 ms
+ℹ Julia backend capabilities: 11527 ms
+ℹ Julia conversation created: 11617 ms
+ℹ Julia index job started: 50364 ms
+ℹ Julia index completed: 53042 ms
+ℹ Julia dispatch queried: 53681 ms
+ℹ Julia stale evidence refused: 53695 ms
+✔ Real editor transport combines parser evidence with pinned pagination and stale-source refusal (37311.81491ms)
+ℹ Combined Core initialized: 3041 ms
+ℹ go_ast build started: 29560 ms
+ℹ go_ast build completed: 32338 ms
+ℹ tree_sitter build started: 32716 ms
+ℹ tree_sitter build completed: 33024 ms
+ℹ combined evidence_compare started: 34191 ms
+ℹ combined evidence_compare completed: 35280 ms
+ℹ combined evidence_compare started: 35504 ms
+ℹ combined evidence_compare completed: 35582 ms
+ℹ combined evidence_tests started: 35584 ms
+ℹ combined evidence_tests completed: 36393 ms
+✔ Independent Julia extensions travel through real editor RPC with registry and generation guards (16033.941157ms)
+✔ Malformed child framing closes transport and rejects pending requests (145.037778ms)
+✔ Disposal terminates an owned child that ignores shutdown and SIGTERM (4129.737739ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 360130.00116

@@ -1,0 +1,58 @@
+ERROR: LoadError: Some tests did not pass: 8 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/language_services.jl:8
+in expression starting at /workspace/ShenScope/test/language_services.jl:5
+Test Summary:                                                           | Pass  Total  Time
+LSP framing handles every split, UTF-8 lengths and malformed boundaries |  318    318  3.5s
+Test Summary:                                                                  | Pass  Total   Time
+LSP contracts distinguish UTF-16 text lines, protected URIs and edit proposals |   14     14  11.5s
+Test Summary:                                                                           | Pass  Total  Time
+Language configurations survive restart with CAS and independent Persistence permission |   11     11  4.2s
+Test Summary:                                                    | Pass  Total  Time
+Unversioned language reports never become current editor markers |    4      4  4.7s
+Test Summary:                                                                             | Pass  Total  Time
+Completion and signature projections preserve snippets and reject split surrogate offsets |    5      5  2.4s
+Real Pyright checks Python, navigates source and replaces versioned reports: Error During Test at /workspace/ShenScope/test/integration/language_services.jl:8
+  Got exception outside of a @test
+  MethodError: Cannot `convert` an object of type Bool to an object of type String
+  The function `convert` exists, but no method is defined for this combination of argument types.
+
+  Closest candidates are:
+    convert(::Type{String}, !Matched::JuliaSyntax.Kind)
+     @ JuliaSyntax /workspace/julia-depot/packages/JuliaSyntax/BHOG8/src/kinds.jl:975
+    convert(::Type{String}, !Matched::Base.JuliaSyntax.Kind)
+     @ Base /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/base/JuliaSyntax/src/kinds.jl:975
+    convert(::Type{String}, !Matched::String)
+     @ Base essentials.jl:461
+    ...
+
+  Stacktrace:
+    [1] setindex!(h::Dict{String, String}, v0::Bool, key::String)
+      @ Base ./dict.jl:355
+    [2] language_signature_documentation(value::Dict{String, Any})
+      @ ShenScope /workspace/ShenScope/src/LanguageServices/Signatures.jl:6
+    [3] normalize_language_signature_help(value::Dict{String, Any}; maximum::Int64)
+      @ ShenScope /workspace/ShenScope/src/LanguageServices/Signatures.jl:41
+    [4] (::ShenScope.var"#3009#3010"{LanguageClient, String, Dict{String, Any}, RuntimeContext})()
+      @ ShenScope /workspace/ShenScope/src/LanguageServices/Navigation.jl:62
+    [5] lock(f::ShenScope.var"#3009#3010"{LanguageClient, String, Dict{String, Any}, RuntimeContext}, l::ReentrantLock)
+      @ Base ./lock.jl:232
+    [6] query_language_server
+      @ /workspace/ShenScope/src/LanguageServices/Navigation.jl:37 [inlined]
+    [7] (::var"#13#18")(root::String)
+      @ Main /workspace/ShenScope/test/integration/language_services.jl:32
+    [8] mktempdir(fn::var"#13#18", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [9] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+   [10] macro expansion
+      @ /workspace/ShenScope/test/integration/language_services.jl:9 [inlined]
+   [11] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [12] top-level scope
+      @ /workspace/ShenScope/test/integration/language_services.jl:9
+   [13] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [14] top-level scope
+      @ /workspace/ShenScope/test/language_services.jl:5
+Test Summary:                                                               | Pass  Error  Total   Time
+Real Pyright checks Python, navigates source and replaces versioned reports |    8      1      9  20.7s

@@ -1,0 +1,31 @@
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/workspace_edits.jl:19
+in expression starting at /workspace/ShenScope/test/workspace_edits.jl:4
+Workspace proposals preview Unicode edits and refuse stale, overlapping and foreign operations: Error During Test at /workspace/ShenScope/test/unit/workspace_edits.jl:19
+  Got exception outside of a @test
+  MethodError: objects of type Int64 are not callable
+  The object of type `Int64` exists, but no method is defined for this combination of argument types when trying to treat it as a callable object.
+  Maybe you forgot to use an operator such as *, ^, %, / etc. ?
+  Stacktrace:
+    [1] workspace_replacement(ctx::RuntimeContext, path::String, old::String, new::String)
+      @ Main /workspace/ShenScope/test/unit/workspace_edits.jl:4
+    [2] workspace_fixture(root::String)
+      @ Main /workspace/ShenScope/test/unit/workspace_edits.jl:16
+    [3] (::var"#7#8")(root::String)
+      @ Main /workspace/ShenScope/test/unit/workspace_edits.jl:21
+    [4] mktempdir(fn::var"#7#8", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [5] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [6] macro expansion
+      @ /workspace/ShenScope/test/unit/workspace_edits.jl:20 [inlined]
+    [7] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+    [8] top-level scope
+      @ /workspace/ShenScope/test/unit/workspace_edits.jl:20
+    [9] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [10] top-level scope
+      @ /workspace/ShenScope/test/workspace_edits.jl:4
+Test Summary:                                                                                  | Error  Total  Time
+Workspace proposals preview Unicode edits and refuse stale, overlapping and foreign operations |     1      1  6.1s

@@ -74,7 +74,8 @@ end
 function problem_file_dict(file::ProblemFileReport)
     Dict("path" => file.path, "source_sha256" => file.sha256, "items" => problem_dict.(file.items),
         "reported_items" => file.reported_items, "omitted_items" => file.omitted_items,
-        "status" => file.status, "document_version" => file.version)
+        "status" => file.status, "document_version" => file.version,
+        "line_break_policy" => file.unicode_line_separators ? "unicode_source" : "lsp_cr_lf")
 end
 
 function problem_sort_key(problem::ProjectProblem)
@@ -91,11 +92,12 @@ function problem_file_report(snapshot::WorkspaceSourceSnapshot, items::Vector{Pr
     length(items) + omitted_items <= reported_items ||
         throw(ShenScopeError(:problems, "Problem counts exceed the producer report"))
     version === nothing || (version = problem_integer(version, "document version", 0, 2^31-1))
-    status in ("reported", "limited", "no_diagnostic_capability") ||
+    status in ("reported", "limited", "no_diagnostic_capability", "not_reported", "unversioned_report") ||
         throw(ShenScopeError(:problems, "Invalid problem file status"))
     all(item -> item.path == snapshot.path && item.source_sha256 == snapshot.sha256, items) ||
         throw(ShenScopeError(:problems, "Problem items have mixed source versions"))
     unique_items = Dict(item.id => item for item in items)
     selected = sort!(collect(values(unique_items)); by=problem_sort_key)
-    ProblemFileReport(snapshot.path, snapshot.sha256, selected, reported_items, omitted_items, status, version)
+    ProblemFileReport(snapshot.path, snapshot.sha256, selected, reported_items, omitted_items, status, version,
+        snapshot.source.unicode_line_separators)
 end

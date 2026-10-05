@@ -2,7 +2,10 @@
 
 The current request authorizes rebuilding the application and pushing reviewed,
 tested checkpoints to `SurviveAIEra/ShenScope` on GitHub. Use this checkout;
-do not create worktrees or copy the project directory. No force pushes.
+do not create worktrees or copy the project directory. Normal feature pushes must
+be fast-forward. The user explicitly authorized rewriting existing Git author and
+committer identities to SurviveAIEra's GitHub noreply identity; that one history
+replacement requires an exact remote SHA lease and preserved Git recovery bundle.
 
 Read `docs/requirements/reconstruction.md` and `WORK_STATUS.md` on resumption.
 The user's current phase target is 32,000 authored Julia Core code lines.

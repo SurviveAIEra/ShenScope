@@ -54,7 +54,7 @@ function server_event(server::CoreServer,event::AgentEvent)
     end
     rpc_notify(server,"agent/event",Dict("sequence"=>event.sequence,"kind"=>String(event.kind),
         "session_id"=>event.session_id,"trace_id"=>event.trace_id,"timestamp"=>event.timestamp,
-        "payload"=>problems_event_payload(server,event,testing_event_payload(server,event,diagnostics_event_payload(server,event)))))
+        "payload"=>validation_event_payload(server,event,workspace_event_payload(server,event,language_event_payload(server,event,problems_event_payload(server,event,testing_event_payload(server,event,diagnostics_event_payload(server,event))))))))
 end
 
 function server_approval(server::CoreServer,session_id::String,token::CancellationToken,request::PermissionRequest)
@@ -114,6 +114,12 @@ function idle_session(server::CoreServer,params::AbstractDict)
         throw(ShenScopeError(:testing_busy,"Finish this conversation's test operation first"))
     operations_running(server_problems_tool(server).operations;session_id=session.id) &&
         throw(ShenScopeError(:problems_busy,"Finish this conversation's diagnostic operation first"))
+    operations_running(server_language_tool(server).operations;session_id=session.id) &&
+        throw(ShenScopeError(:language_busy,"Finish this conversation's language-service operation first"))
+    operations_running(server_workspace_tool(server).operations;session_id=session.id) &&
+        throw(ShenScopeError(:workspace_busy,"Finish this conversation's workspace operation first"))
+    operations_running(server_validation_tool(server).operations;session_id=session.id) &&
+        throw(ShenScopeError(:validation_busy,"Finish this conversation's validation operation first"))
     operations_running(server_extensions_tool(server).operations;session_id=session.id) &&
         throw(ShenScopeError(:extension_busy,"Finish this conversation's extension operation first"))
     operations_running(server_terminal_tool(server).manager.operations;session_id=session.id) &&
@@ -140,6 +146,12 @@ function start_agent!(server::CoreServer,params::AbstractDict)
         throw(ShenScopeError(:testing_busy,"Finish this conversation's test operation before starting the agent"))
     operations_running(server_problems_tool(server).operations;session_id=session.id) &&
         throw(ShenScopeError(:problems_busy,"Finish this conversation's diagnostic operation before starting the agent"))
+    operations_running(server_language_tool(server).operations;session_id=session.id) &&
+        throw(ShenScopeError(:language_busy,"Finish this conversation's language-service operation before starting the agent"))
+    operations_running(server_workspace_tool(server).operations;session_id=session.id) &&
+        throw(ShenScopeError(:workspace_busy,"Finish this conversation's workspace operation before starting the agent"))
+    operations_running(server_validation_tool(server).operations;session_id=session.id) &&
+        throw(ShenScopeError(:validation_busy,"Finish this conversation's validation operation before starting the agent"))
     haskey(server.runs,session.id) && throw(ShenScopeError(:session,"Session has an active run"))
     operations_running(server_terminal_tool(server).manager.operations;session_id=session.id) &&
         throw(ShenScopeError(:terminal_busy,"Finish this conversation's terminal operation before starting the agent"))
@@ -193,10 +205,19 @@ end
 
 function capability_manifest()
     Dict("agent"=>true,"streaming_protocols"=>["openai_chat","openai_responses","anthropic","gemini","ollama"],
-        "tools"=>["read","search","edit","write","patch","process","terminal","git","memory","security","project","diagnostics","analyzers","models","tasks","mcp","skills","hooks","context","extensions","plan","testing","problems"],"session_journal"=>true,"memory"=>true,"memory_namespaces"=>true,"memory_retrieval_evidence"=>true,
+        "tools"=>["read","search","edit","write","patch","process","terminal","git","memory","security","project","diagnostics","analyzers","models","tasks","mcp","skills","hooks","context","extensions","plan","testing","problems","language","workspace","validation"],"session_journal"=>true,"memory"=>true,"memory_namespaces"=>true,"memory_retrieval_evidence"=>true,
         "agent_execution_modes"=>["act","plan"],"conversation_plans"=>true,
         "project_problems"=>Dict("owned_snapshots"=>true,"source_hash_validation"=>true,
             "stale_marker_withdrawal"=>true,"editor_utf16_projection"=>true,"complete_project_coverage"=>false),
+        "language_services"=>Dict("transport"=>"lsp_stdio","document_encoding"=>"utf16",
+            "explicit_process_approval"=>true,"saved_configurations"=>true,"source_hash_validation"=>true,
+            "unsaved_editor_buffers"=>false,"automatic_download"=>false,"automatic_workspace_edit"=>false),
+        "workspace_edits"=>Dict("reviewable_proposals"=>true,"source_hash_guard"=>true,
+            "external_change_rollback_protection"=>true,"selected_command_verification"=>true,
+            "multi_file_power_loss_atomic"=>false,"automatic_replay"=>false,
+            "explicit_saved_proposals_and_receipts"=>true,"saved_source_backups"=>false),
+        "project_validation"=>Dict("argument_vector_any_language"=>true,"source_bound_diagnostics"=>true,
+            "compiler_semantics_proven"=>false,"complete_project_coverage"=>false),
         "project_testing"=>Dict("argument_vector_any_language"=>true,"parsers"=>collect(PROJECT_TEST_FRAMEWORKS),
             "discovery_executes_commands"=>false,"controller_retention"=>"bounded_in_memory","automatic_replay"=>false,
             "explicit_saved_history"=>true,"saved_history_survives_restart"=>true,"saved_history_revision_checks"=>true,
@@ -244,6 +265,9 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     startswith(method,"context/") && return Base.invokelatest(context_rpc,server,method,params)
     startswith(method,"testing/") && return Base.invokelatest(testing_rpc,server,method,params)
     startswith(method,"problems/") && return Base.invokelatest(problems_rpc,server,method,params)
+    startswith(method,"language/") && return Base.invokelatest(language_rpc,server,method,params)
+    startswith(method,"workspace/") && return Base.invokelatest(workspace_rpc,server,method,params)
+    startswith(method,"validation/") && return Base.invokelatest(validation_rpc,server,method,params)
     (startswith(method,"plans/") || method=="sessions/mode") && return Base.invokelatest(plans_rpc,server,method,params)
     if method=="health"
         return Dict("ready"=>!server.stopping,"active_runs"=>length(server.runs),"pending_approvals"=>length(server.approvals))
@@ -312,6 +336,12 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
             throw(ShenScopeError(:config,"Finish project test operations before changing configuration"))
         operations_running(server_problems_tool(server).operations) &&
             throw(ShenScopeError(:config,"Finish project diagnostic operations before changing configuration"))
+        operations_running(server_language_tool(server).operations) &&
+            throw(ShenScopeError(:config,"Finish language-service operations before changing configuration"))
+        operations_running(server_workspace_tool(server).operations) &&
+            throw(ShenScopeError(:config,"Finish workspace change operations before changing configuration"))
+        operations_running(server_validation_tool(server).operations) &&
+            throw(ShenScopeError(:config,"Finish project validation operations before changing configuration"))
         value=get(params,"value",nothing)
         value isa AbstractDict || throw(RPCFault(-32602,"Configuration object required"))
         expected=rpc_string(params,"expected_sha256";max_bytes=64)
@@ -319,6 +349,14 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
             before_write=()->begin;cleanup_mcp!(mcpmanager);cleanup_skills!(skillsmanager);cleanup_hooks!(hooksmanager);cleanup_context!(server_context_tool(server).manager);cleanup_analyzers!(server_analyzers_tool(server).manager);close_extension_registry!(server_extensions_tool(server).registry);close_operations!(server_extensions_tool(server).operations);end)
         server.config=load_config(;path=server.config_file)
         for (index,tool) in pairs(server.tools)
+            if tool isa LanguageTool
+                close_operations!(tool.operations)
+                close_language_services!(tool.manager)
+                replacement=LanguageTool(server_problems_tool(server).manager)
+                server.tools[index]=replacement
+                server_task_tool(server).manager.executor.tools["language"]=replacement
+                continue
+            end
             if tool isa MemoryTool || tool isa SecurityTool || tool isa TerminalTool || tool isa DiagnosticsTool
                 if tool isa MemoryTool;cleanup_memory!(tool.manager)
                 elseif tool isa SecurityTool;cleanup_execution!(tool.manager)
@@ -446,6 +484,11 @@ function stop_server!(server::CoreServer)
     cleanup_skills!(server_skills_tool(server).manager)
     cleanup_hooks!(server_hooks_tool(server).manager)
     cleanup_context!(server_context_tool(server).manager)
+    # Drain dependent jobs before closing their shared test/Problems managers.
+    for tool in server.tools
+        tool isa Union{LanguageTool,WorkspaceTool,ValidationTool} || continue
+        close_operations!(tool.operations)
+    end
     for tool in server.tools
         tool isa ProjectTool && cleanup_projects!(tool.manager)
         tool isa AnalyzersTool && cleanup_analyzers!(tool.manager)
@@ -456,6 +499,9 @@ function stop_server!(server::CoreServer)
         tool isa DiagnosticsTool && close_operations!(tool.operations)
         tool isa TestingTool && (close_operations!(tool.operations);cleanup_project_tests!(tool.manager))
         tool isa ProblemsTool && (close_operations!(tool.operations);close_problems!(tool.manager))
+        tool isa LanguageTool && (close_operations!(tool.operations);close_language_services!(tool.manager))
+        tool isa WorkspaceTool && (close_operations!(tool.operations);close_workspace_edits!(tool.manager))
+        tool isa ValidationTool && (close_operations!(tool.operations);close_validation!(tool.manager))
         if tool isa ExtensionsTool
             close_operations!(tool.operations);close_extension_registry!(tool.registry)
         end

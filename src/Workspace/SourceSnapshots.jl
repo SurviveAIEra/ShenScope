@@ -12,7 +12,7 @@ function workspace_snapshot_path(ctx::RuntimeContext, requested::AbstractString;
         !occursin('\0', requested) || throw(ShenScopeError(:source, "Invalid workspace source path"))
     lexical = normpath(isabspath(requested) ? requested : joinpath(ctx.root, requested))
     absolute = workspace_path(ctx.root, requested; must_exist)
-    absolute == lexical && !islink(absolute) ||
+    normpath(joinpath(absolute, ".")) == normpath(joinpath(lexical, ".")) && !islink(absolute) ||
         throw(ShenScopeError(:permission, "Workspace source may not follow symlinks"))
     relative = replace(relpath(absolute, ctx.root), '\\' => '/')
     absolute, relative
@@ -39,7 +39,8 @@ function workspace_source_permission(ctx::RuntimeContext, absolute::String, tool
 end
 
 function read_workspace_snapshot(ctx::RuntimeContext, requested::AbstractString;
-        expected_sha256=nothing, maximum_bytes=8*1024^2, tool="workspace.source", allow_ask=true)
+        expected_sha256=nothing, maximum_bytes=8*1024^2, tool="workspace.source", allow_ask=true,
+        unicode_line_separators=true)
     maximum_bytes isa Integer && !(maximum_bytes isa Bool) && 1 <= maximum_bytes <= 8*1024^2 ||
         throw(ShenScopeError(:source, "Invalid source snapshot capacity"))
     expected_sha256 === nothing || expected_sha256 isa String &&
@@ -68,7 +69,7 @@ function read_workspace_snapshot(ctx::RuntimeContext, requested::AbstractString;
     permission_decision(ctx.permissions, PermissionRequest("workspace-source-recheck", :read,
         String(tool), absolute, "Recheck source access")) != Deny ||
         throw(ShenScopeError(:permission, "Workspace source access was revoked during the read"))
-    WorkspaceSourceSnapshot(ctx.root, relative, absolute, hash, SourceMap(relative, text),
+    WorkspaceSourceSnapshot(ctx.root, relative, absolute, hash, SourceMap(relative, text; unicode_line_separators),
         workspace_source_identity(after))
 end
 
@@ -76,7 +77,7 @@ function verify_workspace_snapshot(snapshot::WorkspaceSourceSnapshot, ctx::Runti
         tool="workspace.source", allow_ask=true)
     snapshot.root == ctx.root || throw(ShenScopeError(:permission, "Source snapshot belongs to another workspace"))
     current = read_workspace_snapshot(ctx, snapshot.path; expected_sha256=snapshot.sha256,
-        tool, allow_ask)
+        tool, allow_ask, unicode_line_separators=snapshot.source.unicode_line_separators)
     current.sha256 == snapshot.sha256 || throw(ShenScopeError(:stale_source, "Source snapshot is stale"))
     current
 end

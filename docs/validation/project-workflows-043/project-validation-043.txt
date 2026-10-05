@@ -1,0 +1,4 @@
+Test Summary:                                                                       | Pass  Total   Time
+Real Python, C, C++ and Go checks produce source-bound Problems and repair receipts |   40     40  30.9s
+Test Summary:                                                                        | Pass  Total  Time
+Validation parser refuses invented columns, unavailable sources and output overflows |    5      5  0.4s

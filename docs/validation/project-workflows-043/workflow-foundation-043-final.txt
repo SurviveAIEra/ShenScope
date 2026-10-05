@@ -1,0 +1,37 @@
+WARNING: Method definition (::Type{ShenScope.ValidationTool})(Any, Any) in module ShenScope at /workspace/ShenScope/src/Tools/Validation.jl:2 overwritten at /workspace/ShenScope/src/Tools/Validation.jl:6.
+ERROR: Method overwriting is not permitted during Module precompilation. Use `__precompile__(false)` to opt-out of precompilation.
+Precompiling ShenScope...
+Info Given ShenScope was explicitly requested, output will be shown live [0K
+[0KWARNING: Method definition (::Type{ShenScope.ValidationTool})(Any, Any) in module ShenScope at /workspace/ShenScope/src/Tools/Validation.jl:2 overwritten at /workspace/ShenScope/src/Tools/Validation.jl:6.
+[0KERROR: Method overwriting is not permitted during Module precompilation. Use `__precompile__(false)` to opt-out of precompilation.
+  10910.7 ms  ? ShenScope
+Test Summary:                         | Pass  Total  Time
+Cancellation tree and dynamic context |    7      7  1.4s
+Test Summary:                                | Pass  Total  Time
+Concurrent budget reservation and accounting |    9      9  1.7s
+Test Summary:                             | Pass  Total  Time
+Permission decisions and path containment |    7      7  1.3s
+Test Summary:                                      | Pass  Total  Time
+Durable journal, torn tails and revision conflicts |    6      6  4.2s
+Test Summary:                                   | Pass  Total   Time
+Session reconstruction and unknown side effects |   11     11  11.6s
+Test Summary:                                                   | Pass  Total  Time
+Plan mode scope, inherited tasks and unchanged permission gates |   20     20  0.8s
+Test Summary:                                                   | Pass  Total   Time
+Reviewed Core tool schemas narrow without trusting plugin hints |   22     22  51.5s
+Test Summary:                                                    | Pass  Total  Time
+Persisted mode CAS, ancestry, scope and interrupted notification |   14     14  2.1s
+Test Summary:                                                 | Pass  Total     Time
+Plan RPC owns sessions, mode revisions and current Read gates |   20     20  1m06.8s
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  1.3s
+Test Summary:                                                    | Pass  Total  Time
+Protocol version, config ownership, secrets and session commands |   15     15  3.0s
+Test Summary:                                        | Pass  Total  Time
+Agent protocol permission ownership and cancellation |   13     13  3.0s
+Test Summary:                                                       | Pass  Total  Time
+Workspace tools conflict guard, schema and transactional validation |    9      9  9.2s
+Test Summary:                                                 | Pass  Total  Time
+Process execution, bounded logs, ownership, input and timeout |   12     12  7.5s
+Test Summary:                                                | Pass  Total  Time
+Agent repairs a failing Python test with real tool execution |   10     10  4.2s

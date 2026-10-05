@@ -1,0 +1,32 @@
+WARNING: Method definition (::Type{ShenScope.ValidationTool})(Any, Any) in module ShenScope at /workspace/ShenScope/src/Tools/Validation.jl:2 overwritten at /workspace/ShenScope/src/Tools/Validation.jl:6.
+ERROR: Method overwriting is not permitted during Module precompilation. Use `__precompile__(false)` to opt-out of precompilation.
+Precompiling ShenScope...
+Info Given ShenScope was explicitly requested, output will be shown live [0K
+[0KWARNING: Method definition (::Type{ShenScope.ValidationTool})(Any, Any) in module ShenScope at /workspace/ShenScope/src/Tools/Validation.jl:2 overwritten at /workspace/ShenScope/src/Tools/Validation.jl:6.
+[0KERROR: Method overwriting is not permitted during Module precompilation. Use `__precompile__(false)` to opt-out of precompilation.
+  10091.6 ms  ? ShenScope
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/agent_modes.jl:6
+Plan mode scope, inherited tasks and unchanged permission gates: Error During Test at /workspace/ShenScope/test/unit/agent_modes.jl:6
+  Got exception outside of a @test
+  UndefVarError: `agent_plan_fixture` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] (::var"#1#5")(root::String)
+     @ Main /workspace/ShenScope/test/unit/agent_modes.jl:8
+   [2] mktempdir(fn::var"#1#5", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [3] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [4] macro expansion
+     @ /workspace/ShenScope/test/unit/agent_modes.jl:7 [inlined]
+   [5] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [6] top-level scope
+     @ /workspace/ShenScope/test/unit/agent_modes.jl:7
+   [7] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [8] top-level scope
+     @ none:1
+Test Summary:                                                   | Error  Total  Time
+Plan mode scope, inherited tasks and unchanged permission gates |     1      1  2.8s

@@ -1,7 +1,7 @@
 function problem_file_freshness(file::ProblemFileReport, ctx::RuntimeContext; allow_ask=true)
     try
         source = read_workspace_snapshot(ctx, file.path; expected_sha256=file.sha256,
-            tool="problems.source", allow_ask)
+            tool="problems.source", allow_ask, unicode_line_separators=file.unicode_line_separators)
         return "current", source
     catch cause
         cause isa ShenScopeError || rethrow()
@@ -43,6 +43,10 @@ function problem_current_files(snapshot::ProblemSnapshot, ctx::RuntimeContext; a
     for file in snapshot.files
         workspace_source_checkpoint(ctx)
         status, source = problem_file_freshness(file, ctx; allow_ask)
+        if file.status in ("not_reported", "unversioned_report") && status == "current"
+            status = "producer_version_unverified"
+            source = nothing
+        end
         configuration_current || begin
             status == "permission_unavailable" || (status = "configuration_stale")
             source = nothing
@@ -90,6 +94,6 @@ function read_problem_source(manager::ProblemManager, id::AbstractString, item_i
     selected === nothing && throw(ShenScopeError(:problems, "Problem item is absent from the owned snapshot"))
     selected.location === nothing && throw(ShenScopeError(:problems, "This diagnostic has no producer-reported source range"))
     source = read_workspace_snapshot(ctx, selected.path; expected_sha256=selected.source_sha256,
-        tool="problems.source")
+        tool="problems.source", unicode_line_separators=only(file.unicode_line_separators for file in snapshot.files if file.path == selected.path))
     workspace_source_excerpt(source, selected.location; context_lines)
 end

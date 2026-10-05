@@ -1,0 +1,468 @@
+{
+  "checkpoint": "043",
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "scope": [
+    "owned stdio LSP",
+    "reviewed source editing and bounded display diff",
+    "explicit proposal/receipt history",
+    "source-associated arbitrary project checks",
+    "owned asynchronous protocol and cancellation"
+  ],
+  "core_size": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 340,
+      "blank": 1627,
+      "comment": 290,
+      "code": 31304
+    },
+    "cli_tui": {
+      "nFiles": 22,
+      "blank": 21,
+      "comment": 11,
+      "code": 1360
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 32000,
+    "remaining_lines": 696,
+    "line_target_percent": 97.825,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "checks": [
+    {
+      "file": "language-services-043-calls.txt",
+      "bytes": 1380,
+      "sha256": "cffd36648b6c5b1eee0e2408e91859fbef6bd8f71bd6525cb4c67534445756ee",
+      "status": "passed",
+      "passed_assertions": 379,
+      "passing_testsets": 7
+    },
+    {
+      "file": "workspace-edits-043-history.txt",
+      "bytes": 1768,
+      "sha256": "c561104a8b3cd7fcdb81763e02edc6c34046ca36911f7f6174aae1807b27ed84",
+      "status": "passed",
+      "passed_assertions": 720,
+      "passing_testsets": 9
+    },
+    {
+      "file": "project-validation-043.txt",
+      "bytes": 420,
+      "sha256": "419fc067d8b2fed8e113ddb02e714d5be17af9e648accc26a49e1c2b9e751642",
+      "status": "passed",
+      "passed_assertions": 45,
+      "passing_testsets": 2
+    },
+    {
+      "file": "project-workflow-protocol-043.txt",
+      "bytes": 420,
+      "sha256": "df26a7e525a49bb450341e0b4b4cd88f27e37d0e9bf02d2cf50702cccc10f96a",
+      "status": "passed",
+      "passed_assertions": 38,
+      "passing_testsets": 2
+    },
+    {
+      "file": "language-shared-043.txt",
+      "bytes": 1288,
+      "sha256": "90d359f225b76d9405b9779427b07617ad8a50091cce49ff55d1d355256de4a5",
+      "status": "passed",
+      "passed_assertions": 12159,
+      "passing_testsets": 8
+    },
+    {
+      "file": "workflow-foundation-043-precompile-final.txt",
+      "bytes": 2400,
+      "sha256": "770718216910a35e01722f6776bd8a1ef182e05a5ffa1ab1084ae060986b5f08",
+      "status": "passed",
+      "passed_assertions": 183,
+      "passing_testsets": 15
+    },
+    {
+      "file": "language-services-043.txt",
+      "bytes": 2936,
+      "sha256": "619be543400217c971393df11c3d45f8796d8d5a0695a34b854230ea345abfce",
+      "status": "retained_failure_or_superseded_run",
+      "passed_assertions": 333,
+      "passing_testsets": 3
+    },
+    {
+      "file": "language-services-043-advanced.txt",
+      "bytes": 3850,
+      "sha256": "29d456cfeae29695ba7bd7884e59d354d420d05e4f7c828f05831d9cecfc3a44",
+      "status": "retained_failure_or_superseded_run",
+      "passed_assertions": 352,
+      "passing_testsets": 5,
+      "original_raw_sha256": "2caa358f0a8ac1eebb9bd7b69a0030c1b3ce70c386481417388b56e6faf6fb9b",
+      "artifact_normalization": "trailing whitespace removed; original raw output retained in ignored local log"
+    },
+    {
+      "file": "workspace-edits-043.txt",
+      "bytes": 1947,
+      "sha256": "0b9726d673cf03daec3b7faf6c5a2e18cffed4e2d11b96874f5180ef9531720c",
+      "status": "retained_failure_or_superseded_run",
+      "passed_assertions": 1,
+      "passing_testsets": 1
+    },
+    {
+      "file": "workspace-edits-043-diff.txt",
+      "bytes": 1731,
+      "sha256": "5c47bfa2c7b4f79ac135a8577474614ca22c0fc5ff941170cf2e514266ea6dd2",
+      "status": "retained_failure_or_superseded_run",
+      "passed_assertions": 29,
+      "passing_testsets": 3
+    },
+    {
+      "file": "workflow-foundation-043.txt",
+      "bytes": 2103,
+      "sha256": "73c5f0156325a4d21f766d328b20c00a9dd215d79779657ba74ccb85cbe4308a",
+      "status": "retained_failure_or_superseded_run",
+      "passed_assertions": 1,
+      "passing_testsets": 1
+    },
+    {
+      "file": "workflow-foundation-043-final.txt",
+      "bytes": 3082,
+      "sha256": "cf9b03079cd6e02d34d7c4200b20fb95a094ed1e524fa6a9f2d70536de95ee06",
+      "status": "retained_failure_or_superseded_run",
+      "passed_assertions": 183,
+      "passing_testsets": 15
+    }
+  ],
+  "passed_assertions": 13524,
+  "normal_precompile_seconds": 154.0735,
+  "actual_servers": {
+    "pyright": "1.1.408",
+    "typescript-language-server": "5.0.0",
+    "typescript": "5.9.2"
+  },
+  "real_target_languages": [
+    "Python",
+    "JavaScript",
+    "TypeScript",
+    "Go",
+    "C",
+    "C++"
+  ],
+  "source_checksums": [
+    {
+      "path": "scripts/setup_language_servers.py",
+      "sha256": "0b7a7e0faa9f9ec77ab827755c0f8d569e83d2ffcd8ca7fd41295de9be7cbf9b"
+    },
+    {
+      "path": "src/Core/PlanningTools.jl",
+      "sha256": "71bfd36095cd3dbb487988a1359c3fb95bdce28d3e18dc862b5f9ac18cda0da1"
+    },
+    {
+      "path": "src/LanguageServices/CallHierarchy.jl",
+      "sha256": "9b1556c225997b25f6bf50a288b85d89189e68145137929552301726313d4a20"
+    },
+    {
+      "path": "src/LanguageServices/Capabilities.jl",
+      "sha256": "3d27e31e9209497ff68bd6f78e3a6f61a45b66cee724810d4e55b03c2ef6f22b"
+    },
+    {
+      "path": "src/LanguageServices/Catalog.jl",
+      "sha256": "ff7ae1f111a3dad45652a023a49f673a15da0847b7cbf71482af545502fa879c"
+    },
+    {
+      "path": "src/LanguageServices/Completions.jl",
+      "sha256": "4987dd5db1c0db50849ccb8e2b226b8e95b6e37ab6086a99f66c3dbc51bcf92d"
+    },
+    {
+      "path": "src/LanguageServices/Configuration.jl",
+      "sha256": "b6d6dc1f51c00d21d8a041235394d2f0d58267a5f1a764869d2bbea86d2e12a8"
+    },
+    {
+      "path": "src/LanguageServices/Diagnostics.jl",
+      "sha256": "3b4ec28b066d8318e3eec536e339111724e7c407232a720af71962b55907e571"
+    },
+    {
+      "path": "src/LanguageServices/Documents.jl",
+      "sha256": "14123aca79820d5ff87969543f835a826abbc80803ec654c4514b82a8b44b72d"
+    },
+    {
+      "path": "src/LanguageServices/Edits.jl",
+      "sha256": "65dbbaa7c2175a9c07bd41a133c0e366056d2be3e2b8a016dbdd04fd4cd8d0c3"
+    },
+    {
+      "path": "src/LanguageServices/Framing.jl",
+      "sha256": "6e7d0608b49f9c59059da36247aad362bf6b77700c04fb39055d50e6ed153430"
+    },
+    {
+      "path": "src/LanguageServices/Hover.jl",
+      "sha256": "b578292b738ce26235d421d1b6c7f15535844a92dc62677bf4ada7a297d81f6e"
+    },
+    {
+      "path": "src/LanguageServices/Lifecycle.jl",
+      "sha256": "4105a8bbc8874f83549b3db281852e4e3fd9169ad522c7afeb58c372ed902b02"
+    },
+    {
+      "path": "src/LanguageServices/Manager.jl",
+      "sha256": "96858cf9f6216bd373e68c3d61da96df1031055cb00284cb330945705f6c425a"
+    },
+    {
+      "path": "src/LanguageServices/Navigation.jl",
+      "sha256": "31ac9002f37cddd3d3205aaf7107bc165915b049a71cac170a9fdda4b0558f0d"
+    },
+    {
+      "path": "src/LanguageServices/Requests.jl",
+      "sha256": "569d02d5f2cc91a1ccd15e9f1d236526447673489087063f54d432a602d147a9"
+    },
+    {
+      "path": "src/LanguageServices/ResultSources.jl",
+      "sha256": "292f375e660a7ee51b15ff1123c8fa5988675386759802bae71569c4f448585a"
+    },
+    {
+      "path": "src/LanguageServices/Signatures.jl",
+      "sha256": "5e5022f5b61a3c41066dbc0c363ec024731cc8b08323c35f55c7eded78cc99c8"
+    },
+    {
+      "path": "src/LanguageServices/Symbols.jl",
+      "sha256": "de39e67a71509f0a4a540806dc8fd7f8e044f2656b8a3a5aaa61e202cca903a2"
+    },
+    {
+      "path": "src/LanguageServices/Transport.jl",
+      "sha256": "898d490a02d0269458c59e41166351c9c4899103c17b1a76a92cf9af7b297c04"
+    },
+    {
+      "path": "src/LanguageServices/Types.jl",
+      "sha256": "eed799bffe77f82f61f27f5743e5b621aeb50590c193e429da04c594c2c6ff49"
+    },
+    {
+      "path": "src/LanguageServices/Uris.jl",
+      "sha256": "049611434078b1ec2729bb477773ea47c108a2c8ddd90eff4d5dc90413a6376a"
+    },
+    {
+      "path": "src/MCP/Stdio.jl",
+      "sha256": "c3b4369b02d9653596afa22a41d2483ff2c603834cebce166282cd209940291f"
+    },
+    {
+      "path": "src/Problems/Freshness.jl",
+      "sha256": "8ef932f5f4e3cb65fb542ce577630644796add8aba06122ce49eb0aba8e222ce"
+    },
+    {
+      "path": "src/Problems/Normalization.jl",
+      "sha256": "29add990a6be6e6c1d481001416682d6e72ab9141dc69eec4f509a372aae1cc2"
+    },
+    {
+      "path": "src/Problems/Types.jl",
+      "sha256": "33ec8468c34c83d5754bf8d44e0e5853e148d34f2341fffd52be6c159baacf78"
+    },
+    {
+      "path": "src/ProjectData/Locations.jl",
+      "sha256": "756d8df26e8402e26d2ef5c7f08eba28e416670ab550a9afea738a49b8022fe7"
+    },
+    {
+      "path": "src/Protocol/LanguageServices.jl",
+      "sha256": "d626afaad1badb58a0ed5e3cd5d75a80b1a77d4d4c29b5900d6de7be456b99f6"
+    },
+    {
+      "path": "src/Protocol/Server.jl",
+      "sha256": "b7348e68d48f1257f0dd4656ea4ee96f5d2a43d2814484bb8f93a307428e59f3"
+    },
+    {
+      "path": "src/Protocol/Validation.jl",
+      "sha256": "cd16af66e6dc4c70b5ba7a08e3dc5504b83d627bf643b33cc8b879a59f8f15a7"
+    },
+    {
+      "path": "src/Protocol/Workspace.jl",
+      "sha256": "b970750cc1258fb21d8be7c2b294781d769971c15d6c10445e416201b240c32d"
+    },
+    {
+      "path": "src/Runtime/ToolScheduler.jl",
+      "sha256": "d616c091cdfa1440e66f0e419dcc66c5f7222e0e71889fdb791645fdba3a9be4"
+    },
+    {
+      "path": "src/ShenScope.jl",
+      "sha256": "bc6935cecaa0c5cc2267f63914b0723e157e2515d95b19a6e24fad6957e43e37"
+    },
+    {
+      "path": "src/Tools/Files.jl",
+      "sha256": "a86c05feb7d0318ecb451e13a586ae915cb8e1e57bdecc815454eb267513a802"
+    },
+    {
+      "path": "src/Tools/LanguageServices.jl",
+      "sha256": "0ed0bf34cfb9ed2049dfec1896fadcda983ffec2b197b9f9345dcaa777609785"
+    },
+    {
+      "path": "src/Tools/Validation.jl",
+      "sha256": "401c17978f0bb7ffd0fd3fcb292670a26c621dea1f8df5cf6e095cb2912fdca2"
+    },
+    {
+      "path": "src/Tools/Workspace.jl",
+      "sha256": "62efb3857b60aa0e90cfe1a64e6460bb78ce91dd9419019f3bcb3772db5d7063"
+    },
+    {
+      "path": "src/Validation/Execution.jl",
+      "sha256": "a3f0fc626f77ae2e6ee7462311805f1df4e6f24d46e0a18e31c134fef577010d"
+    },
+    {
+      "path": "src/Validation/OutputParsing.jl",
+      "sha256": "28838290c155e116114969fbf22a807bacc145e06ccb76d70578f20c9317b8a1"
+    },
+    {
+      "path": "src/Validation/Reports.jl",
+      "sha256": "d5c04818cfab9ae2bb3d8cc0a458cf7aee506d6f4b30187b4182b025a2c806cd"
+    },
+    {
+      "path": "src/Validation/Sources.jl",
+      "sha256": "06244bee05fb65aa557a2b497c07532e9db797f2eb3429466cc4240f7cde3cba"
+    },
+    {
+      "path": "src/Validation/Types.jl",
+      "sha256": "ce5ce25ff5056847e0522d0335dddb60a265cc857a713dc9789a6a352bf82a71"
+    },
+    {
+      "path": "src/Workspace/DiffProjection.jl",
+      "sha256": "dc7f65085f61df1ae4cdd4a4e4177802ae033497db8748a5caa5e251f79e0ec5"
+    },
+    {
+      "path": "src/Workspace/DiffSearch.jl",
+      "sha256": "a29d8dc4929e32e529b0e70a515aa86b1c411a957a9384e00343b9c2dd2be14b"
+    },
+    {
+      "path": "src/Workspace/DiffTypes.jl",
+      "sha256": "0fffed847dfd2a30911efadfb19937d51af80a3724dc976377ce03f368c4444e"
+    },
+    {
+      "path": "src/Workspace/EditApplication.jl",
+      "sha256": "e113815e0e94081d497ca06cd10be20979a3bae77e86f80760f9fbc8405754a0"
+    },
+    {
+      "path": "src/Workspace/EditLocks.jl",
+      "sha256": "cfa7acacf4e1c86d6e0e00f7ba729752ced738e400863b6fe779368e2b6a49c8"
+    },
+    {
+      "path": "src/Workspace/EditPlans.jl",
+      "sha256": "2815722906366888fe50f8e2d14eb979becdac43423f81997f0194e332fe80ab"
+    },
+    {
+      "path": "src/Workspace/EditPreviews.jl",
+      "sha256": "ffd58c0fe29fe20d52d600b7f3f5f569730e7bbd6f6d4393068ebd935f8cf7e2"
+    },
+    {
+      "path": "src/Workspace/EditSources.jl",
+      "sha256": "b0c4a44454f4c6d1e3c27dba3275026a829eaadb9c99e4c5041be9e4efd9e9f9"
+    },
+    {
+      "path": "src/Workspace/EditTypes.jl",
+      "sha256": "fbeeb5d7f3c1361b105a6c0521071589babbc68c00dcdef74edbf89babf2b6c1"
+    },
+    {
+      "path": "src/Workspace/EditValidation.jl",
+      "sha256": "b98ea5fef3ebfcf1f958b68bb2df2473b6a2d37449b0ae565f79d5d790264c67"
+    },
+    {
+      "path": "src/Workspace/History.jl",
+      "sha256": "88b7d31adf8dba0390d9bd045c1654e2f84fa38d35a422220da356e658de984d"
+    },
+    {
+      "path": "src/Workspace/HistoryRecovery.jl",
+      "sha256": "bcfdcd276aaf347ed5c7829dcb8c0a9412e9c380c3488c28708d256e6312df10"
+    },
+    {
+      "path": "src/Workspace/HistoryTypes.jl",
+      "sha256": "ba147a5bbdbdb734403bc8a879aa9ae198383d4872ac55687a6dde1393563667"
+    },
+    {
+      "path": "src/Workspace/HistoryValidation.jl",
+      "sha256": "c5caf4ab0ffcb8e993c65976e4d6ccdf3f2696b8657c090f6c87f57c32b11b04"
+    },
+    {
+      "path": "src/Workspace/SourceSnapshots.jl",
+      "sha256": "b875e90c7036c755c030d9280f092883b8c4338149aa57eaefe89b5a5674b846"
+    },
+    {
+      "path": "src/Workspace/Verification.jl",
+      "sha256": "5fe3bf9d27f09d79bf012741a4f716408b7439e0b8b016a30555ad0d6490a286"
+    },
+    {
+      "path": "test/integration/language_services.jl",
+      "sha256": "0d6312e9f89c3b3688faec06d2c9929567c5238d9f2b1241cc86f68843a716b7"
+    },
+    {
+      "path": "test/integration/project_validation.jl",
+      "sha256": "2de72e00ffb9fa0a75604a6052dde3c8ab6e6938ded322c84cd70d4ac0bf9b9d"
+    },
+    {
+      "path": "test/integration/workspace_edits.jl",
+      "sha256": "c16964e1be0ff635a365436c2981dacf4ee95c5d96a79a1352fef0f47fd785e0"
+    },
+    {
+      "path": "test/language_services.jl",
+      "sha256": "c66f1aa38e99f37357b97a167e74d8ddcdc517759473c3fe083a851608b02406"
+    },
+    {
+      "path": "test/project_validation.jl",
+      "sha256": "f593253256fcc7f995afdf97de09102ac0c3be95791e11bd6f93581fa036bb0e"
+    },
+    {
+      "path": "test/project_workflow_protocol.jl",
+      "sha256": "2a6d1767fe69514141f0b36aa1a81bbfd57bad5a013c963e386aafa700a23552"
+    },
+    {
+      "path": "test/unit/language_advanced.jl",
+      "sha256": "24c593ad288939b1ece83b52a87045c6c0e783ee6c6aca6ac1d9f861f73a0b3b"
+    },
+    {
+      "path": "test/unit/language_services.jl",
+      "sha256": "423cc45743973b8ce9f229760b9a6e282e595bc7ca9191a4a49453222f0afe7b"
+    },
+    {
+      "path": "test/unit/workspace_diff.jl",
+      "sha256": "f3dab1bc519ca523fa9e451eedd8fabacb3aa9f8ea0ba927d8697843164497bb"
+    },
+    {
+      "path": "test/unit/workspace_edits.jl",
+      "sha256": "aa056fdffcb767812714eff927cb25ab06a0bf355e1ca347b7428458a8e00a94"
+    },
+    {
+      "path": "test/unit/workspace_history.jl",
+      "sha256": "ebfc81efd97ea3d299ac1c92450bfb4bbb8f2732db7cb94849f478d42eb04d84"
+    },
+    {
+      "path": "test/workspace_edits.jl",
+      "sha256": "ee58e8fc58206ff7907b0059ac51ea3048da022748dcd88e98bbdec095c98d7e"
+    }
+  ],
+  "reference_evidence": "project-workflows-043/reference-evidence.json",
+  "limitations": [
+    "No unsaved editor LSP buffers",
+    "No automatically executed language-server edits or commands",
+    "No multi-file power-loss atomicity",
+    "No complete project coverage",
+    "Native Problems publication is a subsequent client checkpoint",
+    "No live-model quality or host-tool OS isolation claim"
+  ],
+  "client_transport": {
+    "status": "passed",
+    "node_tests": 15,
+    "file": "project-workflows-043/workflow-node-043.txt",
+    "sha256": "405572ca1bfc7e9ea808542c23c807356f1dcd4581bd29cf149154bdbb46d7a5",
+    "actual_core_transport": true,
+    "gui_rerun": false
+  },
+  "readme_checks": {
+    "local_links_each_language": 35,
+    "toml_examples_each_language": 1,
+    "chinese_sha256": "51a0131c5575132a26f68052a158a465e8752ed77d83b8aa0844d41f3dee0857",
+    "english_sha256": "bcdbcfc9470b7ee6158b47aba7fbc6aa859f309b9f6b56ead15323ce4dbb3730",
+    "source_mapping": "docs/architecture/product_readme_basis.md",
+    "product_status": "native development runtime; standalone VSIX; complete IDE installer unfinished"
+  }
+}

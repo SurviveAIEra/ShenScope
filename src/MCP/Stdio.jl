@@ -61,11 +61,16 @@ function mcp_bound_environment(spec::MCPServerSpec, lookup::Function)
 end
 
 function mcp_stdio_transport(spec::MCPServerSpec, ctx::RuntimeContext, generation::Int,
-        callback::Function, failed::Function; credential_lookup = key -> get(ENV, key, ""))
+        callback::Function, failed::Function; credential_lookup = key -> get(ENV, key, ""),
+        decoder_factory=()->MCPLineDecoder(spec.max_message_bytes),
+        decoder_feed=feed_mcp_lines!, decoder_finish=finish_mcp_lines!,
+        permission_tool="mcp.process", permission_descriptor=nothing)
     directory = workspace_path(ctx.root, spec.cwd)
     isdir(directory) || throw(ShenScopeError(:mcp_config, "MCP process directory does not exist"))
-    permission = canonical(Dict("argv" => spec.argv, "cwd" => directory, "environment_sources" => spec.environment_env))
-    authorize!(ctx, :process, "mcp.process", permission; reason = "Start the configured MCP server process")
+    permission = permission_descriptor === nothing ?
+        canonical(Dict("argv" => spec.argv, "cwd" => directory, "environment_sources" => spec.environment_env)) :
+        String(permission_descriptor)
+    authorize!(ctx, :process, permission_tool, permission; reason = "Start the configured service process")
     environment = mcp_bound_environment(spec, credential_lookup)
     command = Sys.islinux() ? vcat(["setsid"], spec.argv) : spec.argv
     input = Pipe()
@@ -84,13 +89,13 @@ function mcp_stdio_transport(spec::MCPServerSpec, ctx::RuntimeContext, generatio
     transport = MCPStdioTransport(process, process_id, input, output, error, OutputBuffer(64 * 1024), Task[],
         spec.max_message_bytes, generation, callback, failed, false, ReentrantLock(), ReentrantLock())
     push!(transport.readers, @async begin
-        decoder = MCPLineDecoder(transport.maximum)
+        decoder = decoder_factory()
         try
             while !eof(output) && !transport.closed
-                feed_mcp_lines!(callback, decoder, readavailable(output))
+                decoder_feed(callback, decoder, readavailable(output))
                 yield()
             end
-            transport.closed || finish_mcp_lines!(callback, decoder)
+            transport.closed || decoder_finish(callback, decoder)
             transport.closed || failed(:connection_closed)
         catch cause
             transport.closed || failed(cause isa ShenScopeError ? cause.code : :mcp_transport)
@@ -110,8 +115,8 @@ function mcp_stdio_transport(spec::MCPServerSpec, ctx::RuntimeContext, generatio
 end
 
 function mcp_transport_send!(transport::MCPStdioTransport, message::AbstractDict,
-        ctx::RuntimeContext; timeout = 30.0)
-    text = mcp_encode(message, transport.maximum) * "\n"
+        ctx::RuntimeContext; timeout = 30.0, frame=raw->raw*"\n")
+    text = frame(mcp_encode(message, transport.maximum))
     writer = @async lock(transport.write_mutex) do
         transport.closed && throw(ShenScopeError(:mcp_transport, "MCP transport is closed"))
         write(transport.input, text)

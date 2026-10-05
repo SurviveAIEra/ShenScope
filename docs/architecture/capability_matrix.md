@@ -295,3 +295,12 @@ save/rename/delete require independent Persistence permission and a current
 revision. Both clients use the same Core-owned history and current-source
 previews. Limits and evidence are in `docs/core/project_test_history.md` and
 checkpoint 040. Native editor Testing API integration remains unfinished.
+
+Checkpoint 043 implements explicit stdio LSP, versioned source diagnostics,
+review-only rename/format/code actions, original bounded source diff previews,
+guarded source application/rollback, explicit proposal and receipt history and
+general compiler/check commands. Python/TypeScript LSP and Python/JavaScript/Go/
+C/C++ controlled checks exercise current source and selected validation. Seven
+additional primary source reviews remain partial. Unsaved editor buffers, full
+semantic/framework coverage, multi-file power-loss atomicity and host-tool OS
+isolation are not established. See project-workflows-checkpoint-043.json.

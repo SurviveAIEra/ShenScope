@@ -1,9 +1,9 @@
 # Work status
 
 Current 32,000-line phase: IN_PROGRESS. Prioritize urgent general-project modules.
-Latest verified cloc 2.11 count: 27,679 authored Julia Core code lines across 294 files;
+Latest verified cloc 2.11 count: 31,304 authored Julia Core code lines across 340 files;
 CLI/TUI add 1,360 lines and optional Julia extensions add 57, counted separately.
-This is 86.4969% of the current phase's line target, leaving 4,321 lines. These are early implementations,
+This is 97.825% of the current phase's line target, leaving 696 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -1151,3 +1151,42 @@ native Code-OSS ABI inspection are recorded. Evidence:
 integration and the remaining functional/250,000-line gates.
 
 Project Problems checkpoint 042: source-verified, conversation-owned diagnostic snapshots, severity/text/file filters, report comparison, UTF-16 editor projection and hash-checked previews. Stale/deleted sources or changed/appearing compiler configuration withdraw markers. Read denial hides retained job data; cancellation releases pending approvals. Real TypeScript diagnostics retract after an edit and disappear after reindexing the repaired fixture. 56 feature assertions and 132 affected foundation/plan/protocol assertions pass. cloc: 27,679 authored Core lines, 4,321 below the current 32,000-line phase target. Native Problems publication and additional language-service producers are next; no whole-project or live-model completion claim. Evidence: `docs/validation/project-problems-checkpoint-042.json`.
+
+## General project workflow checkpoint 043
+
+Core now implements an owned, explicitly configured stdio LSP client: strict
+UTF-8 framing/UTF-16 ranges, disk synchronization, versioned diagnostics,
+navigation, completions/signatures and call hierarchy. Actual Pyright 1.1.408
+and TypeScript LSP 5.0.0 tests pass. Rename/format/code-action edits remain review
+proposals. Saved server settings use explicit Persistence and revision checks.
+There are no automatic installs, edits, restarts or unsaved-buffer claims.
+
+Reviewed multi-file edits share locks with ordinary edit/write; ordinary edit and
+patch now use the same guarded application path. Source/hash/mode checks precede
+writes; rollback preserves external edits; lost notifications cannot replay an
+applied proposal. Bounded source differences and explicitly saved proposals/
+receipts support review/restart without full source backups. Actual Python and
+JavaScript selected tests bind application and command receipts. Multi-file
+power-loss atomicity and complete input/coverage proof remain absent.
+
+General compiler/linter checks accept arbitrary argument vectors and selected
+source hashes. Actual Python, Go, C and C++ failure/repair cases pass and stale
+Problems projections withdraw. Unknown diagnostic columns use an explicitly
+derived whole line. Host commands/output interpretation are not compiler proof
+or OS isolation. Normal Core precompilation succeeds (154.1 seconds). Targeted
+Core checks: 13,524 passing assertions across 43 testsets; 12,063 are source
+coordinate properties and 1,461 other assertions. The client transport check
+is recorded separately. Evidence: docs/validation/project-workflows-checkpoint-043.json.
+
+README.md and README.en.md now describe scope, features, actual language limits,
+seven primary agent references, supplementary research and evidenced design
+advantages. Both have 35 verified local links and parsed TOML examples. Existing
+45 commit author/committer identities were explicitly rewritten to the user's
+GitHub noreply identity; trees, messages and dates were preserved, GitHub main
+was verified, and normal feature pushes remain fast-forward. A 7.4 MiB Git-only
+recovery bundle is ignored locally. Draft revision 39 pins rewritten checkpoint
+042; install/start/network requirements were preserved. The draft is not published.
+
+All 15 actual Node/Core client tests pass, including owned tests, plans, PTY,
+profiles/sampling/evidence, extension generations, Unicode/approvals and malformed
+transport/child disposal. No GUI/client source change occurred in this checkpoint.
