@@ -540,6 +540,31 @@ build research dependency. Selected sources below remain a partial review.
 | Qwen Code `scripts/installation/install-qwen-standalone.sh` 1–52 | Runtime acquisition and installation paths differ | Sysimage reuse of an existing Julia executable is distinguished from a bundled runtime or standalone application |
 | PackageCompiler `docs/src/sysimages.md` 1–78, `apps.md` 1–62 and `src/PackageCompiler.jl` 210–235, 515–544, 678–707, 774–808 | Frozen packages, project inclusion, Julia 1.11 precompile behavior and package-manager globals affect builds | Source/lock fingerprints, isolated compiler environment, disposable workloads and exact runtime validation precede any launch plan |
 
+## Structured compiler evidence source observations
+
+Checkpoint 031 rereads handoff sections 7.11 and 7.44: inferred compiler evidence
+can assist diagnosis, but experimental effects do not supply a security boundary.
+Selected pinned source reads continue the seven-project review; they do not
+establish that every upstream capability has been reviewed or implemented.
+
+| Source | Observation | Independent Julia behavior |
+|---|---|---|
+| Codex `codex-rs/app-server/src/request_processors/diagnostics.rs` 1–23 | Process diagnostics and named gauges are structured separately | Method/source identity, compiler statistics and execution metadata have distinct records |
+| OpenCode `packages/schema/src/lsp-event.ts` 1–7 | Language-service updates use a named event inventory | Owned compiler completion/failure events update the shared UI through existing scoped Core events |
+| DeepSeek Harness `packages/lsp/lsp-stdio/src/framing.ts` 1–42 | Byte framing, header limits and message limits are explicit | Existing framed RPC plus bounded helper records and independent strict IR validation protect transport boundaries |
+| Pi `packages/coding-agent/src/core/diagnostics.ts` 1–15 | Diagnostic kinds and source/collision evidence are explicit | Advisory compiler findings retain source/statement evidence and never claim observed runtime failures |
+| Kimi Code `packages/agent-core-v2/src/app/capability/capabilityService.ts` 1–42 | Scoped capability services distinguish install changes and readiness events | Capability discovery, asynchronous owned inference, result views and cancellation remain separate actions |
+| ZCode `packages/shared/src/process-diagnostic.ts` 1–42 | Early errors use a strict bounded stderr side channel | Existing bounded child stderr stays separate from compiler protocol frames; malformed result shapes refuse publication |
+| Qwen Code `packages/cli/src/nonInteractive/tool-result-boundary-diagnostics.ts` 1–42 | Per-session result projections retain diagnostic artifacts | Compiler results retain conversation ownership, fingerprints and a pure-body digest independently of the client view |
+| Kaimon `src/reflection_tools.jl` 1–44 | Runtime method navigation carries source evidence | Fixed trusted Core target identities use real method locations and source hashes; arbitrary evaluated navigation is outside this contract |
+| Julia 1.11.7 `base/compiler/effects.jl` 280–299 | Public predicate helpers distinguish conditional effect encodings | Actual `Base.infer_effects` and compiler predicates retain version-specific encodings and advisory interpretations |
+
+Control blocks, dominators, cycle groups, possible local-slot definitions, SSA
+dependencies, validation and UI integration are authored independently. No
+upstream implementation is copied or translated. Arbitrary project inference,
+complete exceptions/heap effects, runtime evidence and source-graph fusion remain
+open. See `docs/core/compiler_ir.md` for precise boundaries.
+
 No upstream source was copied or translated. The artifact receipt is local
 integrity evidence, not a signature. Relocation, standalone apps, installed IDE
 distribution and clean-machine restore are distinct remaining gates.

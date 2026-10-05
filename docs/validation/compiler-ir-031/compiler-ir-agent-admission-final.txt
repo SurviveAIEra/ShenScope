@@ -1,0 +1,15 @@
+✔ Node editor transport talks to real Julia Core with scoped approvals and Unicode (29130.953966ms)
+ℹ Core initialized: 2379 ms
+ℹ Conversation created: 2385 ms
+ℹ Agent request accepted: 16675 ms
+ℹ Edit approved: 28106 ms
+ℹ Archive approved: 28208 ms
+ℹ Conversation and artifact verified: 28474 ms
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29237.472258

@@ -112,6 +112,8 @@ function idle_session(server::CoreServer,params::AbstractDict)
         throw(ShenScopeError(:extension_busy,"Finish this conversation's extension operation first"))
     operations_running(server_terminal_tool(server).manager.operations;session_id=session.id) &&
         throw(ShenScopeError(:terminal_busy,"Finish this conversation's terminal operation first"))
+    operations_running(server_diagnostics_tool(server).operations;session_id=session.id) &&
+        throw(ShenScopeError(:diagnostics_busy,"Finish this conversation's compiler operation first"))
     operations_running(server_memory_tool(server).manager.operations;session_id=session.id) &&
         throw(ShenScopeError(:memory_busy,"Finish this conversation's memory operation first"))
     operations_running(server_security_tool(server).manager.operations;session_id=session.id) &&
@@ -131,6 +133,8 @@ function start_agent!(server::CoreServer,params::AbstractDict)
     haskey(server.runs,session.id) && throw(ShenScopeError(:session,"Session has an active run"))
     operations_running(server_terminal_tool(server).manager.operations;session_id=session.id) &&
         throw(ShenScopeError(:terminal_busy,"Finish this conversation's terminal operation before starting the agent"))
+    operations_running(server_diagnostics_tool(server).operations;session_id=session.id) &&
+        throw(ShenScopeError(:diagnostics_busy,"Finish this conversation's compiler operation before starting the agent"))
     operations_running(server_memory_tool(server).manager.operations;session_id=session.id) &&
         throw(ShenScopeError(:memory_busy,"Finish this conversation's memory operation first"))
     operations_running(server_security_tool(server).manager.operations;session_id=session.id) &&
@@ -184,7 +188,7 @@ function capability_manifest()
         "permission_approvals"=>true,"config_profiles"=>true,"os_isolation"=>false,
         "mcp"=>true,"mcp_transports"=>["stdio","streamable_http"],"skills"=>true,"hooks"=>true,"project_intelligence"=>true,
         "julia_extension_lifecycle"=>true,"julia_optional_extensions"=>true,"extension_isolation"=>"trusted_in_process",
-        "terminal_pty"=>terminal_platform_view(),
+        "terminal_pty"=>terminal_platform_view(),"structured_compiler_ir"=>true,
         "durable_tasks"=>true,"dynamic_analyzers"=>true,"context_checkpoints"=>true,"context_recovery"=>true,
         "model_catalog"=>true,"model_counting"=>true,"model_health"=>true,"model_routing"=>true,
         "isolated_compute"=>Dict("dependency_available"=>compute_seccomp_available(),"backend"=>"linux-seccomp-compute-v1",
@@ -207,6 +211,7 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     startswith(method,"project/") && return Base.invokelatest(project_rpc,server,method,params)
     startswith(method,"extensions/") && return Base.invokelatest(extensions_rpc,server,method,params)
     startswith(method,"terminal/") && return terminal_rpc(server,method,params)
+    startswith(method,"diagnostics/") && return Base.invokelatest(diagnostics_rpc,server,method,params)
     startswith(method,"analyzers/") && return Base.invokelatest(analyzers_rpc,server,method,params)
     startswith(method,"models/") && return Base.invokelatest(models_rpc,server,method,params)
     startswith(method,"memory/") && return Base.invokelatest(memory_rpc,server,method,params)
@@ -245,6 +250,8 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
             throw(ShenScopeError(:config,"Finish extension operations before changing configuration"))
         operations_running(server_terminal_tool(server).manager.operations) &&
             throw(ShenScopeError(:config,"Finish terminal operations before changing configuration"))
+        operations_running(server_diagnostics_tool(server).operations) &&
+            throw(ShenScopeError(:config,"Finish compiler operations before changing configuration"))
         taskmanager = server_task_tool(server).manager
         lock(taskmanager.mutex) do
             any(job -> job.status == :running, values(taskmanager.jobs)) &&
@@ -284,11 +291,12 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
             before_write=()->begin;cleanup_mcp!(mcpmanager);cleanup_skills!(skillsmanager);cleanup_hooks!(hooksmanager);cleanup_context!(server_context_tool(server).manager);cleanup_analyzers!(server_analyzers_tool(server).manager);close_extension_registry!(server_extensions_tool(server).registry);close_operations!(server_extensions_tool(server).operations);end)
         server.config=load_config(;path=server.config_file)
         for (index,tool) in pairs(server.tools)
-            if tool isa MemoryTool || tool isa SecurityTool || tool isa TerminalTool
+            if tool isa MemoryTool || tool isa SecurityTool || tool isa TerminalTool || tool isa DiagnosticsTool
                 if tool isa MemoryTool;cleanup_memory!(tool.manager)
                 elseif tool isa SecurityTool;cleanup_execution!(tool.manager)
-                else;cleanup_terminals!(tool.manager;close_manager=true);end
-                replacement=tool isa MemoryTool ? MemoryTool() : tool isa SecurityTool ? SecurityTool() : TerminalTool()
+                elseif tool isa TerminalTool;cleanup_terminals!(tool.manager;close_manager=true)
+                else;close_operations!(tool.operations);end
+                replacement=tool isa MemoryTool ? MemoryTool() : tool isa SecurityTool ? SecurityTool() : tool isa TerminalTool ? TerminalTool() : DiagnosticsTool()
                 server.tools[index]=replacement
                 server_task_tool(server).manager.executor.tools[tool_name(replacement)]=replacement
             end
@@ -412,6 +420,7 @@ function stop_server!(server::CoreServer)
         tool isa MemoryTool && cleanup_memory!(tool.manager)
         tool isa SecurityTool && cleanup_execution!(tool.manager)
         tool isa TerminalTool && cleanup_terminals!(tool.manager;close_manager=true)
+        tool isa DiagnosticsTool && close_operations!(tool.operations)
         if tool isa ExtensionsTool
             close_operations!(tool.operations);close_extension_registry!(tool.registry)
         end

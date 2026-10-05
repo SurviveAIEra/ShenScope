@@ -1,0 +1,41 @@
+✔ Real compiler RPC scopes approvals, cancellation and inferred graph evidence (55754.375481ms)
+ℹ 65 actual statements, 7 blocks
+✔ Real PTY RPC keeps input, resize, replay and interruption in the owning conversation (19908.223228ms)
+✔ Node editor transport talks to real Julia Core with scoped approvals and Unicode (35242.741385ms)
+ℹ Core initialized: 1883 ms
+ℹ Conversation created: 1888 ms
+ℹ Agent request accepted: 14631 ms
+ℹ Edit approved: 33962 ms
+ℹ Archive approved: 34065 ms
+ℹ Conversation and artifact verified: 34395 ms
+✔ Julia source indexing and dispatch evidence travel through the real editor transport (27022.685604ms)
+ℹ Julia Core initialized: 3830 ms
+ℹ Julia backend capabilities: 6645 ms
+ℹ Julia conversation created: 6699 ms
+ℹ Julia index job started: 24889 ms
+ℹ Julia index completed: 26282 ms
+ℹ Julia dispatch queried: 26678 ms
+ℹ Julia stale evidence refused: 26685 ms
+✔ Real editor transport combines parser evidence with pinned pagination and stale-source refusal (28999.410134ms)
+ℹ Combined Core initialized: 1992 ms
+ℹ go_ast build started: 23217 ms
+ℹ go_ast build completed: 25166 ms
+ℹ tree_sitter build started: 25464 ms
+ℹ tree_sitter build completed: 25667 ms
+ℹ combined evidence_compare started: 26619 ms
+ℹ combined evidence_compare completed: 27503 ms
+ℹ combined evidence_compare started: 27690 ms
+ℹ combined evidence_compare completed: 27767 ms
+ℹ combined evidence_tests started: 27768 ms
+ℹ combined evidence_tests completed: 28352 ms
+✔ Independent Julia extensions travel through real editor RPC with registry and generation guards (10275.76635ms)
+✔ Malformed child framing closes transport and rejects pending requests (79.878655ms)
+✔ Disposal terminates an owned child that ignores shutdown and SIGTERM (4049.564629ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 125865.137931

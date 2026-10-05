@@ -206,3 +206,12 @@ Dynamic read/process denial, cancellation, lifetime/shared budget and foreign
 conversation checks retain the permission/runtime boundary. Windows ConPTY,
 restricted sandbox PTY, durable reconnect, shell integration and detached hostile
 process containment remain pending. This host PTY is not advertised as isolated.
+
+Checkpoint 031 adds actual structured Julia inferred IR for fixed trusted Core
+methods, bounded normal-control graphs, possible local definitions, SSA uses,
+source fingerprints and version-specific experimental effect predicates. Owned
+RPC cancellation and both shared IDE Runtime views expose the same Core actions.
+The parent recomputes graph projections and checks live permissions/source pins.
+Arbitrary project inference, full exception/heap/runtime evidence, profiling and
+fusion with project/Git/coverage facts remain pending. A separate helper process
+is explicitly host execution, and configured restricted sandboxes refuse it.

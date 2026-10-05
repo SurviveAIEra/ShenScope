@@ -682,3 +682,57 @@ reclaiming 423,664,125 bytes. About 17.5 GiB remains free. The strict audit foun
 one application checkout, 50 dependency repositories and no unknown repositories;
 no worktrees or application-directory copies were created. Development continues
 through the remaining gates and the active 250,000 Core-line target.
+
+## Checkpoint 031: structured Julia compiler evidence and owned IDE inference
+
+Core: 22,793 authored Julia lines in 230 files; CLI/TUI: 1,108 in 20 files.
+Optional authored Julia extension source remains separately counted at 57 lines.
+The active minimum remains 250,000; 227,207 Core lines are still required.
+
+Real unoptimized inferred CodeInfo for six fixed trusted Core targets now yields
+bounded source/method/type/operand records, explicit normal control blocks,
+reachability/dominators/cycle groups, possible local-slot definitions, SSA uses,
+call projections and advisory findings. Anonymous and duplicate slot names keep
+distinct IDs. Actual Base.infer_effects predicates disclose experimental,
+version-specific guarantees without claiming security or measured performance.
+The parent checks source/runtime/body pins and independently recomputes graph
+projections before publication. Arbitrary project code is not loaded or executed;
+exception edges, heap aliases and executed dispatch remain outside this report.
+
+Owned diagnostics RPC jobs separate metadata from permissioned inference. Live
+read/dynamic denial, shared budgets, pending-approval cancellation, conversation
+ownership, busy/config guards, bounded retention and shutdown cleanup apply.
+The host helper refuses configured restricted sandboxes. CLI, agent tool, native
+Workbench and VSIX share Core behavior. The Runtime UI presents method metrics,
+forty-row statement pages, uncertainty/block filters and effect qualifiers.
+Narrow-sidebar type names, pagination and theme dropdowns were inspected and
+corrected through actual screenshots and GUI runs.
+
+Validation includes 73 new assertions and 246 distinct affected Julia assertions,
+eight actual Node/Core transport tests, actual separate compiler children and
+CLI graph output, native Workbench with extensions disabled and independent VSIX
+interaction. TypeScript/shared builds and the complete Workbench client typecheck
+pass. Exact package checks cover 259 authored Core/helper/extension/metadata files
+and three client assets in the refreshed VSIX. Installed/relocated packages,
+Windows and remote CI results are not implied by these local observations.
+
+Real IR tests exposed anonymous/repeated-slot assumptions and a JSON empty-set
+element-type bug; both were corrected. Initial Node assertion field mistakes,
+sandbox spawn refusal, interrupted GUI execution and an Xvfb zombie lock were
+retained as failed evidence. The GUI harness now awaits an automatically allocated
+ready display. Missing standalone parser-test helpers were factored into a shared
+fixture and a reproducible focused compiler suite. Editor tests honor configured
+Julia/depot paths; CI supplies its runner paths. A concurrent final transport run
+also exposed first-request compilation exceeding the old thirty-second job-start
+timeout. Shared clients now allow 120 seconds for owned job admission; normal
+requests and explicit caller timeouts retain their limits. Evidence:
+docs/validation/compiler-ir-checkpoint-031.json and docs/core/compiler_ir.md.
+
+The seven primary agent sources and Julia compiler/effect handoff requirements
+extend the partial reference review; no upstream implementation was copied or
+translated. One application checkout, 50 dependency repositories and no unknown
+repositories passed the strict audit. The shared depot retains only the current
+Core cache pair; no experimental sysimage or project copy was created. About
+17.5 GiB is free. Development continues with compiler evidence retention,
+comparison/fusion, runtime/state and remaining functional gates alongside the
+active 250,000 authored Core-line target.

@@ -1,0 +1,1 @@
+{"statistics":{"blocks":7,"calls":25,"flow_operations":387,"normal_edges":7,"operand_nodes":140,"slot_reads":15,"slots":6,"ssa_edges":52,"statements":65},"target":"cliptext_string","validated":true}

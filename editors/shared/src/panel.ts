@@ -64,6 +64,15 @@ export class ShenScopePanel {
     private completedTerminalJobs = new Set<string>();
     private terminalArgv = '["/bin/bash", "--noprofile", "--norc"]';
     private terminalResult: any;
+    private diagnosticsStarting = false;
+    private diagnosticsJob?: string;
+    private completedDiagnosticsJobs = new Set<string>();
+    private diagnosticsResult: any;
+    private diagnosticsTarget = 'cliptext_string';
+    private diagnosticsMethod = 0;
+    private diagnosticsBlock = 0;
+    private diagnosticsPage = 0;
+    private diagnosticsUncertain = false;
     private projectResult: any;
     private evidenceBackends = new Set(['tree_sitter', 'go_ast']);
     private evidenceQuery = '';
@@ -184,6 +193,7 @@ export class ShenScopePanel {
         this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
         this.modelsProfile = ''; this.modelPlanRole = '';
         this.terminalResult = undefined;
+        this.diagnosticsResult = undefined; this.diagnosticsMethod = 0; this.diagnosticsBlock = 0; this.diagnosticsPage = 0;
         this.sessionId = undefined; this.extensionsResult = undefined; this.extensionsPackageReceipt = undefined; this.memoryResult = undefined; this.memoryDraft = { key: '', title: '', content: '', tags: '', reference: '', version: 0 }; this.contextResult = undefined; this.analyzersResult = undefined; this.analyzerArchiveOffsets = { project: 0, user: 0 }; this.assistant = undefined; this.assistantText = ''; this.toolCards.clear(); this.transcript.replaceChildren(); this.notice.hidden = true; await this.selectTab('Chat'); this.composer.focus();
     }
     private scrollToEnd(force = false): void {
@@ -261,8 +271,7 @@ export class ShenScopePanel {
         }
         if (this.tab === 'Security') { await this.securityView(revision); return; }
         if (this.tab === 'Runtime') {
-            const runtime = await this.bridge.request('runtime/status'); if (revision !== this.renderRevision) { return; }
-            const details = el('details', '', 'diagnostics'); details.append(el('summary', 'Runtime details'), el('pre', JSON.stringify(runtime, null, 2))); this.content.append(details); return;
+            await this.runtimeView(revision); return;
         }
         const capability: Record<string, string> = { Intelligence: 'project_intelligence', MCP: 'mcp', Skills: 'skills', Hooks: 'hooks', Models: 'model_catalog' };
         const card = el('section', '', 'empty-state'); card.append(icon(this.tab === 'Intelligence' ? 'graph' : 'tool'), el('h3', this.capabilities[capability[this.tab]] ? 'Available' : 'Coming together'), el('p', this.capabilities[capability[this.tab]] ? 'Connected to this workspace.' : 'This capability is still in development. You can keep working in Chat.')); this.content.append(card);
@@ -378,7 +387,114 @@ export class ShenScopePanel {
             const result = await this.bridge.request('config/set', { value: next, expected_sha256: this.configRevision }); this.config = next; this.configRevision = result.sha256; this.skillsResult = undefined; await this.renderTab();
         }, 'primary-button'); save.disabled = this.active || !!this.skillsJob || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.hooksJob || this.hooksStarting; roots.append(save); this.content.append(roots);
     }
-    private contextBusy(): boolean { return !!this.terminalJob || this.terminalStarting || !!this.extensionsJob || this.extensionsStarting || !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.modelsJob || this.modelsStarting; }
+    private contextBusy(): boolean { return !!this.diagnosticsJob || this.diagnosticsStarting || !!this.terminalJob || this.terminalStarting || !!this.extensionsJob || this.extensionsStarting || !!this.securityJob || this.securityStarting || !!this.memoryJob || this.memoryStarting || this.active || !!this.contextJob || this.contextStarting || !!this.hooksJob || this.hooksStarting || !!this.skillsJob || this.skillsStarting || !!this.mcpJob || !!this.projectJob || this.projectStarting || !!this.modelsJob || this.modelsStarting; }
+
+    private async startDiagnostics(): Promise<void> {
+        if (this.contextBusy()) { throw new Error('Finish the current operation before starting compiler inference.'); }
+        this.diagnosticsStarting = true; this.notice.hidden = true; this.updateActions();
+        for (const control of Array.from(this.content.querySelectorAll<HTMLButtonElement>('button'))) { control.disabled = true; }
+        try {
+            const session_id = await this.ensureSession('Julia compiler');
+            const started = await this.bridge.request('diagnostics/start', { session_id, action: 'compile', target: this.diagnosticsTarget, mode: 'graph', timeout: 120 });
+            if (!this.completedDiagnosticsJobs.has(started.job_id)) { this.diagnosticsJob = started.job_id; this.setStatus('Inferring trusted Core method…'); }
+        } finally { this.diagnosticsStarting = false; this.updateActions(); }
+        if (this.tab === 'Runtime') { await this.renderTab(); }
+    }
+
+    private async runtimeView(revision: number): Promise<void> {
+        const runtime = await this.bridge.request('runtime/status');
+        if (revision !== this.renderRevision) { return; }
+        const details = el('details', '', 'diagnostics'); details.append(el('summary', 'Runtime details'), el('pre', JSON.stringify(runtime, null, 2))); this.content.append(details);
+        if (!this.capabilities.structured_compiler_ir) { return; }
+        const session_id = await this.ensureSession('Julia compiler');
+        if (revision !== this.renderRevision) { return; }
+        const section = el('section', '', 'compiler-section');
+        const heading = el('div', '', 'view-heading'); heading.append(el('h2', 'Compiler inference'), el('span', 'Trusted Core', 'badge'));
+        section.append(heading, el('p', 'Inspect an installed Core method, its inferred types and possible control paths. Project inference remains in development.', 'view-description'));
+        const controls = el('div', '', 'compiler-controls');
+        const target = el('select'); target.setAttribute('aria-label', 'Compiler target'); target.disabled = this.contextBusy();
+        try {
+            const targets = await this.bridge.request('diagnostics/query', { session_id, action: 'targets' });
+            if (revision !== this.renderRevision) { return; }
+            for (const item of targets) { const option = el('option', item.name); option.value = item.name; target.append(option); }
+            target.value = this.diagnosticsTarget;
+            target.onchange = () => { this.diagnosticsTarget = target.value; };
+            controls.append(target);
+        } catch { controls.append(el('p', 'Read permission is required to list compiler targets.', 'view-description')); }
+        const run = this.button('Infer method', () => this.startDiagnostics(), 'primary-button'); run.disabled = this.contextBusy() || !target.options.length;
+        controls.append(run); section.append(controls);
+        if (this.diagnosticsJob || this.diagnosticsStarting) {
+            const pending = el('div', '', 'compiler-pending'); pending.append(el('span', 'Compiling or waiting for approval…'));
+            if (this.diagnosticsJob) { pending.append(this.button('Cancel inference', () => this.bridge.request('diagnostics/cancel_job', { session_id, job_id: this.diagnosticsJob }), 'secondary-button')); }
+            section.append(pending);
+        }
+        if (this.diagnosticsResult?.report) { this.compilerReportView(section, this.diagnosticsResult.report); }
+        this.content.append(section);
+    }
+
+    private compilerReportView(section: HTMLElement, report: any): void {
+        const overview = el('div', '', 'compiler-overview');
+        overview.append(el('h3', report.target), el('small', `Julia ${report.runtime.julia_version} · ${report.elapsed_seconds.toFixed(2)} s inference`));
+        const provenance = el('p', `${report.source.fingerprint.slice(0, 12)} · source fingerprint`, 'memory-muted'); provenance.title = report.source.fingerprint;
+        overview.append(provenance); section.append(overview);
+        if (!report.methods.length) { section.append(el('p', 'No inferred method body was returned.', 'empty-text')); return; }
+        this.diagnosticsMethod = Math.min(this.diagnosticsMethod, report.methods.length - 1);
+        if (report.methods.length > 1) {
+            const methods = el('select'); methods.setAttribute('aria-label', 'Inferred method');
+            report.methods.forEach((method: any, index: number) => { const option = el('option', method.identity.signature); option.value = String(index); methods.append(option); });
+            methods.value = String(this.diagnosticsMethod); methods.onchange = () => { this.diagnosticsMethod = Number(methods.value); this.diagnosticsBlock = 0; this.diagnosticsPage = 0; void this.guard(() => this.renderTab()); }; section.append(methods);
+        }
+        const method = report.methods[this.diagnosticsMethod]; const graph = method.control_flow;
+        const metrics = el('div', '', 'compiler-metrics');
+        for (const [label, value] of [['Return', method.return_type.type], ['Statements', method.statistics.statements], ['Blocks', method.statistics.blocks], ['Calls', method.statistics.calls], ['Cycles', graph.loops.cycle_groups.length]]) {
+            const metric = el('div', '', 'compiler-metric'); metric.append(el('small', String(label)), el('strong', String(value))); metrics.append(metric);
+        }
+        section.append(metrics, el('p', `${method.identity.file}:${method.identity.line}`, 'semantic-signature'));
+        const flow = el('details', '', 'compiler-flow'); flow.append(el('summary', 'Control paths'));
+        const blocks = el('div', '', 'compiler-blocks');
+        for (const block of graph.blocks.slice(0, 64)) {
+            const button = this.button(`B${block.id} · ${block.first_statement}–${block.last_statement}`, () => { this.diagnosticsBlock = this.diagnosticsBlock === block.id ? 0 : block.id; this.diagnosticsPage = 0; return this.renderTab(); }, 'compiler-block');
+            button.setAttribute('aria-pressed', String(this.diagnosticsBlock === block.id));
+            button.title = `Next: ${block.successors.map((id: number) => `B${id}`).join(', ') || 'return'}; previous: ${block.predecessors.map((id: number) => `B${id}`).join(', ') || 'entry'}`;
+            if (graph.unreachable_blocks.includes(block.id)) { button.classList.add('compiler-block-unreachable'); }
+            blocks.append(button);
+        }
+        flow.append(blocks);
+        if (graph.blocks.length > 64) { flow.append(el('small', `${graph.blocks.length - 64} more blocks are present in the bounded report.`)); }
+        flow.append(el('p', graph.exception_handlers_present ? 'Exception handlers are present; this view follows explicit normal paths.' : 'These are possible normal paths. Executed paths and loop iterations are unobserved.', 'view-description')); section.append(flow);
+        const filters = el('div', '', 'compiler-controls'); const uncertain = el('input'); uncertain.type = 'checkbox'; uncertain.checked = this.diagnosticsUncertain;
+        const uncertainLabel = el('label', '', 'compiler-filter'); uncertainLabel.append(uncertain, el('span', 'Only uncertain value types'));
+        uncertain.onchange = () => { this.diagnosticsUncertain = uncertain.checked; this.diagnosticsPage = 0; void this.guard(() => this.renderTab()); }; filters.append(uncertainLabel);
+        if (this.diagnosticsBlock) { filters.append(this.button(`Clear B${this.diagnosticsBlock} filter`, () => { this.diagnosticsBlock = 0; this.diagnosticsPage = 0; return this.renderTab(); }, 'secondary-button')); }
+        section.append(filters);
+        const selectedBlock = this.diagnosticsBlock ? graph.blocks.find((block: any) => block.id === this.diagnosticsBlock) : undefined;
+        const rows = method.statements.filter((row: any) => (!selectedBlock || (row.id >= selectedBlock.first_statement && row.id <= selectedBlock.last_statement)) &&
+            (!this.diagnosticsUncertain || (row.produces_value && ['any', 'nonconcrete', 'compiler_lattice_value'].includes(row.inferred_type.classification))));
+        const size = 40; this.diagnosticsPage = Math.min(this.diagnosticsPage, Math.max(0, Math.ceil(rows.length / size) - 1));
+        const table = el('div', '', 'compiler-table'); table.setAttribute('role', 'table'); table.setAttribute('aria-label', 'Inferred statements');
+        const header = el('div', '', 'compiler-table-head'); header.append(el('span', 'SSA'), el('span', 'Operation'), el('span', 'Inferred type')); table.append(header);
+        for (const row of rows.slice(this.diagnosticsPage * size, (this.diagnosticsPage + 1) * size)) {
+            const line = el('div', '', 'compiler-table-row'); line.setAttribute('role', 'row');
+            const inferred = el('code', row.inferred_type.type); inferred.title = row.inferred_type.type;
+            line.append(el('code', `%${row.id}`), el('code', row.opcode), inferred);
+            line.dataset.classification = row.inferred_type.classification;
+            line.title = `${row.source.file ?? 'No source position'}:${row.source.line ?? ''} · uses ${row.uses_ssa.map((id: number) => `%${id}`).join(', ') || 'no SSA inputs'}`; table.append(line);
+        }
+        if (!rows.length) { table.append(el('p', 'No statements match this filter.', 'empty-text')); } section.append(table);
+        const pagination = el('div', '', 'compiler-pagination'); const previous = this.button('Previous statements', () => { this.diagnosticsPage--; return this.renderTab(); }, 'secondary-button'); previous.disabled = this.diagnosticsPage === 0;
+        const next = this.button('Next statements', () => { this.diagnosticsPage++; return this.renderTab(); }, 'secondary-button'); next.disabled = (this.diagnosticsPage + 1) * size >= rows.length;
+        previous.setAttribute('aria-label', 'Previous statements'); previous.textContent = 'Previous';
+        next.setAttribute('aria-label', 'Next statements'); next.textContent = 'Next';
+        pagination.append(previous, el('small', `${rows.length ? this.diagnosticsPage * size + 1 : 0}–${Math.min(rows.length, (this.diagnosticsPage + 1) * size)} of ${rows.length}`), next); section.append(pagination);
+        const findings = el('details', '', 'compiler-findings'); findings.append(el('summary', `${method.findings.total} observations`));
+        for (const item of method.findings.items.slice(0, 24)) { findings.append(el('p', `%${item.statement} · ${item.message}`, 'view-description')); }
+        if (method.findings.total > 24) { findings.append(el('small', 'Additional observations remain in the bounded report.')); } section.append(findings);
+        const effects = el('details', '', 'compiler-effects'); effects.append(el('summary', 'Effect guarantees · experimental'));
+        if (report.effects.available) {
+            for (const [name, proven] of Object.entries(report.effects.proven_properties)) { const row = el('div', '', 'compiler-effect-row'); row.append(el('code', name), el('span', proven === true ? 'Compiler guarantee' : proven === false ? 'No unconditional guarantee' : 'Unavailable')); effects.append(row); }
+        } else { effects.append(el('p', report.effects.reason, 'view-description')); }
+        effects.append(el('p', 'Effect inference is advisory. It does not establish process isolation or measured performance.', 'view-description')); section.append(effects);
+    }
     private async startTerminal(action: string, args: Record<string, unknown> = {}): Promise<void> {
         if (this.contextBusy()) { throw new Error('Finish or cancel the current operation first.'); }
         this.terminalStarting = true; this.updateActions();
@@ -1629,6 +1745,15 @@ export class ShenScopePanel {
             void this.guard(async () => { const snapshot = await this.bridge.request('config/get'); if (this.disposed) { return; } this.config = snapshot.value; this.configRevision = snapshot.sha256; await this.renderTab(); }); return;
         }
         if (method !== 'agent/event' || params.session_id !== this.sessionId) { return; } const payload = params.payload;
+        if (params.kind === 'diagnostics_job_completed' || params.kind === 'diagnostics_job_failed') {
+            this.completedDiagnosticsJobs.add(payload.job_id); while (this.completedDiagnosticsJobs.size > 64) { this.completedDiagnosticsJobs.delete(this.completedDiagnosticsJobs.values().next().value!); }
+            const owned = this.diagnosticsJob === payload.job_id || this.diagnosticsStarting;
+            if (this.diagnosticsJob === payload.job_id) { this.diagnosticsJob = undefined; }
+            for (const card of Array.from(this.approvals.children)) { const element = card as HTMLElement; if (element.dataset.traceId === params.trace_id || (payload.permission_ids ?? []).includes(element.dataset.requestId)) { card.remove(); } }
+            if (owned && params.kind === 'diagnostics_job_completed') { this.diagnosticsResult = payload.result; this.diagnosticsMethod = 0; this.diagnosticsBlock = 0; this.diagnosticsPage = 0; this.setStatus('Compiler inference complete'); }
+            else if (owned) { this.setStatus('Compiler inference stopped'); this.notice.textContent = payload.error ?? 'Compiler inference stopped'; this.notice.hidden = false; }
+            this.updateActions(); if (owned && this.tab === 'Runtime') { void this.guard(() => this.renderTab()); } return;
+        }
         if (params.kind === 'terminal_job_completed' || params.kind === 'terminal_job_failed') {
             this.completedTerminalJobs.add(payload.job_id); while(this.completedTerminalJobs.size>64){this.completedTerminalJobs.delete(this.completedTerminalJobs.values().next().value!);}
             const owned = this.terminalJob === payload.job_id || this.terminalStarting;

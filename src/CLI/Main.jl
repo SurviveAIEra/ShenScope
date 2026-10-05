@@ -42,7 +42,7 @@ function parse_cli(args::Vector{String})
         "--expected-snapshot","--snippet-chars","--tags-all","--tags-any","--sources",
         "--backends","--evidence-key","--evidence-fingerprint","--scope-paths",
         "--package-name","--package-uuid","--package-version","--entry-sha256","--project-sha256","--contribution","--generation","--arguments",
-        "--argv","--input","--rows","--columns","--timeout"])
+        "--argv","--input","--rows","--columns","--timeout","--mode","--max-ir-bytes","--max-statements"])
     switches=Set(["--json","--stdio","--allow-edit","--allow-process","--allow-network","--allow-persistence","--allow-dynamic","--allow-mcp","--exclude-declarations","--force","--automatic","--no-native-hints","--no-evidence-bridges","--accept-cleanup-failure"])
     i=1
     while i<=length(args)

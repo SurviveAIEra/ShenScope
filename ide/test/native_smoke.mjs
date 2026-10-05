@@ -52,12 +52,25 @@ const juliaOnly = process.argv.includes('--julia-only');
 const evidenceOnly = process.argv.includes('--evidence-only');
 const extensionsOnly = process.argv.includes('--extensions-only');
 const terminalOnly = process.argv.includes('--terminal-only');
+const compilerOnly = process.argv.includes('--compiler-only');
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
 const userContextRoot = contextOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-context-')) : undefined;
 const userHookRoot = hooksOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-hooks-')) : undefined;
 const userSkillRoot = skillsOnly ? await mkdtemp(join(tmpdir(), 'shenscope-user-skills-')) : undefined;
-const display = vsix ? ':102' : ':101';
-const xvfb = spawn('/workspace/toolchains/xvfb/usr/bin/Xvfb', [display, '-screen', '0', '1280x900x24', '-nolisten', 'tcp'], { stdio: 'ignore' });
+const xvfb = spawn('/workspace/toolchains/xvfb/usr/bin/Xvfb', ['-displayfd', '1', '-screen', '0', '1280x900x24', '-nolisten', 'tcp'], { stdio: ['ignore', 'pipe', 'pipe'] });
+const display = await new Promise((resolve, reject) => {
+    let output = ''; let diagnostic = '';
+    const deadline = setTimeout(() => fail(new Error('Xvfb did not publish a ready display')), 8_000);
+    const fail = error => { clearTimeout(deadline); xvfb.kill(); reject(error); };
+    xvfb.stderr.on('data', chunk => { diagnostic = (diagnostic + chunk.toString()).slice(-2048); });
+    xvfb.once('error', fail);
+    xvfb.once('exit', code => fail(new Error(`Xvfb exited before display readiness: ${code}; ${diagnostic}`)));
+    xvfb.stdout.on('data', chunk => {
+        output += chunk.toString();
+        if (output.length > 32) { fail(new Error('Invalid Xvfb display announcement')); return; }
+        if (/^[0-9]+\n$/.test(output)) { clearTimeout(deadline); resolve(`:${Number(output.trim())}`); }
+    });
+});
 const requests = [];
 let modelInferenceCalls = 0;
 const fixture = createServer(async (request, response) => {
@@ -162,6 +175,9 @@ if (extensionsOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\ndynamic = 'ask'\nprocess = 'ask'\npersistence = 'ask'\nnetwork = 'deny'\n`);
 }
 if(terminalOnly){await writeFile(config,`[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\nprocess = 'ask'\npersistence = 'allow'\nnetwork = 'deny'\n`);}
+if (compilerOnly) {
+    await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\ndynamic = 'ask'\nprocess = 'ask'\npersistence = 'allow'\nnetwork = 'deny'\n`);
+}
 if (memoryOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\npersistence = 'ask'\nprocess = 'deny'\nnetwork = 'deny'\n`);
     const seed = `using ShenScope
@@ -226,7 +242,6 @@ await writeFile(join(root, 'user-data', 'User', 'settings.json'), JSON.stringify
 let application;
 let panel;
 try {
-    await new Promise(resolve => setTimeout(resolve, 500));
     application = await _electron.launch({ executablePath: join(checkout, '.build/electron/electron'), cwd: checkout,
         args: [checkout, root, ...(vsix ? ['--extensionDevelopmentPath', join(project, 'editors/vscode')] : ['--disable-extensions']), '--disable-workspace-trust', '--skip-welcome', '--skip-release-notes',
             '--user-data-dir', join(root, 'user-data'), '--extensions-dir', join(root, 'extensions')],
@@ -255,7 +270,7 @@ try {
     }
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly && !extensionsOnly && !terminalOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly && !extensionsOnly && !terminalOnly && !compilerOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -284,6 +299,47 @@ try {
     await panel.locator('.analysis-title').filter({ hasText: 'test selection' }).waitFor({ timeout: 120_000 });
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
+    }
+    if (compilerOnly) {
+        await panel.getByRole('combobox', { name: 'More views' }).selectOption('Runtime');
+        await panel.getByRole('combobox', { name: 'Compiler target' }).selectOption('cliptext_string');
+        await panel.getByRole('button', { name: 'Infer method', exact: true }).click();
+        await approve(panel, 'runtime.diagnostics · dynamic', 'Allow once');
+        await approve(panel, 'project.backend · process', 'Allow once');
+        await panel.locator('.status').filter({ hasText: 'Compiler inference complete' }).waitFor({ timeout: 120_000 });
+        await waitCount(panel.locator('.compiler-table-row'), 40);
+        assert.match(await panel.locator('.compiler-metrics').textContent(), /ReturnString/);
+        const statements = Number(await panel.locator('.compiler-metric').filter({ hasText: 'Statements' }).locator('strong').textContent());
+        assert.ok(statements > 40 && statements <= 80);
+        await panel.locator('.panel-content').evaluate(element => { element.scrollTop = 0; });
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-overview.png`) });
+        await panel.getByRole('button', { name: 'Next statements', exact: true }).click();
+        await waitCount(panel.locator('.compiler-table-row'), statements - 40);
+        await panel.getByRole('button', { name: 'Previous statements', exact: true }).click();
+        await waitCount(panel.locator('.compiler-table-row'), 40);
+        await panel.getByRole('checkbox', { name: 'Only uncertain value types' }).check();
+        await panel.locator('.compiler-pagination small').filter({ hasText: /of [0-9]+/ }).waitFor();
+        assert.ok(await panel.locator('.compiler-table-row').count() <= 40);
+        await panel.getByRole('checkbox', { name: 'Only uncertain value types' }).uncheck();
+        await waitCount(panel.locator('.compiler-table-row'), 40);
+        await panel.locator('.compiler-flow > summary').click();
+        await panel.locator('.compiler-block').first().click();
+        await panel.getByRole('button', { name: 'Clear B1 filter', exact: true }).waitFor();
+        assert.ok(await panel.locator('.compiler-table-row').count() < 40);
+        await panel.getByRole('button', { name: 'Clear B1 filter', exact: true }).click();
+        await waitCount(panel.locator('.compiler-table-row'), 40);
+        await panel.locator('.compiler-effects > summary').click();
+        await panel.locator('.compiler-effects').getByText('No unconditional guarantee', { exact: true }).first().waitFor();
+        await panel.locator('.compiler-pagination').scrollIntoViewIfNeeded();
+        await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-ir.png`) });
+        await panel.getByRole('button', { name: 'Infer method', exact: true }).click();
+        await panel.locator('.permission-card').filter({ hasText: 'runtime.diagnostics · dynamic' }).waitFor();
+        await panel.getByRole('button', { name: 'Cancel inference', exact: true }).click();
+        await waitCount(panel.locator('.permission-card'), 0);
+        await waitEnabled(panel.getByRole('button', { name: 'Infer method', exact: true }));
+        await panel.locator('.status').filter({ hasText: 'Compiler inference stopped' }).waitFor();
+        assert.equal(requests.length, 0);
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench without extensions'}, real Julia inferred IR, dynamic/process approvals, return types, bounded pagination, uncertainty and block filters, effect qualifiers and pending-approval cancellation`);
     }
     if(terminalOnly){
         await panel.getByRole('combobox',{name:'More views'}).selectOption('Terminal');

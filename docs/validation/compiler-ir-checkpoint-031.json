@@ -1,0 +1,304 @@
+{
+  "checkpoint": 31,
+  "recorded_at": "2026-10-05T03:22:12.995277+00:00",
+  "scope": "Fixed trusted Core compiler IR, bounded normal-control/local-definition/SSA projections, source pins, owned permissioned jobs and both real IDE clients",
+  "source_checksums": {
+    ".github/workflows/core.yml": "2b3b558369b7048d9456abddcbca0d2b135c4e72dfdea80de9636f45e7a42571",
+    "editors/shared/panel.css": "006ae90d73b6ee7be4fddfc51d718e2eab91a41122d0f5f4f8f8fe3c0f2b5c67",
+    "editors/shared/src/panel.ts": "7c0a06566814b7755da3a486e9c25c8f6d7a64b5a8a83a4ec916a937ce481c11",
+    "editors/shared/src/rpcClient.ts": "c22559eadfa3bab5d95345339662e10ddb9ed610382f163bd9ff87a92c6a40d6",
+    "editors/shared/src/rpcMethods.ts": "c27c602c35fc824ca149e45e9c10ffc16864879a6dfecd6db4dcfd117acac4e0",
+    "editors/test/compiler.test.mjs": "a009740967c7b390302f9b7c0e7c888b77aa2013ab7c06e2d96fbfe6355bcd68",
+    "editors/test/transport.test.mjs": "46ac1763654d7d1df193319ef9ac5c6615e52f6d82c75faa0311b5fff86910c9",
+    "ide/test/native_smoke.mjs": "b016f9aabe05c8ad65020e9556c9277529875cf3b11a9dea679745d8886fe543",
+    "src/CLI/Diagnostics.jl": "94918d606bc0b3237cf64aac6593accb4f311c049be5cd07c718a7de70a3c15a",
+    "src/CLI/Main.jl": "7afe49d5f897fd0c4108376e0a3023a50e2286fe1000867f18b76083cddbbd94",
+    "src/Compiler/IRControlFlow.jl": "bc71b954ddab6654e6dece0e805461b6432f32b3670f58a92740ecee1e2cf756",
+    "src/Compiler/IRDataFlow.jl": "290b54957badce82184064ba5d73be93d93a16c31c15c0b16956015781a045b0",
+    "src/Compiler/IREffects.jl": "ce03c3264f96a1e705e612978de3050392af524d1c054b76528dec61368742a7",
+    "src/Compiler/IRFrameOperands.jl": "fd922df5889d4d3e7cba7a3df2710ebec310da2fc5360c4ef345eabb5fba7bc5",
+    "src/Compiler/IROperands.jl": "979f3f9d7c1635177e9f78ec0b4162248093c529800112d988d137cb7242a463",
+    "src/Compiler/IRReports.jl": "12ed3d536fc1768b0f6461c9bbfaa49cf3eefce2350313ccf092c8dbe2c1d9a4",
+    "src/Compiler/IRTypes.jl": "c1180da8a77e669ae2573f55e8f047faf2be4f48fd2e4814c9e2a5b887bffada",
+    "src/Compiler/IRValidation.jl": "324e636efada04d715e1f145b3f0fd565d3618e24e31240290ed92432a0432c1",
+    "src/Distribution/Sources.jl": "6b699eb0e256195f943e2bcf0d65e1b8dce15c5b327bd7cbbc2bd827a41e2c2a",
+    "src/Extensions/CompilerDiagnostics.jl": "d338943c3051dfe22ef4096dc80a2d1dbfa957ae57d5ecfb6f4adff98290928d",
+    "src/ProjectData/Backends.jl": "c3f53d9178328676bb0d91a37f258e05b757171c9113e89915c16d73a297f572",
+    "src/Protocol/Diagnostics.jl": "e028061e99e0d6d2c90d0151713de3904f4d065de278804ee83b3c465ca7706f",
+    "src/Protocol/Server.jl": "f2ab606ce087793e2fc3e754ed27dce88b2e4ee485171985f17c7f5b7540edc6",
+    "src/ShenScope.jl": "2ef556a95c011e5d9944943b7d88802dc99dc7e8c90123a47baff6c210a75f71",
+    "src/Tools/Diagnostics.jl": "30a7b3297dba1d7b1c8d1d522b8faf72055635b7871bb5196e2ab73739073032",
+    "test/compiler.jl": "89376849a8fbcd6a16b7b17e82125632d0f2a88df5bde7397640f0b63037c2b5",
+    "test/fixtures/compiler_ir.jl": "5c28f76d878bcb0bc9e46d892c64da5d0271054464f33e9eb1206cda3b2b7230",
+    "test/fixtures/semantic_transport.jl": "6b6c885d36b5e6914ca101f5f2f04e6cf6a0cd65616fdb69eecf564619bb7765",
+    "test/integration/compiler_ir_worker.jl": "d8114f6888b5f7bff93d7e7865158a9f2f0e71f2c79a75eb1e62f00453d0c840",
+    "test/integration/semantic.jl": "7dee6dbb977688a7bc4aa3b9dbb7d81e505c81d2942b127db828661448e24ecc",
+    "test/runtests.jl": "addad89641bd2a2def1478f7cab85628a8c4b2824ce00fc8f4de2ae3e16daa98",
+    "test/unit/compiler_ir.jl": "5d1991b0a2067eff02fda7bd211982b506174d4fc4a1bbefeab89e7b4651abd6",
+    "test/unit/compiler_ir_protocol.jl": "a3d1c5623ef3494545bcc8fa39d7226ec4d4afae7aedea216a551803e3c37d5d"
+  },
+  "core_assertions": {
+    "distinct_passed": 246,
+    "new_compiler_assertions": 73,
+    "sets": {
+      "Actual inferred IR preserves branch definitions, loop flow and compiler scope": 16,
+      "Trusted compiler frames pin source and reject forged graph projections": 18,
+      "Runtime image receipts pin source inventory and refuse changed source, lock and artifact": 12,
+      "Runtime receipts enforce schema, platform, symlinks and independent permissions": 15,
+      "Agent tool calling preserves contract evidence without loading code": 4,
+      "Julia interface contracts, ambiguity evidence and world-age boundary": 19,
+      "Compiler diagnostics use listed targets, bounded output and independent processes": 23,
+      "Compiler graph workers honor approvals, revocation and restricted execution": 11,
+      "Owned compiler jobs protect conversations, cancel pending approval and retire": 13,
+      "Bounded JSON-RPC framing and UTF-8 lengths": 8,
+      "Protocol version, config ownership, secrets and session commands": 15,
+      "Agent protocol permission ownership and cancellation": 13,
+      "Compiler polling closes actual helpers after live denial and cancellation": 15,
+      "Parser transport bounds blocked pipes, failed framing and command approval": 41,
+      "Nested operation approval ownership survives cancellation and scoped callbacks": 5,
+      "Owned operations isolate cancellation, scopes, retention and notification failures": 18
+    },
+    "focused_suite_passed": 137,
+    "focused_suite": "julia --startup-file=no --threads=4 --project=. test/compiler.jl"
+  },
+  "editor_transport": {
+    "tests_passed": 8,
+    "exit_code": 0,
+    "real_julia_core": true,
+    "explicit_runtime_paths": true,
+    "owned_start_default_ms": 120000,
+    "ordinary_default_ms": 30000,
+    "caller_timeout_override_preserved": true
+  },
+  "cli": {
+    "exit_code": 0,
+    "target": "cliptext_string",
+    "report_sha256": "1fd46e97a1f29add6e4ebe3002ba142d0c87b99bb9307def3eb245de7dfa0d51",
+    "source_fingerprint": "b4e135353ee07e85a81da4bc676d14712227ed360ef785443f057142eb3f4970",
+    "statements": 65,
+    "blocks": 7,
+    "execution": {
+      "os_sandbox": false,
+      "separate_process": true,
+      "timeout_seconds": 120
+    }
+  },
+  "gui": {
+    "native": {
+      "real_workbench": true,
+      "extensions_disabled": true,
+      "exit_code": 0
+    },
+    "vsix": {
+      "independent_webview": true,
+      "interaction_pass_marker": true,
+      "exit_code": null,
+      "exit_status_note": "Tool process session was no longer available; successful interaction marker and complete raw log were retained."
+    },
+    "checks": [
+      "trusted target and dynamic/process approvals",
+      "inferred return type",
+      "40-row statement pagination",
+      "uncertain-type filter",
+      "normal-block filter",
+      "experimental effect qualifiers",
+      "pending-approval cancellation"
+    ],
+    "screenshots": [
+      "native-compiler-overview.png",
+      "native-compiler-ir.png",
+      "vsix-compiler-overview.png",
+      "vsix-compiler-ir.png"
+    ],
+    "final_shared_client_admission_policy_tested_by_real_Node": true
+  },
+  "static_checks": {
+    "shared_typescript": true,
+    "shared_build": true,
+    "complete_workbench_client_typecheck": true,
+    "git_diff_check": true,
+    "remote_ci_observed": false
+  },
+  "vsix": {
+    "entries": 268,
+    "exact_core_helper_extension_metadata_files": 259,
+    "exact_client_assets": 3,
+    "bytes": 555021,
+    "sha256": "2f73c05d1714d6d55f498a059b7400ffdb8347d54bf24c74d20fbd2f9c913e56",
+    "payload_matches_authored_sources": true,
+    "installed_package_tested": false
+  },
+  "cloc": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 230,
+      "blank": 1222,
+      "comment": 217,
+      "code": 22793
+    },
+    "cli_tui": {
+      "nFiles": 20,
+      "blank": 19,
+      "comment": 7,
+      "code": 1108
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 227207,
+    "line_target_percent": 9.1172,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "after": {
+      "total_gib": 31.451,
+      "free_gib": 17.504,
+      "large_build_allowed": true,
+      "safe_scratch_paths": [
+        "/workspace/ShenScope/.local/tmp",
+        "/workspace/ShenScope/.local/build-scratch"
+      ]
+    },
+    "project_directory_copies": 0,
+    "worktrees_created": 0,
+    "large_sysimage_built": false,
+    "core_cache_pairs_retained": 1,
+    "owned_stale_X102_lock_and_socket_removed": true
+  },
+  "repository_audit": {
+    "applications": 1,
+    "dependencies": 50,
+    "unknown": 0,
+    "strict_walk_complete": true
+  },
+  "research": {
+    "primary_agent_sources": [
+      {
+        "name": "codex",
+        "repository": "openai/codex",
+        "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+        "path": "codex-rs/app-server/src/request_processors/diagnostics.rs",
+        "reviewed_lines": [
+          1,
+          23
+        ],
+        "sha256": "750eb6c1ffe91a200770caf4ecaba526b69e266cf1d53bcd5a670dcadb868a9e",
+        "code_reuse": false
+      },
+      {
+        "name": "opencode",
+        "repository": "anomalyco/opencode",
+        "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+        "path": "packages/schema/src/lsp-event.ts",
+        "reviewed_lines": [
+          1,
+          7
+        ],
+        "sha256": "ae7b29bb4d79ad13f5be53d43bdfcca87b32156caefab05bdb66e4fb9fd57fea",
+        "code_reuse": false
+      },
+      {
+        "name": "deepseek-harness",
+        "repository": "deepseek-ai/deepseek-harness",
+        "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "path": "packages/lsp/lsp-stdio/src/framing.ts",
+        "reviewed_lines": [
+          1,
+          42
+        ],
+        "sha256": "3963e0195fc8aa1e7825b7a1412ee76d82198d78647cf1cddeeb5f53057fd72a",
+        "code_reuse": false
+      },
+      {
+        "name": "pi-mono",
+        "repository": "badlogic/pi-mono",
+        "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+        "path": "packages/coding-agent/src/core/diagnostics.ts",
+        "reviewed_lines": [
+          1,
+          15
+        ],
+        "sha256": "1914431098db1b4638e4fb3582ac22e8125356c4ab024671494f565c6d5ffb39",
+        "code_reuse": false
+      },
+      {
+        "name": "kimi-code",
+        "repository": "MoonshotAI/kimi-code",
+        "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+        "path": "packages/agent-core-v2/src/app/capability/capabilityService.ts",
+        "reviewed_lines": [
+          1,
+          42
+        ],
+        "sha256": "4aa99f0ad6a12865c0c0505bf1e8c8fc10d320983d436bb61a03f91d2ac2df38",
+        "code_reuse": false
+      },
+      {
+        "name": "ZCode",
+        "repository": "zai-org/ZCode",
+        "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+        "path": "packages/shared/src/process-diagnostic.ts",
+        "reviewed_lines": [
+          1,
+          42
+        ],
+        "sha256": "e6889f1d4d6c9829019dc07053872d15ae0af2a1d25aeb97d143dc857fc13c29",
+        "code_reuse": false
+      },
+      {
+        "name": "qwen-code",
+        "repository": "QwenLM/qwen-code",
+        "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+        "path": "packages/cli/src/nonInteractive/tool-result-boundary-diagnostics.ts",
+        "reviewed_lines": [
+          1,
+          42
+        ],
+        "sha256": "52a1cebd141bb85b4b4c2df6b9ea0b6c5213dd7ee22770c5d0c80d86ff259ecd",
+        "code_reuse": false
+      }
+    ],
+    "review_status": "partial source review; comprehensive cross-capability synthesis continues",
+    "handoff_sections": [
+      "7.11 Compiler Introspection",
+      "7.44 Compiler Effect Analysis"
+    ],
+    "julia_effect_predicates": "Julia 1.11.7 base/compiler/effects.jl:280-299",
+    "additional_reference": "Kaimon src/reflection_tools.jl:1-44",
+    "code_copy_or_translation": false
+  },
+  "failures_retained": [
+    "Real compiler fixtures invalidated assumptions about anonymous/repeated slots; fixture checks corrected.",
+    "JSON round trips exposed empty Set{Any} projections; explicitly typed sets corrected.",
+    "Initial Node checks used an incorrect effect-field name; corrected against the real schema.",
+    "Normal sandbox Node spawn failed; supported escalation ran real tests.",
+    "Environment migration interrupted a VSIX run; completed fresh GUI runs superseded it.",
+    "A zombie Xvfb test lock caused launch failure; ready automatic display allocation and owned stale-lock cleanup corrected the harness.",
+    "Two standalone parser-regression invocations omitted fixture helpers; a shared fixture and reproducible focused suite corrected invocation.",
+    "A concurrent cold project-start request exceeded the old thirty-second acknowledgement timeout; explicit owned-start admission allowances passed the affected transport run."
+  ],
+  "limitations": [
+    "Only six fixed trusted Core function/signature pairs; arbitrary project inference remains open.",
+    "Normal-control and possible-local dataflow exclude complete exceptions, heap aliases and executed dispatch.",
+    "Effects are experimental/version-specific and are neither security isolation nor runtime/performance observations.",
+    "Host helper is not OS isolated; a configured restricted sandbox refuses it.",
+    "Unsigned digests and trusted fixed workers do not attest machine instructions or external workers.",
+    "No installed/relocated/Windows distribution or clean-machine restore is claimed.",
+    "Source size remains 22,793 authored Core lines, below the active 250,000 minimum; development continues."
+  ],
+  "raw_evidence_directory": "docs/validation/compiler-ir-031"
+}

@@ -70,3 +70,6 @@ jobs:
       - run: julia --startup-file=no --threads=4 --project=. test/semantic.jl
       - run: npm run check && npm run build && npm test
         working-directory: editors
+        env:
+          SHENSCOPE_JULIA: julia
+          JULIA_DEPOT_PATH: /home/runner/.julia

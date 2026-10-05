@@ -42,6 +42,13 @@ separate OS sandbox implementation; this helper is not that execution facility.
 Compiler versions may change inferred types and IR, so reports record Julia's
 version and separate compilation time from execution benchmarks.
 
+`--mode graph` adds real structured IR, explicit normal control/dataflow, source
+fingerprints and experimental effect predicates. Its report limit is 2 MiB;
+`--max-statements` controls the bounded statement count. `--max-ir-bytes` governs
+only the older typed/lowered text modes. Owned RPC and both IDE Runtime pages
+provide asynchronous approvals and cancellation. A configured restricted
+sandbox refuses compiler helpers. Details: [compiler_ir.md](compiler_ir.md).
+
 ```sh
 bin/shenscope diagnostics contracts
 bin/shenscope diagnostics ambiguities

@@ -1,0 +1,18 @@
+{
+  "Actual inferred IR preserves branch definitions, loop flow and compiler scope": 16,
+  "Trusted compiler frames pin source and reject forged graph projections": 18,
+  "Runtime image receipts pin source inventory and refuse changed source, lock and artifact": 12,
+  "Runtime receipts enforce schema, platform, symlinks and independent permissions": 15,
+  "Agent tool calling preserves contract evidence without loading code": 4,
+  "Julia interface contracts, ambiguity evidence and world-age boundary": 19,
+  "Compiler diagnostics use listed targets, bounded output and independent processes": 23,
+  "Compiler graph workers honor approvals, revocation and restricted execution": 11,
+  "Owned compiler jobs protect conversations, cancel pending approval and retire": 13,
+  "Bounded JSON-RPC framing and UTF-8 lengths": 8,
+  "Protocol version, config ownership, secrets and session commands": 15,
+  "Agent protocol permission ownership and cancellation": 13,
+  "Compiler polling closes actual helpers after live denial and cancellation": 15,
+  "Parser transport bounds blocked pipes, failed framing and command approval": 41,
+  "Nested operation approval ownership survives cancellation and scoped callbacks": 5,
+  "Owned operations isolate cancellation, scopes, retention and notification failures": 18
+}

@@ -1,0 +1,2 @@
+{"Argument":["n"],"EnterNode":["catch_dest","scope"],"GotoIfNot":["cond","dest"],"GotoNode":["label"],"NewvarNode":["slot"],"PhiCNode":["values"],"PhiNode":["edges","values"],"ReturnNode":["val"],"SSAValue":["id"],"SlotNumber":["id"],"UpsilonNode":["val"]}
+{"effects_fields":["consistent","effect_free","nothrow","terminates","notaskstate","inaccessiblememonly","noub","nonoverlayed","nortcall"],"infer_effects_available":true,"sample_effects":"(!c,!e,!n,!t,!s,!m,!u,!o,!r)"}

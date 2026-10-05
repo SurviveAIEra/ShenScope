@@ -1,0 +1,17 @@
+Precompiling ShenScope...
+  74627.2 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 75 seconds. 40 already precompiled.
+Test Summary:                                                                 | Pass  Total  Time
+Actual inferred IR preserves branch definitions, loop flow and compiler scope |   16     16  9.9s
+Test Summary:                                                          | Pass  Total  Time
+Trusted compiler frames pin source and reject forged graph projections |   18     18  7.4s
+Test Summary:                                                               | Pass  Total   Time
+Compiler graph workers honor approvals, revocation and restricted execution |   11     11  25.4s
+Test Summary:                                                                 | Pass  Total  Time
+Owned compiler jobs protect conversations, cancel pending approval and retire |   13     13  5.0s
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.4s
+Test Summary:                                                    | Pass  Total  Time
+Protocol version, config ownership, secrets and session commands |   15     15  1.9s
+Test Summary:                                        | Pass  Total   Time
+Agent protocol permission ownership and cancellation |   13     13  25.4s

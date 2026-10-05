@@ -1,0 +1,4 @@
+Test Summary:                                                               | Pass  Total   Time
+Compiler graph workers honor approvals, revocation and restricted execution |   11     11  49.2s
+Test Summary:                                                             | Pass  Total  Time
+Compiler polling closes actual helpers after live denial and cancellation |   15     15  1.1s

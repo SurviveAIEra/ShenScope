@@ -17,7 +17,7 @@ test('Real PTY RPC keeps input, resize, replay and interruption in the owning co
     const root=await mkdtemp(join(tmpdir(),'shenscope-terminal-editor-'));const project=resolve('..');
     await writeFile(join(root,'config.toml'),"[permissions]\nread='allow'\nprocess='ask'\npersistence='allow'\nnetwork='deny'\n");
     const client=new CoreClient({executable:process.env.SHENSCOPE_JULIA||'/workspace/toolchains/julia-1.11.7/bin/julia',cwd:root,
-        env:{...process.env,JULIA_DEPOT_PATH:'/workspace/julia-depot'},
+        env:{...process.env,JULIA_DEPOT_PATH:process.env.JULIA_DEPOT_PATH||'/workspace/julia-depot'},
         args:['--startup-file=no','--threads=4',`--project=${project}`,'-e','using ShenScope;exit(ShenScope.main())','--','serve','--stdio','--root',root,'--state-dir',join(root,'state'),'--config',join(root,'config.toml')]});
     const events=[];client.onNotification(event=>events.push(event));
     try{
@@ -110,7 +110,7 @@ test('Julia source indexing and dispatch evidence travel through the real editor
     await writeFile(join(root, 'methods.jl'), 'module 中文\nf(x::Int,y)=x\nf(x,y::Int)=y\nend\n');
     await writeFile(join(root, 'config.toml'), "[permissions]\nread='allow'\npersistence='ask'\nprocess='deny'\nnetwork='deny'\n");
     const client = new CoreClient({ executable: process.env.SHENSCOPE_JULIA || '/workspace/toolchains/julia-1.11.7/bin/julia',
-        cwd: root, env: { ...process.env, JULIA_DEPOT_PATH: '/workspace/julia-depot' },
+        cwd: root, env: { ...process.env, JULIA_DEPOT_PATH: process.env.JULIA_DEPOT_PATH || '/workspace/julia-depot' },
         args: ['--startup-file=no', '--threads=4', `--project=${project}`, '-e', 'using ShenScope; exit(ShenScope.main())', '--',
             'serve', '--stdio', '--root', root, '--state-dir', join(root, 'state'), '--config', join(root, 'config.toml')] });
     const events = []; client.onNotification(event => events.push(event));
@@ -156,7 +156,7 @@ test('Real editor transport combines parser evidence with pinned pagination and 
     await writeFile(join(root, 'sample_test.go'), 'package p\nfunc TestGreet() { Greet() }\n');
     await writeFile(join(root, 'config.toml'), '[permissions]\nread = "allow"\npersistence = "allow"\nprocess = "allow"\nnetwork = "deny"\n');
     const client = new CoreClient({ executable: process.env.SHENSCOPE_JULIA || '/workspace/toolchains/julia-1.11.7/bin/julia',
-        cwd: root, env: { ...process.env, JULIA_DEPOT_PATH: '/workspace/julia-depot' },
+        cwd: root, env: { ...process.env, JULIA_DEPOT_PATH: process.env.JULIA_DEPOT_PATH || '/workspace/julia-depot' },
         args: ['--startup-file=no', '--threads=4', `--project=${project}`, '-e', 'using ShenScope; exit(ShenScope.main())', '--',
             'serve', '--stdio', '--root', root, '--state-dir', join(root, 'state'), '--config', join(root, 'config.toml')] });
     const events = []; client.onNotification(event => events.push(event));
@@ -205,7 +205,7 @@ test('Independent Julia extensions travel through real editor RPC with registry 
     const uuid = 'c4e77152-5e6f-480b-8a7a-9fc6f6d7f6f2';
     await writeFile(join(root, 'config.toml'), '[permissions]\nread="allow"\ndynamic="allow"\nprocess="allow"\npersistence="allow"\nnetwork="deny"\n');
     const client = new CoreClient({ executable: process.env.SHENSCOPE_JULIA || '/workspace/toolchains/julia-1.11.7/bin/julia', cwd: root,
-        env: { ...process.env, JULIA_DEPOT_PATH: '/workspace/julia-depot', JULIA_LOAD_PATH: `@:${join(project, 'test/fixtures/extensions/ShenScopeLifecycleExample')}:@stdlib` },
+        env: { ...process.env, JULIA_DEPOT_PATH: process.env.JULIA_DEPOT_PATH || '/workspace/julia-depot', JULIA_LOAD_PATH: `@:${join(project, 'test/fixtures/extensions/ShenScopeLifecycleExample')}:@stdlib` },
         args: ['--startup-file=no', '--threads=4', `--project=${project}`, '-e', 'using ShenScope; exit(ShenScope.main())', '--',
             'serve', '--stdio', '--root', root, '--state-dir', join(root, 'state'), '--config', join(root, 'config.toml')] });
     const events = []; client.onNotification(event => events.push(event));

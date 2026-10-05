@@ -8,7 +8,7 @@ function runtime_source_paths(root::String,ctx::RuntimeContext)
         islink(base) && throw(ShenScopeError(:runtime_image,"Runtime source directory symlinks are unsupported"))
         isdir(base) || continue
         for (folder,dirs,files) in walkdir(base;follow_symlinks=false)
-            runtime_artifact_checkpoint(ctx;target=root)
+            runtime_artifact_checkpoint(ctx;tool="runtime.source",target=root)
             entries+=length(dirs)+length(files)
             entries<=4*RUNTIME_SOURCE_MAX_FILES || throw(ShenScopeError(:capacity,"Runtime source directory scan exceeds capacity"))
             for name in dirs
@@ -27,9 +27,9 @@ function runtime_source_paths(root::String,ctx::RuntimeContext)
     sort!(paths)
 end
 
-function runtime_source_snapshot(ctx::RuntimeContext;root=runtime_core_root())
+function runtime_source_snapshot(ctx::RuntimeContext;root=runtime_core_root(),authorized=false)
     source_root=realpath(String(root))
-    authorize!(ctx,:read,"runtime.source",source_root;reason="Fingerprint Core source, dependency lock and package preferences")
+    authorized || authorize!(ctx,:read,"runtime.source",source_root;reason="Fingerprint Core source, dependency lock and package preferences")
     paths=runtime_source_paths(source_root,ctx)
     files=RuntimeSourceFile[];total=0;project=nothing
     for relative in paths

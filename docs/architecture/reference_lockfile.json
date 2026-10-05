@@ -31,7 +31,8 @@
       "codex-rs/cli/src/main.rs",
       "codex-rs/protocol/src/memory_citation.rs",
       "scripts/build_codex_package.py",
-      "scripts/codex_package/cli.py"
+      "scripts/codex_package/cli.py",
+      "codex-rs/app-server/src/request_processors/diagnostics.rs"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -67,7 +68,8 @@
       "packages/core/src/git.ts",
       "packages/opencode/src/cli/cmd/serve.ts",
       "packages/opencode/src/permission/index.ts",
-      "script/publish.ts"
+      "script/publish.ts",
+      "packages/schema/src/lsp-event.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -148,7 +150,8 @@
       "packages/coding-agent/src/core/tools/edit.ts",
       "packages/coding-agent/src/cli.ts",
       "packages/durable/src/harness/compaction.ts",
-      "scripts/build-coding-agent-bundle.mjs"
+      "scripts/build-coding-agent-bundle.mjs",
+      "packages/coding-agent/src/core/diagnostics.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -188,7 +191,8 @@
       "apps/kimi-code/src/main.ts",
       "packages/minidb/src/memory-guard.ts",
       "packages/agent-core-v2/src/agent/permissionPolicy/policies/git-control-path-access-ask.ts",
-      "apps/kimi-code/scripts/native/check-bundle.mjs"
+      "apps/kimi-code/scripts/native/check-bundle.mjs",
+      "packages/agent-core-v2/src/app/capability/capabilityService.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -224,7 +228,8 @@
       "apps/zcode-cli/packages/cli/src/index.ts",
       "apps/zcode-cli/packages/core/src/memory/origin-session.ts",
       "packages/shared/src/permission-request-preview.ts",
-      "scripts/zcode-distribution/installer.mjs"
+      "scripts/zcode-distribution/installer.mjs",
+      "packages/shared/src/process-diagnostic.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -262,7 +267,8 @@
       "packages/cli/src/cli.ts",
       "integrations/external-context/src/memory-content.ts",
       "packages/core/src/sandbox/bwrap-status.ts",
-      "scripts/installation/install-qwen-standalone.sh"
+      "scripts/installation/install-qwen-standalone.sh",
+      "packages/cli/src/nonInteractive/tool-result-boundary-diagnostics.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

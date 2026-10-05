@@ -341,3 +341,37 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .terminal-controls,.terminal-dimensions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
 .terminal-dimensions input { width:64px; color:var(--vscode-input-foreground); background:var(--vscode-input-background); border:1px solid var(--vscode-input-border, transparent); padding:6px; }
 .terminal-output { overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; max-height:340px; font-family:var(--vscode-editor-font-family,monospace); font-size:12px; }
+
+.shenscope-panel .compiler-section { display: grid; gap: 12px; margin-top: 18px; min-width: 0; }
+.shenscope-panel .compiler-section .view-heading { gap: 8px; margin-bottom: 0; }
+.shenscope-panel .compiler-section .view-heading h2 { font-size: 16px; }
+.shenscope-panel .compiler-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.shenscope-panel .compiler-controls select, .shenscope-panel .compiler-section > select { color: var(--vscode-dropdown-foreground, var(--text)); background: var(--vscode-dropdown-background, var(--raised)); border: 1px solid var(--vscode-dropdown-border, var(--border)); border-radius: 6px; padding: 7px 9px; min-width: 0; }
+.shenscope-panel .compiler-controls select { flex: 1; min-width: 140px; }
+.shenscope-panel .compiler-section select:focus-visible { outline: 1px solid var(--vscode-focusBorder); outline-offset: 1px; }
+.shenscope-panel .compiler-pending { padding: 12px; border-left: 3px solid var(--vscode-progressBar-background, #5395ff); display: grid; gap: 10px; }
+.shenscope-panel .compiler-overview { border-bottom: 1px solid var(--vscode-panel-border); padding-bottom: 10px; }
+.shenscope-panel .compiler-overview h3 { margin: 0 0 4px; overflow-wrap: anywhere; }
+.shenscope-panel .compiler-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: 8px; }
+.shenscope-panel .compiler-metric { padding: 10px; border: 1px solid var(--vscode-panel-border); border-radius: 8px; display: grid; gap: 5px; min-width: 0; }
+.shenscope-panel .compiler-metric strong { font-size: 13px; overflow-wrap: anywhere; }
+.shenscope-panel .compiler-metric small, .shenscope-panel .compiler-pagination small { color: var(--vscode-descriptionForeground); }
+.shenscope-panel .compiler-flow, .shenscope-panel .compiler-findings, .shenscope-panel .compiler-effects { border: 1px solid var(--vscode-panel-border); border-radius: 8px; padding: 10px; }
+.shenscope-panel .compiler-flow summary, .shenscope-panel .compiler-findings summary, .shenscope-panel .compiler-effects summary { cursor: pointer; font-weight: 600; }
+.shenscope-panel .compiler-blocks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.shenscope-panel .compiler-block { font-family: var(--vscode-editor-font-family, monospace); font-size: 11px; padding: 7px 9px; border-radius: 6px; }
+.shenscope-panel .compiler-block[aria-pressed="true"] { border-color: var(--vscode-focusBorder); background: var(--vscode-list-activeSelectionBackground); color: var(--vscode-list-activeSelectionForeground); }
+.shenscope-panel .compiler-block-unreachable { opacity: .65; border-style: dashed; }
+.shenscope-panel .compiler-filter { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+.shenscope-panel .compiler-filter input { width: auto; }
+.shenscope-panel .compiler-table { border: 1px solid var(--vscode-panel-border); border-radius: 8px; overflow: hidden; }
+.shenscope-panel .compiler-table-head, .shenscope-panel .compiler-table-row { display: grid; grid-template-columns: 30px minmax(60px, .8fr) minmax(0, 1.3fr); gap: 8px; padding: 8px; font-size: 11px; }
+.shenscope-panel .compiler-table-head { color: var(--vscode-descriptionForeground); background: var(--vscode-editorGroupHeader-tabsBackground); font-weight: 600; }
+.shenscope-panel .compiler-table-row + .compiler-table-row { border-top: 1px solid var(--vscode-panel-border); }
+.shenscope-panel .compiler-table-row code { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.shenscope-panel .compiler-table-row[data-classification="any"], .shenscope-panel .compiler-table-row[data-classification="nonconcrete"] { border-left: 2px solid var(--vscode-editorWarning-foreground, #d9ac54); }
+.shenscope-panel .compiler-pagination { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 6px; }
+.shenscope-panel .compiler-pagination small { text-align: center; white-space: nowrap; font-size: 10px; }
+.shenscope-panel .compiler-pagination button { padding: 6px 8px; font-size: 11px; }
+.shenscope-panel .compiler-effect-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding-top: 8px; font-size: 11px; }
+.shenscope-panel .compiler-effect-row span { color: var(--vscode-descriptionForeground); }

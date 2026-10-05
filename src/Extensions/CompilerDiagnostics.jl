@@ -43,7 +43,8 @@ function inference_type_summary(type)
     Dict("type"=>cliptext(string(type),2048),"concrete"=>isconcretetype(type),"small_concrete_union"=>small_union,
         "bottom"=>type===Union{})
 end
-function compiler_report(name::AbstractString;mode="typed",max_ir_bytes=64*1024)
+function compiler_report(name::AbstractString;mode="typed",max_ir_bytes=64*1024,max_statements=2048)
+    mode=="graph" && return compiler_ir_report(name;limits=CompilerIRLimits(;max_statements))
     mode in ("typed","lowered") && 1024<=max_ir_bytes<=128*1024 || throw(ShenScopeError(:diagnostics,"Invalid compiler diagnostic limits"))
     target=compiler_target(name);started=time_ns()
     entries=mode=="typed" ? Base.code_typed(target.callable,target.arguments;optimize=false) : Base.code_lowered(target.callable,target.arguments)
@@ -75,9 +76,16 @@ function compiler_worker_main()
         response=try
             request=parsejson(raw);identifier=request["id"]
             request["operation"]=="compiler" || throw(ShenScopeError(:diagnostics,"Unknown diagnostics operation"))
-            keys_allowed=Set(["id","operation","target","mode","max_ir_bytes"])
+            keys_allowed=Set(["id","operation","target","mode","max_ir_bytes","max_statements","source_fingerprint"])
             all(key->key in keys_allowed,keys(request)) || throw(ShenScopeError(:diagnostics,"Unknown diagnostics field"))
-            result=compiler_report(request["target"];mode=get(request,"mode","typed"),max_ir_bytes=get(request,"max_ir_bytes",64*1024))
+            result=compiler_report(request["target"];mode=get(request,"mode","typed"),
+                max_ir_bytes=get(request,"max_ir_bytes",64*1024),max_statements=get(request,"max_statements",2048))
+            if get(request,"mode","typed")=="graph"
+                result["source"]["fingerprint"]==get(request,"source_fingerprint",nothing) ||
+                    throw(ShenScopeError(:conflict,"Compiler caller source fingerprint is stale"))
+            elseif haskey(request,"source_fingerprint")
+                throw(ShenScopeError(:diagnostics,"A source fingerprint is supported only for structured compiler graphs"))
+            end
             Dict("id"=>identifier,"result"=>result)
         catch error
             Dict("id"=>identifier,"error"=>Dict("message"=>error isa ShenScopeError ? error.message : "Compiler diagnostics failed"))
@@ -86,21 +94,47 @@ function compiler_worker_main()
     end
     0
 end
-function run_compiler_diagnostic(ctx::RuntimeContext,target::AbstractString;mode="typed",timeout=60.0,max_ir_bytes=64*1024)
-    compiler_target(target)
-    0.1<=timeout<=120 && mode in ("typed","lowered") && 1024<=max_ir_bytes<=128*1024 ||
+function compiler_diagnostic_checkpoint(ctx::RuntimeContext,target;source_root=nothing)
+    check_cancelled(ctx.cancellation);check_budget(ctx.budget)
+    permission_decision(ctx.permissions,PermissionRequest("compiler-result-current",:read,"runtime.diagnostics",ctx.root,
+        "Current compiler result read permission"))==Deny && throw(ShenScopeError(:permission,"Compiler evidence reads were revoked"))
+    permission_decision(ctx.permissions,PermissionRequest("compiler-current",:dynamic,"runtime.diagnostics",target,
+        "Current compiler inference permission"))==Deny && throw(ShenScopeError(:permission,"Compiler inference was revoked"))
+    if source_root!==nothing
+        permission_decision(ctx.permissions,PermissionRequest("compiler-source-current",:read,"runtime.source",source_root,
+            "Current compiler source evidence permission"))==Deny && throw(ShenScopeError(:permission,"Compiler source reads were revoked"))
+    end
+end
+
+function run_compiler_diagnostic(ctx::RuntimeContext,target::AbstractString;mode="typed",timeout=60.0,
+        max_ir_bytes=64*1024,max_statements=2048)
+    selected=compiler_target(target)
+    isfinite(timeout) && 0.1<=timeout<=120 && mode in ("typed","lowered","graph") && 1024<=max_ir_bytes<=128*1024 ||
         throw(ShenScopeError(:diagnostics,"Invalid compiler diagnostic limits"))
+    limits=CompilerIRLimits(;max_statements)
+    ctx.sandbox isa HostSandbox || throw(ShenScopeError(:capability,"Trusted compiler diagnostics do not support the configured restricted sandbox"))
     authorize!(ctx,:dynamic,"runtime.diagnostics",target;reason="Infer trusted Core methods in a separate Julia process")
     check_cancelled(ctx.cancellation)
     project=dirname(dirname(@__DIR__))
+    snapshot=mode=="graph" ? runtime_source_snapshot(ctx;root=project) : nothing
     argv=[first(Base.julia_cmd().exec),"--startup-file=no","--history-file=no","--compiled-modules=existing","--threads=1",
         "--project="*project,"-e","using ShenScope; exit(ShenScope.compiler_worker_main())"]
     worker=BackendWorker(argv)
     try
-        worker_start!(worker,ctx)
-        result=worker_request(worker,"compiler",Dict("target"=>target,"mode"=>mode,"max_ir_bytes"=>max_ir_bytes),ctx;timeout)
-        result["execution"]=Dict("separate_process"=>true,"os_sandbox"=>false,"timeout_seconds"=>timeout)
-        emit!(ctx,:compiler_diagnostic,Dict("target"=>target,"mode"=>mode,"elapsed_seconds"=>result["elapsed_seconds"],"truncated"=>result["truncated"]))
-        result
+        worker_start!(worker,ctx;reason="Start a separate trusted Core compiler inference helper")
+        request=Dict{String,Any}("target"=>target,"mode"=>mode,"max_ir_bytes"=>max_ir_bytes,"max_statements"=>max_statements)
+        snapshot===nothing || (request["source_fingerprint"]=snapshot.fingerprint)
+        checkpoint=()->compiler_diagnostic_checkpoint(ctx,target;source_root=snapshot===nothing ? nothing : snapshot.root)
+        result=worker_request(worker,"compiler",request,ctx;timeout,checkpoint)
+        checkpoint()
+        if mode=="graph"
+            compiler_ir_validate_report(result,selected,snapshot;limits)
+            runtime_source_snapshot(ctx;root=project,authorized=true).fingerprint==snapshot.fingerprint ||
+                throw(ShenScopeError(:conflict,"Core source changed before compiler graph publication"))
+        end
+        execution=Dict("separate_process"=>true,"os_sandbox"=>false,"timeout_seconds"=>timeout)
+        emit!(ctx,:compiler_diagnostic,Dict("target"=>target,"mode"=>mode,"elapsed_seconds"=>result["elapsed_seconds"],
+            "truncated"=>mode=="graph" ? result["methods_truncated"] : result["truncated"]))
+        mode=="graph" ? Dict("report"=>result,"execution"=>execution) : merge(result,Dict("execution"=>execution))
     finally;worker_close!(worker);end
 end

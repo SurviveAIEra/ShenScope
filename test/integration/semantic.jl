@@ -1,19 +1,8 @@
-function semantic_context(root, state="state")
-    RuntimeContext(root;state_dir=joinpath(root,state),approve=r->:once)
-end
+include("../fixtures/semantic_transport.jl")
 
 function semantic_snapshot(state)
     lock(state.mutex) do
         Dict(path=>ShenScope.facts_dict(facts) for (path,facts) in state.files)
-    end
-end
-
-function semantic_error_code(f)
-    try
-        f(); nothing
-    catch error
-        error isa ShenScopeError || rethrow()
-        error.code
     end
 end
 

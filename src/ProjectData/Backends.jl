@@ -55,7 +55,7 @@ function worker_executable(argv::Vector{String},root::String)
     executable===nothing && throw(ShenScopeError(:backend,"Configured parser executable is unavailable"))
     vcat([String(executable)],argv[2:end])
 end
-function worker_start!(worker::BackendWorker,ctx::RuntimeContext)
+function worker_start!(worker::BackendWorker,ctx::RuntimeContext;reason="Start the configured source parser helper")
     argv=worker_validate_command(worker)
     request=PermissionRequest("backend-current",:process,"project.backend",first(argv),"Start parser")
     permission_decision(ctx.permissions,request)==Deny && throw(ShenScopeError(:permission,"Parser execution is denied"))
@@ -63,7 +63,7 @@ function worker_start!(worker::BackendWorker,ctx::RuntimeContext)
         argv==worker.started_argv || throw(ShenScopeError(:backend,"Parser command changed; close the resident helper before restarting"))
         return
     end
-    authorize!(ctx,:process,"project.backend",first(argv);reason="Start the configured source parser helper")
+    authorize!(ctx,:process,"project.backend",first(argv);reason)
     lock(worker.mutex) do
         argv==worker.argv && permission_decision(ctx.permissions,request)!=Deny ||
             throw(ShenScopeError(:permission,"Parser command or permission changed after approval"))
@@ -100,13 +100,15 @@ function worker_start!(worker::BackendWorker,ctx::RuntimeContext)
         end
     end
 end
-function worker_request(worker::BackendWorker,operation::String,params::AbstractDict,ctx::RuntimeContext;timeout=120.0)
+function worker_request(worker::BackendWorker,operation::String,params::AbstractDict,ctx::RuntimeContext;
+        timeout=120.0,checkpoint=()->nothing)
     isfinite(timeout) && 0<timeout<=3600 || throw(ShenScopeError(:backend,"Invalid parser timeout"))
     lock(worker.mutex) do
         worker.process!==nothing || throw(ShenScopeError(:backend,"Parser helper has not been prepared"))
         worker_validate_command(worker)==worker.started_argv || throw(ShenScopeError(:backend,"Resident parser command changed"))
         request=PermissionRequest("backend-request",:process,"project.backend",first(worker.argv),"Use parser")
         permission_decision(ctx.permissions,request)!=Deny || throw(ShenScopeError(:permission,"Parser execution is now denied"))
+        checkpoint()
         worker.sequence+=1;identifier=worker.sequence
         text=canonical(merge(Dict("id"=>identifier,"operation"=>operation),params))*"\n"
         ncodeunits(text)<=32*1024*1024 || throw(ShenScopeError(:backend,"Parser request exceeds limit"))
@@ -121,6 +123,7 @@ function worker_request(worker::BackendWorker,operation::String,params::Abstract
             task=@async bounded_record(worker.output,32*1024*1024)
             while !istaskdone(task) || !istaskdone(writer)
                 check_cancelled(ctx.cancellation)
+                checkpoint()
                 permission_decision(ctx.permissions,request)!=Deny || throw(ShenScopeError(:permission,"Parser execution was denied during extraction"))
                 lock(ctx.budget.mutex) do;check_budget(ctx.budget);end
                 istaskfailed(writer) && throw(ShenScopeError(:backend,"Parser request pipe failed"))
@@ -131,6 +134,7 @@ function worker_request(worker::BackendWorker,operation::String,params::Abstract
             endswith(raw,"\n") || throw(ShenScopeError(:backend,"Parser disconnected during response"))
             result=bounded_json_object(raw;maximum=32*1024*1024,max_depth=32,max_nodes=1_000_000,error_code=:backend)
             check_cancelled(ctx.cancellation)
+            checkpoint()
             permission_decision(ctx.permissions,request)!=Deny || throw(ShenScopeError(:permission,"Parser execution was denied before publication"))
             get(result,"id",nothing) isa Integer && !(result["id"] isa Bool) && result["id"]==identifier ||
                 throw(ShenScopeError(:backend,"Parser response ID mismatch"))

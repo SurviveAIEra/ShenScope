@@ -1,0 +1,25 @@
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/backend_transport.jl:1
+Parser transport bounds blocked pipes, failed framing and command approval: Error During Test at /workspace/ShenScope/test/integration/backend_transport.jl:1
+  Got exception outside of a @test
+  UndefVarError: `semantic_context` not defined in `Main`
+  Suggestion: check for spelling errors or missing imports.
+  Stacktrace:
+   [1] (::var"#1#17")(root::String)
+     @ Main /workspace/ShenScope/test/integration/backend_transport.jl:28
+   [2] mktempdir(fn::var"#1#17", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [3] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [4] macro expansion
+     @ /workspace/ShenScope/test/integration/backend_transport.jl:2 [inlined]
+   [5] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [6] top-level scope
+     @ /workspace/ShenScope/test/integration/backend_transport.jl:2
+   [7] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [8] top-level scope
+     @ none:1
+Test Summary:                                                              | Error  Total  Time
+Parser transport bounds blocked pipes, failed framing and command approval |     1      1  5.1s

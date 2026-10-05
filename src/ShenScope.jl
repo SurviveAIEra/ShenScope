@@ -159,6 +159,14 @@ include("Extensions/InstalledPackages.jl")
 include("Extensions/ProjectionTypes.jl")
 include("Tools/Extensions.jl")
 include("Extensions/CompilerDiagnostics.jl")
+include("Compiler/IRTypes.jl")
+include("Compiler/IROperands.jl")
+include("Compiler/IRControlFlow.jl")
+include("Compiler/IRDataFlow.jl")
+include("Compiler/IREffects.jl")
+include("Compiler/IRReports.jl")
+include("Compiler/IRFrameOperands.jl")
+include("Compiler/IRValidation.jl")
 include("Tools/Diagnostics.jl")
 include("MCP/Types.jl")
 include("MCP/Schema.jl")
@@ -214,6 +222,7 @@ include("Protocol/Server.jl")
 include("Protocol/Project.jl")
 include("Protocol/Extensions.jl")
 include("Protocol/Terminal.jl")
+include("Protocol/Diagnostics.jl")
 include("Protocol/ProjectWatch.jl")
 include("Protocol/Tasks.jl")
 include("Protocol/MCP.jl")
@@ -284,7 +293,8 @@ export RuntimeSourceFile, RuntimeSourceSnapshot, RuntimeImageReceipt, VerifiedRu
     runtime_source_snapshot, runtime_source_view, runtime_image_receipt, runtime_image_view,
     runtime_image_inspect, runtime_image_verify, runtime_image_write_receipt, runtime_image_launch_arguments
 export contract_report, interface_catalog, dispatch_ambiguities, invoke_extension_latest,
-    compiler_report, run_compiler_diagnostic, compiler_targets, DiagnosticsTool
+    compiler_report, run_compiler_diagnostic, compiler_targets, DiagnosticsTool,
+    CompilerIRLimits, compiler_ir_report, compiler_ir_compare
 export WorkStatus, WorkSpec, WorkRetryPolicy, WorkLease, WorkFailure, WorkReceipt,
     WorkRecord, Workflow, create_workflow, load_workflow, claim_work!, start_work!,
     heartbeat_work!, finish_work!, cancel_work!, recover_workflow!, reconcile_work!, work_view,

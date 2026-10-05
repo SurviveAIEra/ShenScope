@@ -5,6 +5,11 @@ export type RPCValue = null | boolean | number | string | RPCValue[] | { [key: s
 export type Notification = { method: string; params: any };
 export type CoreLaunch = { executable: string; args: string[]; cwd: string; env?: NodeJS.ProcessEnv };
 type Pending = { resolve: (value: any) => void; reject: (error: Error) => void; timer: ReturnType<typeof setTimeout> };
+const compilerBoundStarts = new Set([
+    'agent/start', 'project/start', 'diagnostics/start', 'extensions/start', 'terminal/start',
+    'analyzers/start', 'models/start', 'memory/start', 'security/start',
+    'context/start', 'skills/start', 'hooks/start', 'mcp/start',
+]);
 
 export class CoreClient {
     private child?: ChildProcessWithoutNullStreams;
@@ -46,7 +51,7 @@ export class CoreClient {
         return () => this.listeners.delete(listener);
     }
 
-    request(method: string, params: Record<string, unknown> = {}, timeoutMs = 30_000): Promise<any> {
+    request(method: string, params: Record<string, unknown> = {}, timeoutMs = compilerBoundStarts.has(method) ? 120_000 : 30_000): Promise<any> {
         if (!this.child || this.closed) { return Promise.reject(new Error('Core is unavailable')); }
         if (this.pending.size >= 128) { return Promise.reject(new Error('Too many pending Core requests')); }
         const id = this.nextId++;

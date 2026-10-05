@@ -1,0 +1,16 @@
+Test Summary:                                                                 | Pass  Total   Time
+Actual inferred IR preserves branch definitions, loop flow and compiler scope |   16     16  11.6s
+Test Summary:                                                          | Pass  Total  Time
+Trusted compiler frames pin source and reject forged graph projections |   18     18  7.8s
+Test Summary:                                                               | Pass  Total   Time
+Compiler graph workers honor approvals, revocation and restricted execution |   11     11  24.6s
+Test Summary:                                                             | Pass  Total  Time
+Compiler polling closes actual helpers after live denial and cancellation |   15     15  1.0s
+Test Summary:                                                                 | Pass  Total  Time
+Owned compiler jobs protect conversations, cancel pending approval and retire |   13     13  4.4s
+Test Summary:                                                              | Pass  Total  Time
+Parser transport bounds blocked pipes, failed framing and command approval |   41     41  3.0s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  1.3s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  1.5s
