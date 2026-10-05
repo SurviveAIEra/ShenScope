@@ -137,7 +137,8 @@
       "packages/client/ui-chat/src/client/performance-usage.ts",
       "packages/terminal/terminal-bash/src/session.ts",
       "packages/api/gateway/src/client/journal-stream.ts",
-      "packages/fs/tool-fs/src/edit.ts"
+      "packages/fs/tool-fs/src/edit.ts",
+      "packages/lsp/tool-lsp/src/render.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -230,7 +231,8 @@
       "packages/agent-core-v2/src/features/plan/tools/exit-plan-mode/exitPlanModeTool.ts",
       "packages/agent-core-v2/src/features/plan/planOps.ts",
       "packages/agent-core-v2/src/agent/tools/os/bash/process-task.ts",
-      "packages/agent-core-v2/src/agent/tools/edit/edit.ts"
+      "packages/agent-core-v2/src/agent/tools/edit/edit.ts",
+      "packages/agent-core-v2/src/agent/toolResultTruncation/toolResultTruncation.ts"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -336,7 +338,8 @@
     "commit": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
     "license": "Apache-2.0",
     "inspected_paths": [
-      "aider/repomap.py"
+      "aider/repomap.py",
+      "aider/linter.py"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",
@@ -352,7 +355,8 @@
     "inspected_paths": [
       "src/serena/repl/facade.py",
       "src/solidlsp/language_servers/typescript_language_server.py",
-      "src/serena/util/git.py"
+      "src/serena/util/git.py",
+      "test/solidlsp/util/diagnostics.py"
     ],
     "code_reuse": false,
     "cloned_date": "2026-10-03",

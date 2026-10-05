@@ -34,10 +34,13 @@ function validation_rpc(server::CoreServer,method::String,params::AbstractDict)
     arguments=Dict{String,Any}(key=>value for (key,value) in params if key != "session_id")
     validate_tool_arguments(tool,arguments)
     if method == "validation/query"
-        arguments["action"] in ("get","list") || throw(RPCFault(-32602,"Use validation/start to run a project check"))
+        arguments["action"] in ("get","list","sources","compare") || throw(RPCFault(-32602,"Use validation/start to run a check or import a report"))
         permission_decision(owner.permissions,PermissionRequest("validation-query",:read,"validation",server.root,
             "Inspect project check receipts")) == Allow || throw(ShenScopeError(:permission,"Use an asynchronous validation read for approval"))
-        return execute(tool,arguments,child_context(owner))
+        context = child_context(owner)
+        context.approve = request -> :deny
+        context.sink = event -> event.kind in (:permission_request, :permission_resolved) ? nothing : owner.sink(event)
+        return execute(tool,arguments,context)
     end
     idle_session(server,params)
     start_operation!(tool.operations,owner;kind=String(arguments["action"]),

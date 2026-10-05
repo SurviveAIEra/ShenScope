@@ -78,6 +78,18 @@ function utf16_byte_column(source::SourceMap, line::Integer, character::Integer)
     index - start + 1
 end
 
+function scalar_byte_column(source::SourceMap, line::Integer, character::Integer)
+    !(character isa Bool) && 0 <= character <= 8*1024^2 ||
+        throw(ShenScopeError(:source_position, "Invalid Unicode scalar offset"))
+    start, ending = source_line_bounds(source, line)
+    index = start
+    for count in 1:character
+        index < ending || throw(ShenScopeError(:source_position, "Scalar offset is outside the source line"))
+        index = nextind(source.source, index)
+    end
+    index-start+1
+end
+
 function byte_utf16_character(source::SourceMap, line::Integer, column::Integer)
     ending = source_byte_index(source, line, column)
     checkpoints = source_line_checkpoints(source, line)

@@ -1,0 +1,11 @@
+Precompiling ShenScope...
+ 119046.6 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 119 seconds. 41 already precompiled.
+Test Summary:                                                              | Pass  Total  Time
+Language result publication rechecks secondary sources and live permission |    3      3  1.3s
+Test Summary:                                                                                | Pass  Total  Time
+Navigation selected pages reject stale secondary files without claiming full-graph freshness |    5      5  0.5s
+Test Summary:                                                   | Pass  Total  Time
+Project retained jobs stop revealing data after read revocation |   11     11  7.7s
+Test Summary:                                                          | Pass  Total  Time
+Unicode scalar columns use valid boundaries and reject invalid offsets |    3      3  0.1s

@@ -34,6 +34,16 @@ and associates plan, application, run-set and command receipts. It does not
 snapshot every project input or prove complete coverage. A command can already
 have run when verification becomes unconfirmed; no implicit retry is performed.
 
+`verify_check` applies the same lifecycle to a compiler/linter command rather
+than a discovered test candidate. Pass the applied plan/hash and explicit
+`argv`, with optional `cwd`, output `family`, `column_unit`, label and timeout.
+It checks only the edited source versions before and after the command, then
+binds application, validation, Problems and actual execution receipt hashes.
+The shared tool set uses the same testing/validation/Problems managers. Process
+approval remains separate from applying an edit; failure leaves the proposal
+applied, or verification unconfirmed if command effects cannot be established.
+It does not automatically reapply edits or rerun commands.
+
 `history_save/list/get/sources/restore/delete` use a bounded versioned store.
 Saving and deleting require Persistence as well as Read and expected revisions.
 The store saves necessary replacement text/ranges, manifests and receipts,

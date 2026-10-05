@@ -1,0 +1,58 @@
+ERROR: LoadError: Some tests did not pass: 5 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/workflow_freshness.jl:37
+in expression starting at /workspace/ShenScope/test/validation_reports.jl:6
+Test Summary:                                                                | Pass  Total   Time
+SARIF import projects Unicode ranges, resolves messages and never runs fixes |   11     11  23.9s
+Test Summary:                                               | Pass  Total  Time
+SARIF inactive and unlocated reports retain honest coverage |    6      6  4.7s
+Test Summary:                                                                   | Pass  Total  Time
+SARIF paths, malformed positions, indexed identities and capacities are bounded |   26     26  5.4s
+Test Summary:                                                               | Pass  Total  Time
+SARIF comparison preserves source/configuration changes without reexecution |    6      6  3.1s
+Test Summary:                                                                                  | Pass  Total   Time
+Workspace proposals preview Unicode edits and refuse stale, overlapping and foreign operations |   11     11  10.1s
+Test Summary:                                                                            | Pass  Total  Time
+Workspace application retains receipts and rolls back without overwriting external edits |   14     14  2.6s
+Test Summary:                                                                  | Pass  Total  Time
+Workspace edit permissions, plan mode and bounded proposals remain independent |    4      4  0.8s
+Test Summary:                                                             | Pass  Total   Time
+Reviewed Python, JavaScript and C edits bind real compiler check receipts |   30     30  25.0s
+Test Summary:                                                                  | Pass  Total  Time
+Source drift makes reviewed check verification unconfirmed and prevents replay |    5      5  0.8s
+Test Summary:                                                              | Pass  Total  Time
+Language result publication rechecks secondary sources and live permission |    3      3  0.4s
+Test Summary:                                                                                | Pass  Total  Time
+Navigation selected pages reject stale secondary files without claiming full-graph freshness |    5      5  0.7s
+Project retained jobs stop revealing data after read revocation: Error During Test at /workspace/ShenScope/test/unit/workflow_freshness.jl:37
+  Got exception outside of a @test
+  MethodError: no method matching empty!(::IOBuffer)
+  The function `empty!` exists, but no method is defined for this combination of argument types.
+  
+  Closest candidates are:
+    empty!(!Matched::BitVector)
+     @ Base bitarray.jl:1144
+    empty!(!Matched::Base.JuliaSyntax.ParseStream)
+     @ Base /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/base/JuliaSyntax/src/parse_stream.jl:1132
+    empty!(!Matched::JuliaSyntax.ParseStream)
+     @ JuliaSyntax /workspace/julia-depot/packages/JuliaSyntax/BHOG8/src/parse_stream.jl:1133
+    ...
+  
+  Stacktrace:
+   [1] (::var"#40#41")(root::String)
+     @ Main /workspace/ShenScope/test/unit/workflow_freshness.jl:59
+   [2] mktempdir(fn::var"#40#41", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [3] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [4] macro expansion
+     @ /workspace/ShenScope/test/unit/workflow_freshness.jl:38 [inlined]
+   [5] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [6] top-level scope
+     @ /workspace/ShenScope/test/unit/workflow_freshness.jl:38
+   [7] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [8] top-level scope
+     @ /workspace/ShenScope/test/validation_reports.jl:6
+Test Summary:                                                   | Pass  Error  Total   Time
+Project retained jobs stop revealing data after read revocation |    5      1      6  12.4s

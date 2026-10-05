@@ -13,5 +13,11 @@ Julia runtime. Both editor clients share views for project intelligence, MCP,
 skills, hooks, analyzers and extensions. Some newer Core tools/RPC operations
 do not yet have a dedicated graphical control.
 
+Project's **Show in Problems** publishes source-checked Core diagnostics into
+VS Code's Problems view. Unsaved edits and file/configuration/session changes
+clear ShenScope's markers. **Clear Problems** removes only ShenScope diagnostics.
+Cached publication requires Read Allow. Terminal and Testing are also connected
+to the same Core; imported SARIF is currently a Core tool/RPC action.
+
 The native ShenScope IDE has a separate Workbench contribution; it does not
 require this extension.

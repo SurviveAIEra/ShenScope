@@ -49,7 +49,7 @@ function workspace_rpc(server::CoreServer, method::String, params::AbstractDict)
     idle_session(server, params)
     start_operation!(tool.operations, owner; kind=String(arguments["action"]),
         metadata=Dict("explicit_workspace_changes" => arguments["action"] == "apply",
-            "explicit_command_execution" => arguments["action"] == "verify", "automatic_replay" => false)) do context
+            "explicit_command_execution" => arguments["action"] in ("verify", "verify_check"), "automatic_replay" => false)) do context
         execute(tool, arguments, context)
     end
 end

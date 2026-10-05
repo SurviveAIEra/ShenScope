@@ -1,0 +1,26 @@
+✔ Problems publication checks both Core projections and the current editor text (20.33866ms)
+✔ Changed buffers withhold diagnostics without changing source or executing a fix (4.562016ms)
+✔ Problems source identity, path and UTF-16 bounds are checked independently (4.915383ms)
+✔ Read revocation before final publication clears owned markers and never replays capture (9.428257ms)
+✔ Buffer changes during asynchronous reads reject delayed publication (1.937315ms)
+✔ Cancellation before capture acknowledgement cancels the owned job after it arrives (0.931655ms)
+✔ Unavailable files are withheld while valid diagnostics can still publish (4.600753ms)
+✔ Stale configuration and source reports publish an empty owned collection (0.453012ms)
+✖ Actual Core SARIF import publishes owned Problems and withdraws changed buffers and revoked reads (38820.074171ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 39101.828955
+
+✖ failing tests:
+
+test at editors/test/projectProblems.test.mjs:23:1
+✖ Actual Core SARIF import publishes owned Problems and withdraws changed buffers and revoked reads (38820.074171ms)
+  Error: Core request timed out
+      at Timeout._onTimeout (file:///workspace/ShenScope/editors/dist/rpcClient.mjs:84:16)
+      at listOnTimeout (node:internal/timers:635:17)
+      at process.processTimers (node:internal/timers:571:7)

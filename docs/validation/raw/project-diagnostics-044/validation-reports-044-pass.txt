@@ -1,0 +1,26 @@
+Test Summary:                                                                | Pass  Total   Time
+SARIF import projects Unicode ranges, resolves messages and never runs fixes |   11     11  10.1s
+Test Summary:                                               | Pass  Total  Time
+SARIF inactive and unlocated reports retain honest coverage |    6      6  1.0s
+Test Summary:                                                                   | Pass  Total  Time
+SARIF paths, malformed positions, indexed identities and capacities are bounded |   26     26  0.9s
+Test Summary:                                                               | Pass  Total  Time
+SARIF comparison preserves source/configuration changes without reexecution |    6      6  2.0s
+Test Summary:                                                                                  | Pass  Total  Time
+Workspace proposals preview Unicode edits and refuse stale, overlapping and foreign operations |   11     11  5.5s
+Test Summary:                                                                            | Pass  Total  Time
+Workspace application retains receipts and rolls back without overwriting external edits |   14     14  1.4s
+Test Summary:                                                                  | Pass  Total  Time
+Workspace edit permissions, plan mode and bounded proposals remain independent |    4      4  0.3s
+Test Summary:                                                             | Pass  Total   Time
+Reviewed Python, JavaScript and C edits bind real compiler check receipts |   30     30  12.8s
+Test Summary:                                                                  | Pass  Total  Time
+Source drift makes reviewed check verification unconfirmed and prevents replay |    5      5  0.7s
+Test Summary:                                                              | Pass  Total  Time
+Language result publication rechecks secondary sources and live permission |    3      3  0.3s
+Test Summary:                                                                                | Pass  Total  Time
+Navigation selected pages reject stale secondary files without claiming full-graph freshness |    5      5  0.5s
+Test Summary:                                                   | Pass  Total  Time
+Project retained jobs stop revealing data after read revocation |   11     11  6.7s
+Test Summary:                                                          | Pass  Total  Time
+Unicode scalar columns use valid boundaries and reject invalid offsets |    3      3  0.1s

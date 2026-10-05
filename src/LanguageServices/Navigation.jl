@@ -65,14 +65,18 @@ function query_language_server(client::LanguageClient, action::String, arguments
         elseif action == "format"
             language_format_edit(response, primary)
         elseif action == "rename"
-            language_workspace_edit(response, client, ctx)
+            language_workspace_edit(response, client, ctx; sources)
         else
-            normalize_language_code_actions(response, client, ctx; maximum)
+            normalize_language_code_actions(response, client, ctx; maximum, sources)
         end
+        versions = verify_language_result_sources!(sources)
         language_client_access(client, ctx)
         merge!(result, Dict("server" => client.spec.name, "action" => action,
             "configuration_sha256" => client.spec.fingerprint,
             "document_version" => document === nothing ? nothing : document.version,
+            "source_versions" => versions, "source_versions_verified" => true,
+            "source_check_scope" => "observed_projection_sources_before_publication",
+            "whole_server_dependency_snapshot_verified" => false,
             "complete_project_coverage" => false, "automatic_execution" => false))
         bounded_canonical_json(result; maximum=3*1024^2, max_depth=32, max_nodes=100_000)
         result

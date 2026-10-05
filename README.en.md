@@ -148,7 +148,7 @@ These analysis capabilities work alongside the agent's everyday tools.
 | Model services | OpenAI Chat / Responses, Anthropic, Gemini and Ollama; streaming, native reasoning, budgets, routing and retries before delivery |
 | Planning and context | Plan/Act, editable task plans, trimming/summaries and retained original tool outputs |
 | File changes | Search/read/hash checks; multi-file proposals, diffs, explicit application, conflict checks and failure rollback |
-| Tests and checks | Argument-vector commands for any language; discovery, execution, cancellation, output receipts and source-associated diagnostics |
+| Tests and checks | Argument-vector commands for any language; discovery, execution, cancellation, output receipts, SARIF import and source-associated diagnostics |
 | Longer work | Conversations/branches, versioned memory, persistent task dependencies, leases and result receipts |
 | External capabilities | MCP stdio / Streamable HTTP, project/user Skills and lifecycle Hooks |
 | Permissions | Separate Allow / Ask / Deny policies for read, edit, process, network, MCP, dynamic code and persistence |
@@ -174,7 +174,7 @@ See [edit workflows](docs/core/workspace_edits.md), [project testing](docs/core/
 
 All four interfaces use the same Julia Core contracts. Core owns the agent, models, configuration,
 conversations, permissions and analysis. Editors handle interaction and display. The native IDE
-and VSIX share a panel and have Terminal and Testing integration. Some newer features are
+and VSIX share a panel and have Terminal, Testing and Problems integration. Some newer features are
 available through Core tools/RPC without a dedicated graphical page.
 
 **A complete, directly installable ShenScope IDE package has not been released yet.**

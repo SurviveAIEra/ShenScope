@@ -1,0 +1,160 @@
+Testing failure UI: ShenScope
+Testing failure picker: 
+Panel failure state: ShenScope
+Chat
+History
+Project
+More
+Tests
+Settings
+Models
+Memory
+Tools
+Runtime
+Security
+MCP
+Skills
+Hooks
+Context
+Analyzers
+Extensions
+Terminal
+Project intelligence
+
+Explore symbols and trace the evidence behind affected code and test candidates.
+
+Tree-sitter
+Go AST
+CodeGraph
+TypeScript compiler
+Julia source
+Refresh index
+Combined project evidence
+
+Compare indexed sources or follow their recorded dependencies. Exact source connections retain every provider observation.
+
+Indexed sources
+Tree-sitter
+Index first
+Go AST
+Index first
+CodeGraph
+Index first
+TypeScript compiler
+r1
+Julia source
+Index first
+Limit captured files
+Connect identical source declarations
+Compare sources
+Search sources
+Combined impact
+Combined tests
+2
+Files
+12
+Symbols
+20
+Relations
+1
+Revision
+
+Compiler snapshot. Refresh after edits. Static resolution does not prove the target of every runtime call.
+
+File changes
+Off
+Update index automatically
+
+Watch saved files and configuration. Approvals still apply to index updates.
+
+Watch file changes
+Index storage · 17.9 KiB
+TypeScript 5.9.2
+1 diagnostics
+0 unresolved calls
+name
+parameter · greeter.ts:2
+Inspect
+Greeter
+interface · greeter.ts:1
+Inspect
+English
+import · main.ts:1
+Inspect
+TestGreet
+function · main.ts:2
+Inspect
+name
+parameter · greeter.ts:1
+Inspect
+greet
+method · greeter.ts:1
+Inspect
+agent
+variable · main.ts:2
+Inspect
+English
+class · greeter.ts:2
+Inspect
+greet
+method · greeter.ts:2
+Inspect
+wrong
+variable · main.ts:3
+Inspect
+main.ts
+file · main.ts:1
+Inspect
+greeter.ts
+file · greeter.ts:1
+Inspect
+Show diagnostics
+Show in Problems
+Clear Problems
+Files to analyze (comma separated)
+Impact
+Test candidates
+Architecture
+Migration plan
+
+Propose dependency batches for the selected files. Review the evidence before changing code.
+
+Migration change
+API signature
+Rename API
+Remove API
+Move code
+Behavior change
+Migration order
+Dependencies first
+Callers first
+Dependency depth
+Plan migration
+Commit evidence
+
+Find files that change together or rank files for review using local Git history.
+
+Commits
+Bulk file threshold
+Minimum shared commits
+Git co-change
+Review priority
+Problems updated
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.monaco-editor').filter({ has: locator('.view-lines').filter({ hasText: 'export const wrong' }) }).first().locator('.view-lines').filter({ hasText: 'SHENSCOPE_UNSAVED' }) to be detached[22m
+[2m    62 × locator resolved to visible <div data-mprt="8" aria-hidden="true" role="presentation" class="view-lines monaco-mouse-cursor-text">…</div>[22m
+
+    at /workspace/ShenScope/ide/test/native_smoke.mjs:1191:83 {
+  log: [
+    "  - waiting for locator('.monaco-editor').filter({ has: locator('.view-lines').filter({ hasText: 'export const wrong' }) }).first().locator('.view-lines').filter({ hasText: 'SHENSCOPE_UNSAVED' }) to be detached",
+    '    62 × locator resolved to visible <div data-mprt="8" aria-hidden="true" role="presentation" class="view-lines monaco-mouse-cursor-text">…</div>'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

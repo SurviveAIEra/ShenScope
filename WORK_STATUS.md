@@ -1,11 +1,48 @@
 # Work status
 
-Current 32,000-line phase: IN_PROGRESS. Prioritize urgent general-project modules.
-Latest verified cloc 2.11 count: 31,304 authored Julia Core code lines across 340 files;
+Current 32,000-line phase: COMPLETED for source size and affected functional checks.
+Latest verified cloc 2.11 count: 32,015 authored Julia Core code lines across 349 files;
 CLI/TUI add 1,360 lines and optional Julia extensions add 57, counted separately.
-This is 97.825% of the current phase's line target, leaving 696 lines. These are early implementations,
+These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
+
+Latest verified checkpoint: 044. General project workflows now include bounded
+SARIF import with explicit source/report hashes, current-source report comparison,
+applied-edit compiler/lint verification, selected LSP/navigation source rechecks
+and retained project output withholding after Read revocation. Both VSIX and
+native Workbench publish owned diagnostics into native Problems. Real GUI flows
+verify visible unsaved edits, stale-marker withdrawal, exact file restoration,
+explicit republication, marker clearing and Settings Read revocation. The native
+flow runs with extensions disabled. Cached publication requires Read Allow.
+
+Affected Core suites: 928 passing assertions in 44 testsets; excluding repeated
+workspace unit tests gives 899 in 41. The final new diagnostics suite has 135
+assertions; a separate final freshness run repeats 22 of those. Normal Core
+precompilation succeeds, including the final permission-delivery correction.
+All 17 selected Node tests pass: seven actual Julia Core integrations, two child
+transport/disposal tests and eight publisher fixtures. Editor checks/build and
+the complete native client typecheck pass; final timeout/notice edits change
+strings and an existing visibility property, with final GUI verification.
+Evidence: `docs/validation/project-diagnostics-checkpoint-044.json` and its raw logs.
+
+Current VSIX: 782,981 bytes, 389 archive entries, 387 authored payloads verified
+against current source/assets. GUI validation uses the development extension;
+installed-package runtime validation is separate. The package includes authored
+Core but does not bundle Julia. Complete IDE installers, bundled runtime,
+upgrade/uninstall and cross-platform runtime validation remain unfinished.
+Live-model programming quality, whole-project semantic coverage and general
+host-tool OS isolation also remain separate product gates.
+
+Both READMEs were rewritten from the original requirements and now use plain
+product descriptions focused on resident project data, interchangeable graph
+backends, programmable isolated Julia analysis and Julia extension/runtime
+facilities. They state the missing complete IDE installer explicitly. Each has
+35 verified local links and one parsed TOML example; no phase/line target appears.
+All existing Git author/committer identities use the requested noreply identity.
+Only one Code-OSS build tree and one VSIX package are retained; about 17.36 GiB
+remains free. Notes below describe their historical checkpoints and may state
+limitations that later checkpoints resolved.
 
 Read `docs/requirements/reconstruction.md` for the reconciled requirements.
 Prepared: 22 shallow upstream research repositories, Julia 1.11.7 from the

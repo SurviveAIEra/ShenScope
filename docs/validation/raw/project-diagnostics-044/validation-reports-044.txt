@@ -1,0 +1,39 @@
+ERROR: LoadError: Some tests did not pass: 14 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/sarif.jl:72
+in expression starting at /workspace/ShenScope/test/validation_reports.jl:3
+Test Summary:                                                                | Pass  Total   Time
+SARIF import projects Unicode ranges, resolves messages and never runs fixes |   11     11  19.5s
+Test Summary:                                               | Pass  Total  Time
+SARIF inactive and unlocated reports retain honest coverage |    6      6  2.6s
+SARIF paths, malformed positions, indexed identities and capacities are bounded: Error During Test at /workspace/ShenScope/test/unit/sarif.jl:72
+  Got exception outside of a @test
+  language_protocol: Invalid SARIF start line
+  Stacktrace:
+    [1] language_integer(value::Int64, label::String, minimum::Int64, maximum::Int64)
+      @ ShenScope /workspace/ShenScope/src/LanguageServices/Types.jl:128
+    [2] sarif_source_location(state::ShenScope.SarifParseContext, value::Dict{String, Dict{String, Dict{String}}})
+      @ ShenScope /workspace/ShenScope/src/Validation/SarifLocations.jl:61
+    [3] sarif_result_problems!(state::ShenScope.SarifParseContext, value::Dict{String, Any}, buckets::Dict{String, Vector{ProjectProblem}}, counters::Dict{String, Int64}; maximum_diagnostics::Int64, result_ordinal::Int64)
+      @ ShenScope /workspace/ShenScope/src/Validation/SarifResults.jl:27
+    [4] parse_sarif_problems(document::Dict{String, Any}, sources::Dict{String, WorkspaceSourceSnapshot}, ctx::RuntimeContext; limits::SarifLimits, maximum_diagnostics::Int64)
+      @ ShenScope /workspace/ShenScope/src/Validation/SarifResults.jl:79
+    [5] parse_sarif_problems
+      @ /workspace/ShenScope/src/Validation/SarifResults.jl:58 [inlined]
+    [6] (::var"#8#9")(root::String)
+      @ Main /workspace/ShenScope/test/unit/sarif.jl:83
+    [7] mktempdir(fn::var"#8#9", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [8] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [9] macro expansion
+      @ /workspace/ShenScope/test/unit/sarif.jl:73 [inlined]
+   [10] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [11] top-level scope
+      @ /workspace/ShenScope/test/unit/sarif.jl:73
+   [12] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [13] top-level scope
+      @ /workspace/ShenScope/test/validation_reports.jl:3
+Test Summary:                                                                   | Pass  Error  Total  Time
+SARIF paths, malformed positions, indexed identities and capacities are bounded |   14      1     15  2.3s

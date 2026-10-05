@@ -21,7 +21,8 @@ function language_format_edit(response, snapshot::WorkspaceSourceSnapshot)
         "resource_operations_supported" => false, "command_execution_supported" => false)
 end
 
-function language_workspace_edit(response, client::LanguageClient, ctx::RuntimeContext)
+function language_workspace_edit(response, client::LanguageClient, ctx::RuntimeContext;
+        sources=LanguageResultSources(ctx))
     response === nothing && return Dict("files" => Any[], "requires_explicit_apply" => true)
     language_fields(response, String[], ["changes", "documentChanges", "changeAnnotations"], "workspace edit")
     haskey(response, "changes") && haskey(response, "documentChanges") &&
@@ -45,6 +46,15 @@ function language_workspace_edit(response, client::LanguageClient, ctx::RuntimeC
             verify_workspace_snapshot(document.snapshot, ctx; tool="language.source")
         end
         specifications[path] = (snapshot, edits)
+        if !haskey(sources.cache, path)
+            sources.bytes+ncodeunits(snapshot.source.source) <= sources.maximum_bytes &&
+                length(sources.cache) < sources.maximum_files ||
+                throw(ShenScopeError(:capacity, "Language edit sources exceed projection capacity"))
+            sources.cache[path] = snapshot
+            sources.bytes += ncodeunits(snapshot.source.source)
+        elseif sources.cache[path].sha256 != snapshot.sha256
+            throw(ShenScopeError(:stale_source, "Language edit source changed during projection"))
+        end
     end
     if haskey(response, "changes")
         changes = response["changes"]
@@ -65,12 +75,15 @@ function language_workspace_edit(response, client::LanguageClient, ctx::RuntimeC
     end
     files = [language_text_edits(specifications[path][2], specifications[path][1]) for path in sort!(collect(keys(specifications)))]
     bounded_canonical_json(files; maximum=4*1024^2, max_depth=16, max_nodes=32_000)
+    versions = verify_language_result_sources!(sources)
     Dict("files" => files, "requires_explicit_apply" => true,
+        "source_versions" => versions, "source_versions_verified" => true,
         "resource_operations_supported" => false, "command_execution_supported" => false,
         "annotations_are_server_metadata" => haskey(response, "changeAnnotations"))
 end
 
-function normalize_language_code_actions(response, client::LanguageClient, ctx::RuntimeContext; maximum=100)
+function normalize_language_code_actions(response, client::LanguageClient, ctx::RuntimeContext;
+        maximum=100, sources=LanguageResultSources(ctx))
     rows = response === nothing ? Any[] : response
     rows isa AbstractVector && length(rows) <= 4096 || throw(ShenScopeError(:language_protocol, "Invalid code action response"))
     actions = Dict{String,Any}[]
@@ -84,7 +97,7 @@ function normalize_language_code_actions(response, client::LanguageClient, ctx::
         title = language_text(row["title"], "code action title", 1024)
         disabled = haskey(row, "disabled")
         has_command = haskey(row, "command")
-        proposal = haskey(row, "edit") && !disabled && !has_command ? language_workspace_edit(row["edit"], client, ctx) : nothing
+        proposal = haskey(row, "edit") && !disabled && !has_command ? language_workspace_edit(row["edit"], client, ctx; sources) : nothing
         action = Dict{String,Any}("title" => title,
             "kind" => language_text(get(row, "kind", ""), "code action kind", 256; empty=true),
             "requires_command_execution" => has_command, "disabled" => disabled,

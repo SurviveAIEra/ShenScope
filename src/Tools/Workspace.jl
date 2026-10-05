@@ -1,11 +1,13 @@
 struct WorkspaceTool <: AbstractTool
     manager::WorkspaceEditManager
     testing::ProjectTestManager
+    validation::ProjectValidationManager
     operations::OperationManager
 end
 
-WorkspaceTool(testing=ProjectTestManager(); limits=WorkspaceEditLimits()) = WorkspaceTool(
-    WorkspaceEditManager(; limits), testing,
+WorkspaceTool(testing::ProjectTestManager=ProjectTestManager(); limits=WorkspaceEditLimits(),
+        validation=ProjectValidationManager(testing)) = WorkspaceTool(
+    WorkspaceEditManager(; limits), testing, validation,
     OperationManager(; event_prefix="workspace", max_running=2, max_result_bytes=4*1024^2,
         max_result_depth=32, max_result_nodes=200_000))
 tool_name(::WorkspaceTool) = "workspace"
@@ -22,7 +24,7 @@ function tool_schema(::WorkspaceTool)
         "line_break_policy" => Dict("type" => "string", "enum" => ["unicode_source", "lsp_cr_lf"]),
         "edits" => Dict("type" => "array", "minItems" => 1, "maxItems" => 2048, "items" => edit));
         required=["path", "expected_sha256", "edits"])
-    object_schema(Dict("action" => Dict("type" => "string", "enum" => ["prepare", "list", "get", "preview", "source", "discard", "apply", "verify",
+    object_schema(Dict("action" => Dict("type" => "string", "enum" => ["prepare", "list", "get", "preview", "source", "discard", "apply", "verify", "verify_check",
             "history_save", "history_list", "history_get", "history_sources", "history_restore", "history_delete"]),
         "files" => Dict("type" => "array", "minItems" => 1, "maxItems" => 64, "items" => file),
         "title" => string_schema(; max=1024), "origin" => string_schema(; max=256),
@@ -34,7 +36,11 @@ function tool_schema(::WorkspaceTool)
         "catalog_id" => string_schema(; max=128), "candidate_ids" => Dict("type" => "array", "minItems" => 1,
             "maxItems" => 16, "items" => string_schema(; max=64)),
         "timeout" => Dict("type" => "number", "minimum" => 0.05, "maximum" => 3600),
-        "stop_on_failure" => Dict("type" => "boolean")); required=["action"])
+        "stop_on_failure" => Dict("type" => "boolean"),
+        "argv" => Dict("type" => "array", "minItems" => 1, "maxItems" => 64, "items" => string_schema(; max=4096)),
+        "cwd" => string_schema(; max=4096), "family" => Dict("type" => "string", "enum" => collect(VALIDATION_FAMILIES)),
+        "column_unit" => Dict("type" => "string", "enum" => ["unknown", "utf8_byte", "utf16", "unicode_scalar"]),
+        "label" => string_schema(; max=512)); required=["action"])
 end
 
 function execute(tool::WorkspaceTool, arguments::AbstractDict, ctx::RuntimeContext)
@@ -69,6 +75,14 @@ function execute(tool::WorkspaceTool, arguments::AbstractDict, ctx::RuntimeConte
             expected_plan_sha256=arguments["expected_plan_sha256"], catalog_id=arguments["catalog_id"],
             candidate_ids=arguments["candidate_ids"], timeout=get(arguments, "timeout", 120.0),
             stop_on_failure=get(arguments, "stop_on_failure", false))
+    elseif action == "verify_check"
+        workspace_edit_fields(arguments, ["action", "plan_id", "expected_plan_sha256", "argv"],
+            ["cwd", "family", "column_unit", "label", "timeout"], "workspace check action")
+        return verify_workspace_check!(tool.manager, tool.validation, arguments["plan_id"], ctx;
+            expected_plan_sha256=arguments["expected_plan_sha256"], argv=arguments["argv"],
+            cwd=get(arguments, "cwd", "."), family=get(arguments, "family", "generic"),
+            column_unit=get(arguments, "column_unit", "unknown"), label=get(arguments, "label", "Check reviewed workspace changes"),
+            timeout=get(arguments, "timeout", 120.0))
     elseif action == "history_save"
         workspace_edit_fields(arguments, ["action", "plan_id", "expected_plan_sha256", "expected_version"],
             String[], "workspace history save")

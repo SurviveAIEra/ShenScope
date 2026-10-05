@@ -9,6 +9,11 @@ disabled. A Code-OSS shared utility process starts Julia Core. Agent,
 configuration and session logic stays in Julia. The standalone VSIX is a
 separate client for an existing VS Code installation.
 
+The native Terminal, Testing and Problems views use Core-owned results. Project's
+**Show in Problems** checks current source buffers before publishing markers;
+edits and Read revocation withdraw them. **Clear Problems** clears ShenScope's
+own markers. This integration is verified with extensions disabled.
+
 Use the single pinned `/workspace/references/vscode` checkout. Do not copy it.
 `scripts/apply_codeoss_overlay.py` installs only authored overlay files and
 patches two entrypoints plus product branding/Open VSX settings. Exact source

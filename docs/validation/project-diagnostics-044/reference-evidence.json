@@ -1,0 +1,232 @@
+[
+  {
+    "project": "codex",
+    "repository": "openai/codex",
+    "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+    "license": "Apache-2.0",
+    "path": "codex-rs/app-server/src/request_processors/diagnostics.rs",
+    "sha256": "750eb6c1ffe91a200770caf4ecaba526b69e266cf1d53bcd5a670dcadb868a9e",
+    "inspected_lines": [
+      [
+        1,
+        23
+      ]
+    ],
+    "observation": "Engine gauges describe the agent process, not target-project diagnostics.",
+    "application": "Keep fixed-Core self-inspection separate from source-associated Problems.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "opencode",
+    "repository": "anomalyco/opencode",
+    "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+    "license": "MIT",
+    "path": "packages/opencode/src/lsp/client.ts",
+    "sha256": "81a3c66617083715cdbfeabc7b12ae7f059da064ef3aba462738ca7b992b6b5a",
+    "inspected_lines": [
+      [
+        116,
+        179
+      ]
+    ],
+    "observation": "Push and pull reports retain their publication time/version and distinct caches.",
+    "application": "Preserve language report versions and recheck every selected projected source before delivery.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "deepseek-harness",
+    "repository": "deepseek-ai/deepseek-harness",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "license": "MIT",
+    "path": "packages/lsp/tool-lsp/src/render.ts",
+    "sha256": "067940031a502fbc0d71ff6f2d9173768323d974c6dffe40cea9de3b863c6f82",
+    "inspected_lines": [
+      [
+        1,
+        66
+      ]
+    ],
+    "observation": "Coordinate conversion and bounded rendering remain pure, separate from I/O.",
+    "application": "Julia normalizes source coordinates; editor clients validate UTF-16 projections without interpreting output.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "pi-mono",
+    "repository": "badlogic/pi-mono",
+    "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+    "license": "MIT",
+    "path": "packages/coding-agent/src/core/tools/bash.ts",
+    "sha256": "de2b54d4f4bfbb844ce6d8077f63d715f7d8e80079dd9689b561e45b6679c81b",
+    "inspected_lines": [
+      [
+        1,
+        55
+      ]
+    ],
+    "observation": "Finite timeout and structured command-output limits are explicit.",
+    "application": "Explicit compiler checks preserve bounded command receipts and do not infer full coverage from an exit code.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "kimi-code",
+    "repository": "MoonshotAI/kimi-code",
+    "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+    "license": "MIT",
+    "path": "packages/agent-core-v2/src/agent/toolResultTruncation/toolResultTruncation.ts",
+    "sha256": "d044e6817847e8007d9e4c748b82e6f0f6a6c790b051d25192f75d0b4627aa27",
+    "inspected_lines": [
+      [
+        1,
+        26
+      ]
+    ],
+    "observation": "Model truncation is a separate service contract.",
+    "application": "Diagnostic coverage and omission counters remain independent of the editor projection.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "ZCode",
+    "repository": "zai-org/ZCode",
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "license": "Apache-2.0",
+    "path": "packages/ui/src/ToolCallBlocks/toolResultDisplay.ts",
+    "sha256": "4487b48fbafbc21587636ff7d879461e208ebe35d1ad1d48d9aca34dedbe73f1",
+    "inspected_lines": [
+      [
+        1,
+        65
+      ]
+    ],
+    "observation": "Retrieval status and task completion status are distinct display fields.",
+    "application": "Compare retained reports without treating disappearing rows as command success or repair proof.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "qwen-code",
+    "repository": "QwenLM/qwen-code",
+    "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+    "license": "Apache-2.0",
+    "path": "packages/core/src/managed-runtime/local-shell-result-capture.ts",
+    "sha256": "b9453d2608bf323a21c19e51117c06f1360e4ad443598b71377dffb434a781bf",
+    "inspected_lines": [
+      [
+        1,
+        52
+      ]
+    ],
+    "observation": "Separate streams carry hashes, byte lengths, bounded segments and serialized capture state.",
+    "application": "Bind validation to actual execution receipts and retain source/report hashes separately.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "aider",
+    "repository": "Aider-AI/aider",
+    "commit": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+    "license": "Apache-2.0",
+    "path": "aider/linter.py",
+    "sha256": "b798f0599d5dbc8cd1b628359134a3ce5eaed4b45fc347b5f6ac0d21e9f68c08",
+    "inspected_lines": [
+      [
+        1,
+        68
+      ]
+    ],
+    "observation": "Lint commands, nonzero outcomes and file-associated feedback form a programming loop.",
+    "application": "Add independent argument-vector checks after reviewed edits, with separate Process authorization.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "serena",
+    "repository": "oraios/serena",
+    "commit": "d0f7f92631c23dc4c5ed0b5ccd35bc623b19a809",
+    "license": "GPL-3.0-or-later application; MIT SolidLSP",
+    "path": "test/solidlsp/util/diagnostics.py",
+    "sha256": "13f760cf1a765860c1404b8ebf1e187f26baa8081d63aaa37e6d0c6ba049c86f",
+    "inspected_lines": [
+      [
+        1,
+        19
+      ]
+    ],
+    "observation": "Language diagnostic tests assert reported message fragments and minimum counts.",
+    "application": "Use real Pyright and TypeScript fixtures plus explicit source freshness and omission tests.",
+    "review_status": "partial_source_review",
+    "code_copied_or_translated": false
+  },
+  {
+    "project": "Code-OSS",
+    "repository": "microsoft/vscode",
+    "commit": "7f20cdad4f4ab923272e91e330a7701c52706fc7",
+    "license": "MIT",
+    "path": "src/vs/platform/markers/common/markers.ts",
+    "sha256": "d69318a20ec17aacc868d3b3057d1ab42860579d66a578c5c2b47f080b04a564",
+    "inspected_lines": [
+      [
+        1,
+        36
+      ]
+    ],
+    "observation": "Marker changes/removal are scoped by owner and resource.",
+    "review_status": "partial_interface_review",
+    "agent_code_copied_or_translated": false
+  },
+  {
+    "project": "Code-OSS",
+    "repository": "microsoft/vscode",
+    "commit": "7f20cdad4f4ab923272e91e330a7701c52706fc7",
+    "license": "MIT",
+    "path": "src/vs/editor/common/services/model.ts",
+    "sha256": "c22f2c85f3bf0a2193585505db70e90935bf2b2d91505548b740d4ce07dd69dd",
+    "inspected_lines": [
+      [
+        1,
+        38
+      ]
+    ],
+    "observation": "Model content can be inspected and lifetimes observed without an extension host.",
+    "review_status": "partial_interface_review",
+    "agent_code_copied_or_translated": false
+  },
+  {
+    "project": "Code-OSS",
+    "repository": "microsoft/vscode",
+    "commit": "7f20cdad4f4ab923272e91e330a7701c52706fc7",
+    "license": "MIT",
+    "path": "src/vs/platform/files/common/files.ts",
+    "sha256": "501d9d5c97ed86f225f1c6e7cebd16879650f0dc313fb1afdaa0749bd3bcecb7",
+    "inspected_lines": [
+      [
+        66,
+        93
+      ]
+    ],
+    "observation": "File change events cover the workspace and explicitly watched resources.",
+    "review_status": "partial_interface_review",
+    "agent_code_copied_or_translated": false
+  },
+  {
+    "project": "Code-OSS",
+    "repository": "microsoft/vscode",
+    "commit": "7f20cdad4f4ab923272e91e330a7701c52706fc7",
+    "license": "MIT",
+    "path": "src/vs/workbench/api/common/extHostDiagnostics.ts",
+    "sha256": "dc5662f4232dd601ce3c4e1d605bceeededec80cf6764b2b3271e37be707bc64",
+    "inspected_lines": [
+      [
+        126,
+        186
+      ]
+    ],
+    "observation": "DiagnosticCollection publication and clear carry the collection owner.",
+    "review_status": "partial_interface_review",
+    "agent_code_copied_or_translated": false
+  }
+]

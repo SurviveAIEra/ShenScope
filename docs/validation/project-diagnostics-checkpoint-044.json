@@ -1,0 +1,424 @@
+{
+  "checkpoint": "044",
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "recorded_at_utc": "2026-10-05T18:31:54.526575+00:00",
+  "base_commit": "6c9bcb56d76fc26bd3f0ab618aa72978b70f72bc",
+  "scope": [
+    "caller-bound SARIF 2.1.0 import",
+    "retained check source review and comparison",
+    "applied-edit compiler/lint verification",
+    "selected navigation and language result freshness",
+    "retained project read revocation",
+    "VSIX and native Workbench Problems publication"
+  ],
+  "core_size": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 349,
+      "blank": 1653,
+      "comment": 296,
+      "code": 32015
+    },
+    "cli_tui": {
+      "nFiles": 22,
+      "blank": 21,
+      "comment": 11,
+      "code": 1360
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 32000,
+    "remaining_lines": 0,
+    "line_target_percent": 100.0469,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "core_assertions": 928,
+  "core_testsets": 44,
+  "distinct_core_assertions_after_excluding_repeated_workspace_unit_tests": 899,
+  "distinct_core_testsets": 41,
+  "additional_final_freshness_run": {
+    "assertions": 22,
+    "testsets": 4,
+    "included_in_final_135_suite": true
+  },
+  "validation_order": "Foundation, LSP and owned operation regressions preceded the final typed project-event delivery fix. Final normal precompilation and both the 22-assertion freshness run and complete 135-assertion new diagnostics suite verify that fix. Other affected implementation remained unchanged.",
+  "normal_precompile_seconds": [
+    157.4481,
+    119.0466
+  ],
+  "checks": [
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/workflow-foundation-044-normal.txt",
+      "bytes": 2608,
+      "sha256": "eb425d1a5996a0e40ddbcee54d83cab99d3edce22cfec2f7d32ec37851ba170b",
+      "status": "passed_before_final_project_delivery_fix",
+      "passing_assertions": 240,
+      "passing_testsets": 16,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/language-services-044.txt",
+      "bytes": 1380,
+      "sha256": "f7fa5dff697eff813512ce5b020e58ba6a611725994965bdd88c933fbe10f34d",
+      "status": "passed",
+      "passing_assertions": 379,
+      "passing_testsets": 7,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/diagnostics-regressions-044.txt",
+      "bytes": 1650,
+      "sha256": "9ec6a2f2e5215762bdd0eb1197d26879fd2f8e11bf3018ded73221ad50d5fb9e",
+      "status": "passed_before_final_project_delivery_fix",
+      "passing_assertions": 174,
+      "passing_testsets": 8,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/validation-reports-044-pass.txt",
+      "bytes": 2548,
+      "sha256": "47f572788d39774acfeb3f32f347feb2039ae9163d3d9a6bd285237cbc9d755d",
+      "status": "passed",
+      "passing_assertions": 135,
+      "passing_testsets": 13,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/workflow-freshness-044-verified.txt",
+      "bytes": 900,
+      "sha256": "2c16f42c57680b13fa48ad70d2a6d0afbc1d8cb5eb25ae4f5d98debe58bd1773",
+      "status": "passed",
+      "passing_assertions": 22,
+      "passing_testsets": 4,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-client-044-verified.txt",
+      "bytes": 990,
+      "sha256": "1b14b98bfe479d2083bdfd7ca0e9fd15d7959e15d1a88d8dcf2adc77d8fbcd0c",
+      "status": "passed",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": 9
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-transport-044-verified.txt",
+      "bytes": 1927,
+      "sha256": "13f41fccba8d84119f29ad7edb711a4bf7cbc2196baa38813cd5b13e8ea65b9e",
+      "status": "passed",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": 8
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-native-044-final.txt",
+      "bytes": 214,
+      "sha256": "de3c1e0589d289fad940570154506ec1dd37a016bf6ad04701091acb30708e4a",
+      "status": "passed_before_stronger_editor_edit_assertions",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-editor-044-verified-check.txt",
+      "bytes": 56,
+      "sha256": "e930b40f222bfa85176b0c5fcaf77b2b2657528f76423d9018b63f2244720669",
+      "status": "passed",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-workbench-044-check.txt",
+      "bytes": 715,
+      "sha256": "13f94dd6ebfafd0dd7058f4e027a45b58c86fe9cfd9dcd44072af86dc9f2ea49",
+      "status": "passed_before_timeout_string_and_notice_edits",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-editor-044-final-build.txt",
+      "bytes": 58,
+      "sha256": "456325254e03a678a382bc8457be1d4edf674fefcb4ff0bb54bb37906c13505d",
+      "status": "passed",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-native-044-final-build.txt",
+      "bytes": 73,
+      "sha256": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997",
+      "status": "passed",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-overlay-044-final.txt",
+      "bytes": 59,
+      "sha256": "f9622473f446dde0fd6ddad86e819a689db14eb75746e2d10937a63a60671aaa",
+      "status": "passed",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-package-044.txt",
+      "bytes": 864,
+      "sha256": "73c7790ba6235a2c00c8232dc541413d1e6bc8586511fd04bc057117a6344f6a",
+      "status": "passed",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/validation-reports-044.txt",
+      "bytes": 2741,
+      "sha256": "22188e1a40d020a8b775f8c062e8ca6f05a72d6c44a8aa35131a2dcf3f52dda1",
+      "status": "retained_failure",
+      "passing_assertions": 17,
+      "passing_testsets": 2,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/validation-reports-044-final.txt",
+      "bytes": 2388,
+      "sha256": "9b2dd5c1ffa11dff4b60d6163fca75afddd37e75c41332e7a617db3ca4fce24b",
+      "status": "retained_failure",
+      "passing_assertions": 17,
+      "passing_testsets": 2,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/validation-reports-044-corrected.txt",
+      "bytes": 5011,
+      "sha256": "66d60963962794eed8cba23cdf8479916403a78b67de7a63adacbd51399d84fb",
+      "status": "retained_failure",
+      "passing_assertions": 78,
+      "passing_testsets": 7,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/validation-reports-044-verified.txt",
+      "bytes": 2550,
+      "sha256": "7f81fbdd6e41059f10d0a6a7466015f798caa2187a628d6eb905a8e5c0fde9ab",
+      "status": "superseded_passing_run",
+      "passing_assertions": 128,
+      "passing_testsets": 13,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/validation-reports-044-frozen.txt",
+      "bytes": 4111,
+      "sha256": "c7a7ad07eb58acf4ae147e38dca43523726a9a25dfcb45d2037b1e1c4ee187d6",
+      "status": "retained_failure",
+      "passing_assertions": 121,
+      "passing_testsets": 11,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/workflow-freshness-044-corrected.txt",
+      "bytes": 2528,
+      "sha256": "71e175bd75b918dedd96ab7cc307482851be54159f63431580f99191515463df",
+      "status": "retained_failure",
+      "passing_assertions": 8,
+      "passing_testsets": 2,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-client-044-final.txt",
+      "bytes": 1417,
+      "sha256": "b4fd59f775a0ff3019d244ff74e778e7d1c36e4cef92357b8317680da357544f",
+      "status": "retained_failure",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": 9
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-transport-044.txt",
+      "bytes": 3167,
+      "sha256": "c4151c73eb6bdb89b202b12d69ffa82c5c49bedea131b4b8a544685aa9be4cba",
+      "status": "retained_invocation_failure",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": 8
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-native-044.txt",
+      "bytes": 2668,
+      "sha256": "ca635b8981f91955afcdfc24ffec71b970f254607b7792e7dfe6c9c15eab1caf",
+      "status": "retained_fixture_selector_failure",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-native-044-verified.txt",
+      "bytes": 214,
+      "sha256": "de3c1e0589d289fad940570154506ec1dd37a016bf6ad04701091acb30708e4a",
+      "status": "superseded_passing_run",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-vsix-044-final.txt",
+      "bytes": 2608,
+      "sha256": "63674120a1480f459aa1eb9ffc1c6ae1abc67930dc74f5f3aaf978de07f60381",
+      "status": "retained_fixture_input_failure",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-vsix-044-verified.txt",
+      "bytes": 3212,
+      "sha256": "2438f0db9af98c426599bf9ea14932bff684c5e1f727681e8f9904c61da4a398",
+      "status": "retained_fixture_undo_focus_failure",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-vsix-044-pass.txt",
+      "bytes": 2735,
+      "sha256": "ba2139a21ce0b1cd16d9b8ef6fc054d8e75cf3b4409fd189b587418e244f4f10",
+      "status": "retained_exact_buffer_restoration_fixture_failure",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-native-044-complete.txt",
+      "bytes": 247,
+      "sha256": "67374caa1ad8f2f6168f8601321418fb99eb93989321890bb441047185dc518e",
+      "status": "passed",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-vsix-044-complete.txt",
+      "bytes": 218,
+      "sha256": "67e695b161a4ae83d24a9a64a102e722592a07c8c6f805157b56339bc111742d",
+      "status": "passed",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": null
+    },
+    {
+      "file": "docs/validation/raw/project-diagnostics-044/problems-testing-portable-044.txt",
+      "bytes": 240,
+      "sha256": "89db2719725c7a79a877aa7f9eb2ae4689553fc9678a37a1eb211cd2715b9c17",
+      "status": "passed",
+      "passing_assertions": 0,
+      "passing_testsets": 0,
+      "node_tests": 1,
+      "repeats_existing_native_testing_case": true
+    }
+  ],
+  "readme_checks": [
+    {
+      "file": "README.md",
+      "local_links": 35,
+      "toml_examples": 1,
+      "sha256": "4dbf49a710772fe941646906caa5cfebaa7f1cf14b00bf93ad460447c0876577"
+    },
+    {
+      "file": "README.en.md",
+      "local_links": 35,
+      "toml_examples": 1,
+      "sha256": "6fe7811bf4550e488dcc6d7c8ead8491576f1b3943f0048e71d0314b15a574cb"
+    }
+  ],
+  "source_manifest_sha256": "d9ec753857f4e9013f4de1852e3b7793b51b46e2c5dfc64a6b537e462999a4ba",
+  "clients": {
+    "node_tests_total": 17,
+    "actual_julia_core_tests": 7,
+    "malformed_and_disposal_child_tests": 2,
+    "pure_publisher_fixture_tests": 8,
+    "native_extensions_disabled_gui": "passed",
+    "standalone_vsix_development_gui": "passed",
+    "installed_vsix_package_runtime_verified": false,
+    "shared_types": "passed",
+    "complete_workbench_types": "passed_before_string_only_timeout_and_notice_edits",
+    "marker_owner_contract_reviewed": true,
+    "foreign_provider_coexistence_gui_fixture": false
+  },
+  "package": {
+    "file": "dist/shenscope-0.1.0.vsix",
+    "bytes": 782981,
+    "sha256": "4bcf359a92d7d8597c2d178fb0632f183681fe3d153a577cd789dd2e116619d0",
+    "entries": 389,
+    "matched_authored_payloads": 387,
+    "matched_assets": [
+      "extension.js",
+      "panel.js",
+      "panel.css"
+    ],
+    "installed_package_runtime_verified": false,
+    "bundled_julia_runtime": false,
+    "complete_ide_installer": false
+  },
+  "storage": {
+    "total_gib": 31.451,
+    "free_gib": 17.36,
+    "large_build_allowed": true,
+    "safe_scratch_paths": [
+      "/workspace/ShenScope/.local/tmp",
+      "/workspace/ShenScope/.local/build-scratch"
+    ]
+  },
+  "reference_evidence": "docs/validation/project-diagnostics-044/reference-evidence.json",
+  "raw_failures": [
+    "invalid SARIF location error classification corrected",
+    "fixture typed dictionary corrected",
+    "command-label identity assertion corrected and separate argv/cwd comparison added",
+    "test IOBuffer reset corrected",
+    "typed project event withholding corrected",
+    "first-use RPC compilation exceeded 30-second wait under concurrent load; diagnostics waits extended",
+    "transport invocation cwd corrected",
+    "GUI Settings selector and editor focus/restoration fixture corrected"
+  ],
+  "gui_checks": [
+    "real TypeScript 5.9.2 compiler diagnostic 2322",
+    "current source association in native Problems",
+    "diagnostic file navigation",
+    "visible unsaved edit verified before marker withdrawal",
+    "unsaved-buffer republication withholds markers",
+    "undo/revert exact restoration followed by explicit republication",
+    "clear only owned markers through controller API",
+    "settings Read revocation withdraws markers",
+    "no model request during these workflows"
+  ],
+  "limitations": [
+    "SARIF report producer is unauthenticated; historical source binding is a caller assertion",
+    "not all SARIF features implemented; omitted and invalid rows disclosed",
+    "selected source checks do not verify all dependencies or every transient mutation during a command",
+    "client diagnostics are published explicitly; no automatic fixes or unsaved-buffer indexing",
+    "bounded reports in memory do not survive restart unless a separate explicit history feature saves them",
+    "no live-model programming-quality claim",
+    "complete native IDE installer, bundled Julia and cross-platform upgrade/uninstall runtime validation remain incomplete"
+  ],
+  "ci_preparation": {
+    "native_testing_honors_julia_and_depot_environment_variables": true,
+    "configured_toolchain_case_verified": true,
+    "github_actions_run_verified": false
+  }
+}

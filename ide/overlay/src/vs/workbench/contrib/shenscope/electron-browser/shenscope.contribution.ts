@@ -32,10 +32,15 @@ import { ITestService } from '../../testing/common/testService.js';
 import { ITestProfileService } from '../../testing/common/testProfileService.js';
 import { ITestResultService } from '../../testing/common/testResultService.js';
 import { IViewsService } from '../../../services/views/common/viewsService.js';
+import { IMarkerService } from '../../../../platform/markers/common/markers.js';
+import { IModelService } from '../../../../editor/common/services/model.js';
+import { IFileService } from '../../../../platform/files/common/files.js';
+import { ShenScopeProblemsController } from './shenscopeProblems.js';
 
 class ShenScopeViewPane extends ViewPane {
     private panel?: ShenScopePanel;
     private testing?: ShenScopeTestingController;
+    private problems?: ShenScopeProblemsController;
     constructor(
         options: IViewPaneOptions,
         @IKeybindingService keybinding: IKeybindingService,
@@ -60,6 +65,9 @@ class ShenScopeViewPane extends ViewPane {
         @ITestProfileService private readonly testProfiles: ITestProfileService,
         @ITestResultService private readonly testResults: ITestResultService,
         @IViewsService private readonly views: IViewsService,
+        @IMarkerService private readonly markers: IMarkerService,
+        @IModelService private readonly models: IModelService,
+        @IFileService private readonly files: IFileService,
     ) { super(options, keybinding, contextMenu, configuration, contextKeys, descriptors, instantiation, opener, theme, hover); }
 
     protected override renderBody(container: HTMLElement): void {
@@ -89,12 +97,21 @@ class ShenScopeViewPane extends ViewPane {
                     const secret = await this.secrets.get(`shenscope:model:${variable}`);
                     if (secret) { await channel.call('request', { method: 'credentials/set', params: { variable, value: secret } }); }
                 }
+                this.problems?.dispose();
+                this.problems = await ShenScopeProblemsController.create(URI.file(hello.root), {
+                    request: (method, params) => channel.call('request', {method, params, timeout: 120_000})
+                }, this.markers, this.models, this.files);
+                this._register(this.problems);
                 return hello;
             })();
             try { return await starting; } catch (error) { starting = undefined; throw error; }
         };
         const host = document.createElement('div'); host.style.height = '100%'; container.append(host);
         this.panel = new ShenScopePanel(host, {
+            publishProblems: async reference => {
+                await connect(); await this.problems!.publish(reference); await this.views.openView('workbench.panel.markers.view', true);
+            },
+            clearProblems: async () => { this.problems?.clear(); },
             publishTests: async (catalog_id, session_id) => {
                 if (this.testing?.busy) { throw new Error('Finish or cancel the native Testing run before publishing another collection.'); }
                 await connect(); const catalog: any = await channel.call('request', {method: 'testing/query', params: {session_id, action: 'editor_catalog', catalog_id}, timeout: 120_000});
@@ -116,10 +133,14 @@ class ShenScopeViewPane extends ViewPane {
             },
             request: async (method, params = {}) => {
                 await connect();
+                if (['sessions/create', 'sessions/get', 'sessions/branch', 'config/set'].includes(method)) { this.problems?.clear(); }
                 return method === 'editor/hello' ? hello : channel.call('request', { method, params });
             },
             onEvent: listener => {
-                const subscription = channel.listen<any>('notification')(event => listener(event.method, event.params));
+                const subscription = channel.listen<any>('notification')(event => {
+                    if (event.method === 'config/changed' || event.method === 'transport/closed') { this.problems?.clear(); }
+                    listener(event.method, event.params);
+                });
                 return () => subscription.dispose();
             },
             setCredential: async variable => {

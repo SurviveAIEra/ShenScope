@@ -2,7 +2,7 @@
 
 This is a partial source review and implementation record. Cloning a repository,
 reading a README, or listing a capability is not evidence of full synthesis.
-The project remains far below the requested Core size and functional scope.
+Source size is recorded separately; product scope and source review remain incomplete.
 All agent behavior is independently authored in Julia; source paths below are
 research evidence, not code to translate or embed.
 
@@ -783,3 +783,23 @@ framing, capability negotiation and versioned diagnostics. Actual Pyright and
 TypeScript LSP, general project compiler checks and source-edit repair fixtures
 verify the bounded implementation; unsaved buffers, whole-project semantic
 coverage, general OS isolation and native Problems client publication remain open.
+
+## Project diagnostics and client publication (checkpoint 044)
+
+Further partial reviews cover all seven primary agents: Codex's engine gauges,
+OpenCode's push/pull diagnostic versions, DeepSeek's pure coordinate/rendering
+boundary, Pi's bounded command results, Kimi's separate model truncation
+contract, ZCode's retrieval-versus-task display status and Qwen's bounded stream
+digests. Aider's lint feedback and Serena's diagnostic assertions supplement
+these observations. Pins, inspected ranges, hashes and specific applications
+are in `../validation/project-diagnostics-044/reference-evidence.json`.
+
+Original Julia code imports caller-bound SARIF, verifies selected navigation/
+LSP result sources, associates applied-edit checks with actual command receipts
+and withholds retained project results after Read revocation. The shared editor
+publisher verifies current buffer hashes and uses separate owned marker sources
+in both clients. Code-OSS marker/model/file and extension diagnostic interfaces
+were inspected as integration contracts, with no upstream agent translation.
+Two real GUI flows cover unsaved-buffer withdrawal and settings revocation.
+Whole-server dependency freshness, automatic fixes, complete producer coverage,
+large-project evidence and complete native distribution remain open.

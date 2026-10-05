@@ -1,0 +1,1 @@
+PASS: native Workbench with extensions disabled, real TypeScript compiler diagnostics in native Problems, file navigation, visible unsaved-buffer edit and withdrawal, undo/revert and explicit republication, own-marker clearing and read revocation

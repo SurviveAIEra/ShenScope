@@ -1,0 +1,17 @@
+✔ Problems publication checks both Core projections and the current editor text (12.832918ms)
+✔ Changed buffers withhold diagnostics without changing source or executing a fix (2.600443ms)
+✔ Problems source identity, path and UTF-16 bounds are checked independently (2.726931ms)
+✔ Read revocation before final publication clears owned markers and never replays capture (3.692636ms)
+✔ Buffer changes during asynchronous reads reject delayed publication (2.392255ms)
+✔ Cancellation before capture acknowledgement cancels the owned job after it arrives (0.666804ms)
+✔ Unavailable files are withheld while valid diagnostics can still publish (5.536973ms)
+✔ Stale configuration and source reports publish an empty owned collection (1.26726ms)
+✔ Actual Core SARIF import publishes owned Problems and withdraws changed buffers and revoked reads (23280.303914ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23720.335875

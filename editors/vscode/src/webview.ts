@@ -18,6 +18,8 @@ const bridge: PanelBridge = {
     async openFile(path, line) { await bridge.request('editor/openFile', { path, line }); },
     async openTerminal(handle,session_id) { await bridge.request('editor/openTerminal', {handle,session_id}); },
     async publishTests(catalog_id,session_id) { await bridge.request('editor/publishTests', {catalog_id,session_id}); },
+    async publishProblems(reference) { await bridge.request('editor/publishProblems', {...reference}); },
+    async clearProblems() { await bridge.request('editor/clearProblems'); },
     async openSkillSource(job_id, session_id) { await bridge.request('editor/openSkillSource', { job_id, session_id }); },
     async openHookSource(job_id, session_id) { await bridge.request('editor/openHookSource', { job_id, session_id }); },
 };

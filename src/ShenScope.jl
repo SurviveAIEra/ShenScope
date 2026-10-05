@@ -129,6 +129,7 @@ include("ProjectData/CompilerConfig.jl")
 include("ProjectData/TypeScript.jl")
 include("ProjectData/Queries.jl")
 include("ProjectData/Navigation.jl")
+include("ProjectData/NavigationFreshness.jl")
 include("Problems/Types.jl")
 include("Problems/Normalization.jl")
 include("Problems/Retention.jl")
@@ -274,12 +275,20 @@ include("Workspace/HistoryTypes.jl")
 include("Workspace/HistoryValidation.jl")
 include("Workspace/History.jl")
 include("Workspace/HistoryRecovery.jl")
-include("Tools/Workspace.jl")
 include("Validation/Types.jl")
 include("Validation/OutputParsing.jl")
 include("Validation/Sources.jl")
 include("Validation/Reports.jl")
 include("Validation/Execution.jl")
+include("Validation/SarifTypes.jl")
+include("Validation/SarifRules.jl")
+include("Validation/SarifMessages.jl")
+include("Validation/SarifLocations.jl")
+include("Validation/SarifResults.jl")
+include("Validation/SarifImport.jl")
+include("Validation/Review.jl")
+include("Workspace/CheckVerification.jl")
+include("Tools/Workspace.jl")
 include("Tools/Validation.jl")
 include("Tools/MCP.jl")
 include("Skills/Types.jl")
@@ -391,6 +400,9 @@ export WorkspaceHistoryLimits, WorkspaceHistoryStore, workspace_history_store,
     remove_workspace_history!, inspect_workspace_history_sources, restore_workspace_proposal!
 export ValidationLimits, ProjectValidationManager, ValidationTool, run_project_validation!,
     read_validation_report, list_validation_reports, close_validation!
+export SarifLimits, parse_sarif_problems, import_sarif_report!
+export inspect_validation_sources, compare_project_validation_reports
+export verify_workspace_check!
 export ProjectEvidenceSnapshot, EvidenceSourceStamp, EvidenceSymbol, EvidenceRelation,
     EvidenceAnchor, project_evidence_snapshot
 export ExtensionContribution, ExtensionBundle, ExtensionRegistry, InstalledExtensionSpec,

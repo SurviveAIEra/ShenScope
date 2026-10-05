@@ -1,0 +1,42 @@
+ERROR: LoadError: Some tests did not pass: 18 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/sarif.jl:72
+in expression starting at /workspace/ShenScope/test/validation_reports.jl:3
+Test Summary:                                                                | Pass  Total   Time
+SARIF import projects Unicode ranges, resolves messages and never runs fixes |   11     11  19.3s
+Test Summary:                                               | Pass  Total  Time
+SARIF inactive and unlocated reports retain honest coverage |    6      6  2.9s
+SARIF paths, malformed positions, indexed identities and capacities are bounded: Error During Test at /workspace/ShenScope/test/unit/sarif.jl:72
+  Got exception outside of a @test
+  MethodError: Cannot `convert` an object of type Int64 to an object of type String
+  The function `convert` exists, but no method is defined for this combination of argument types.
+  
+  Closest candidates are:
+    convert(::Type{String}, !Matched::JuliaSyntax.Kind)
+     @ JuliaSyntax /workspace/julia-depot/packages/JuliaSyntax/BHOG8/src/kinds.jl:975
+    convert(::Type{String}, !Matched::Base.JuliaSyntax.Kind)
+     @ Base /cache/build/builder-demeter6-3/julialang/julia-release-1-dot-11/base/JuliaSyntax/src/kinds.jl:975
+    convert(::Type{String}, !Matched::String)
+     @ Base essentials.jl:461
+    ...
+  
+  Stacktrace:
+   [1] setindex!(h::Dict{String, String}, v0::Int64, key::String)
+     @ Base ./dict.jl:355
+   [2] (::var"#8#9")(root::String)
+     @ Main /workspace/ShenScope/test/unit/sarif.jl:89
+   [3] mktempdir(fn::var"#8#9", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [4] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [5] macro expansion
+     @ /workspace/ShenScope/test/unit/sarif.jl:73 [inlined]
+   [6] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [7] top-level scope
+     @ /workspace/ShenScope/test/unit/sarif.jl:73
+   [8] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [9] top-level scope
+     @ /workspace/ShenScope/test/validation_reports.jl:3
+Test Summary:                                                                   | Pass  Error  Total  Time
+SARIF paths, malformed positions, indexed identities and capacities are bounded |   18      1     19  3.1s

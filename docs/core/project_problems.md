@@ -41,10 +41,30 @@ process restart and reading them never runs a command or a model.
 Current specialized producers are TypeScript 5.9.2 semantic diagnostics and
 JuliaSyntax parse diagnostics. Backends without a diagnostic capability report
 that fact; an empty result does not imply the entire project is clean. The
-common format can admit further language-service producers. This checkpoint
-provides the Core editor projection; native Problems publication is a subsequent
-client integration. Comparing disappearing rows reports a change in producer
+common format also receives versioned language-server reports, selected compiler/
+linter output and imported SARIF. Both editor clients publish the Core editor
+projection into the native Problems view. Comparing disappearing rows reports a change in producer
 reports, not independent proof that a bug was fixed.
+
+The shared publisher verifies owning session/root/snapshot identity and bounded
+UTF-16 ranges. It queries Core before and after asynchronous source reads and
+hashes each current editor buffer twice, using disk only for unopened sources.
+Unsaved text, stale disk/configuration, unavailable sources and invalid ranges
+withhold markers. Publication never executes a producer, fix or model call;
+capturing an existing project index uses an owned cancellable Core operation.
+Use Project's **Show in Problems** and **Clear Problems**, or the same action
+on a tool result containing an owned Problems snapshot.
+
+VSIX owns a DiagnosticCollection; the native Workbench owns an IMarkerService
+source. Both use `shenscope.core.problems` and clear only their own markers.
+File/buffer changes, session/configuration changes, transport closure, explicit
+clear and disposal withdraw affected markers. The native client can do this
+with all extensions disabled. Publishing cached projections requires effective
+Read Allow; one-time approval of capture does not grant future synchronous reads.
+Clients read at most 8 MiB/file, 32 MiB on the first pass and 64 MiB across both
+passes. A buffer whose decoding/BOM differs from recorded UTF-8 bytes is withheld.
+Automatic producer execution, unsaved-buffer indexing, automatic fixes, complete
+dependency freshness and installed cross-platform IDE distribution remain absent.
 
 Validation: `julia --threads=4 --project=. test/problems.jl`. It uses a real
 TypeScript checker plus owned-source, permission, cancellation, Unicode,

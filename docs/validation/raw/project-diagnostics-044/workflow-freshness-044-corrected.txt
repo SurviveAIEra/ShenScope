@@ -1,0 +1,45 @@
+ERROR: LoadError: Some tests did not pass: 5 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/workflow_freshness.jl:37
+Test Summary:                                                              | Pass  Total  Time
+Language result publication rechecks secondary sources and live permission |    3      3  2.4s
+Test Summary:                                                                                | Pass  Total  Time
+Navigation selected pages reject stale secondary files without claiming full-graph freshness |    5      5  0.6s
+Project retained jobs stop revealing data after read revocation: Error During Test at /workspace/ShenScope/test/unit/workflow_freshness.jl:37
+  Got exception outside of a @test
+  MethodError: Cannot `convert` an object of type Nothing to an object of type Dict{String, String}
+  The function `convert` exists, but no method is defined for this combination of argument types.
+  
+  Closest candidates are:
+    Dict{K, V}(::Any) where {K, V}
+     @ Base dict.jl:90
+    convert(::Type{T}, !Matched::T) where T<:AbstractDict
+     @ Base abstractdict.jl:571
+    convert(::Type{T}, !Matched::T) where T
+     @ Base Base.jl:126
+    ...
+  
+  Stacktrace:
+    [1] setindex!(h::Dict{String, Dict{String, String}}, v0::Nothing, key::String)
+      @ Base ./dict.jl:355
+    [2] project_event_payload(server::CoreServer, event::AgentEvent, payload::Dict{String, Dict{String, String}})
+      @ ShenScope /workspace/ShenScope/src/Protocol/Project.jl:25
+    [3] server_event(server::CoreServer, event::AgentEvent)
+      @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:55
+    [4] (::var"#5#6")(root::String)
+      @ Main /workspace/ShenScope/test/unit/workflow_freshness.jl:60
+    [5] mktempdir(fn::var"#5#6", parent::String; prefix::String)
+      @ Base.Filesystem ./file.jl:819
+    [6] mktempdir(fn::Function, parent::String)
+      @ Base.Filesystem ./file.jl:815
+    [7] macro expansion
+      @ /workspace/ShenScope/test/unit/workflow_freshness.jl:38 [inlined]
+    [8] macro expansion
+      @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+    [9] top-level scope
+      @ /workspace/ShenScope/test/unit/workflow_freshness.jl:38
+   [10] include(fname::String)
+      @ Main ./sysimg.jl:38
+   [11] top-level scope
+      @ none:1
+Test Summary:                                                   | Pass  Error  Total   Time
+Project retained jobs stop revealing data after read revocation |    5      1      6  10.5s

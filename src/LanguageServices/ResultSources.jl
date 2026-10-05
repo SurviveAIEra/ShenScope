@@ -19,6 +19,17 @@ function language_omit!(sources::LanguageResultSources, reason::String)
     nothing
 end
 
+function verify_language_result_sources!(sources::LanguageResultSources)
+    versions = Dict{String,Any}[]
+    for path in sort!(collect(keys(sources.cache)))
+        workspace_source_checkpoint(sources.context)
+        snapshot = verify_workspace_snapshot(sources.cache[path], sources.context; tool="language.source")
+        push!(versions, Dict("path" => path, "source_sha256" => snapshot.sha256))
+    end
+    workspace_source_checkpoint(sources.context)
+    versions
+end
+
 function language_result_source!(sources::LanguageResultSources, uri)
     absolute, path = try
         language_workspace_uri(sources.context, uri)

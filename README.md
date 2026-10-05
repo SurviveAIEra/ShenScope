@@ -133,7 +133,7 @@ ShenScope 可以查看受支持 Core 函数的真实编译结果，报告推断�
 | 模型服务 | OpenAI Chat / Responses、Anthropic、Gemini、Ollama；流式输出、原生推理信息、预算、路由和交付前重试 |
 | 规划与上下文 | Plan/Act、可更新任务计划、上下文裁剪与摘要、保留原始工具结果 |
 | 文件修改 | 搜索、读取、哈希校验；多文件修改方案、差异预览、明确应用、冲突检查和失败回滚 |
-| 测试与检查 | 任意语言的命令参数数组；测试发现、运行、取消、输出回执与源码版本关联的诊断 |
+| 测试与检查 | 任意语言的命令参数数组；测试发现、运行、取消、输出回执、SARIF 报告导入与源码版本关联的诊断 |
 | 长期工作 | 会话和分支、版本化记忆、持久任务依赖、租约、结果回执 |
 | 外部能力 | MCP stdio / Streamable HTTP、项目和用户 Skills、生命周期 Hooks |
 | 操作权限 | 读取、修改、进程、网络、MCP、动态代码和持久化分别设置 Allow / Ask / Deny |
@@ -157,7 +157,7 @@ ShenScope 可以查看受支持 Core 函数的真实编译结果，报告推断�
 | ShenScope IDE | 基于 Code-OSS 的独立 IDE 开发版，ShenScope 侧栏直接集成在编辑器中，禁用扩展后仍可启动 Core |
 
 四个入口使用同一套 Julia Core 接口。Agent、模型、配置、会话、权限和项目分析由 Core 维护；
-编辑器负责交互与展示。原生 IDE 和 VSIX 共用面板，已有 Terminal 和 Testing 集成。
+编辑器负责交互与展示。原生 IDE 和 VSIX 共用面板，已有 Terminal、Testing 和 Problems 集成。
 部分新功能目前通过 Core 工具和 RPC 使用，还没有单独的图形页面。
 
 **目前尚未发布可直接下载安装的完整 ShenScope IDE 安装包。**

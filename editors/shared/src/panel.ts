@@ -1,5 +1,6 @@
 import { renderMarkdown } from './markdown.js';
 import { newProjectTestingState, renderProjectTests, type ProjectTestingState } from './projectTests.js';
+import type { ProblemsReference } from './nativeProblemsClient.js';
 export interface PanelBridge {
     request(method: string, params?: Record<string, unknown>): Promise<any>;
     onEvent(listener: (method: string, params: any) => void): () => void;
@@ -9,6 +10,8 @@ export interface PanelBridge {
     openHookSource(jobId: string, sessionId: string): Promise<void>;
     openTerminal(handle: string, sessionId: string): Promise<void>;
     publishTests(catalogId: string, sessionId: string): Promise<void>;
+    publishProblems(reference: ProblemsReference): Promise<void>;
+    clearProblems(): Promise<void>;
 }
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, text = '', className = ''): HTMLElementTagNameMap[K] {
     const node = document.createElement(tag); node.textContent = text; node.className = className; return node;
@@ -223,6 +226,7 @@ export class ShenScopePanel {
         return `${role} · ${routing.profiles[id]?.model ?? 'Choose model'}`;
     }
     private async newConversation(): Promise<void> {
+        await this.bridge.clearProblems();
         if (this.agentModeChanging || this.active || this.projectJob || this.projectStarting || this.mcpJob || this.skillsJob || this.skillsStarting || this.hooksJob || this.hooksStarting || this.contextBusy() || this.analyzersJob || this.analyzersStarting) { throw new Error('Cancel or finish the current task before starting another conversation.'); }
         this.modelsResult = undefined; this.modelsOffset = 0; this.modelRequestText = '{"messages":[{"role":"user","text":"Hello 中文"}],"max_output":1024}';
         this.modelsProfile = ''; this.modelPlanRole = '';
@@ -1753,7 +1757,15 @@ export class ShenScopePanel {
                 inspection.append(this.button('Next evidence page', () => inspect(symbol, action, result.next_offset)));
             }
         };
-        if (status.capabilities?.diagnostics) { this.content.append(this.button('Show diagnostics', () => inspect(undefined, 'diagnostics'))); }
+        if (status.capabilities?.diagnostics) {
+            const actions = el('div', '', 'button-row');
+            actions.append(this.button('Show diagnostics', () => inspect(undefined, 'diagnostics')),
+                this.button('Show in Problems', async () => {
+                    const session_id = await this.ensureSession('Project problems');
+                    await this.bridge.publishProblems({session_id, backend: this.projectBackend}); this.notice.hidden = true; this.setStatus('Problems updated');
+                }), this.button('Clear Problems', () => this.bridge.clearProblems(), 'secondary-button'));
+            this.content.append(actions);
+        }
         const search = async () => {
             const current = ++request; const result = await this.bridge.request('project/query', { backend: this.projectBackend, action: 'search', query: query.value, limit: 30, ...(this.sessionId ? { session_id: this.sessionId } : {}) });
             if (current !== request || revision !== this.renderRevision) { return; } results.replaceChildren();
@@ -2373,7 +2385,16 @@ export class ShenScopePanel {
             if (!this.assistant) { this.assistant = this.addMessage('assistant', ''); } this.assistantText = (this.assistantText + payload.text).slice(0, 1_000_000);
             if (this.animation === undefined) { this.animation = requestAnimationFrame(() => { this.animation = undefined; this.flushAssistant(); }); }
         } else if (params.kind === 'tool_started') { this.addTool(payload); }
-        else if (params.kind === 'tool_completed') { const card = this.addTool(payload); card.classList.add(payload.ok ? 'succeeded' : 'failed'); card.querySelector('.tool-status')!.textContent = payload.ok ? 'Complete' : 'Failed'; card.querySelector('pre')!.textContent = JSON.stringify(payload, null, 2).slice(0, 32000); if (!payload.ok) { card.open = true; } }
+        else if (params.kind === 'tool_completed') {
+            const card = this.addTool(payload); card.classList.add(payload.ok ? 'succeeded' : 'failed');
+            card.querySelector('.tool-status')!.textContent = payload.ok ? 'Complete' : 'Failed';
+            card.querySelector('pre')!.textContent = JSON.stringify(payload, null, 2).slice(0, 32000); if (!payload.ok) { card.open = true; }
+            const snapshot_id = payload.value?.problem_snapshot_id ?? payload.value?.snapshot_id;
+            if (typeof snapshot_id === 'string' && ['problems', 'validation', 'language', 'workspace'].includes(payload.name)) {
+                const session_id = this.sessionId!;
+                card.append(this.button('Show in Problems', () => this.bridge.publishProblems({session_id, snapshot_id}), 'secondary-button'));
+            }
+        }
         else if (params.kind === 'permission_request') {
             const card = el('section', '', 'permission-card'); card.dataset.traceId = params.trace_id; card.dataset.requestId = payload.id; const heading = el('div', '', 'permission-heading'); heading.append(icon('shield'), el('strong', 'Approval needed'));
             card.append(heading, el('p', `${payload.tool} · ${payload.category}`, 'permission-action'), el('code', payload.target, 'permission-target'), el('p', payload.reason, 'permission-reason')); const actions = el('div', '', 'permission-actions');

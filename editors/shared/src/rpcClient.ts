@@ -9,6 +9,8 @@ const compilerBoundStarts = new Set([
     'agent/start', 'project/start', 'diagnostics/start', 'extensions/start', 'terminal/start',
     'analyzers/start', 'models/start', 'memory/start', 'security/start',
     'context/start', 'skills/start', 'hooks/start', 'mcp/start',
+    'problems/start', 'language/start', 'workspace/start', 'validation/start',
+    'problems/query', 'problems/job', 'validation/query', 'validation/job',
 ]);
 
 export class CoreClient {

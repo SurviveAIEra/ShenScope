@@ -18,8 +18,8 @@ test('Native testing adapter recovers a dropped start response and cancels pendi
     await writeFile(config,"[permissions]\nread='allow'\nprocess='ask'\npersistence='allow'\nnetwork='deny'\n");
     await writeFile(join(root,'package.json'),JSON.stringify({scripts:{test:'node test-command.mjs'}}));
     await writeFile(join(root,'test-command.mjs'),"import {existsSync,readFileSync,writeFileSync} from 'node:fs';const path='execution-count.txt';writeFileSync(path,existsSync(path)?String(Number(readFileSync(path,'utf8'))+1):'1');console.log('observed command');\n");
-    const env={...process.env,JULIA_DEPOT_PATH:'/workspace/julia-depot'};delete env.NODE_TEST_CONTEXT;
-    const client=new CoreClient({executable:'/workspace/toolchains/julia-1.11.7/bin/julia',cwd:root,env,
+    const env={...process.env,JULIA_DEPOT_PATH:process.env.JULIA_DEPOT_PATH||'/workspace/julia-depot'};delete env.NODE_TEST_CONTEXT;
+    const client=new CoreClient({executable:process.env.SHENSCOPE_JULIA||'/workspace/toolchains/julia-1.11.7/bin/julia',cwd:root,env,
         args:['--startup-file=no','--threads=4',`--project=${project}`,'-e','using ShenScope;exit(ShenScope.main())','--','serve','--stdio','--root',root,'--state-dir',join(root,'state'),'--config',config]});
     try{
         await client.start();const session_id=(await client.request('sessions/create')).id;

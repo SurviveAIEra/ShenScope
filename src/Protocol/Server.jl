@@ -54,7 +54,7 @@ function server_event(server::CoreServer,event::AgentEvent)
     end
     rpc_notify(server,"agent/event",Dict("sequence"=>event.sequence,"kind"=>String(event.kind),
         "session_id"=>event.session_id,"trace_id"=>event.trace_id,"timestamp"=>event.timestamp,
-        "payload"=>validation_event_payload(server,event,workspace_event_payload(server,event,language_event_payload(server,event,problems_event_payload(server,event,testing_event_payload(server,event,diagnostics_event_payload(server,event))))))))
+        "payload"=>project_event_payload(server,event,validation_event_payload(server,event,workspace_event_payload(server,event,language_event_payload(server,event,problems_event_payload(server,event,testing_event_payload(server,event,diagnostics_event_payload(server,event)))))))))
 end
 
 function server_approval(server::CoreServer,session_id::String,token::CancellationToken,request::PermissionRequest)

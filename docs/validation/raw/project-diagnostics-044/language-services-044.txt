@@ -1,0 +1,14 @@
+Test Summary:                                                           | Pass  Total  Time
+LSP framing handles every split, UTF-8 lengths and malformed boundaries |  318    318  5.4s
+Test Summary:                                                                  | Pass  Total   Time
+LSP contracts distinguish UTF-16 text lines, protected URIs and edit proposals |   14     14  18.3s
+Test Summary:                                                                           | Pass  Total  Time
+Language configurations survive restart with CAS and independent Persistence permission |   11     11  4.9s
+Test Summary:                                                    | Pass  Total  Time
+Unversioned language reports never become current editor markers |    4      4  6.6s
+Test Summary:                                                                             | Pass  Total  Time
+Completion and signature projections preserve snippets and reject split surrogate offsets |    5      5  4.4s
+Test Summary:                                                               | Pass  Total   Time
+Real Pyright checks Python, navigates source and replaces versioned reports |   19     19  32.5s
+Test Summary:                                                                 | Pass  Total  Time
+Real TypeScript LSP returns verified references and nonexecuting rename edits |    8      8  6.2s

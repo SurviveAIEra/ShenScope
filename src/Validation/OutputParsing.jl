@@ -90,12 +90,7 @@ function validation_frame_location(frame::ValidationDiagnosticFrame, source::Sou
     if column_unit == "utf16"
         column = utf16_byte_column(source, frame.line, column-1)
     elseif column_unit == "unicode_scalar"
-        index = start
-        for count in 1:column-1
-            index < ending || throw(ShenScopeError(:validation, "Reported scalar column exceeds its line"))
-            index = nextind(source.source, index)
-        end
-        column = index-start+1
+        column = scalar_byte_column(source, frame.line, column-1)
     end
     index = source_byte_index(source, frame.line, column)
     after = index == ending ? column : nextind(source.source,index)-start+1

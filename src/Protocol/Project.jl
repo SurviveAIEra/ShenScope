@@ -1,8 +1,31 @@
 function server_project_tool(server::CoreServer)
     only(tool for tool in server.tools if tool isa ProjectTool)
 end
-function project_job_view(job::AbstractDict)
-    Dict(key=>job[key] for key in ("id","status","session_id","backend","action","result","error") if haskey(job,key))
+function project_job_view(job::AbstractDict, policy::PermissionPolicy)
+    view = Dict{String,Any}(key=>job[key] for key in ("id","status","session_id","backend","action","result","error") if haskey(job,key))
+    root = job["context"].root
+    if permission_decision(policy, PermissionRequest("project-job", :read, "project", root,
+            "Read retained project operation output")) != Allow
+        view["result_hidden_by_permission"] = get(view, "result", nothing) !== nothing
+        view["result"] = nothing
+        view["error"] = nothing
+    end
+    deepcopy(view)
+end
+
+function project_event_payload(server::CoreServer, event::AgentEvent, payload)
+    completed = event.kind in (:project_completed, :project_failed)
+    tool = event.kind == :tool_completed && payload isa AbstractDict && get(payload, "name", nothing) == "project"
+    completed || tool || return payload
+    owner = get(server.contexts, event.session_id, nothing)
+    policy = owner === nothing ? permissions_from_config(server.config) : owner.permissions
+    permission_decision(policy, PermissionRequest("project-delivery", :read, "project", server.root,
+        "Deliver project analysis output")) != Deny && return payload
+    hidden = deepcopy(Dict{String,Any}(payload))
+    hidden[tool ? "value" : "result"] = nothing
+    haskey(hidden, "message") && (hidden["message"] = "Project operation output is hidden by permission")
+    hidden["result_hidden_by_permission"] = true
+    hidden
 end
 function finish_project_job!(manager::ProjectManager, job::AbstractDict, result)
     bytes=ncodeunits(canonical(result))
@@ -68,7 +91,9 @@ function project_rpc(server::CoreServer,method::String,params::AbstractDict)
             job["session_id"]==session.id && job["context"].root==server.root ||
                 throw(ShenScopeError(:permission,"Project job belongs to another conversation"))
             method=="project/cancel" && cancel!(job["context"].cancellation)
-            project_job_view(job)
+            prior = get(server.contexts, session.id, nothing)
+            policy = prior === nothing ? permissions_from_config(server.config) : prior.permissions
+            project_job_view(job, policy)
         end
     elseif method=="project/query"
         if get(params,"action",nothing)=="evidence_status"

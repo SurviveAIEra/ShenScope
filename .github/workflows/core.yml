@@ -80,6 +80,7 @@ jobs:
       - run: julia --startup-file=no --threads=4 --project=. test/project_validation.jl
         env:
           SHENSCOPE_TEST_GO: go
+      - run: julia --startup-file=no --threads=4 --project=. test/validation_reports.jl
       - run: npm run check && npm run build && npm test
         working-directory: editors
         env:

@@ -32,6 +32,15 @@ child cases, correlated existing-job lookup and cancellation. Individual test
 discovery/reconciliation, coverage and comprehensive framework support remain
 pending; native publication currently requires effective Read Allow.
 
+Checkpoint 044 adds bounded SARIF import with caller-supplied report/source
+hashes, selected-source report comparison and applied-edit compiler/lint
+verification. VSIX and native Workbench publish source-checked diagnostics into
+Problems and clear their own markers after changes or Read revocation. Further
+partial observations from all seven primary agents and editor interface research
+are recorded with exact source evidence. Producer authenticity, arbitrary SARIF
+features, unsaved-buffer indexing and whole-project semantic freshness are not
+established by these checks.
+
 | Project | Model/loop/context strengths to assess | Tools/security/state strengths to assess | Interface/ecosystem/workflow strengths to assess |
 |---|---|---|---|
 | Codex | Request preparation, streaming, restored evidence, request-wide budget estimates | Permission/sandbox boundary, tool ownership, cancellation, Git review | TUI ergonomics, app-server protocol, durable session UX, headless automation |

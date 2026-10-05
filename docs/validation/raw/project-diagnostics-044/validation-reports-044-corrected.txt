@@ -1,0 +1,73 @@
+ERROR: LoadError: Some tests did not pass: 24 passed, 3 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/integration/workspace_checks.jl:1
+in expression starting at /workspace/ShenScope/test/validation_reports.jl:5
+Test Summary:                                                                | Pass  Total   Time
+SARIF import projects Unicode ranges, resolves messages and never runs fixes |   11     11  17.3s
+Test Summary:                                               | Pass  Total  Time
+SARIF inactive and unlocated reports retain honest coverage |    6      6  1.5s
+Test Summary:                                                                   | Pass  Total  Time
+SARIF paths, malformed positions, indexed identities and capacities are bounded |   26     26  0.9s
+Test Summary:                                                               | Pass  Total  Time
+SARIF comparison preserves source/configuration changes without reexecution |    6      6  2.4s
+Test Summary:                                                                                  | Pass  Total  Time
+Workspace proposals preview Unicode edits and refuse stale, overlapping and foreign operations |   11     11  6.2s
+Test Summary:                                                                            | Pass  Total  Time
+Workspace application retains receipts and rolls back without overwriting external edits |   14     14  1.0s
+Test Summary:                                                                  | Pass  Total  Time
+Workspace edit permissions, plan mode and bounded proposals remain independent |    4      4  0.3s
+Reviewed Python, JavaScript and C edits bind real compiler check receipts: Test Failed at /workspace/ShenScope/test/integration/workspace_checks.jl:23
+  Expression: comparison["same_command_candidate"] && comparison["same_output_configuration"]
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#32#33"{Vector{String}, String, String, String, String})(root::String)
+   @ Main /workspace/ShenScope/test/integration/workspace_checks.jl:23
+ [3] mktempdir(fn::var"#32#33"{Vector{String}, String, String, String, String}, parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/workspace_checks.jl:6 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/integration/workspace_checks.jl:2
+Reviewed Python, JavaScript and C edits bind real compiler check receipts: Test Failed at /workspace/ShenScope/test/integration/workspace_checks.jl:23
+  Expression: comparison["same_command_candidate"] && comparison["same_output_configuration"]
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#32#33"{Vector{String}, String, String, String, String})(root::String)
+   @ Main /workspace/ShenScope/test/integration/workspace_checks.jl:23
+ [3] mktempdir(fn::var"#32#33"{Vector{String}, String, String, String, String}, parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/workspace_checks.jl:6 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/integration/workspace_checks.jl:2
+Reviewed Python, JavaScript and C edits bind real compiler check receipts: Test Failed at /workspace/ShenScope/test/integration/workspace_checks.jl:23
+  Expression: comparison["same_command_candidate"] && comparison["same_output_configuration"]
+
+Stacktrace:
+ [1] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:680 [inlined]
+ [2] (::var"#32#33"{Vector{String}, String, String, String, String})(root::String)
+   @ Main /workspace/ShenScope/test/integration/workspace_checks.jl:23
+ [3] mktempdir(fn::var"#32#33"{Vector{String}, String, String, String, String}, parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [4] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [5] macro expansion
+   @ /workspace/ShenScope/test/integration/workspace_checks.jl:6 [inlined]
+ [6] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [7] top-level scope
+   @ /workspace/ShenScope/test/integration/workspace_checks.jl:2
+Test Summary:                                                             | Pass  Fail  Total   Time
+Reviewed Python, JavaScript and C edits bind real compiler check receipts |   24     3     27  15.6s

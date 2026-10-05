@@ -61,10 +61,13 @@ function query_language_call_hierarchy(client::LanguageClient, action::String, a
                     "relationship"=>action,"resolution"=>"language_server_report"))
             end
         end
-        verify_workspace_snapshot(document.snapshot,ctx;tool="language.source")
+        versions = verify_language_result_sources!(sources)
+        language_client_access(client, ctx)
         Dict("server"=>client.spec.name,"action"=>action,"roots"=>roots,"calls"=>calls,
             "omitted_items"=>omitted,"source_omissions"=>deepcopy(sources.omitted),
             "projection_truncated"=>omitted>0 || !isempty(sources.omitted),
+            "source_versions"=>versions,"source_versions_verified"=>true,
+            "whole_server_dependency_snapshot_verified"=>false,
             "runtime_calls_independently_verified"=>false,"complete_project_coverage"=>false)
     end
 end

@@ -215,6 +215,13 @@ function project_navigation(state::ProjectState, arguments::AbstractDict, ctx::R
         end
         project_result_page(project_implementation_items(state, ids, ctx), state, arguments, ctx)
     end
+    lock(state.mutex) do
+        result["revision"] == state.revision ||
+            throw(ShenScopeError(:conflict, "Project revision changed before navigation publication"))
+        verify_project_navigation_page!(state, result, ctx)
+        result["revision"] == state.revision ||
+            throw(ShenScopeError(:conflict, "Project changed during navigation source validation"))
+    end
     check_cancelled(ctx.cancellation)
     permission_decision(ctx.permissions, request) != Deny || throw(ShenScopeError(:permission, "Project reads were denied before publication"))
     result

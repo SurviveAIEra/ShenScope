@@ -50,6 +50,7 @@ const skillsOnly = process.argv.includes('--skills-only');
 const hooksOnly = process.argv.includes('--hooks-only');
 const contextOnly = process.argv.includes('--context-only');
 const semanticOnly = process.argv.includes('--semantic-only');
+const problemsOnly = process.argv.includes('--problems-only');
 const analyzersOnly = process.argv.includes('--analyzers-only');
 const modelsOnly = process.argv.includes('--models-only');
 const routingOnly = process.argv.includes('--routing-only');
@@ -257,7 +258,7 @@ if (historyOnly) {
         git('add', '--', 'sample.go', 'buddy.go', 'other.go'); git('commit', '--no-gpg-sign', '-m', 'fixture change'); historyCommits.push(git('rev-parse', 'HEAD'));
     }
 }
-if (semanticOnly) {
+if (semanticOnly || problemsOnly) {
     await writeFile(join(root, 'greeter.ts'), "export interface Greeter { greet(name: string): string; }\nexport class English implements Greeter { greet(name: string): string { return 'Hello ' + name; } }\n");
     await writeFile(join(root, 'main.ts'), "import { English } from './greeter';\nexport function TestGreet(): string { const agent = new English(); return agent.greet('中😀'); }\nexport const wrong: number = 'type error';\n");
 }
@@ -314,7 +315,7 @@ try {
     await panel.getByText(readyState, { exact: true }).waitFor({ timeout: 120_000 });
     if (samplingOnly || plansOnly || testingOnly) { await resizeSidebar(page, 200); }
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-welcome.png`) });
-    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly && !extensionsOnly && !terminalOnly && !compilerOnly && !plansOnly && !testingOnly) {
+    if (!mcpOnly && !skillsOnly && !hooksOnly && !contextOnly && !semanticOnly && !problemsOnly && !analyzersOnly && !modelsOnly && !routingOnly && !historyOnly && !migrationOnly && !memoryOnly && !securityOnly && !juliaOnly && !evidenceOnly && !extensionsOnly && !terminalOnly && !compilerOnly && !plansOnly && !testingOnly) {
     await panel.locator('textarea').fill('Write a file from the native sidebar');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('button', { name: 'Allow once', exact: true }).click({ timeout: 120_000 });
@@ -1168,6 +1169,40 @@ println("memory durable proof verified")`;
         assert.equal(requests.length, 0, 'Custom graph computations do not call the model');
         console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual analyzer registration, source/external fixture review, isolated fixture validation, graph evidence/file navigation, immutable archive, two CAS promotions, fresh-validation rollback and cancellation of a pending approval`);
     }
+    if (problemsOnly) {
+        await panel.getByRole('button', {name:'Project',exact:true}).click();
+        await panel.getByRole('combobox', {name:'Project backend'}).selectOption('typescript');
+        await panel.getByRole('button', {name:'Index project',exact:true}).click();
+        await approve(panel,'project.index · persistence');await approve(panel,'project.backend · process');
+        await panel.getByRole('button',{name:'Refresh index',exact:true}).waitFor({timeout:120_000});
+        const publish=panel.getByRole('button',{name:'Show in Problems',exact:true});
+        await publish.click();
+        const own=page.locator('.markers-panel .monaco-list-row').filter({hasText:'ShenScope'}).filter({hasText:'2322'});
+        await own.first().waitFor({timeout:120_000});
+        await panel.getByText('Problems updated',{exact:true}).waitFor();
+        assert.equal(await panel.locator('[role="alert"]').isVisible(),false,'Successful publication clears the previous operation notice');
+        await page.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-problems.png`)});
+        await own.first().dblclick();
+        const editor=page.locator('.monaco-editor').filter({has:page.locator('.view-lines').filter({hasText:'export const wrong'})}).first();
+        await editor.waitFor();await publish.click();await own.first().waitFor({timeout:120_000});
+        await editor.locator('.view-lines').click();await page.keyboard.press('Control+End');await page.keyboard.insertText('// SHENSCOPE_UNSAVED');
+        await editor.locator('.view-lines').filter({hasText:'SHENSCOPE_UNSAVED'}).waitFor();
+        await waitCount(own,0);await publish.click();await panel.getByText('Problems updated',{exact:true}).waitFor();await waitCount(own,0);
+        await editor.locator('.view-lines').click();await page.keyboard.press('Control+Z');
+        await editor.locator('.view-lines').filter({hasText:'SHENSCOPE_UNSAVED'}).waitFor({state:'detached'});
+        // Revert also removes any auto-indent retained by the editor's undo.
+        await page.keyboard.press('Control+Shift+P');await page.locator('.quick-input-widget:visible input').fill('>File: Revert File');
+        await page.locator('.quick-input-list .monaco-list-row').filter({hasText:'Revert File'}).first().click();
+        await waitCount(page.locator('.tab.active.dirty'),0);
+        await publish.click();await own.first().waitFor({timeout:120_000});
+        await panel.getByRole('button',{name:'Clear Problems',exact:true}).click();await waitCount(own,0);
+        await publish.click();await own.first().waitFor({timeout:120_000});
+        await panel.getByRole('combobox',{name:'More views'}).selectOption('Settings');await panel.getByText('Permissions',{exact:true}).click();
+        await panel.locator('label').filter({hasText:/^read/}).locator('select').selectOption('deny');
+        await panel.getByRole('button',{name:'Save settings',exact:true}).click();await panel.getByText('Settings saved',{exact:true}).waitFor();await waitCount(own,0);
+        assert.equal(requests.length,0,'Publishing diagnostics does not call a model');
+        console.log(`PASS: ${vsix?'VSIX webview':'native Workbench with extensions disabled'}, real TypeScript compiler diagnostics in native Problems, file navigation, visible unsaved-buffer edit and withdrawal, undo/revert and explicit republication, own-marker clearing and read revocation`);
+    }
     if (semanticOnly) {
         await panel.getByRole('button', { name: 'Project', exact: true }).click();
         await panel.getByRole('combobox', { name: 'Project backend' }).selectOption('typescript');
@@ -1374,11 +1409,11 @@ println("memory durable proof verified")`;
         console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual Hook project/user/inline configuration, command approval/test/status, per-source/global enable, reload and configuration opening inside/outside the workspace`);
     }
 } catch (error) {
-    if(nativeTestingOnly && application){
+    if((nativeTestingOnly || problemsOnly) && application){
         const window=await application.firstWindow();
-        await window.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-native-testing-failure.png`)}).catch(()=>{});
-        console.error('Testing failure UI:',await window.locator('.part.sidebar').innerText().catch(()=>''));
-        console.error('Testing failure picker:',await window.locator('.quick-input-widget:visible').innerText().catch(()=>''));
+        await window.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-${problemsOnly?'problems':'native-testing'}-failure.png`)}).catch(()=>{});
+        console.error(`${problemsOnly?'Problems':'Testing'} failure UI:`,await window.locator('.part.sidebar').innerText().catch(()=>''));
+        if(nativeTestingOnly){console.error('Testing failure picker:',await window.locator('.quick-input-widget:visible').innerText().catch(()=>''));}
     }
     if (panel) {
         console.error('Panel failure state:', await panel.innerText().catch(() => 'Unavailable'));

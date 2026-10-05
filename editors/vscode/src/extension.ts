@@ -5,6 +5,7 @@ import { CoreClient } from '../../shared/src/rpcClient.js';
 import { PANEL_RPC_METHODS } from '../../shared/src/rpcMethods.js';
 import { CoreTerminalConnection } from '../../shared/src/terminalClient.js';
 import { ShenScopeTestingController } from './testing.js';
+import { ShenScopeProblemsController } from './problems.js';
 
 const methods = new Set<string>(PANEL_RPC_METHODS);
 
@@ -17,6 +18,7 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
     private readonly log = vscode.window.createOutputChannel('ShenScope');
     private readonly terminals = new Map<string,vscode.Terminal>();
     private testing?: ShenScopeTestingController;
+    private problems?: ShenScopeProblemsController;
 
     constructor(private readonly context: vscode.ExtensionContext) {}
 
@@ -32,6 +34,7 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
         this.client = new CoreClient({ executable, args: ['--startup-file=no', '--threads=4', `--project=${project}`, '-e',
             'using ShenScope; exit(ShenScope.main())', '--', 'serve', '--stdio', '--root', folder.uri.fsPath, '--state-dir', state], cwd: folder.uri.fsPath });
         this.eventListener = this.client.onNotification(event => {
+            if (event.method === 'config/changed' || event.method === 'transport/closed') { this.problems?.clear(); }
             void this.view?.webview.postMessage({ kind: 'event', method: event.method, params: event.params });
             if (event.method === 'transport/closed') { this.starting = undefined; this.log.appendLine(event.params.message); }
         });
@@ -49,6 +52,10 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
                 const secret = await this.context.secrets.get(`model:${variable}`);
                 if (secret) { await this.client!.request('credentials/set', { variable, value: secret }); }
             }
+            this.problems?.dispose();
+            this.problems = await ShenScopeProblemsController.create(this.hello.root, {
+                request: (method, params) => this.client!.request(method, params, 120_000)
+            });
             return this.hello;
         })();
         try { return await this.starting; }
@@ -66,6 +73,9 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
         view.webview.onDidReceiveMessage(async message => {
             if (!message || message.kind !== 'request' || !Number.isSafeInteger(message.id) || typeof message.method !== 'string') { return; }
             try {
+                if (message.method === 'editor/clearProblems') {
+                    this.problems?.clear(); await view.webview.postMessage({kind: 'response', id: message.id, result: null}); return;
+                }
                 await this.connect();
                 let result: any;
                 if (message.method === 'editor/hello') { result = this.hello; }
@@ -118,6 +128,8 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
                             } finally { signal.removeEventListener('abort', cancel); cancellation.dispose(); }
                         }});
                     await vscode.commands.executeCommand('workbench.view.testing.focus'); result = null;
+                } else if (message.method === 'editor/publishProblems') {
+                    await this.problems!.publish(message.params ?? {}); result = null;
                 } else if (message.method === 'editor/openFile') {
                     const root = vscode.workspace.workspaceFolders![0].uri.fsPath;
                     const path = resolve(root, String(message.params?.path));
@@ -127,6 +139,7 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
                     await vscode.window.showTextDocument(vscode.Uri.file(path), { selection: new vscode.Range(line - 1, 0, line - 1, 0) }); result = null;
                 } else {
                     if (!methods.has(message.method)) { throw new Error('Unknown editor operation'); }
+                    if (['sessions/create', 'sessions/get', 'sessions/branch', 'config/set'].includes(message.method)) { this.problems?.clear(); }
                     result = await this.client!.request(message.method, message.params ?? {});
                 }
                 await view.webview.postMessage({ kind: 'response', id: message.id, result });
@@ -136,8 +149,8 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
         }, undefined, this.context.subscriptions);
     }
 
-    async restart(): Promise<void> { this.testing?.dispose(); this.testing=undefined; for(const terminal of this.terminals.values()){terminal.dispose();}this.terminals.clear();this.eventListener?.(); await this.client?.dispose(); this.client = undefined; this.starting = undefined; await this.connect(); }
-    dispose(): void { this.testing?.dispose(); for(const terminal of this.terminals.values()){terminal.dispose();}this.terminals.clear();this.eventListener?.(); void this.client?.dispose(); this.log.dispose(); }
+    async restart(): Promise<void> { this.problems?.dispose(); this.problems=undefined; this.testing?.dispose(); this.testing=undefined; for(const terminal of this.terminals.values()){terminal.dispose();}this.terminals.clear();this.eventListener?.(); await this.client?.dispose(); this.client = undefined; this.starting = undefined; await this.connect(); }
+    dispose(): void { this.problems?.dispose(); this.testing?.dispose(); for(const terminal of this.terminals.values()){terminal.dispose();}this.terminals.clear();this.eventListener?.(); void this.client?.dispose(); this.log.dispose(); }
 }
 
 export function activate(context: vscode.ExtensionContext): void {
