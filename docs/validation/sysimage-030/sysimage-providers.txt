@@ -1,0 +1,28 @@
+[ Info: Listening on: 127.0.0.1:32781, thread id: 2
+[ Info: Server on 127.0.0.1:32781 closing
+[ Info: Listening on: 127.0.0.1:35251, thread id: 1
+[ Info: Server on 127.0.0.1:35251 closing
+[ Info: Listening on: 127.0.0.1:37725, thread id: 1
+[ Info: Server on 127.0.0.1:37725 closing
+[ Info: Listening on: 127.0.0.1:44403, thread id: 1
+[ Info: Server on 127.0.0.1:44403 closing
+[ Info: Listening on: 127.0.0.1:46197, thread id: 1
+[ Info: Server on 127.0.0.1:46197 closing
+[ Info: Listening on: 127.0.0.1:34635, thread id: 1
+[ Info: Server on 127.0.0.1:34635 closing
+[ Info: Listening on: 127.0.0.1:42561, thread id: 1
+[ Info: Server on 127.0.0.1:42561 closing
+[ Info: Listening on: 127.0.0.1:38165, thread id: 1
+[ Info: Server on 127.0.0.1:38165 closing
+Test Summary:                                   | Pass  Total  Time
+SSE Unicode fragmentation, multiline and limits |    3      3  0.5s
+Test Summary:                                             | Pass  Total   Time
+OpenAI-compatible real HTTP tool stream and native replay |    7      7  18.9s
+Test Summary:                             | Pass  Total  Time
+Anthropic signature and tool continuation |    5      5  4.3s
+Test Summary:                                        | Pass  Total  Time
+OpenAI Responses encrypted reasoning and call stream |    3      3  3.2s
+Test Summary:                      | Pass  Total  Time
+Gemini and Ollama native protocols |    5      5  7.1s
+Test Summary:                                                    | Pass  Total   Time
+Retry before delivery, no replay after delivery, malformed calls |    5      5  10.3s

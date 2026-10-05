@@ -1,0 +1,17 @@
+ERROR: LoadError: MethodError: no method matching ModelResponse(::String; calls::Vector{ToolCall})
+The type `ModelResponse` exists, but no method is defined for this combination of argument types when trying to construct it.
+
+Closest candidates are:
+  ModelResponse(::Any, !Matched::Any, !Matched::Any) got unsupported keyword argument "calls"
+   @ ShenScope /workspace/ShenScope/src/Core/Types.jl:63
+  ModelResponse(!Matched::Message, !Matched::Usage, !Matched::Symbol) got unsupported keyword argument "calls"
+   @ ShenScope /workspace/ShenScope/src/Core/Types.jl:63
+
+Stacktrace:
+ [1] (::var"#1#2")(root::String)
+   @ Main /workspace/ShenScope/scripts/precompile_sysimage.jl:19
+ [2] mktempdir(fn::var"#1#2", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [3] top-level scope
+   @ /workspace/ShenScope/scripts/precompile_sysimage.jl:4
+in expression starting at /workspace/ShenScope/scripts/precompile_sysimage.jl:4

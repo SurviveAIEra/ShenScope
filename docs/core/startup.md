@@ -50,9 +50,23 @@ The earlier checkpoint 022 serial Node run recorded 74.567 s, but belongs to a
 different source revision. The cached Node flow still waits roughly 25 seconds
 for the first agent/tool execution; that path is not in the startup workload.
 
-PackageCompiler/sysimage experimentation remains pending. No installer,
-installed VSIX, clean-machine restore, native desktop launch speed, live provider
-latency or Windows performance is established by these measurements. Native
+Checkpoint 030 adds one actual PackageCompiler 2.4.3 incremental generic Linux
+sysimage build over the same checkout and depot. Build time was 495.728 seconds;
+the image was 311,352,856 bytes. Source and dependency fingerprints were checked
+before/after compilation. Three alternating fresh-process observations measured
+the current metadata workload at 1.943–2.356 seconds with the package cache and
+0.650–0.804 seconds with the image (medians 2.128 and 0.708 seconds). These are
+small local observations, not statistical or desktop performance guarantees.
+The actual image passed 120 affected Core assertions and seven real editor
+transport tests, including scoped agent edits, PTY and extension behavior.
+Five-protocol model tests used local HTTP fixtures, not real providers.
+
+See `runtime_images.md` and `../validation/sysimage-checkpoint-030.json` for
+integrity, permissions, raw phases and failure records. The experimental binary
+was removed after verification, reclaiming space before further Core changes;
+its receipt and reproducible scripts remain. Editor defaults remain ordinary
+Julia startup. No installer, installed VSIX, clean-machine restore, native desktop
+launch speed, live-provider latency or Windows performance is established. Native
 Workbench and VSIX continue to use the same Julia stdio protocol. Their unchanged
 UI workflows were validated in checkpoint 022; checkpoint 023 validates the
 shared server through real Node transport and affected Core/CLI interfaces.

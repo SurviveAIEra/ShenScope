@@ -1,0 +1,320 @@
+[
+  {
+    "config_get": {
+      "allocated_bytes": 11240,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 7.9082e-05
+    },
+    "construction": {
+      "allocated_bytes": 1306288,
+      "compile_seconds": 0.120676391,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.124116558
+    },
+    "elapsed_seconds": 2.137491926,
+    "health": {
+      "allocated_bytes": 1104,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 9.399e-06
+    },
+    "initialize": {
+      "allocated_bytes": 26192,
+      "compile_seconds": 0.004129766,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.005338212
+    },
+    "julia": "1.11.7",
+    "models_status": {
+      "allocated_bytes": 137368,
+      "compile_seconds": 0.019799294,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.020660415
+    },
+    "module_load_seconds": 1.535917993,
+    "scope": "temporary local metadata fixture; no child process or model request; session writes cleaned",
+    "session_create": {
+      "allocated_bytes": 27976,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.000537792
+    },
+    "threads": 4,
+    "run": 1,
+    "sysimage": false,
+    "wall_seconds": 2.355992739991052,
+    "stderr": ""
+  },
+  {
+    "config_get": {
+      "allocated_bytes": 11240,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 4.9339e-05
+    },
+    "construction": {
+      "allocated_bytes": 1197248,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.001033044
+    },
+    "elapsed_seconds": 0.369203497,
+    "health": {
+      "allocated_bytes": 1104,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 7.401e-06
+    },
+    "initialize": {
+      "allocated_bytes": 24176,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.000270547
+    },
+    "julia": "1.11.7",
+    "models_status": {
+      "allocated_bytes": 119784,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.00045176
+    },
+    "module_load_seconds": 0.000444332,
+    "scope": "temporary local metadata fixture; no child process or model request; session writes cleaned",
+    "session_create": {
+      "allocated_bytes": 27976,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.000276537
+    },
+    "threads": 4,
+    "run": 1,
+    "sysimage": true,
+    "wall_seconds": 0.650419301004149,
+    "stderr": ""
+  },
+  {
+    "config_get": {
+      "allocated_bytes": 11240,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 7.444e-05
+    },
+    "construction": {
+      "allocated_bytes": 1306288,
+      "compile_seconds": 0.116224015,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.119427924
+    },
+    "elapsed_seconds": 1.741831938,
+    "health": {
+      "allocated_bytes": 1104,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 9.922e-06
+    },
+    "initialize": {
+      "allocated_bytes": 26192,
+      "compile_seconds": 0.004119404,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.004562003
+    },
+    "julia": "1.11.7",
+    "models_status": {
+      "allocated_bytes": 137368,
+      "compile_seconds": 0.019588738,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.020416625
+    },
+    "module_load_seconds": 1.151469822,
+    "scope": "temporary local metadata fixture; no child process or model request; session writes cleaned",
+    "session_create": {
+      "allocated_bytes": 27976,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.000416715
+    },
+    "threads": 4,
+    "run": 2,
+    "sysimage": false,
+    "wall_seconds": 1.9429871719912626,
+    "stderr": ""
+  },
+  {
+    "config_get": {
+      "allocated_bytes": 9152,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 6.411e-05
+    },
+    "construction": {
+      "allocated_bytes": 1193288,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.001095182
+    },
+    "elapsed_seconds": 0.419778324,
+    "health": {
+      "allocated_bytes": 1104,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 1.1516e-05
+    },
+    "initialize": {
+      "allocated_bytes": 24176,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.000977408
+    },
+    "julia": "1.11.7",
+    "models_status": {
+      "allocated_bytes": 119784,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.000607659
+    },
+    "module_load_seconds": 0.000527572,
+    "scope": "temporary local metadata fixture; no child process or model request; session writes cleaned",
+    "session_create": {
+      "allocated_bytes": 994864,
+      "compile_seconds": 0.038255072,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.038674992
+    },
+    "threads": 4,
+    "run": 2,
+    "sysimage": true,
+    "wall_seconds": 0.7083316120260861,
+    "stderr": ""
+  },
+  {
+    "config_get": {
+      "allocated_bytes": 9152,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.000151832
+    },
+    "construction": {
+      "allocated_bytes": 1306288,
+      "compile_seconds": 0.127290679,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.137372827
+    },
+    "elapsed_seconds": 1.900862583,
+    "health": {
+      "allocated_bytes": 1104,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 2.7479e-05
+    },
+    "initialize": {
+      "allocated_bytes": 26192,
+      "compile_seconds": 0.004346614,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.006063827
+    },
+    "julia": "1.11.7",
+    "models_status": {
+      "allocated_bytes": 137368,
+      "compile_seconds": 0.020321469,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.02355937
+    },
+    "module_load_seconds": 1.219394418,
+    "scope": "temporary local metadata fixture; no child process or model request; session writes cleaned",
+    "session_create": {
+      "allocated_bytes": 994832,
+      "compile_seconds": 0.054923744,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.05741707
+    },
+    "threads": 4,
+    "run": 3,
+    "sysimage": false,
+    "wall_seconds": 2.127675661991816,
+    "stderr": ""
+  },
+  {
+    "config_get": {
+      "allocated_bytes": 11240,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 7.7911e-05
+    },
+    "construction": {
+      "allocated_bytes": 1193288,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.005444149
+    },
+    "elapsed_seconds": 0.410923162,
+    "health": {
+      "allocated_bytes": 1104,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 2.5071e-05
+    },
+    "initialize": {
+      "allocated_bytes": 24176,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.001112905
+    },
+    "julia": "1.11.7",
+    "models_status": {
+      "allocated_bytes": 119784,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.00134607
+    },
+    "module_load_seconds": 0.001690864,
+    "scope": "temporary local metadata fixture; no child process or model request; session writes cleaned",
+    "session_create": {
+      "allocated_bytes": 27976,
+      "compile_seconds": 0,
+      "gc_seconds": 0,
+      "recompile_seconds": 0,
+      "seconds": 0.001709307
+    },
+    "threads": 4,
+    "run": 3,
+    "sysimage": true,
+    "wall_seconds": 0.803770765021909,
+    "stderr": ""
+  }
+]

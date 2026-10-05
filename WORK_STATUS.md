@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest cloc 2.11 count: 21,477 authored Julia Core code lines across 216 files;
-CLI/TUI add 1,074 lines and optional Julia extensions add 57, counted separately.
-This is 8.5908% of the minimum line target, leaving 228,523 lines. These are early implementations,
+Latest cloc 2.11 count: 21,790 authored Julia Core code lines across 221 files;
+CLI/TUI add 1,102 lines and optional Julia extensions add 57, counted separately.
+This is 8.716% of the minimum line target, leaving 228,210 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -637,3 +637,48 @@ No project directories or worktrees were copied. Windows ConPTY, restricted PTY,
 durable reconnect, shell integration, detached hostile-process containment,
 PackageCompiler and installed restoration remain pending. Development continues
 through the remaining functional gates and the active 250,000 Core-line target.
+
+## Checkpoint 030: runtime image integrity and actual PackageCompiler build
+
+Core: 21,790 authored Julia lines in 221 files; CLI/TUI: 1,102 in 20 files.
+Optional authored Julia extension source remains separately counted at 57 lines.
+The active minimum remains 250,000; 228,210 Core lines are still required.
+
+Sorted bounded source/dependency inventories and strict image receipts bind
+Core UUID/version, preferences, exact Julia/platform, generic CPU target, compiler
+environment and streamed image hash. Separate read, persistence and dynamic
+permissions govern inspection, publication and detached launch planning. Unknown
+fields, duplicate JSON keys, stale sources/locks, changed bytes, unsupported
+platforms and descendant symlinks refuse validation. A receipt is unsigned;
+ELF architecture checks do not attest compiled instructions and planning is not
+an atomic file-to-exec operation. Runtime/status reports loaded-image metadata
+without treating environment markers as provenance.
+
+PackageCompiler 2.4.3 was cloned once and developed with the existing Core into
+a separate small build environment. Every Core manifest dependency was compared
+before building. One real incremental generic Linux image took 495.728 seconds
+and produced 311,352,856 bytes with matching pre/post source fingerprints. The
+image passed 120 distinct affected assertions (27 new), seven real editor/Core
+transport tests, independent package/weakdep extension behavior and all five
+local HTTP model protocols. The refreshed VSIX exactly matches 250 authored
+Core/helper/extension payload files and three existing client assets. Actual GUI
+flows were unchanged and were not rerun for this checkpoint.
+
+Three serial alternating fresh-process metadata observations measured median
+wall time of 2.128 seconds with the ordinary package cache and 0.708 seconds
+with the image. This establishes neither full IDE latency nor live-provider,
+first-agent-turn, relocation, Windows, installed distribution or clean-machine
+restore performance. Editor launch defaults remain ordinary Julia. Reproduction,
+limits and evidence: docs/core/runtime_images.md and
+docs/validation/sysimage-checkpoint-030.json.
+
+Initial workload constructor/path mistakes and restricted-sandbox child/loopback
+failures are retained with corrected successful runs. Supported permission
+escalation verified GitHub access and actual Node/HTTP tests. Seven primary-agent
+sources and Julia handoff/compiler requirements extend the partial reference
+review; no upstream code was copied or translated. After verification the single
+experimental binary and known reproducible compiler artifacts were removed,
+reclaiming 423,664,125 bytes. About 17.5 GiB remains free. The strict audit found
+one application checkout, 50 dependency repositories and no unknown repositories;
+no worktrees or application-directory copies were created. Development continues
+through the remaining gates and the active 250,000 Core-line target.

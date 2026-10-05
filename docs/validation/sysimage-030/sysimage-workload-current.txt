@@ -1,0 +1,8 @@
+Precompiling PackageCompiler...
+   1120.1 ms  ✓ Glob
+   1080.6 ms  ✓ Scratch
+    512.2 ms  ✓ RelocatableFolders
+   1438.9 ms  ✓ LazyArtifacts
+   2082.8 ms  ✓ PackageCompiler
+  5 dependencies successfully precompiled in 4 seconds. 23 already precompiled.
+SYSIMAGE_WORKLOAD_PASS

@@ -144,6 +144,13 @@ transport is validated separately from cache-generation cost and the still-cold
 first agent turn. See `../core/startup.md`. PackageCompiler/sysimage, installed
 distribution and Windows performance remain unverified.
 
+Checkpoint 030 adds bounded source/dependency fingerprints, independent image
+read/persist/dynamic permissions, strict receipts and an actual generic Linux
+PackageCompiler image experiment. Current metadata startup measurements and
+real image-based protocol/provider/extension tests are recorded separately from
+installed distribution, relocation, desktop and live-model performance. The
+binary is cleaned after verification; rebuild recipes and receipts remain.
+
 Checkpoint 024 adds root-owned memory collections, strict journal replay,
 Unicode lexical witnesses/BM25F, bounded partial indexes, snapshot pagination,
 versioned note editing/history and owned asynchronous jobs. Seven primary

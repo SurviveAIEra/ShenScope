@@ -1,0 +1,239 @@
+{
+  "checkpoint": 30,
+  "recorded_at": "2026-10-05T02:01:25.048473+00:00",
+  "scope": "Core source inventories, bounded runtime-image receipts, independent permissions and one real generic Linux PackageCompiler sysimage experiment",
+  "source_checksums": {
+    "src/Distribution/Images.jl": "6e4c529f63dd41a2c8d62e59f049d124f7db7352a563b2378076ecfc26820203",
+    "src/Distribution/Launch.jl": "4b4f3727feab30d69e73932b8dc073883f34ded02131390f6dec9816f7bb71b5",
+    "src/Distribution/Sources.jl": "4597a4093abc9743a93fb40afee8e5e497f0236636adee54ac907acbaa8d22b6",
+    "src/Distribution/Types.jl": "1f3269656518a7e9017c7c491a3b462db4171e4a5b89c1d4c893f1bae46f6175",
+    "src/Distribution/Verification.jl": "5a61efddf3e2a896856104113a1d98f555a0acc33f80882ee0a2c2abfc27b73c",
+    "src/CLI/RuntimeImage.jl": "a09e6f7744005e44aed2d19691f984d9e08a7553fdec4e82e59558295b3baa43",
+    "src/CLI/Main.jl": "199d030569c63b5478708049cb2e50f331b4676edee51c214842fa77a0b7635a",
+    "src/ShenScope.jl": "128f4700253f12ec3f1c5bbd7d17fb74358d8523bf9b4d3800635014664a56ad",
+    "src/Protocol/Server.jl": "b1bb06577f82d11ba7307b020caff51ad4f0d82552e206730c617cf8cc7d5819",
+    "scripts/setup_sysimage.py": "05a49dc0153acd0d4890197a558a624ca57aae491f9fdd413eb677022195389d",
+    "scripts/build_sysimage.jl": "c22a11ec7f58f5740880a80ca301e2ec12a150d0aac2177c27d6edc4bd39792f",
+    "scripts/precompile_sysimage.jl": "8ef65be3d4a50910fcd993f622ff6c129f9392e65669cd1996624513d1b96eef",
+    "scripts/measure_startup.jl": "2a5f0536e233446b6d6814c1f901bf27f1a157dd14f2906698cf8673d94e6903",
+    "test/unit/runtime_image.jl": "c02ddc3d60d0fe72e8b4455063cea1033829e7dbdc0a15e514bf248d88a10f07",
+    "test/fixtures/runtime_image.jl": "f31e4b93d8bca54350c0765611fa859212987d9a09408675dcf4733261cea4aa"
+  },
+  "core_assertions": {
+    "distinct_passed": 120,
+    "new_runtime_image_assertions": 27,
+    "sets": {
+      "Runtime image receipts pin source inventory and refuse changed source, lock and artifact": 12,
+      "Runtime receipts enforce schema, platform, symlinks and independent permissions": 15,
+      "Bounded JSON-RPC framing and UTF-8 lengths": 8,
+      "Protocol version, config ownership, secrets and session commands": 15,
+      "Agent protocol permission ownership and cancellation": 13,
+      "Installed Julia package loading pins identity, source and real dispatch": 14,
+      "Pkg weak dependency activates a sparse evidence extension only after import": 15,
+      "SSE Unicode fragmentation, multiline and limits": 3,
+      "OpenAI-compatible real HTTP tool stream and native replay": 7,
+      "Anthropic signature and tool continuation": 5,
+      "OpenAI Responses encrypted reasoning and call stream": 3,
+      "Gemini and Ollama native protocols": 5,
+      "Retry before delivery, no replay after delivery, malformed calls": 5
+    },
+    "compiled_image_runs_exit_code": 0
+  },
+  "editor_transport": {
+    "tests_passed": 7,
+    "exit_code": 0,
+    "real_julia_core": true,
+    "real_compiled_image": true,
+    "actual_gui_rerun": false,
+    "duration_ms": 67527.421266
+  },
+  "build": {
+    "elapsed_seconds": 495.7277910709381,
+    "image_bytes": 311352856,
+    "image_sha256": "43d83f3c7b14c6614c53a5d77762826b3f7ed7b44864a9d1533b636ea04b2735",
+    "receipt": {
+      "bytes": 31374,
+      "path": ".local/sysimage-030/shenscope-core.receipt.json",
+      "sha256": "506165cd6c5149f5ae210b4104a37351365c9a967b7dd5fe14f4cf4b94fc3903"
+    },
+    "scope": "single generic Linux sysimage experiment; existing Core checkout and shared depot",
+    "source_fingerprint": "6936fbff6a49f90c6c08fd9651c45494620f6f292f4c455e1dfb0e14e04daf10",
+    "standalone_app_built": false,
+    "compiler_repository": "JuliaLang/PackageCompiler.jl",
+    "compiler_commit": "7278184edaa6a362487a2f5738ea6a861d6efbed",
+    "compiler_version": "2.4.3",
+    "core_dependencies_compared": true,
+    "pre_and_post_build_source_fingerprint_matches": true,
+    "image_loaded_by_real_processes": true,
+    "signature_verified": false,
+    "compiled_instructions_attested": false,
+    "experimental_image_retained": false
+  },
+  "startup": {
+    "package_cache": {
+      "fresh_processes": 3,
+      "wall_seconds": [
+        2.355992739991052,
+        1.9429871719912626,
+        2.127675661991816
+      ],
+      "median_wall_seconds": 2.127675661991816,
+      "module_load_seconds": [
+        1.535917993,
+        1.151469822,
+        1.219394418
+      ]
+    },
+    "sysimage": {
+      "fresh_processes": 3,
+      "wall_seconds": [
+        0.650419301004149,
+        0.7083316120260861,
+        0.803770765021909
+      ],
+      "median_wall_seconds": 0.7083316120260861,
+      "module_load_seconds": [
+        0.000444332,
+        0.000527572,
+        0.001690864
+      ]
+    }
+  },
+  "startup_scope": "Same Julia 1.11.7 executable, four threads, shared existing depot and serial alternating fresh processes. Local metadata workload only; no first-agent-turn, desktop, cold-machine or live-model benchmark claim.",
+  "vsix": {
+    "bytes": 531770,
+    "sha256": "df9bfc1c034e9b4e3033217e9c2b4f48f33d4f230d6a8c56b63084c63a7c5f7d",
+    "entries": 259,
+    "exact_core_helper_extension_files": 250,
+    "client_assets": 3
+  },
+  "repository_audit": {
+    "applications": 1,
+    "dependencies": 50,
+    "unknown": 0,
+    "strict_walk_complete": true
+  },
+  "storage": {
+    "before": {
+      "total_gib": 31.451,
+      "free_gib": 17.118,
+      "large_build_allowed": true,
+      "safe_scratch_paths": [
+        "/workspace/ShenScope/.local/tmp",
+        "/workspace/ShenScope/.local/build-scratch"
+      ]
+    },
+    "after": {
+      "total_gib": 31.451,
+      "free_gib": 17.506,
+      "large_build_allowed": true,
+      "safe_scratch_paths": [
+        "/workspace/ShenScope/.local/tmp",
+        "/workspace/ShenScope/.local/build-scratch"
+      ]
+    },
+    "cleanup": {
+      "removed": [
+        {
+          "path": "/workspace/ShenScope/.local/sysimage-030/shenscope-core.so",
+          "bytes": 311352856,
+          "reason": "Single experimental image verified; retain receipt and measurements before further Core changes"
+        },
+        {
+          "path": "/workspace/julia-depot/compiled/v1.11/ShenScope/jl_qUaggl",
+          "bytes": 62416572,
+          "reason": "Reproducible compiler-only or stale temporary Core cache; retain current default pair"
+        },
+        {
+          "path": "/workspace/julia-depot/compiled/v1.11/ShenScope/aMBxt_3S9Ee.ji",
+          "bytes": 48490572,
+          "reason": "Reproducible compiler-only or stale temporary Core cache; retain current default pair"
+        },
+        {
+          "path": "/workspace/julia-depot/compiled/v1.11/ShenScope/jl_dUcc2K",
+          "bytes": 0,
+          "reason": "Reproducible compiler-only or stale temporary Core cache; retain current default pair"
+        },
+        {
+          "path": "/workspace/julia-depot/compiled/v1.11/ShenScope/jl_15020l",
+          "bytes": 1342449,
+          "reason": "Reproducible compiler-only or stale temporary Core cache; retain current default pair"
+        },
+        {
+          "path": "/workspace/ShenScope/.local/build-scratch/sysimage",
+          "bytes": 61676,
+          "reason": "Owned disposable PackageCompiler trace scratch"
+        }
+      ],
+      "reclaimed_bytes": 423664125,
+      "application_directory_copies": 0,
+      "retained_core_cache_pair": [
+        "aMBxt_CqE99.ji",
+        "aMBxt_CqE99.so"
+      ],
+      "experimental_image_retained": false
+    }
+  },
+  "cloc": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 221,
+      "blank": 1189,
+      "comment": 214,
+      "code": 21790
+    },
+    "cli_tui": {
+      "nFiles": 20,
+      "blank": 19,
+      "comment": 7,
+      "code": 1102
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 228210,
+    "line_target_percent": 8.716,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "research": {
+    "primary_agents": [
+      "Codex",
+      "OpenCode",
+      "DeepSeek Harness",
+      "Pi",
+      "Kimi Code",
+      "ZCode",
+      "Qwen Code"
+    ],
+    "review_status": "selected source observations; comprehensive synthesis remains in progress",
+    "upstream_code_copied_or_translated": false
+  },
+  "failures_and_corrections": [
+    "Initial workload used an unsupported ModelResponse constructor; corrected to the existing response factory and rerun successfully.",
+    "Initial Node wrapper creation used the editor directory as its root; corrected to the explicit application path.",
+    "Restricted sandbox blocked Node child execution and loopback precompile work. Owned hung test trees were stopped; real transport and five-provider loopback tests passed through supported permission escalation.",
+    "The HTTP dependency explicitly ignored its loopback precompile workload failure; actual five-protocol HTTP tests subsequently passed under the compiled image."
+  ],
+  "limits": [
+    "Unsigned local receipts detect integrity changes; they do not establish publisher identity or instruction attestation.",
+    "Detached verification and launch planning do not provide an atomic file-to-exec transaction.",
+    "Generic incremental Linux ELF image requires an existing exact Julia runtime. No standalone app, installer, relocation, installed GUI or fresh cloud restore is established.",
+    "Editor launch defaults remain ordinary Julia; this experiment does not silently enable image loading.",
+    "Generated binary was cleaned after validation. Retained receipt/logs and build scripts support reconstruction.",
+    "Source size is 21,790 authored Core lines, below the active 250,000 minimum; development continues."
+  ]
+}

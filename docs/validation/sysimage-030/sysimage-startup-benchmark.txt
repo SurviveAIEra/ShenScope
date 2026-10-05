@@ -1,0 +1,6 @@
+{"run": 1, "sysimage": false, "wall_seconds": 2.355992739991052, "module_load_seconds": 1.535917993, "initialize_seconds": 0.005338212}
+{"run": 1, "sysimage": true, "wall_seconds": 0.650419301004149, "module_load_seconds": 0.000444332, "initialize_seconds": 0.000270547}
+{"run": 2, "sysimage": false, "wall_seconds": 1.9429871719912626, "module_load_seconds": 1.151469822, "initialize_seconds": 0.004562003}
+{"run": 2, "sysimage": true, "wall_seconds": 0.7083316120260861, "module_load_seconds": 0.000527572, "initialize_seconds": 0.000977408}
+{"run": 3, "sysimage": false, "wall_seconds": 2.127675661991816, "module_load_seconds": 1.219394418, "initialize_seconds": 0.006063827}
+{"run": 3, "sysimage": true, "wall_seconds": 0.803770765021909, "module_load_seconds": 0.001690864, "initialize_seconds": 0.001112905}

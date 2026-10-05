@@ -1,0 +1,10 @@
+Test Summary:                                                                            | Pass  Total  Time
+Runtime image receipts pin source inventory and refuse changed source, lock and artifact |   12     12  3.5s
+Test Summary:                                                                   | Pass  Total  Time
+Runtime receipts enforce schema, platform, symlinks and independent permissions |   15     15  1.0s
+Test Summary:                              | Pass  Total  Time
+Bounded JSON-RPC framing and UTF-8 lengths |    8      8  0.5s
+Test Summary:                                                    | Pass  Total  Time
+Protocol version, config ownership, secrets and session commands |   15     15  4.0s
+Test Summary:                                        | Pass  Total   Time
+Agent protocol permission ownership and cancellation |   13     13  15.0s

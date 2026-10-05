@@ -68,6 +68,11 @@ include("Runtime/TerminalEndpoint.jl")
 include("Runtime/TerminalLifecycle.jl")
 include("Runtime/TerminalOperations.jl")
 include("Tools/Terminal.jl")
+include("Distribution/Types.jl")
+include("Distribution/Sources.jl")
+include("Distribution/Images.jl")
+include("Distribution/Verification.jl")
+include("Distribution/Launch.jl")
 include("Security/ExecutionProbe.jl")
 include("Tools/Security.jl")
 include("Memory/Types.jl")
@@ -274,6 +279,10 @@ export ProviderConfig, HTTPProvider, MockProvider, provider_name, capabilities,
     PatchTool, ProcessTool, ProcessManager, cleanup_processes!, GitTool,
     TerminalTool, TerminalManager, TerminalHandle, TerminalSize, TerminalJournal,
     terminal_start!, terminal_wait_ready!, terminal_status, terminal_page, cleanup_terminals!
+
+export RuntimeSourceFile, RuntimeSourceSnapshot, RuntimeImageReceipt, VerifiedRuntimeImage,
+    runtime_source_snapshot, runtime_source_view, runtime_image_receipt, runtime_image_view,
+    runtime_image_inspect, runtime_image_verify, runtime_image_write_receipt, runtime_image_launch_arguments
 export contract_report, interface_catalog, dispatch_ambiguities, invoke_extension_latest,
     compiler_report, run_compiler_diagnostic, compiler_targets, DiagnosticsTool
 export WorkStatus, WorkSpec, WorkRetryPolicy, WorkLease, WorkFailure, WorkReceipt,
@@ -326,6 +335,7 @@ include("CLI/Tasks.jl")
 include("CLI/Diagnostics.jl")
 include("CLI/Extensions.jl")
 include("CLI/Terminal.jl")
+include("CLI/RuntimeImage.jl")
 include("CLI/Serve.jl")
 include("CLI/Doctor.jl")
 include("CLI/Agent.jl")
@@ -336,7 +346,7 @@ const CLI_COMMAND_HANDLERS = Dict{String,Function}(
     "context"=>cli_context_command, "analyzers"=>cli_analyzers_command,
     "models"=>cli_models_command, "tasks"=>cli_tasks_command,
     "diagnostics"=>cli_diagnostics_command, "extensions"=>cli_extensions_command, "terminal"=>cli_terminal_command, "project"=>cli_project_command,
-    "serve"=>cli_serve_command, "doctor"=>cli_doctor_command,
+    "serve"=>cli_serve_command, "doctor"=>cli_doctor_command, "runtime-image"=>cli_runtime_image_command,
     "chat"=>cli_agent_command, "tui"=>cli_agent_command, "memory"=>cli_memory_command,
     "security"=>cli_security_command)
 main(args=ARGS)=cli_main(args)

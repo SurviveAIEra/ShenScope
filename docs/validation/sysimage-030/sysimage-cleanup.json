@@ -1,0 +1,41 @@
+{
+  "removed": [
+    {
+      "path": "/workspace/ShenScope/.local/sysimage-030/shenscope-core.so",
+      "bytes": 311352856,
+      "reason": "Single experimental image verified; retain receipt and measurements before further Core changes"
+    },
+    {
+      "path": "/workspace/julia-depot/compiled/v1.11/ShenScope/jl_qUaggl",
+      "bytes": 62416572,
+      "reason": "Reproducible compiler-only or stale temporary Core cache; retain current default pair"
+    },
+    {
+      "path": "/workspace/julia-depot/compiled/v1.11/ShenScope/aMBxt_3S9Ee.ji",
+      "bytes": 48490572,
+      "reason": "Reproducible compiler-only or stale temporary Core cache; retain current default pair"
+    },
+    {
+      "path": "/workspace/julia-depot/compiled/v1.11/ShenScope/jl_dUcc2K",
+      "bytes": 0,
+      "reason": "Reproducible compiler-only or stale temporary Core cache; retain current default pair"
+    },
+    {
+      "path": "/workspace/julia-depot/compiled/v1.11/ShenScope/jl_15020l",
+      "bytes": 1342449,
+      "reason": "Reproducible compiler-only or stale temporary Core cache; retain current default pair"
+    },
+    {
+      "path": "/workspace/ShenScope/.local/build-scratch/sysimage",
+      "bytes": 61676,
+      "reason": "Owned disposable PackageCompiler trace scratch"
+    }
+  ],
+  "reclaimed_bytes": 423664125,
+  "application_directory_copies": 0,
+  "retained_core_cache_pair": [
+    "aMBxt_CqE99.ji",
+    "aMBxt_CqE99.so"
+  ],
+  "experimental_image_retained": false
+}

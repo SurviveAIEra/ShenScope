@@ -1,0 +1,102 @@
+Precompiling project...
+   1020.4 ms  ✓ SimpleBufferStream
+   1173.0 ms  ✓ Base64
+   1325.5 ms  ✓ URIs
+   1510.1 ms  ✓ Serialization
+    491.6 ms  ✓ MozillaCACerts_jll
+   1229.2 ms  ✓ Unicode
+   1105.0 ms  ✓ UUIDs
+    494.7 ms  ✓ Logging
+   1423.7 ms  ✓ BitFlags
+    786.0 ms  ✓ NetworkOptions
+    833.9 ms  ✓ TranscodingStreams
+    897.8 ms  ✓ MbedTLS_jll
+    603.4 ms  ✓ Zlib_jll
+    735.2 ms  ✓ Mmap
+    950.5 ms  ✓ CodecZlib
+   1335.3 ms  ✓ Printf
+   1980.4 ms  ✓ ConcurrentUtilities
+   2007.4 ms  ✓ Dates
+   4262.6 ms  ✓ Markdown
+   1196.6 ms  ✓ MbedTLS
+    865.9 ms  ✓ LoggingExtras
+   1697.6 ms  ✓ TOML
+   1737.1 ms  ✓ StructTypes
+    779.7 ms  ✓ Preferences
+   1926.3 ms  ✓ InteractiveUtils
+    753.9 ms  ✓ PrecompileTools
+    900.4 ms  ✓ JLLWrappers
+  12305.0 ms  ✓ StyledStrings
+   2192.7 ms  ✓ OpenSSL_jll
+   2342.2 ms  ✓ Libiconv_jll
+   2224.5 ms  ✓ StringEncodings
+   5346.3 ms  ✓ Test
+   3887.7 ms  ✓ OpenSSL
+   1028.2 ms  ✓ ExceptionUnwrapping
+   6432.4 ms  ✓ Parsers
+   3326.8 ms  ✓ YAML
+  19644.4 ms  ✓ JuliaSyntax
+   6503.9 ms  ✓ JSON3
+   6851.6 ms  ✓ HTTP
+  38375.4 ms  ✓ REPL
+  44422.2 ms  ✓ ShenScope
+  41 dependencies successfully precompiled in 95 seconds
+  1 dependency had output during precompilation:
+┌ HTTP
+│  ┌ Info: Ignoring an error that occurred during the precompilation workload
+│  │   exception =
+│  │    IOError: bind: operation not permitted (EPERM)
+│  │    Stacktrace:
+│  │      [1] bind(sock::Sockets.TCPServer, host::Sockets.IPv4, port::UInt16; ipv6only::Bool, reuseaddr::Bool, kws::@Kwargs{})
+│  │        @ Sockets /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Sockets/src/Sockets.jl:271
+│  │      [2] bind
+│  │        @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Sockets/src/Sockets.jl:254 [inlined]
+│  │      [3] bind
+│  │        @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Sockets/src/Sockets.jl:284 [inlined]
+│  │      [4] listenany(host::Sockets.IPv4, default_port::UInt16; backlog::Int64)
+│  │        @ Sockets /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Sockets/src/Sockets.jl:726
+│  │      [5] listenany
+│  │        @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Sockets/src/Sockets.jl:722 [inlined]
+│  │      [6] HTTP.Servers.Listener(addr::Sockets.InetAddr{Sockets.IPv4}, host::String, port::String; sslconfig::MbedTLS.SSLConfig, reuseaddr::Bool, backlog::Int64, server::Nothing, listenany::Bool, kw::@Kwargs{verbose::Int64})
+│  │        @ HTTP.Servers /workspace/julia-depot/packages/HTTP/Y97L1/src/Servers.jl:50
+│  │      [7] Listener
+│  │        @ /workspace/julia-depot/packages/HTTP/Y97L1/src/Servers.jl:39 [inlined]
+│  │      [8] Listener
+│  │        @ /workspace/julia-depot/packages/HTTP/Y97L1/src/Servers.jl:74 [inlined]
+│  │      [9] #listen!#7
+│  │        @ /workspace/julia-depot/packages/HTTP/Y97L1/src/Servers.jl:326 [inlined]
+│  │     [10] serve!(::Function, ::Sockets.IPv4, ::Vararg{Any}; stream::Bool, kw::@Kwargs{verbose::Int64, listenany::Bool, sslconfig::MbedTLS.SSLConfig})
+│  │        @ HTTP.Handlers /workspace/julia-depot/packages/HTTP/Y97L1/src/Handlers.jl:140
+│  │     [11] macro expansion
+│  │        @ /workspace/julia-depot/packages/HTTP/Y97L1/src/precompile.jl:22 [inlined]
+│  │     [12] macro expansion
+│  │        @ /workspace/julia-depot/packages/PrecompileTools/L8A3n/src/workloads.jl:140 [inlined]
+│  │     [13] top-level scope
+│  │        @ /workspace/julia-depot/packages/HTTP/Y97L1/src/precompile.jl:4
+│  │     [14] include(mod::Module, _path::String)
+│  │        @ Base ./Base.jl:562
+│  │     [15] include
+│  │        @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:1 [inlined]
+│  │     [16] top-level scope
+│  │        @ /workspace/julia-depot/packages/HTTP/Y97L1/src/HTTP.jl:651
+│  │     [17] include
+│  │        @ ./Base.jl:562 [inlined]
+│  │     [18] include_package_for_output(pkg::Base.PkgId, input::String, depot_path::Vector{String}, dl_load_path::Vector{String}, load_path::Vector{String}, concrete_deps::Vector{Pair{Base.PkgId, UInt128}}, source::Nothing)
+│  │        @ Base ./loading.jl:2881
+│  │     [19] top-level scope
+│  │        @ stdin:6
+│  │     [20] eval
+│  │        @ ./boot.jl:430 [inlined]
+│  │     [21] include_string(mapexpr::typeof(identity), mod::Module, code::String, filename::String)
+│  │        @ Base ./loading.jl:2734
+│  │     [22] include_string
+│  │        @ ./loading.jl:2744 [inlined]
+│  │     [23] exec_options(opts::Base.JLOptions)
+│  │        @ Base ./client.jl:321
+│  │     [24] _start()
+│  └        @ Base ./client.jl:531
+└
+[ Info: PackageCompiler: Executing /workspace/ShenScope/scripts/precompile_sysimage.jl => /workspace/ShenScope/.local/build-scratch/sysimage/jl_packagecompiler_3xirfh/jl_ywBtkR
+[ Info: PackageCompiler: Done
+- PackageCompiler: compiling incremental system image
+{"elapsed_seconds":495.7277910709381,"image_bytes":311352856,"image_sha256":"43d83f3c7b14c6614c53a5d77762826b3f7ed7b44864a9d1533b636ea04b2735","receipt":{"bytes":31374,"path":".local/sysimage-030/shenscope-core.receipt.json","sha256":"506165cd6c5149f5ae210b4104a37351365c9a967b7dd5fe14f4cf4b94fc3903"},"scope":"single generic Linux sysimage experiment; existing Core checkout and shared depot","source_fingerprint":"6936fbff6a49f90c6c08fd9651c45494620f6f292f4c455e1dfb0e14e04daf10","standalone_app_built":false}

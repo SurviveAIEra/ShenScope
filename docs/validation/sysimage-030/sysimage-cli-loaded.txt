@@ -1,0 +1,1 @@
+{"image_file":"shenscope-core.so","image_provenance_verified":false,"julia_version":"1.11.7","loader_report_is_attestation":false,"loader_reported_source_fingerprint":null,"machine":"x86_64-linux-gnu"}

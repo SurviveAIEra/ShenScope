@@ -1,0 +1,5 @@
+  Activating project at `/workspace/ShenScope/.local/packagecompiler-environment`
+   Resolving package versions...
+  No Changes to `/workspace/ShenScope/.local/packagecompiler-environment/Project.toml`
+  No Changes to `/workspace/ShenScope/.local/packagecompiler-environment/Manifest.toml`
+{"compiler_environment": "/workspace/ShenScope/.local/packagecompiler-environment", "compiler_commit": "7278184edaa6a362487a2f5738ea6a861d6efbed", "application_dependency_files_unchanged": true, "project_directory_copies": 0}

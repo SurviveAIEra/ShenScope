@@ -1,0 +1,4 @@
+Test Summary:                                                           | Pass  Total  Time
+Installed Julia package loading pins identity, source and real dispatch |   14     14  2.4s
+Test Summary:                                                               | Pass  Total   Time
+Pkg weak dependency activates a sparse evidence extension only after import |   15     15  12.9s

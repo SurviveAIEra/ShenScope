@@ -371,7 +371,8 @@ function dispatch_rpc(server::CoreServer,method::String,params::AbstractDict)
     elseif method=="runtime/status"
         return Dict("active_sessions"=>collect(keys(server.runs)),"contexts"=>length(server.contexts),
             "budgets"=>Dict(id=>budget_status(ctx.budget) for (id,ctx) in server.contexts),
-            "security"=>execution_sandbox_view(sandbox_from_config(server.config)),"capabilities"=>capability_manifest())
+            "security"=>execution_sandbox_view(sandbox_from_config(server.config)),"capabilities"=>capability_manifest(),
+            "loaded_image"=>runtime_loaded_image_view())
     end
     throw(RPCFault(-32601,"Method not found"))
 end

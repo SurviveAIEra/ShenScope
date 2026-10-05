@@ -522,3 +522,24 @@ after retention loss remain pending. Real signal tests found both ignored signal
 dispositions and blocked masks inherited from the Julia bootstrap; both are reset
 before exec. Development Workbench builtin-extension output warnings do not prove
 an installed desktop distribution, which remains a separate gate.
+
+## Runtime image and distribution source observations
+
+Checkpoint 030 rereads the handoff's Sysimage/PackageCompiler and standalone
+distribution requirements. PackageCompiler 2.4.3 is cloned once and pinned as a
+build research dependency. Selected sources below remain a partial review.
+
+| Source | Observation | Independent Julia behavior |
+| --- | --- | --- |
+| Codex `scripts/build_codex_package.py` 1–65 and `scripts/codex_package/cli.py` 1–35 | Source versions, staging and runtime entry points have separate checks | Core inventories, compiler environment identity, image receipts and detached launch plans have separate contracts |
+| OpenCode `script/publish.ts` 1–59 | Distribution coordinates versioned components | The receipt binds Core UUID/version, exact Julia runtime and locked dependencies without adopting upstream publication operations |
+| DeepSeek Harness `native/system/scripts/verify-launcher-binary.mjs` 1–63 | Declared native payloads need binary architecture checks | Bounded ELF identity inspection accompanies full image hashing; instruction attestation remains explicitly false |
+| Pi `scripts/build-coding-agent-bundle.mjs` 1–57 | Optional runtime dependencies can remain external | PackageCompiler stays outside Core dependencies and its environment uses the existing checkout/depot |
+| Kimi Code `apps/kimi-code/scripts/native/check-bundle.mjs` 1–57 | Allowed external dependencies should be intentional | Every Core manifest dependency is compared before the build; no frozen replacement versions are silently accepted |
+| ZCode `scripts/zcode-distribution/installer.mjs` 1–55 | Staging and installed-current state differ | Creating a verified experimental image does not establish installation, publication or restored-machine readiness |
+| Qwen Code `scripts/installation/install-qwen-standalone.sh` 1–52 | Runtime acquisition and installation paths differ | Sysimage reuse of an existing Julia executable is distinguished from a bundled runtime or standalone application |
+| PackageCompiler `docs/src/sysimages.md` 1–78, `apps.md` 1–62 and `src/PackageCompiler.jl` 210–235, 515–544, 678–707, 774–808 | Frozen packages, project inclusion, Julia 1.11 precompile behavior and package-manager globals affect builds | Source/lock fingerprints, isolated compiler environment, disposable workloads and exact runtime validation precede any launch plan |
+
+No upstream source was copied or translated. The artifact receipt is local
+integrity evidence, not a signature. Relocation, standalone apps, installed IDE
+distribution and clean-machine restore are distinct remaining gates.
