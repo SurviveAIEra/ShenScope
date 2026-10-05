@@ -95,7 +95,7 @@ function execute_call(t::AbstractTool,call::ToolCall,ctx::RuntimeContext)
     emit!(ctx,:tool_completed,Dict("id"=>call.id,"name"=>call.name,"ok"=>result.ok,
         "value"=>result.value,"error"=>result.error))
     testing=t isa ProcessTool && get(call.arguments,"purpose","")=="test" && get(call.arguments,"action","")=="run" ||
-        t isa TestingTool && get(call.arguments,"action","") in ("run","custom")
+        t isa TestingTool && get(call.arguments,"action","") in ("run","custom","run_set")
     after_tool_hooks!(call,result,ctx;testing)
     return result
 end

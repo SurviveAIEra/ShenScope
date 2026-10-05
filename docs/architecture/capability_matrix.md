@@ -25,8 +25,12 @@ Checkpoint 039 adds general project test discovery/execution and current-source
 references. Real Python, JavaScript, Go, C and C++ repair fixtures pass; custom
 argument-vector commands are language independent. Structured reporting covers
 unittest, pytest text, top-level TAP, Go JSON and CTest text, plus raw output.
-The shared Tests view works in both editors. Durable controller history, native
-Testing API integration and comprehensive framework coverage remain pending.
+The shared Tests view works in both editors. Checkpoint 040 adds explicit
+owned saved receipts. Checkpoint 041 connects the standalone VSIX Testing API
+and native Workbench Testing service to Core-owned command selections, reported
+child cases, correlated existing-job lookup and cancellation. Individual test
+discovery/reconciliation, coverage and comprehensive framework support remain
+pending; native publication currently requires effective Read Allow.
 
 | Project | Model/loop/context strengths to assess | Tools/security/state strengths to assess | Interface/ecosystem/workflow strengths to assess |
 |---|---|---|---|

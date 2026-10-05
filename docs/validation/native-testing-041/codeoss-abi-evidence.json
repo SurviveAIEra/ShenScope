@@ -1,0 +1,89 @@
+{
+  "project": "Code-OSS",
+  "commit": "7f20cdad4f4ab923272e91e330a7701c52706fc7",
+  "purpose": "Testing ABI inspection for authored native adapter; no upstream agent translation",
+  "files": [
+    {
+      "path": "src/vs/workbench/contrib/testing/common/testService.ts",
+      "sha256": "f47ac23335304f6024ccd65539243ce70f73c6401f36c5e7301455649df4752f",
+      "inspected_ranges": [
+        [
+          25,
+          112
+        ],
+        [
+          425,
+          439
+        ],
+        [
+          475,
+          494
+        ]
+      ]
+    },
+    {
+      "path": "src/vs/workbench/contrib/testing/common/testProfileService.ts",
+      "sha256": "b44c923e0410a18601ab78017c40a8e6abe2c3c3774675e57a6908a3127d13db",
+      "inspected_ranges": [
+        [
+          22,
+          100
+        ]
+      ]
+    },
+    {
+      "path": "src/vs/workbench/contrib/testing/common/testTypes.ts",
+      "sha256": "62d67e88a767939b52e29031289c6ec3456d120b5c1778ef6b1d72d1a903a5fb",
+      "inspected_ranges": [
+        [
+          77,
+          88
+        ],
+        [
+          121,
+          155
+        ],
+        [
+          222,
+          247
+        ],
+        [
+          346,
+          365
+        ],
+        [
+          374,
+          410
+        ],
+        [
+          429,
+          450
+        ],
+        [
+          750,
+          787
+        ]
+      ]
+    },
+    {
+      "path": "src/vs/workbench/contrib/testing/common/testResult.ts",
+      "sha256": "30f71098c305884a871566b4ad77adcb3f74eb7bec2e4d9e750fa15a0334dfc8",
+      "inspected_ranges": [
+        [
+          396,
+          412
+        ]
+      ]
+    },
+    {
+      "path": "src/vs/workbench/contrib/testing/common/testId.ts",
+      "sha256": "a5cece73b8414bdff73694f80d56897dd49350b418d4136591a69b8e7000f1da",
+      "inspected_ranges": [
+        [
+          1,
+          65
+        ]
+      ]
+    }
+  ]
+}

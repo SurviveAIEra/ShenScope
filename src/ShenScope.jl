@@ -85,6 +85,8 @@ include("Testing/HistoryFiles.jl")
 include("Testing/HistoryValidation.jl")
 include("Testing/HistoryQueries.jl")
 include("Testing/HistoryUpdates.jl")
+include("Testing/EditorProjection.jl")
+include("Testing/RunSets.jl")
 include("Tools/Testing.jl")
 include("Runtime/TerminalTypes.jl")
 include("Runtime/TerminalJournal.jl")
@@ -354,6 +356,7 @@ export ProjectTestDiscoveryLimits, ProjectTestMarker, ProjectTestCandidate, Proj
 export ProjectTestHistoryLimits, ProjectTestHistoryStore, project_test_history_store,
     list_project_test_history, read_project_test_history, read_saved_project_test_source,
     save_project_test_history!, label_project_test_history!, delete_project_test_history!
+export project_test_editor_catalog, project_test_editor_result, run_project_test_set!
 export contract_report, interface_catalog, dispatch_ambiguities, invoke_extension_latest,
     compiler_report, run_compiler_diagnostic, compiler_targets, DiagnosticsTool,
     CompilerIRLimits, compiler_ir_report, compiler_ir_compare

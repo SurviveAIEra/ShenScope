@@ -1,0 +1,33 @@
+ERROR: LoadError: Some tests did not pass: 0 passed, 0 failed, 1 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/native_testing_protocol.jl:1
+in expression starting at /workspace/ShenScope/test/native_testing.jl:5
+Test Summary:                                                        | Pass  Total   Time
+Editor testing projection distinguishes commands from observed cases |   11     11  31.3s
+Test Summary:                                                               | Pass  Total  Time
+Selected project commands preserve order, bounded receipts and stop choices |   14     14  4.3s
+Test Summary:                                                                      | Pass  Total  Time
+Process session grants survive rediscovery but bind the absolute command directory |    2      2  0.6s
+Correlated testing jobs recover existing work and reject request replay: Error During Test at /workspace/ShenScope/test/unit/native_testing_protocol.jl:1
+  Got exception outside of a @test
+  RPCFault(-32002, "Initialize first", nothing)
+  Stacktrace:
+   [1] dispatch_rpc(server::CoreServer, method::String, params::Dict{Any, Any})
+     @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:222
+   [2] (::var"#29#31")(root::String)
+     @ Main /workspace/ShenScope/test/unit/native_testing_protocol.jl:7
+   [3] mktempdir(fn::var"#29#31", parent::String; prefix::String)
+     @ Base.Filesystem ./file.jl:819
+   [4] mktempdir(fn::Function, parent::String)
+     @ Base.Filesystem ./file.jl:815
+   [5] macro expansion
+     @ /workspace/ShenScope/test/unit/native_testing_protocol.jl:2 [inlined]
+   [6] macro expansion
+     @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+   [7] top-level scope
+     @ /workspace/ShenScope/test/unit/native_testing_protocol.jl:2
+   [8] include(fname::String)
+     @ Main ./sysimg.jl:38
+   [9] top-level scope
+     @ /workspace/ShenScope/test/native_testing.jl:5
+Test Summary:                                                           | Error  Total   Time
+Correlated testing jobs recover existing work and reject request replay |     1      1  46.0s

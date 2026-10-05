@@ -62,7 +62,8 @@ const evidenceOnly = process.argv.includes('--evidence-only');
 const extensionsOnly = process.argv.includes('--extensions-only');
 const terminalOnly = process.argv.includes('--terminal-only');
 const plansOnly = process.argv.includes('--plans-only');
-const testingOnly = process.argv.includes('--testing-only');
+const nativeTestingOnly = process.argv.includes('--native-testing-only');
+const testingOnly = process.argv.includes('--testing-only') || nativeTestingOnly;
 const samplingOnly = process.argv.includes('--sampling-only');
 const compilerOnly = process.argv.includes('--compiler-only') || samplingOnly;
 const readyState = routingOnly ? 'Ready · main · writer-model' : 'Ready · native-fixture';
@@ -211,6 +212,11 @@ if(testingOnly){
     await writeFile(join(root,'test_calc.py'),'import unittest\nfrom calc import add\nclass Addition(unittest.TestCase):\n    def test_add(self): self.assertEqual(add(2,3),5)\n');
     await writeFile(join(root,'package.json'),JSON.stringify({scripts:{test:'node --test --test-reporter=tap test_calc.mjs'}}));
     await writeFile(join(root,'test_calc.mjs'),"import {test} from 'node:test';\nimport assert from 'node:assert/strict';\ntest('addition',()=>assert.equal(2+3,5));\n");
+    if (nativeTestingOnly) {
+        const counter="from pathlib import Path\np=Path('python-executions.txt')\np.write_text(str(int(p.read_text())+1) if p.exists() else '1')\n";
+        await writeFile(join(root,'calc.py'),counter+'def add(a,b): return a-b\n');
+        await writeFile(join(root,'test_calc.mjs'),"import {existsSync,readFileSync,writeFileSync} from 'node:fs';\nconst p='node-executions.txt';writeFileSync(p,existsSync(p)?String(Number(readFileSync(p,'utf8'))+1):'1');\nimport {test} from 'node:test';\nimport assert from 'node:assert/strict';\ntest('addition',()=>assert.equal(2+3,5));\n");
+    }
 }
 if (compilerOnly) {
     await writeFile(config, `[provider]\nendpoint = 'http://127.0.0.1:${port}'\nmodel = 'native-fixture'\n[permissions]\nread = 'allow'\ndynamic = 'ask'\nprocess = 'ask'\npersistence = 'allow'\nnetwork = 'deny'\n`);
@@ -338,7 +344,7 @@ try {
     await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-project.png`) });
     console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, Julia HTTP/tool/approval/history/Markdown/file flow`);
     }
-    if (testingOnly) {
+    if (testingOnly && !nativeTestingOnly) {
         await panel.getByRole('combobox',{name:'More views'}).selectOption('Tests');
         await panel.getByRole('button',{name:'Find test commands',exact:true}).click();
         await panel.getByRole('region',{name:'Discovered test commands'}).waitFor({timeout:120_000});
@@ -388,6 +394,68 @@ try {
         await panel.locator('.panel-header').getByRole('button',{name:'New conversation',exact:true}).click();
         await panel.getByRole('combobox',{name:'More views'}).selectOption('Tests');assert.equal(await panel.locator('.testing-report').count(),0);assert.equal(await panel.locator('.testing-candidate').count(),0);
         console.log(`PASS: ${vsix?'VSIX':'native Workbench without extensions'}, multi-language tests, independent process/persistence approvals, failed and repaired Python unittest, actual editor file opening, Node TAP, saved result naming/read/source/deletion, conversation isolation and narrow/wide layouts`);
+    }
+    if (nativeTestingOnly) {
+        await panel.getByRole('combobox',{name:'More views'}).selectOption('Tests');
+        await panel.getByRole('button',{name:'Find test commands',exact:true}).click();
+        await panel.getByRole('region',{name:'Discovered test commands'}).waitFor({timeout:120_000});await waitCount(panel.locator('.testing-candidate'),2);
+        await panel.getByRole('button',{name:'Show commands in Testing',exact:true}).click();
+        await page.locator('.test-explorer').waitFor({timeout:120_000});
+        console.log('Testing commands published to the native explorer.');
+        await resizeSidebar(page,360);
+        const explorer=page.locator('.test-explorer');
+        const group=explorer.locator('.monaco-list-row').filter({hasText:'Project commands ·'}).first();
+        if(await group.count() && await group.getAttribute('aria-expanded')==='false'){await group.locator('.monaco-tl-twistie').click();}
+        const command=label=>explorer.locator('.monaco-list-row').filter({hasText:label}).first();
+        const approveNative=async()=>{
+            const picker=page.locator('.quick-input-widget:visible');await picker.waitFor({timeout:120_000});
+            await picker.locator('.monaco-list-row').filter({hasText:'Allow once'}).waitFor({timeout:120_000});
+            assert.match(await picker.textContent(),/ShenScope testing · process/);
+            await picker.locator('.monaco-list-row').filter({hasText:'Allow once'}).click();
+            await picker.waitFor({state:'hidden'});
+        };
+        const state=async(label,value)=>{
+            const row=command(label);await row.waitFor({timeout:120_000});
+            const deadline=Date.now()+120_000;
+            while(Date.now()<deadline){if((await row.getAttribute('aria-label')??'').includes(value)){return;}await new Promise(resolve=>setTimeout(resolve,100));}
+            assert.match(await row.getAttribute('aria-label'),new RegExp(value));
+        };
+        const run=async(label)=>{const row=command(label);await row.hover();await row.getByLabel('Run Test',{exact:true}).click();};
+        const action=async label=>{
+            await page.keyboard.press('Control+Shift+P');
+            await page.locator('.quick-input-widget:visible input').fill('>'+label);
+            await page.locator('.quick-input-list .monaco-list-row').filter({hasText:label}).first().click();
+        };
+        await action('Run All Tests');
+        await approveNative();await approveNative();
+        await state('Package test script','Passed');await state('Python unittest discovery','Failed');
+        assert.equal(await readFile(join(root,'node-executions.txt'),'utf8'),'1');
+        assert.equal(await readFile(join(root,'python-executions.txt'),'utf8'),'1');
+        await page.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-native-testing-failed.png`)});
+        await writeFile(join(root,'calc.py'),"from pathlib import Path\np=Path('python-executions.txt')\np.write_text(str(int(p.read_text())+1) if p.exists() else '1')\ndef add(a,b): return a+b\n# repaired\n");
+        await run('Python unittest discovery');await approveNative();await state('Python unittest discovery','Passed');
+        assert.equal(await readFile(join(root,'python-executions.txt'),'utf8'),'2');
+        assert.equal(await readFile(join(root,'node-executions.txt'),'utf8'),'1');
+        const python=command('Python unittest discovery');const twistie=python.locator('.monaco-tl-twistie');
+        if(await python.getAttribute('aria-expanded')==='false'){await twistie.click();}
+        await explorer.locator('.monaco-list-row').filter({hasText:'Reported: test_calc.Addition.test_add'}).waitFor();
+        await page.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-native-testing-repaired.png`)});
+        await run('Package test script');
+        const picker=page.locator('.quick-input-widget:visible');await picker.waitFor({timeout:120_000});
+        await picker.locator('.monaco-list-row').filter({hasText:'Deny'}).click();
+        await state('Package test script','Errored');
+        assert.equal(await readFile(join(root,'node-executions.txt'),'utf8'),'1');
+        await writeFile(join(root,'test_calc.mjs'),await readFile(join(root,'test_calc.mjs'),'utf8')+'\nawait new Promise(resolve=>setTimeout(resolve,60000));\n');
+        await run('Package test script');await approveNative();
+        const launched=Date.now()+30_000;
+        while(Date.now()<launched && await readFile(join(root,'node-executions.txt'),'utf8')!=='2'){await new Promise(resolve=>setTimeout(resolve,100));}
+        assert.equal(await readFile(join(root,'node-executions.txt'),'utf8'),'2');
+        await action('Cancel Test Run');await state('Package test script','Skipped');
+        await new Promise(resolve=>setTimeout(resolve,500));
+        assert.equal(await readFile(join(root,'node-executions.txt'),'utf8'),'2');
+        assert.equal(await readFile(join(root,'python-executions.txt'),'utf8'),'2');
+        await page.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-native-testing-cancelled.png`)});
+        console.log(`PASS: ${vsix?'VSIX Testing API':'native Testing service with extensions disabled'}, two published language commands, grouped real Run All, independent Process approvals, Python failure and repaired passing child case, single-command rerun, denied execution and actual running-command cancellation without replay`);
     }
     if (plansOnly) {
         const mode=panel.getByRole('combobox',{name:'Agent execution mode'});await mode.selectOption('plan');
@@ -1306,6 +1374,12 @@ println("memory durable proof verified")`;
         console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench with extensions disabled'}, actual Hook project/user/inline configuration, command approval/test/status, per-source/global enable, reload and configuration opening inside/outside the workspace`);
     }
 } catch (error) {
+    if(nativeTestingOnly && application){
+        const window=await application.firstWindow();
+        await window.screenshot({path:join(project,`.local/${vsix?'vsix':'native'}-native-testing-failure.png`)}).catch(()=>{});
+        console.error('Testing failure UI:',await window.locator('.part.sidebar').innerText().catch(()=>''));
+        console.error('Testing failure picker:',await window.locator('.quick-input-widget:visible').innerText().catch(()=>''));
+    }
     if (panel) {
         console.error('Panel failure state:', await panel.innerText().catch(() => 'Unavailable'));
         await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-failure.png`) }).catch(() => {});

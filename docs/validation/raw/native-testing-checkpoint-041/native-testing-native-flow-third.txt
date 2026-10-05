@@ -1,0 +1,26 @@
+Testing commands published to the native explorer.
+Testing failure UI: Testing
+Filter (e.g. text, !exclude, @tag)
+1/3
+8.2s
+Package test scriptjavascript/typescript · . · declared: 404ms
+Python unittest discoverypython · . · heuristic: 157ms
+Testing failure picker: 
+Panel failure state: Unavailable
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 120000ms exceeded.
+Call log:
+[2m  - waiting for locator('.test-explorer').locator('.monaco-list-row').filter({ has: locator('.label-name').filter({ hasText: 'Package test script' }) }).first() to be visible[22m
+
+    at state (/workspace/ShenScope/ide/test/native_smoke.mjs:416:48)
+    at /workspace/ShenScope/ide/test/native_smoke.mjs:426:15 {
+  log: [
+    "  - waiting for locator('.test-explorer').locator('.monaco-list-row').filter({ has: locator('.label-name').filter({ hasText: 'Package test script' }) }).first() to be visible"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

@@ -13,9 +13,11 @@ function tool_schema(::TestingTool)
     limits=object_schema(Dict(String(field)=>integer_schema(field==:depth ? 0 : field in (:marker_bytes,:total_marker_bytes) ? 64 : 1)
         for field in fieldnames(ProjectTestDiscoveryLimits));required=String[])
     object_schema(Dict("action"=>Dict("type"=>"string","enum"=>["discover","catalog","run","custom","report","reports","source",
-        "history_list","history_get","history_source","history_save","history_label","history_delete"]),
+        "history_list","history_get","history_source","history_save","history_label","history_delete","editor_catalog","editor_result","run_set"]),
         "scopes"=>Dict("type"=>"array","minItems"=>1,"maxItems"=>16,"items"=>string_schema(;max=4096)),"limits"=>limits,
         "catalog_id"=>string_schema(;max=64),"candidate_id"=>string_schema(;max=64),"run_id"=>string_schema(;max=128),
+        "candidate_ids"=>Dict("type"=>"array","minItems"=>1,"maxItems"=>16,"items"=>string_schema(;max=64)),
+        "stop_on_failure"=>Dict("type"=>"boolean"),
         "frame_id"=>string_schema(;max=64),"argv"=>Dict("type"=>"array","minItems"=>1,"maxItems"=>128,"items"=>string_schema(;max=8192)),
         "cwd"=>string_schema(;max=4096),"framework"=>Dict("type"=>"string","enum"=>collect(PROJECT_TEST_FRAMEWORKS)),
         "label"=>string_schema(;max=512),"timeout"=>Dict("type"=>"number","minimum"=>0.05,"maximum"=>3600),
@@ -85,6 +87,16 @@ function execute(tool::TestingTool,arguments::AbstractDict,ctx::RuntimeContext)
         project_test_action_fields(arguments,["run_id","expected_revision"],String[])
         return delete_project_test_history!(project_test_history_store(ctx),arguments["run_id"],ctx;
             expected_revision=arguments["expected_revision"])
+    elseif action=="editor_catalog"
+        project_test_action_fields(arguments,["catalog_id"],String[])
+        return project_test_editor_catalog(tool.manager,arguments["catalog_id"],ctx)
+    elseif action=="editor_result"
+        project_test_action_fields(arguments,["run_id"],String[])
+        return project_test_editor_result(tool.manager,arguments["run_id"],ctx)
+    elseif action=="run_set"
+        project_test_action_fields(arguments,["catalog_id","candidate_ids"],["stop_on_failure","timeout","output_limit"])
+        return run_project_test_set!(tool.manager,ctx;catalog_id=arguments["catalog_id"],candidate_ids=arguments["candidate_ids"],
+            stop_on_failure=get(arguments,"stop_on_failure",false),timeout=get(arguments,"timeout",120.0),output_limit=get(arguments,"output_limit",64*1024))
     end
     throw(ShenScopeError(:testing,"Unknown project test action"))
 end

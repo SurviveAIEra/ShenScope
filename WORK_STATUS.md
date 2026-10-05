@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest verified cloc 2.11 count: 26,623 authored Julia Core code lines across 282 files;
+Latest verified cloc 2.11 count: 26,812 authored Julia Core code lines across 284 files;
 CLI/TUI add 1,360 lines and optional Julia extensions add 57, counted separately.
-This is 10.6492% of the minimum line target, leaving 223,377 lines. These are early implementations,
+This is 10.7248% of the minimum line target, leaving 223,188 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -1100,3 +1100,52 @@ One reusable 60,566,800-byte Core cache library and its 1,720,095-byte metadata
 file remain; no new sysimage or directory duplication. Core adds 379 authored
 lines, now 26,623. Evidence: `docs/validation/project-test-history-checkpoint-040.json`.
 Continue native Testing integration and the functional/250,000-line gates.
+
+Native Testing checkpoint 041: the standalone VSIX registers the public VS Code
+Testing API; the native Code-OSS client registers a Workbench Testing controller
+with extensions disabled. Both publish owned command catalogs and use original
+Julia Core sequential selections of at most sixteen commands, independent
+Process approvals, whole-selection preflight, stable content/directory-bound
+session grants and bounded editor projections. Framework-reported child cases
+remain receipt-scoped and cannot execute independently. No case/file association
+or whole-project test coverage is claimed.
+
+One client request ID identifies a retained owned job. Duplicate admission and
+registration share a lock. Start responses/events and job lookup retain the
+trace identity; losing both the response and start notification can recover the
+existing operation and buffered matching approvals without replay. Early events
+are bounded by count/estimated bytes. Disconnection stops evidence delivery and
+reports missing receipts as uncertain, instead of mislabeling them as user
+cancellation. Native cancellation closes pending approval pickers and requests
+Core job cancellation. Correlation is in memory and bounded, not durable
+exactly-once execution across retirement/restart.
+
+Validation: 79 native/operation assertions in eight testsets, 155 general-project
+assertions in nine, 90 saved-history assertions in eight and 56 Plan-mode
+assertions in three: 380 assertions, 28 testsets. One actual Node/Core test
+injects lost start messages, pending-approval cancellation and disconnect
+notifications with an execution counter proving no replay. Both final GUI
+flows exercise Run All, separate approvals, actual Python failure and repair,
+reported passing child cases, individual rerun, denial and cancellation of a
+running JavaScript command. Shared/client checks, builds and full Workbench
+typechecks pass. Screenshot inspection found and corrected LF/CRLF output
+misalignment in both adapters; both final repaired-result screenshots were
+viewed. Failed fixture/typecheck/UI/fault-injection attempts are retained.
+
+The final VSIX is 674,637 bytes, SHA-256
+`0464c4505cbec6de3d85d289ed1914022784945b1c3eafeea74bf0146b9b6ed8`,
+with 324 entries; 315 Core/helper/extension/metadata files and three assets match
+authored source. Development-host execution is verified; package installation,
+Windows execution and the complete desktop distribution are not. Publication
+currently requires Read Allow; individual test discovery, coverage, watchers
+and direct CLI/TUI grouped controls remain pending.
+
+Core adds 189 authored lines; frontend/tests/evidence remain outside that count.
+One application checkout, 50 dependency repositories and no unknown repositories
+remain. Free space is 17.462 GiB. One reusable Core cache pair remains:
+60,719,800-byte library and 1,735,326-byte metadata; no sysimage or full directory
+copy was created. Seven further pinned partial primary-agent source reviews and
+native Code-OSS ABI inspection are recorded. Evidence:
+`docs/validation/native-testing-checkpoint-041.json`; contracts:
+`docs/core/native_testing.md`. Continue general project diagnostics/Problems
+integration and the remaining functional/250,000-line gates.

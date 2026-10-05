@@ -1,0 +1,50 @@
+Precompiling ShenScope...
+ 151025.7 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 151 seconds. 41 already precompiled.
+ERROR: LoadError: Some tests did not pass: 11 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /workspace/ShenScope/test/unit/native_testing_protocol.jl:1
+in expression starting at /workspace/ShenScope/test/native_testing.jl:5
+Test Summary:                                                        | Pass  Total   Time
+Editor testing projection distinguishes commands from observed cases |   11     11  33.1s
+Test Summary:                                                               | Pass  Total  Time
+Selected project commands preserve order, bounded receipts and stop choices |   14     14  6.3s
+Test Summary:                                                                      | Pass  Total  Time
+Process session grants survive rediscovery but bind the absolute command directory |    2      2  1.0s
+Correlated testing jobs recover existing work and reject request replay: Test Failed at /workspace/ShenScope/test/unit/native_testing_protocol.jl:36
+  Expression: dispatch_rpc(server, "testing/find_job", Dict("session_id" => owner, "client_request_id" => nonce, "owner" => foreign))
+    Expected: RPCFault
+      Thrown: ShenScopeError
+      testing: Invalid correlated test job lookup fields
+      Stacktrace:
+       [1] project_test_fields(value::Dict{String, String}, fields::Vector{String}, label::String)
+         @ ShenScope /workspace/ShenScope/src/Testing/Types.jl:20
+       [2] testing_rpc(server::CoreServer, method::String, params::Dict{String, String})
+         @ ShenScope /workspace/ShenScope/src/Protocol/Testing.jl:29
+       [3] #invokelatest#2
+         @ ./essentials.jl:1055 [inlined]
+       [4] invokelatest
+         @ ./essentials.jl:1052 [inlined]
+       [5] dispatch_rpc(server::CoreServer, method::String, params::Dict{String, String})
+         @ ShenScope /workspace/ShenScope/src/Protocol/Server.jl:239
+       [6] macro expansion
+         @ /workspace/ShenScope/test/unit/native_testing_protocol.jl:36 [inlined]
+       [7] macro expansion
+         @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:774 [inlined]
+       [8] (::var"#29#31")(root::String)
+         @ Main /workspace/ShenScope/test/unit/native_testing_protocol.jl:36
+
+Stacktrace:
+ [1] (::var"#29#31")(root::String)
+   @ Main /workspace/ShenScope/test/unit/native_testing_protocol.jl:36
+ [2] mktempdir(fn::var"#29#31", parent::String; prefix::String)
+   @ Base.Filesystem ./file.jl:819
+ [3] mktempdir(fn::Function, parent::String)
+   @ Base.Filesystem ./file.jl:815
+ [4] macro expansion
+   @ /workspace/ShenScope/test/unit/native_testing_protocol.jl:2 [inlined]
+ [5] macro expansion
+   @ /workspace/toolchains/julia-1.11.7/share/julia/stdlib/v1.11/Test/src/Test.jl:1709 [inlined]
+ [6] top-level scope
+   @ /workspace/ShenScope/test/unit/native_testing_protocol.jl:2
+Test Summary:                                                           | Pass  Fail  Total   Time
+Correlated testing jobs recover existing work and reject request replay |   11     1     12  15.7s

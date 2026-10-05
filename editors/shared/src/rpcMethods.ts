@@ -16,5 +16,5 @@ export const PANEL_RPC_METHODS = Object.freeze([
     'extensions/start', 'extensions/query', 'extensions/job', 'extensions/cancel_job',
     'terminal/start', 'terminal/query', 'terminal/job', 'terminal/cancel_job',
     'diagnostics/start', 'diagnostics/query', 'diagnostics/job', 'diagnostics/cancel_job',
-    'testing/start', 'testing/query', 'testing/job', 'testing/cancel_job',
+    'testing/start', 'testing/query', 'testing/job', 'testing/cancel_job', 'testing/find_job',
 ]);

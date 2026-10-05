@@ -2,6 +2,7 @@ import './shenscope.css';
 import { localize, localize2 } from '../../../../nls.js';
 import { URI } from '../../../../base/common/uri.js';
 import { Codicon } from '../../../../base/common/codicons.js';
+import { CancellationTokenSource } from '../../../../base/common/cancellation.js';
 import { Registry } from '../../../../platform/registry/common/platform.js';
 import { SyncDescriptor } from '../../../../platform/instantiation/common/descriptors.js';
 import { IInstantiationService } from '../../../../platform/instantiation/common/instantiation.js';
@@ -26,9 +27,15 @@ import { ViewPaneContainer } from '../../../browser/parts/views/viewPaneContaine
 import { ShenScopePanel } from '../browser/panel.js';
 import { ITerminalService, ITerminalGroupService } from '../../terminal/browser/terminal.js';
 import { ShenScopeTerminalProcess } from './shenscopeTerminal.js';
+import { ShenScopeTestingController } from './shenscopeTesting.js';
+import { ITestService } from '../../testing/common/testService.js';
+import { ITestProfileService } from '../../testing/common/testProfileService.js';
+import { ITestResultService } from '../../testing/common/testResultService.js';
+import { IViewsService } from '../../../services/views/common/viewsService.js';
 
 class ShenScopeViewPane extends ViewPane {
     private panel?: ShenScopePanel;
+    private testing?: ShenScopeTestingController;
     constructor(
         options: IViewPaneOptions,
         @IKeybindingService keybinding: IKeybindingService,
@@ -49,6 +56,10 @@ class ShenScopeViewPane extends ViewPane {
         @IEditorService private readonly editors: IEditorService,
         @ITerminalService private readonly terminals: ITerminalService,
         @ITerminalGroupService private readonly terminalGroups: ITerminalGroupService,
+        @ITestService private readonly testService: ITestService,
+        @ITestProfileService private readonly testProfiles: ITestProfileService,
+        @ITestResultService private readonly testResults: ITestResultService,
+        @IViewsService private readonly views: IViewsService,
     ) { super(options, keybinding, contextMenu, configuration, contextKeys, descriptors, instantiation, opener, theme, hover); }
 
     protected override renderBody(container: HTMLElement): void {
@@ -84,6 +95,25 @@ class ShenScopeViewPane extends ViewPane {
         };
         const host = document.createElement('div'); host.style.height = '100%'; container.append(host);
         this.panel = new ShenScopePanel(host, {
+            publishTests: async (catalog_id, session_id) => {
+                if (this.testing?.busy) { throw new Error('Finish or cancel the native Testing run before publishing another collection.'); }
+                await connect(); const catalog: any = await channel.call('request', {method: 'testing/query', params: {session_id, action: 'editor_catalog', catalog_id}, timeout: 120_000});
+                this.testing?.dispose();
+                this.testing = new ShenScopeTestingController(catalog, {
+                    request: (method, params) => channel.call('request', {method, params, timeout: 120_000}), createRequestId: () => globalThis.crypto.randomUUID(),
+                    observe: listener => { const disposable = channel.listen<any>('notification')(event => listener(event.method, event.params)); return () => disposable.dispose(); },
+                    approve: async (request, signal) => {
+                        const cancellation = new CancellationTokenSource(); const cancel = () => cancellation.cancel(); signal.addEventListener('abort', cancel);
+                        if (signal.aborted) { cancellation.cancel(); }
+                        try {
+                            const choice = await this.quickInput.pick([{label: 'Allow once', decision: 'once' as const},
+                                {label: 'Allow for this session', decision: 'session' as const}, {label: 'Deny', decision: 'deny' as const}],
+                                {title: `ShenScope testing · ${request.category}`, placeHolder: request.reason, ignoreFocusLost: true}, cancellation.token);
+                            return choice?.decision ?? 'deny';
+                        } finally { signal.removeEventListener('abort', cancel); cancellation.dispose(); }
+                    }}, this.testService, this.testProfiles, this.testResults);
+                this._register(this.testing); await this.views.openView('workbench.view.testing', true);
+            },
             request: async (method, params = {}) => {
                 await connect();
                 return method === 'editor/hello' ? hello : channel.call('request', { method, params });

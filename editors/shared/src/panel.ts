@@ -8,6 +8,7 @@ export interface PanelBridge {
     openSkillSource(jobId: string, sessionId: string): Promise<void>;
     openHookSource(jobId: string, sessionId: string): Promise<void>;
     openTerminal(handle: string, sessionId: string): Promise<void>;
+    publishTests(catalogId: string, sessionId: string): Promise<void>;
 }
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, text = '', className = ''): HTMLElementTagNameMap[K] {
     const node = document.createElement(tag); node.textContent = text; node.className = className; return node;
@@ -498,6 +499,7 @@ export class ShenScopePanel {
     private testingView(): void {
         renderProjectTests(this.content, this.testingState, {
             button: (label, action) => this.button(label, action), start: (action, args) => this.startTesting(action, args),
+            publish: async () => { const session_id = await this.ensureSession('Project tests'); const catalog_id = this.testingState.catalog?.catalog_id; if (!catalog_id) { throw new Error('Find project test commands first.'); } await this.bridge.publishTests(catalog_id, session_id); },
             cancel: async () => { if (this.testingJob && this.sessionId) { await this.bridge.request('testing/cancel_job', {session_id: this.sessionId, job_id: this.testingJob}); this.setStatus('Cancelling test operation…'); } },
             recent: () => this.queryProjectTests('reports', {}, (state, value) => { state.recent = value; }),
             showReport: run_id => this.queryProjectTests('report', {run_id}, (state, value) => { state.report = value; state.savedReport = undefined; state.source = undefined; }),

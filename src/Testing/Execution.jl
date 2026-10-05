@@ -1,13 +1,14 @@
 function run_project_test_candidate!(manager::ProjectTestManager,candidate::ProjectTestCandidate,ctx::RuntimeContext;
-        catalog_id=nothing,timeout=120.0,output_limit=256*1024)
+        catalog_id=nothing,timeout=120.0,output_limit=256*1024,receipt_limit=manager.max_report_bytes)
     timeout isa Real && !(timeout isa Bool) && isfinite(timeout) && 0.05<=timeout<=3600 || throw(ShenScopeError(:testing,"Invalid test timeout"))
     cap=project_test_integer(output_limit,"test stream output bound",64,1024^2)
+    receipt_cap=project_test_integer(receipt_limit,"execution receipt byte bound",4096,manager.max_report_bytes)
     # Reserve enough room for both retained streams and bounded interpretations.
-    2*cap+1024*1024<=manager.max_report_bytes || throw(ShenScopeError(:capacity,"Output bound is too large for this manager's report capacity"))
+    2*cap+min(1024^2,div(receipt_cap,2))<=receipt_cap || throw(ShenScopeError(:capacity,"Output bound is too large for this manager's report capacity"))
     authorize!(ctx,:read,"testing",ctx.root;reason="Read the selected test declaration and captured result")
     cwd=validate_project_test_candidate(candidate,ctx)
     bounded_canonical_json(project_test_candidate_view(candidate);maximum=min(256*1024,div(manager.max_report_bytes,4)))
-    target=canonical(Dict("purpose"=>"project_test","catalog_id"=>catalog_id,"candidate"=>project_test_candidate_view(candidate)))
+    target=canonical(Dict("purpose"=>"project_test","cwd"=>cwd,"candidate"=>project_test_candidate_view(candidate)))
     started=utcstamp()
     handle=start_process!(manager.processes,copy(candidate.argv),ctx;cwd,timeout,output_limit=cap,emit_output=false,
         permission_target=target,permission_tool="testing",before_start=()->validate_project_test_candidate(candidate,ctx))
@@ -35,7 +36,7 @@ function run_project_test_candidate!(manager::ProjectTestManager,candidate::Proj
             "A zero exit code does not prove any tests were collected or the whole project was tested.",
             "Only selected project marker content is rechecked before launch; other source files can change during execution.",
             "Controller retention is bounded and in memory. Explicit history_save persists an owned receipt separately with Persistence permission and revision checks; reading it never replays the command."])
-    report["sha256"]=digest(fit_project_test_report!(report,manager.max_report_bytes))
+    report["sha256"]=digest(fit_project_test_report!(report,receipt_cap))
     # Preserve the execution receipt even when cancellation or a revoked output
     # read prevents delivery. A query can retrieve it after an explicit policy
     # change. Never retry a process because report delivery was interrupted.

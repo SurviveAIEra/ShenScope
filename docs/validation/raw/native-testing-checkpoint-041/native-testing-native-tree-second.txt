@@ -1,0 +1,51 @@
+Native Testing initial tree: Filter (e.g. text, !exclude, @tag)No test results yet.No tests were found in this file.Show Workspace TestsPackage test scriptjavascript/typescript · . · declaredPython unittest discoverypython · . · heuristic.monaco-list.list_id_8:focus .monaco-list-row.focused { background-color: var(--vscode-list-focusBackground); }
+.monaco-list.list_id_8:focus .monaco-list-row.focused:is(:hover, .hovered) { background-color: var(--vscode-list-focusBackground); }
+.monaco-list.list_id_8:focus .monaco-list-row.focused { color: var(--vscode-list-focusForeground); }
+.monaco-list.list_id_8:focus .monaco-list-row.selected { background-color: var(--vscode-list-activeSelectionBackground); }
+.monaco-list.list_id_8:focus .monaco-list-row.selected:is(:hover, .hovered) { background-color: var(--vscode-list-activeSelectionBackground); }
+.monaco-list.list_id_8:focus .monaco-list-row.selected { color: var(--vscode-list-activeSelectionForeground); }
+.monaco-list.list_id_8:focus .monaco-list-row.selected .codicon { color: var(--vscode-list-activeSelectionIconForeground); }
+
+				.monaco-drag-image.list_id_8,
+				.monaco-list.list_id_8:focus .monaco-list-row.selected.focused { background-color: var(--vscode-list-activeSelectionBackground); }
+			
+
+				.monaco-drag-image.list_id_8,
+				.monaco-list.list_id_8:focus .monaco-list-row.selected.focused { color: var(--vscode-list-activeSelectionForeground); }
+			
+.monaco-list.list_id_8 .monaco-list-row.focused .codicon { color:  var(--vscode-list-inactiveSelectionIconForeground); }
+.monaco-list.list_id_8 .monaco-list-row.focused { background-color:  var(--vscode-list-inactiveFocusBackground); }
+.monaco-list.list_id_8 .monaco-list-row.focused:is(:hover, .hovered) { background-color:  var(--vscode-list-inactiveFocusBackground); }
+.monaco-list.list_id_8 .monaco-list-row.selected { background-color:  var(--vscode-list-inactiveSelectionBackground); }
+.monaco-list.list_id_8 .monaco-list-row.selected:is(:hover, .hovered) { background-color:  var(--vscode-list-inactiveSelectionBackground); }
+.monaco-list.list_id_8 .monaco-list-row.selected { color: var(--vscode-list-inactiveSelectionForeground); }
+.monaco-list.list_id_8:not(.drop-target):not(.dragging) .monaco-list-row:is(:hover, .hovered):not(.selected):not(.focused) { background-color: var(--vscode-list-hoverBackground); }
+.monaco-list.list_id_8:not(.drop-target):not(.dragging) .monaco-list-row:is(:hover
+Native Testing rows/actions: {
+  "rows": [
+    {
+      "label": "javascript/typescript · . · declared (Not yet run)",
+      "text": "Package test scriptjavascript/typescript · . · declared",
+      "actions": [
+        "Run Test"
+      ]
+    },
+    {
+      "label": "python · . · heuristic (Not yet run)",
+      "text": "Python unittest discoverypython · . · heuristic",
+      "actions": [
+        "Run Test"
+      ]
+    }
+  ],
+  "actions": [
+    "The editor is not accessible at this time. To enable screen reader optimized mode, use Shift+Alt+F4",
+    "More Filters...",
+    "Show Workspace Tests",
+    "Test Explorer",
+    "javascript/typescript · . · declared (Not yet run)",
+    "Run Test",
+    "python · . · heuristic (Not yet run)",
+    "Run Test"
+  ]
+}

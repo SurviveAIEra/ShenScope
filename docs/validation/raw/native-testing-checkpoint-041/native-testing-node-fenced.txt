@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: Native testing adapter recovers a dropped start response and cancels pending approvals without replay
+ok 1 - Native testing adapter recovers a dropped start response and cancels pending approvals without replay
+  ---
+  duration_ms: 33072.90623
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 33310.748713

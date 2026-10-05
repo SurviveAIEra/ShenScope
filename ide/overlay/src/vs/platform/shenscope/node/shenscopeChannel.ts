@@ -48,7 +48,9 @@ export class ShenScopeChannel extends Disposable implements IServerChannel<strin
         }
         if (command !== 'request' || !entry.client || !entry.hello) { throw new Error('ShenScope Core is unavailable'); }
         if (!methods.has(arg?.method)) { throw new Error('Unknown ShenScope operation'); }
-        return entry.client.request(arg.method, arg.params ?? {}) as Promise<T>;
+        const timeout = arg.timeout ?? 30_000;
+        if (!Number.isSafeInteger(timeout) || timeout < 1000 || timeout > 120_000) { throw new Error('Invalid Core request timeout'); }
+        return entry.client.request(arg.method, arg.params ?? {}, timeout) as Promise<T>;
     }
 
     override dispose(): void {

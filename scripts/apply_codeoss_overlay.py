@@ -27,6 +27,7 @@ def install(checkout):
         'editors/shared/src/markdown.ts': 'src/vs/workbench/contrib/shenscope/browser/markdown.ts',
         'editors/shared/src/terminalClient.ts': 'src/vs/workbench/contrib/shenscope/browser/terminalClient.ts',
         'editors/shared/src/projectTests.ts': 'src/vs/workbench/contrib/shenscope/browser/projectTests.ts',
+        'editors/shared/src/nativeTestingClient.ts': 'src/vs/workbench/contrib/shenscope/browser/nativeTestingClient.ts',
         'editors/shared/panel.css': 'src/vs/workbench/contrib/shenscope/electron-browser/shenscope.css',
     }
     for source, relative in shared.items():

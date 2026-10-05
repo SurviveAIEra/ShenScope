@@ -47,9 +47,10 @@
 | 40 | [217a0b1](https://github.com/SurviveAIEra/ShenScope/commit/217a0b182e6ee32d56af7bff167f104d2425b558) · feat(runtime): collect bounded periodic Core backtraces | 在固定样例运行时定时记录调用栈，显示采到的核心函数并连接前述报告和源码；修复窄侧栏标题和分页溢出。 |
 | 41 | [efa2054](https://github.com/SurviveAIEra/ShenScope/commit/efa2054981df396b59c8d30e3f8548196471c546) · feat(agent): persist conversation plans and enforce execution modes | 可以先让 agent 只读项目、列计划，再由用户切换到实际操作；计划随聊天保存，并显示步骤、依赖和依据，但不会把自己填写的进度当作验证成功。 |
 | 42 | [b55a079](https://github.com/SurviveAIEra/ShenScope/commit/b55a07926b61eb90271a6739e8330d7c1cc36d0d) · feat(testing): run project tests and retain failure evidence | 找出项目里声明的测试命令，经授权执行，记录退出状态、失败信息和输出中提到的文件；实际验证了 Python、JavaScript、Go、C、C++ 项目的“测试失败—改代码—再测成功”流程。 |
+| 43 | [7885b2d](https://github.com/SurviveAIEra/ShenScope/commit/7885b2d26933c331769e57dcd9db45d321154349) · feat(testing): persist owned test execution receipts | 可以把本次测试结果保存下来，重启后再查看、改名字或删除；这些操作各自检查权限，并且不会重新运行测试命令。 |
 
 ## 大白话说明
 
 一次提交就是保存一次进度，功能大小不同。前 1–4 次搭起程序、模型连接、工具、四个操作入口和安装流程；5–7 次加强保存、记忆和聊天界面；8–19 次增加代码分析、任务、外部工具连接、操作指南、自动检查、长聊天处理和分析程序管理；20–24 次完善模型选择及失败处理，并增加 Git 历史和改代码的分批计划；25–32 次完善启动、笔记、安全限制、Julia 分析、扩展包、交互终端和预编译运行文件；33–40 次主要完善 Julia 编译分析报告、保存和比较、源码查看，以及固定样例的耗时、内存分配和调用栈记录。第 34 次只保存测试记录，没有新增产品功能。
 
-这 42 次提交不等于 42 个完整成熟功能。第 41 次增加跨语言项目通用的计划模式和持久化计划；第 42 次增加通用项目测试和失败记录。项目还在早期；真实模型实际编程效果、完整桌面发行版、Windows 安装验证和约 25 万行 Core 门槛均未完成。
+这 43 次提交不等于 43 个完整成熟功能。第 41 次增加跨语言项目通用的计划模式和持久化计划；第 42 次增加通用项目测试和失败记录；第 43 次增加测试结果的保存与重启后查看。项目还在早期；真实模型实际编程效果、完整桌面发行版、Windows 安装验证和约 25 万行 Core 门槛均未完成。

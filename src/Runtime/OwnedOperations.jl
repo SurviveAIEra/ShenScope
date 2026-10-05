@@ -46,7 +46,7 @@ end
 operation_scope(ctx::RuntimeContext) = (ctx.root,ctx.state_dir,ctx.session_id)
 
 function operation_view(job::OwnedOperation)
-    Dict("job_id"=>job.id,"action"=>job.kind,"session_id"=>job.context.session_id,
+    Dict("job_id"=>job.id,"action"=>job.kind,"session_id"=>job.context.session_id,"trace_id"=>job.context.trace_id,
         "metadata"=>deepcopy(job.metadata),"status"=>String(job.status),"result"=>deepcopy(job.result),
         "error"=>job.error,"error_code"=>job.error_code === nothing ? nothing : String(job.error_code),
         "started_at"=>job.started_at,"finished_at"=>job.finished_at,"result_bytes"=>job.result_bytes,
@@ -103,6 +103,14 @@ function start_operation!(work::Function,manager::OperationManager,owner::Runtim
     end
     lock(manager.mutex) do
         manager.closed && throw(ShenScopeError(:runtime,"Operation manager is closed"))
+        if manager.event_prefix=="testing" && haskey(job.metadata,"client_request_id")
+            request_id=job.metadata["client_request_id"]
+            request_id isa String && ncodeunits(request_id)<=128 || throw(ShenScopeError(:arguments,"Invalid test client request ID"))
+            valid_id(request_id)
+            any(prior->operation_scope(prior.context)==operation_scope(owner) &&
+                get(prior.metadata,"client_request_id",nothing)==request_id,values(manager.jobs)) &&
+                throw(ShenScopeError(:conflict,"Client request already has an owned job; look it up instead of replaying"))
+        end
         count(prior -> prior.status == :running,values(manager.jobs)) < manager.max_running ||
             throw(ShenScopeError(:capacity,"Operation concurrency capacity reached"))
         count(prior -> prior.status == :running && operation_scope(prior.context) == operation_scope(owner),values(manager.jobs)) < manager.max_per_session ||
@@ -113,6 +121,10 @@ function start_operation!(work::Function,manager::OperationManager,owner::Runtim
             delete!(manager.jobs,first(completed).id)
         end
         manager.jobs[job.id] = job
+    end
+    if manager.event_prefix=="testing" && haskey(job.metadata,"client_request_id")
+        try;emit!(context,:testing_job_started,operation_view(job))
+        catch;job.notification_failed=true;end
     end
     job.task = @async with_context(context) do
         try
@@ -138,7 +150,7 @@ function start_operation!(work::Function,manager::OperationManager,owner::Runtim
             lock(manager.mutex) do;job.notification_failed = true;end
         end
     end
-    Dict("job_id"=>job.id,"started"=>true)
+    Dict("job_id"=>job.id,"started"=>true,"trace_id"=>context.trace_id)
 end
 
 function record_operation_commit!(manager::OperationManager,job::OwnedOperation,event::AgentEvent)

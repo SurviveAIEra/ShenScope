@@ -3,6 +3,39 @@ function await_owned_operation(manager,id;timeout=10.0)
     manager.jobs[id]
 end
 
+@testset "Testing correlation is admitted atomically and stays scoped to retained owned jobs" begin
+    mktempdir() do root
+        events=AgentEvent[];executions=Ref(0);gate=Channel{Bool}(1)
+        owner=RuntimeContext(root;session_id="correlated",state_dir=joinpath(root,"state"),sink=event->push!(events,event))
+        foreign=RuntimeContext(root;session_id="other",state_dir=owner.state_dir)
+        manager=OperationManager(;event_prefix="testing",max_running=2,max_per_session=2)
+        metadata=Dict("client_request_id"=>"one-native-request");outcomes=Channel{Any}(2)
+        try
+            @sync for _ in 1:2
+                @async put!(outcomes,try
+                    start_operation!(manager,owner;kind="run_set",metadata) do context
+                        executions[]+=1;take!(gate);Dict("executed"=>true)
+                    end
+                catch cause;cause;end)
+            end
+            admitted=[take!(outcomes) for _ in 1:2]
+            @test count(value->value isa AbstractDict,admitted)==1
+            @test only(filter(value->value isa ShenScopeError,admitted)).code==:conflict
+            started=only(filter(value->value isa AbstractDict,admitted))
+            @test only(filter(event->event.kind==:testing_job_started,events)).payload["job_id"]==started["job_id"]
+            put!(gate,true)
+            @test await_owned_operation(manager,started["job_id"]).status==:complete
+            @test executions[]==1
+            @test_throws ShenScopeError start_operation!(_->Dict(),manager,owner;kind="run_set",metadata)
+            sibling=start_operation!(_->Dict("executed"=>true),manager,foreign;kind="run_set",metadata)
+            @test await_owned_operation(manager,sibling["job_id"]).status==:complete
+            ShenScope.release_operations!(manager,owner.session_id;root=owner.root)
+            reused=start_operation!(_->Dict("retirement_is_not_a_durable_nonce_store"=>true),manager,owner;kind="run_set",metadata)
+            @test await_owned_operation(manager,reused["job_id"]).status==:complete
+        finally;close_operations!(manager);end
+    end
+end
+
 @testset "Owned result limits preserve deep structured data and fail closed without expanding other managers" begin
     mktempdir() do root
         owner=RuntimeContext(root;state_dir=joinpath(root,"state"))

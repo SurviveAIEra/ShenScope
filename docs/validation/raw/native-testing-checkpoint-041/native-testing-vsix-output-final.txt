@@ -1,0 +1,2 @@
+Testing commands published to the native explorer.
+PASS: VSIX Testing API, two published language commands, grouped real Run All, independent Process approvals, Python failure and repaired passing child case, single-command rerun, denied execution and actual running-command cancellation without replay

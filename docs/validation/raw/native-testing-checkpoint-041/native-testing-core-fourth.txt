@@ -1,0 +1,8 @@
+Test Summary:                                                        | Pass  Total   Time
+Editor testing projection distinguishes commands from observed cases |   11     11  23.5s
+Test Summary:                                                               | Pass  Total  Time
+Selected project commands preserve order, bounded receipts and stop choices |   14     14  3.5s
+Test Summary:                                                                      | Pass  Total  Time
+Process session grants survive rediscovery but bind the absolute command directory |    2      2  0.6s
+Test Summary:                                                           | Pass  Total   Time
+Correlated testing jobs recover existing work and reject request replay |   12     12  10.2s

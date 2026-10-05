@@ -750,3 +750,21 @@ retains publication evidence when subsequent delivery is interrupted. Opening
 a record never reruns its command. These reviews remain partial; they do not
 establish equivalence with every upstream persistence facility or comprehensive
 synthesis of the seven projects.
+
+## Native Testing lifecycle (checkpoint 041)
+
+Further partial source inspection of all seven primary agents informs this
+checkpoint: Codex cancellable preparation before process allocation, OpenCode
+timeout settlement, DeepSeek UTF-8 retained fragments, Pi finite timeout
+validation, Kimi abort/disposal lifetimes, ZCode execution-versus-display
+identity and Qwen stream digests/segments. Exact pins, file hashes and inspected
+ranges are in `docs/validation/native-testing-041/reference-evidence.json`.
+
+The original Julia implementation validates a complete command selection before
+effects, owns sequential execution and bounded result projections, and provides
+an existing-job lookup instead of replaying execution after response loss.
+Editor adapters bind that protocol to the public VS Code Testing API and the
+pinned native Workbench controller/profile/result interfaces. Code-OSS interface
+inspection is ABI research, not a translation of upstream agent code. These
+reviews remain partial and do not claim that all advantages of the seven
+projects have been audited or incorporated.

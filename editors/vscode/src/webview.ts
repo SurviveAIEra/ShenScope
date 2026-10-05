@@ -17,6 +17,7 @@ const bridge: PanelBridge = {
     async setCredential(variable) { await bridge.request('editor/setCredential', { variable }); },
     async openFile(path, line) { await bridge.request('editor/openFile', { path, line }); },
     async openTerminal(handle,session_id) { await bridge.request('editor/openTerminal', {handle,session_id}); },
+    async publishTests(catalog_id,session_id) { await bridge.request('editor/publishTests', {catalog_id,session_id}); },
     async openSkillSource(job_id, session_id) { await bridge.request('editor/openSkillSource', { job_id, session_id }); },
     async openHookSource(job_id, session_id) { await bridge.request('editor/openHookSource', { job_id, session_id }); },
 };

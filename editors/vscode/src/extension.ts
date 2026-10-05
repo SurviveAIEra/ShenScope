@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
-import { randomBytes } from 'node:crypto';
+import { randomBytes, randomUUID } from 'node:crypto';
 import { resolve, relative, isAbsolute } from 'node:path';
 import { CoreClient } from '../../shared/src/rpcClient.js';
 import { PANEL_RPC_METHODS } from '../../shared/src/rpcMethods.js';
 import { CoreTerminalConnection } from '../../shared/src/terminalClient.js';
+import { ShenScopeTestingController } from './testing.js';
 
 const methods = new Set<string>(PANEL_RPC_METHODS);
 
@@ -15,6 +16,7 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
     private eventListener?: () => void;
     private readonly log = vscode.window.createOutputChannel('ShenScope');
     private readonly terminals = new Map<string,vscode.Terminal>();
+    private testing?: ShenScopeTestingController;
 
     constructor(private readonly context: vscode.ExtensionContext) {}
 
@@ -97,6 +99,25 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
                         const terminal=vscode.window.createTerminal({name:'ShenScope Core',pty});this.terminals.set(key,terminal);terminal.show();
                     }
                     result=null;
+                } else if (message.method === 'editor/publishTests') {
+                    if (this.testing?.busy) { throw new Error('Finish or cancel the native Testing run before publishing another collection.'); }
+                    const session_id = String(message.params?.session_id ?? ''); const catalog_id = String(message.params?.catalog_id ?? '');
+                    const catalog = await this.client!.request('testing/query', {session_id, action: 'editor_catalog', catalog_id}, 120_000);
+                    this.testing?.dispose();
+                    this.testing = new ShenScopeTestingController(catalog, {
+                        request: (method, params) => this.client!.request(method, params, 120_000),
+                        observe: listener => this.client!.onNotification(event => listener(event.method, event.params)), createRequestId: randomUUID,
+                        approve: async (request, signal) => {
+                            const cancellation = new vscode.CancellationTokenSource(); const cancel = () => cancellation.cancel(); signal.addEventListener('abort', cancel);
+                            if (signal.aborted) { cancellation.cancel(); }
+                            try {
+                                const choice = await vscode.window.showQuickPick([{label: 'Allow once', decision: 'once' as const},
+                                    {label: 'Allow for this session', decision: 'session' as const}, {label: 'Deny', decision: 'deny' as const}],
+                                    {title: `ShenScope testing · ${request.category}`, placeHolder: request.reason, ignoreFocusOut: true}, cancellation.token);
+                                return choice?.decision ?? 'deny';
+                            } finally { signal.removeEventListener('abort', cancel); cancellation.dispose(); }
+                        }});
+                    await vscode.commands.executeCommand('workbench.view.testing.focus'); result = null;
                 } else if (message.method === 'editor/openFile') {
                     const root = vscode.workspace.workspaceFolders![0].uri.fsPath;
                     const path = resolve(root, String(message.params?.path));
@@ -115,8 +136,8 @@ class ShenScopeView implements vscode.WebviewViewProvider, vscode.Disposable {
         }, undefined, this.context.subscriptions);
     }
 
-    async restart(): Promise<void> { for(const terminal of this.terminals.values()){terminal.dispose();}this.terminals.clear();this.eventListener?.(); await this.client?.dispose(); this.client = undefined; this.starting = undefined; await this.connect(); }
-    dispose(): void { for(const terminal of this.terminals.values()){terminal.dispose();}this.terminals.clear();this.eventListener?.(); void this.client?.dispose(); this.log.dispose(); }
+    async restart(): Promise<void> { this.testing?.dispose(); this.testing=undefined; for(const terminal of this.terminals.values()){terminal.dispose();}this.terminals.clear();this.eventListener?.(); await this.client?.dispose(); this.client = undefined; this.starting = undefined; await this.connect(); }
+    dispose(): void { this.testing?.dispose(); for(const terminal of this.terminals.values()){terminal.dispose();}this.terminals.clear();this.eventListener?.(); void this.client?.dispose(); this.log.dispose(); }
 }
 
 export function activate(context: vscode.ExtensionContext): void {

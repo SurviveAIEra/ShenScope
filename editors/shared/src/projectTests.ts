@@ -23,6 +23,7 @@ export interface ProjectTestingActions {
     showReport(id: string): Promise<void>;
     saved(): Promise<void>;
     showSaved(id: string): Promise<void>;
+    publish(): Promise<void>;
     openSource(source: any): Promise<void>;
     render(): Promise<void>;
 }
@@ -62,6 +63,7 @@ export function renderProjectTests(container: HTMLElement, state: ProjectTesting
         list.append(node('small', `Scan: ${coverage?.files_examined ?? 0} files examined; ${coverage?.pruned_directories ?? 0} directories excluded.${omissions.length ? ` Limits reached: ${omissions.join(', ')}.` : ''} This is a bounded scan, not a complete project inventory.`, 'testing-muted'));
         for (const issue of coverage?.invalid_markers ?? []) { list.append(node('small', `Declaration unavailable: ${issue.path} · ${issue.code}`, 'testing-muted')); }
         container.append(list);
+        container.append(button('Show commands in Testing', actions.publish), node('small', 'The editor Testing view runs selected project commands through Core. Individual cases are reported after execution.', 'testing-muted'));
     }
     const custom = node('details', '', 'info-card testing-custom'); custom.append(node('summary', 'Run another test command'));
     const argvLabel = node('label', 'Command arguments · JSON array', 'field'); const argv = node('textarea'); argv.rows = 3; argv.value = state.argv;

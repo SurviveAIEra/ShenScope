@@ -1,0 +1,13 @@
+{
+  "file": "dist/shenscope-0.1.0.vsix",
+  "bytes": 674637,
+  "sha256": "0464c4505cbec6de3d85d289ed1914022784945b1c3eafeea74bf0146b9b6ed8",
+  "entries": 324,
+  "matched_core_helper_extension_metadata_files": 315,
+  "matched_assets": [
+    "extension.js",
+    "panel.js",
+    "panel.css"
+  ],
+  "installed_package_runtime_verified": false
+}

@@ -1,0 +1,9 @@
+{
+  "total_gib": 31.451,
+  "free_gib": 17.462,
+  "large_build_allowed": true,
+  "safe_scratch_paths": [
+    "/workspace/ShenScope/.local/tmp",
+    "/workspace/ShenScope/.local/build-scratch"
+  ]
+}

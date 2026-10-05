@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: Native testing adapter recovers a dropped start response and cancels pending approvals without replay
+not ok 1 - Native testing adapter recovers a dropped start response and cancels pending approvals without replay
+  ---
+  duration_ms: 47811.961861
+  type: 'test'
+  location: '/workspace/ShenScope/editors/test/nativeTestingClient.test.mjs:16:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'cancelled'
+    - 'unconfirmed'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'unconfirmed'
+  actual: 'cancelled'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/ShenScope/editors/test/nativeTestingClient.test.mjs:51:49)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 48071.117145

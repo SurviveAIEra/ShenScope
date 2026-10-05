@@ -1,0 +1,6 @@
+Test Summary:                                                   | Pass  Total  Time
+Plan mode scope, inherited tasks and unchanged permission gates |   20     20  1.3s
+Test Summary:                                                   | Pass  Total   Time
+Reviewed Core tool schemas narrow without trusting plugin hints |   22     22  18.0s
+Test Summary:                                                    | Pass  Total  Time
+Persisted mode CAS, ancestry, scope and interrupted notification |   14     14  1.1s

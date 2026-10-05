@@ -1,0 +1,18 @@
+Test Summary:                                                         | Pass  Total  Time
+Bounded multi-language discovery reads declarations and owns catalogs |   18     18  5.5s
+Test Summary:                                                                        | Pass  Total  Time
+Framework reports retain counts, cases, malformed records and safe source references |   19     19  3.5s
+Test Summary:                                                       | Pass  Total   Time
+Testing schemas and plan mode retain discovery and reject execution |    7      7  13.8s
+Test Summary:                                                       | Pass  Total   Time
+Actual agent failure, hash edit and rerun in five project languages |   48     48  37.2s
+Test Summary:                                                               | Pass  Total  Time
+Framework failure with zero exit remains a failed tool and after-test check |    3      3  2.6s
+Test Summary:                                                                         | Pass  Total  Time
+Selected declarations rechecked after approval; read/process gates and current source |   11     11  1.5s
+Test Summary:                                                            | Pass  Total  Time
+Execution timeout, cancellation, revocation, output and retention bounds |   16     16  1.2s
+Test Summary:                                                              | Pass  Total  Time
+Testing RPC approvals, owning jobs, no replay and independent result reads |   26     26  5.3s
+Test Summary:                                                            | Pass  Total   Time
+CLI candidate discovery, real failing command and terminal test controls |    7      7  48.0s

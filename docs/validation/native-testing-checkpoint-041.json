@@ -1,0 +1,259 @@
+{
+  "checkpoint": "041",
+  "recorded_at_utc": "2026-10-05T14:25:11.221471+00:00",
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "base_commit": "7885b2d26933c331769e57dcd9db45d321154349",
+  "scope": "Core-owned command selections and reported-result projections in standalone VSIX and native Workbench Testing",
+  "new_assertions": 52,
+  "core_assertions": 380,
+  "suites": [
+    {
+      "log": "docs/validation/raw/native-testing-checkpoint-041/native-testing-core-final-trace.txt",
+      "assertions": 79,
+      "testsets": 8,
+      "status": "passed"
+    },
+    {
+      "log": "docs/validation/raw/native-testing-checkpoint-041/native-testing-project-regression.txt",
+      "assertions": 155,
+      "testsets": 9,
+      "status": "passed"
+    },
+    {
+      "log": "docs/validation/raw/native-testing-checkpoint-041/native-testing-history-regression.txt",
+      "assertions": 90,
+      "testsets": 8,
+      "status": "passed"
+    },
+    {
+      "log": "docs/validation/raw/native-testing-checkpoint-041/native-testing-plan-regression.txt",
+      "assertions": 56,
+      "testsets": 3,
+      "status": "passed"
+    }
+  ],
+  "clients": {
+    "node_actual_core_tests": 1,
+    "native_extensions_disabled_gui": "passed",
+    "standalone_vsix_development_gui": "passed",
+    "installed_vsix_package_runtime_verified": false
+  },
+  "gui_behaviors": [
+    "publish two language commands",
+    "real Run All",
+    "independent Process approvals",
+    "actual failing Python unittest",
+    "repair and passing reported child case",
+    "individual command rerun",
+    "deny without execution",
+    "cancel an actually running JavaScript command",
+    "execution counters without replay"
+  ],
+  "fault_injection": {
+    "dropped_start_response": true,
+    "dropped_start_notification": true,
+    "recovered_by_owned_job_lookup": true,
+    "commands_executed": 1,
+    "pending_approval_cancellation": true,
+    "disconnect_notification": true,
+    "missing_receipt_classified": "unconfirmed"
+  },
+  "client_typechecks": {
+    "shared": true,
+    "build": true,
+    "complete_workbench": true
+  },
+  "screenshots_visually_inspected": [
+    "native-native-testing-repaired.png",
+    "vsix-native-testing-repaired.png"
+  ],
+  "presentation_fix": "Normalize plain Core LF output to CRLF for the Testing result terminal, preserving original receipts.",
+  "package": {
+    "file": "dist/shenscope-0.1.0.vsix",
+    "bytes": 674637,
+    "sha256": "0464c4505cbec6de3d85d289ed1914022784945b1c3eafeea74bf0146b9b6ed8",
+    "entries": 324,
+    "matched_core_helper_extension_metadata_files": 315,
+    "matched_assets": [
+      "extension.js",
+      "panel.js",
+      "panel.css"
+    ],
+    "installed_package_runtime_verified": false
+  },
+  "size": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 284,
+      "blank": 1408,
+      "comment": 251,
+      "code": 26812
+    },
+    "cli_tui": {
+      "nFiles": 22,
+      "blank": 21,
+      "comment": 11,
+      "code": 1360
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 223188,
+    "line_target_percent": 10.7248,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "total_gib": 31.451,
+    "free_gib": 17.462,
+    "large_build_allowed": true,
+    "safe_scratch_paths": [
+      "/workspace/ShenScope/.local/tmp",
+      "/workspace/ShenScope/.local/build-scratch"
+    ]
+  },
+  "cache": {
+    "files": [
+      {
+        "name": "aMBxt_CqE99.ji",
+        "bytes": 1735326
+      },
+      {
+        "name": "aMBxt_CqE99.so",
+        "bytes": 60719800
+      }
+    ],
+    "cleanup_performed": false,
+    "reason": "One reusable cache pair; no sysimage or checkout copies."
+  },
+  "repository_audit": {
+    "applications": 1,
+    "dependencies": 50,
+    "unknown": 0,
+    "strict_walk_complete": true
+  },
+  "reference_evidence": "docs/validation/native-testing-041/reference-evidence.json",
+  "native_abi_evidence": "docs/validation/native-testing-041/codeoss-abi-evidence.json",
+  "source_reuse": "Seven further partial primary-agent reviews; original Julia implementation; no upstream agent copying or translation.",
+  "retained_failures": [
+    "Initial native error messages omitted required Workbench fields; fixed and full typecheck passed.",
+    "Protocol fixture initially omitted initialize and expected RPCFault instead of the actual domain validation error; corrected.",
+    "Initial native publication exceeded its 30-second request deadline; bounded request timeout increased to 120 seconds.",
+    "UI attempts used an incorrect explorer class, toolbar label, command-palette prefix and row selector; corrected based on the actual Workbench.",
+    "VSIX project group initially stayed collapsed in the UI test; explicitly expanded before command assertions.",
+    "Injected disconnection initially allowed a late cancelled row to masquerade as user cancellation; result delivery is fenced and absent receipts remain unconfirmed.",
+    "Screenshot inspection revealed LF/CRLF output misalignment; both adapters normalized output and both final GUI flows passed."
+  ],
+  "limits": [
+    "Catalog publication currently requires effective Read Allow.",
+    "Command entries are runnable; reported cases do not have independently runnable stable project-wide identities.",
+    "Reported case outcomes and source references are not independent correctness, coverage or source-association proof.",
+    "Correlation and normal controller receipt retention are bounded and in memory; no exactly-once restart guarantee.",
+    "History bounds are per conversation, not a global storage quota.",
+    "Coverage, watch/debug profiles, individual-test reconciliation and direct CLI/TUI grouped controls remain pending.",
+    "No installed VSIX runtime, Windows runtime, completed desktop distribution or live-model quality claim."
+  ],
+  "source_checksums": {
+    "editors/build.mjs": "dca6831481985b1a09bec614471f2f4e04d69e80689455c764ab0a741c342475",
+    "editors/shared/src/nativeTestingClient.ts": "24b38c190e33f459c6513862c8bb572768de1541e14b54666870309099fd76b3",
+    "editors/shared/src/panel.ts": "b7345c432960d22fbcf29cee4f7cb756530eb20c50278941588cbbf03356acb5",
+    "editors/shared/src/projectTests.ts": "fe64f2b37024795097b13b9fbe9cb75de3bc5d6fc3e69c05d5383f2cf383c0a1",
+    "editors/shared/src/rpcMethods.ts": "28907b40fa75f688adecc5990ee5102005687319d77df7d0169a774ce3460404",
+    "editors/test/nativeTestingClient.test.mjs": "edee6c9c9ab758b1571a79538be60a7e0b45db25e678bf78868630bf40a0289d",
+    "editors/vscode/src/extension.ts": "a7d14257b7ffe31cfc5282d7a9cf41cf448496ba2470d11c04e4d566c70c0ea2",
+    "editors/vscode/src/testing.ts": "e26b74decd6489ec16f6da4a9ca909f6e2da8cbf7a1ab043fb6c28d061cc498c",
+    "editors/vscode/src/webview.ts": "113d04ece34dcfb9d3843d439c1d1a3eedb2640f42b6b57d70ce0c4d99cd5b67",
+    "ide/overlay/src/vs/platform/shenscope/node/shenscopeChannel.ts": "4720b71d405b6e0646123180b54e0884958274bee6c1e671814257a539d1a8b3",
+    "ide/overlay/src/vs/workbench/contrib/shenscope/electron-browser/shenscope.contribution.ts": "bc06e1e1d797b363b50abfb7429b90b684c089baaf30e51215430ee5c56f36d8",
+    "ide/overlay/src/vs/workbench/contrib/shenscope/electron-browser/shenscopeTesting.ts": "d4e6946ab10c3d740326833aee5fca84472d069fd5de6ef72782ac3b3063c0fa",
+    "ide/test/native_smoke.mjs": "6782a69630b0d63c52248fb3708b4c1ef472d25662ed19576d10ab4615e345ae",
+    "scripts/apply_codeoss_overlay.py": "c31814b89551c35ff5903c29089ae73b4a50563fb68d70f0246114b35c8b318e",
+    "scripts/transpile_codeoss_panel.mjs": "7a4e41c5a49516fa3d7ee229c5a4e325eb38083b02595114d83d4e86028ee4de",
+    "src/Core/PlanningTools.jl": "7d0e33a8ac39c421fb894f06246e8573ca8f646e5e5ccd2ad1fd5249b6ce30fe",
+    "src/Protocol/Server.jl": "828b79df0865d2b1c02c2dc422457ce6e766f7a963e20b78f8a6b4d0d4f56753",
+    "src/Protocol/Testing.jl": "8bcd16e069fa3667a4cdfaeb553ae75ed7af710c9910c1260ad6499ffd0130ce",
+    "src/Runtime/OwnedOperations.jl": "a224da59d2e44819f053aead1b1d242bc6554c7e403e5a490dee0b63dc117d32",
+    "src/ShenScope.jl": "d490ed3f2e9c8f9407d94fcb54634cab5a6207fc1f6661e17fff501e1e3e8b97",
+    "src/Testing/EditorProjection.jl": "e24eb0571a21d809da7c0b7e1c5ca1b291962fa58fec3c3548473d3ca7a89a6c",
+    "src/Testing/Execution.jl": "a2ae0b077a48984fc7555fa8960362f659fc0d1388bf7b27ca25ba0c04ca78ad",
+    "src/Testing/RunSets.jl": "d94388076a660a8f72c06a23d8cf29fba265ef3aeb627eee413f46ecfcbdc52d",
+    "src/Tools/Schema.jl": "5fd77d4903a172e3121443985bbd129df3602bb9b0d69d98577bbb3b9bb0c8e1",
+    "src/Tools/Testing.jl": "a96a00fd15d287aabc6a5a32355ea1cdc027e212effb6f9a9ab0b55249eaddb1",
+    "test/native_testing.jl": "723c88f042ad69e0371c54aff42cd6710723c9acc2fc1b9ba9ee0c9c586468a2",
+    "test/unit/agent_modes.jl": "14d89284abce6968e8fa3e9160fb2c87990c54b9a6f735610b978d0f930cd059",
+    "test/unit/native_testing.jl": "d59722cdeb5fef4e0f6e787de3fc94c20ee731b132844b74de337c87a6f00d48",
+    "test/unit/native_testing_protocol.jl": "075a802db4a0c070cafc83c050d0a51c2af9fb75f25b219b7334d3551abf8fe5",
+    "test/unit/owned_operations.jl": "a1602833d00928abfbb9ed143757b0b2bd96904f813330a9c68f087e95478be0"
+  },
+  "artifact_checksums": {
+    "docs/validation/raw/native-testing-checkpoint-041/native-native-testing-cancelled.png": "8d2789a974a80b42cb3623aee89a779f7209d771c5ca02eca02be5dc0823e201",
+    "docs/validation/raw/native-testing-checkpoint-041/native-native-testing-failed.png": "5c8a0aecbc788f923ae88cbfd562e460652f5699daa25ad023ec60a93a1d1526",
+    "docs/validation/raw/native-testing-checkpoint-041/native-native-testing-failure.png": "738b4c79e3ed3548b14bbcb438ef56505214873c9a62a5703c0362f89daeb07f",
+    "docs/validation/raw/native-testing-checkpoint-041/native-native-testing-repaired.png": "2550c9657d0913d4bde4df25c217f7e2bcc829b1214f9f80d82fb4293956df12",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-core-final-trace.txt": "cea51d4b62b1de64b89a08c28ce544bad859216fe279da79c9a5254add13174f",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-core-final.txt": "38bf0248ef5392f3ad06565b4c0cb12384bb7d4b85fe35b7691a1d6f40241a43",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-core-first.txt": "02f3a4ef303cbd0b37528afc72fa5c1faeadeddd329983a0d15e21ca8a83b68c",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-core-fourth.txt": "07e3845eed1b0d9205d314cc229cfb3e80bbda42e510923f070de00fd9eeb686",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-core-second.txt": "fd3431b56033a0d76c8bdebdf0787bc8df3ad128cf38f9087ef99fe3f013fcf2",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-core-size.json": "4224bab34fe205faeb20d42c871f3273c752ce74bdca7a166524326d830f0a21",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-core-smoke-first.txt": "2dad9c30945fb70b119c50490e31a0ae37bd611bec0a48be757b0e65c805d45a",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-core-third.txt": "deb216ec1e9ece022b2ac8d725927c702f613f4344af72e4049fe2af9eefb5e1",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-history-regression.txt": "c7851fe5505b51cdb896ef62313ae898f1ef6fb030be718464b91db0110a44e9",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-native-flow-final.txt": "462b874e2480b370cb0d995b5251f9330bbdcd642864f9e80c67412683d47307",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-native-flow-first.txt": "7cc14e5e6dfb0b99dec1420a16eda7e90ef70c1652ab4522c94858cf5297ea93",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-native-flow-second.txt": "9f2c00841cc015b6240c20f651c8beb9c20f29c38134970344f6a0889d946f43",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-native-flow-third.txt": "8c90edfb9cd2410c2bc793116b4a16144c8a7860bcfba4320fb9e44cbd94b2b7",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-native-output-final.txt": "462b874e2480b370cb0d995b5251f9330bbdcd642864f9e80c67412683d47307",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-native-tree-first.txt": "90d5385ffe5911b00bd603d0b2362b71e2a4db1cc4201bc754af8ec0ff4546c5",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-native-tree-second.txt": "92b5189656278823b664f0c7f500333b5c62cd57aaad16039c07bfbdffe808c1",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-node-fenced.txt": "b88dda0b82adf15119e884301031f81fbd87ed9a5381b2d64125a7fea5d8c37e",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-node-final-trace.txt": "78ad551993a674ed7c7f187cd30ea1bb19d80c79e1a21d5aebccd78c2ce80587",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-node-final.txt": "1fb32d5687f335daaa7ece2e5fbdbca8203d9bf007757ed604e92aea7a3ea525",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-node-first.txt": "2273f085738e859a4ffab889e8e625800e6197077dfb93a4c3989d656f6bbc5c",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-package-audit.json": "044b3f4b6b75fbc63763cb7f2e9fb6fac8daefb66df41731027a243cd4525048",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-package-final.txt": "a2d64daf7f6b5a2d0d8458226305a25ada70fa0a0e9f8c0e920cd36171afcbc5",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-package.txt": "d9afe00d58f4994d3d88c90a05eba58ce71291b3ed57edfb6022db919aa5ff83",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-plan-regression.txt": "046d678ecb3bf0efb50710a32405a6506b5d62c83b698b97ee043bf7ff66b8b4",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-project-regression.txt": "fd14120e1901141a962ed441a93d270d9a45b22910afba77839dd0bd6c2dfd29",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-repository-audit.json": "9eca1040aa8752cb933d5b6373d675175647e90c881071855bc0d0f4cf17e510",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-storage.json": "b5a71735ce6334077cfb14bbbef99e431c22ed9c0955407153a0fa0d16d8b52f",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-transpile-fenced.txt": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-transpile-final.txt": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-transpile-first.txt": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-transpile-fourth.txt": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-transpile-output.txt": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-transpile-second.txt": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-transpile-third.txt": "d5afb4c4b3e1321e136630d13912e7c32d0eb21474887ef17b600f4894a21997",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-vsix-flow-final.txt": "6d2fb0927cfc19b2073db2c548424ea30c1b41015c9224f7f6ec3d98376eea5d",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-vsix-flow-second.txt": "4cfab488ecd05719571a60d288a5f63f483a12c6856c07d7bded9d5e288ff546",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-vsix-output-final.txt": "4cfab488ecd05719571a60d288a5f63f483a12c6856c07d7bded9d5e288ff546",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-workbench-final-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-workbench-final.txt": "13f94dd6ebfafd0dd7058f4e027a45b58c86fe9cfd9dcd44072af86dc9f2ea49",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-workbench-first.txt": "039eaf8481160027f3a4f884da07cfc82c0951636167a210f62125cfadee02b7",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-workbench-output-final-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-workbench-output-final.txt": "13f94dd6ebfafd0dd7058f4e027a45b58c86fe9cfd9dcd44072af86dc9f2ea49",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-workbench-second.txt": "13f94dd6ebfafd0dd7058f4e027a45b58c86fe9cfd9dcd44072af86dc9f2ea49",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-workbench-third-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/validation/raw/native-testing-checkpoint-041/native-testing-workbench-third.txt": "13f94dd6ebfafd0dd7058f4e027a45b58c86fe9cfd9dcd44072af86dc9f2ea49",
+    "docs/validation/raw/native-testing-checkpoint-041/vsix-native-testing-cancelled.png": "9698f32fb540cc1023f538bf0d933ed5ebfc37316f346563c4520aa78225ca21",
+    "docs/validation/raw/native-testing-checkpoint-041/vsix-native-testing-failed.png": "0bd7c4f3c4817103c94a4fe33330611332488fb4f3c40ffa1a447161a8ab39e7",
+    "docs/validation/raw/native-testing-checkpoint-041/vsix-native-testing-failure.png": "e8c047bf87f633ddb7eb3a93628712e759c156eca185a4fe9f38730e55a53cc3",
+    "docs/validation/raw/native-testing-checkpoint-041/vsix-native-testing-repaired.png": "2067360e165d25b0ece6dbd0ce698d6d4e487f2f2fd2c250d1caa7aa102f5234",
+    "docs/validation/native-testing-041/codeoss-abi-evidence.json": "77b9facbae2a1535fa306e8a3090733bf3cefbf8613a65a2fa02aaab3f8dcc43",
+    "docs/validation/native-testing-041/reference-evidence.json": "9daddc857d3762c4387b80387e75dcef66cf0d26ace3f7e6df8c16b96594acdc"
+  },
+  "whole_task": "IN_PROGRESS; 250000 authored Core lines and remaining functional gates are not reached."
+}

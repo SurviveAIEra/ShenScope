@@ -1,0 +1,19 @@
+Precompiling ShenScope...
+  89239.8 ms  ✓ ShenScope
+  1 dependency successfully precompiled in 89 seconds. 41 already precompiled.
+Test Summary:                                                        | Pass  Total   Time
+Editor testing projection distinguishes commands from observed cases |   11     11  12.5s
+Test Summary:                                                               | Pass  Total  Time
+Selected project commands preserve order, bounded receipts and stop choices |   14     14  2.5s
+Test Summary:                                                                      | Pass  Total  Time
+Process session grants survive rediscovery but bind the absolute command directory |    2      2  0.7s
+Test Summary:                                                           | Pass  Total  Time
+Correlated testing jobs recover existing work and reject request replay |   13     13  9.0s
+Test Summary:                                                                      | Pass  Total  Time
+Testing correlation is admitted atomically and stays scoped to retained owned jobs |    8      8  1.8s
+Test Summary:                                                                                      | Pass  Total  Time
+Owned result limits preserve deep structured data and fail closed without expanding other managers |    7      7  1.2s
+Test Summary:                                                                  | Pass  Total  Time
+Nested operation approval ownership survives cancellation and scoped callbacks |    5      5  0.5s
+Test Summary:                                                                      | Pass  Total  Time
+Owned operations isolate cancellation, scopes, retention and notification failures |   18     18  1.6s

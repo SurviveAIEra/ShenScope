@@ -41,14 +41,15 @@ end
         with_agent_execution_mode("plan") do
             available=ShenScope.active_tools(vcat(tools,AbstractTool[PlanImpostorTool()]),ctx)
             names=Set(tool_name.(available))
-            @test all(name->name in names,["read","search","plan","memory","context","models","project","tasks","diagnostics"])
+            @test all(name->name in names,["read","search","plan","memory","context","models","project","tasks","diagnostics","testing"])
             @test all(name->!(name in names),["write","edit","patch","process","terminal","mcp","extensions","skills","hooks","pretend_read"])
             narrowed=Dict(tool_name(tool)=>tool_schema(tool) for tool in available)
-            for (name,forbidden) in (("memory","put"),("context","compact"),("models","refresh"),("project","build"),("tasks","run"),("diagnostics","sample"))
+            for (name,forbidden) in (("memory","put"),("context","compact"),("models","refresh"),("project","build"),("tasks","run"),("diagnostics","sample"),("testing","run_set"))
                 @test !(forbidden in narrowed[name]["properties"]["action"]["enum"])
                 raw=only(tool for tool in tools if tool_name(tool)==name)
                 @test_throws ShenScopeError ShenScope.guard_agent_tool(raw,Dict("action"=>forbidden))
             end
+            @test all(action->action in narrowed["testing"]["properties"]["action"]["enum"],["editor_catalog","editor_result"])
             @test !execute_call(WriteTool(),ToolCall("write",Dict("path"=>"blocked.py","content"=>"x=1")),ctx).ok
             @test !isfile(joinpath(root,"blocked.py"))
             @test !execute_call(PlanImpostorTool(),ToolCall("pretend_read",Dict()),ctx).ok

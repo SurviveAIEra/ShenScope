@@ -1,0 +1,17 @@
+Panel failure state: Unavailable
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.quick-input-list .monaco-list-row').filter({ hasText: 'Run All Tests' }).first()[22m
+
+    at /workspace/ShenScope/ide/test/native_smoke.mjs:423:108 {
+  log: [
+    "  - waiting for locator('.quick-input-list .monaco-list-row').filter({ hasText: 'Run All Tests' }).first()"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0
