@@ -1,0 +1,8 @@
+   Resolving package versions...
+      Compat entries added for Profile
+    Updating `/workspace/ShenScope/Project.toml`
+  [9abbd945] + Profile v1.11.0
+    Updating `/workspace/ShenScope/Manifest.toml`
+  [9abbd945] + Profile v1.11.0
+  No Changes to `/workspace/ShenScope/Project.toml`
+  No Changes to `/workspace/ShenScope/Manifest.toml`

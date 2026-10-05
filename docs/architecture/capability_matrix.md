@@ -240,3 +240,12 @@ has no columns or runtime-path claim. Historical previews validate one installed
 file, not the complete inventory or unsigned producer. Arbitrary project compiler
 loading, profiling and fusion with combined project/Git/runtime facts remain
 unfinished. Seven further partial source reviews inform the original design.
+
+Checkpoint 035 adds real @timed fixed-Core workloads and a separate bounded
+Profile.Allocs pass, with parent-recomputed aggregates, output consistency,
+source pins and authored-frame attribution. Agent tool, CLI, owned RPC and both
+IDE clients share the service. One-thread trusted host helpers retain live
+Read/Dynamic/Process, cancellation and timeout boundaries. Warmup/driver/JIT and
+sampling limitations are explicit; CPU, heap, arbitrary project profiling and
+performance improvement remain unverified. Seven further partial reviews inform
+timing phase and usage-scope presentation without copying upstream source.

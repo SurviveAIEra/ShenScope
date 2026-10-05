@@ -402,3 +402,9 @@ body:has(> #app.shenscope-panel) { margin: 0; padding: 0; height: 100vh; overflo
 .shenscope-panel .compiler-comparison { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--border); padding-top: 12px; }
 .shenscope-panel .compiler-comparison pre { max-height: 200px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
 .shenscope-panel .compiler-recorded-note { border-left: 2px solid var(--vscode-editorWarning-foreground); padding-left: 10px; color: var(--muted); font-size: 12px; }
+.shenscope-panel .compiler-profile { min-width: 0; display: grid; gap: 10px; border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+.shenscope-panel .compiler-profile h3, .shenscope-panel .compiler-profile h4 { margin: 0; font-size: 12px; overflow-wrap: anywhere; }
+.shenscope-panel .compiler-profile-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 10px; }
+.shenscope-panel .compiler-profile-row code { min-width: 0; overflow-wrap: anywhere; background: transparent; padding: 0; }
+.shenscope-panel .compiler-profile-row span, .shenscope-panel .compiler-profile small { color: var(--muted); }
+.shenscope-panel .compiler-profile summary { cursor: pointer; font-size: 11px; }

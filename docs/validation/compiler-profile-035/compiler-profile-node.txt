@@ -1,0 +1,24 @@
+✔ Real compiler RPC scopes approvals, cancellation and inferred graph evidence (61189.43549ms)
+ℹ 65 actual statements, 7 blocks
+✖ Real owned profile jobs record bounded allocation evidence and scope approvals (44223.151219ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105656.43375
+
+✖ failing tests:
+
+test at test/profile.test.mjs:13:1
+✖ Real owned profile jobs record bounded allocation evidence and scope approvals (44223.151219ms)
+  Error: Operation does not exist or has been retired
+      at CoreClient.accept (file:///workspace/ShenScope/editors/dist/rpcClient.mjs:144:26)
+      at Socket.<anonymous> (file:///workspace/ShenScope/editors/dist/rpcClient.mjs:53:14)
+      at Socket.emit (node:events:509:28)
+      at addChunk (node:internal/streams/readable:563:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+      at Readable.push (node:internal/streams/readable:394:5)
+      at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)

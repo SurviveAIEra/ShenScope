@@ -1,7 +1,7 @@
 module ShenScope
 
 using Dates, SHA, TOML, UUIDs, JSON3, HTTP, REPL, YAML, FileWatching
-import JuliaSyntax
+import JuliaSyntax, Profile
 using Base.ScopedValues: ScopedValue, with
 
 const VERSION = v"0.1.0"
@@ -174,6 +174,12 @@ include("Compiler/ArchiveValidation.jl")
 include("Compiler/ArchiveOperations.jl")
 include("Compiler/ArchiveCompare.jl")
 include("Compiler/SourcePreview.jl")
+include("Compiler/ProfileTypes.jl")
+include("Compiler/ProfileFixtures.jl")
+include("Compiler/ProfileFrames.jl")
+include("Compiler/ProfileCapture.jl")
+include("Compiler/ProfileReports.jl")
+include("Compiler/ProfileValidation.jl")
 include("Tools/CompilerArchive.jl")
 include("Tools/Diagnostics.jl")
 include("MCP/Types.jl")

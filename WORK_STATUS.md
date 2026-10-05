@@ -1,9 +1,9 @@
 # Work status
 
 Whole request: IN_PROGRESS. The 250,000-line Core goal is not reached.
-Latest verified cloc 2.11 count: 23,645 authored Julia Core code lines across 238 files;
-CLI/TUI add 1,141 lines and optional Julia extensions add 57, counted separately.
-This is 9.458% of the minimum line target, leaving 226,355 lines. These are early implementations,
+Latest verified cloc 2.11 count: 24,042 authored Julia Core code lines across 244 files;
+CLI/TUI add 1,148 lines and optional Julia extensions add 57, counted separately.
+This is 9.6168% of the minimum line target, leaving 225,958 lines. These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
@@ -858,3 +858,37 @@ Core increased by 114 authored lines. Actual Profile.Allocs/measurement probes
 for three trusted targets are preliminary research; the public profiling service,
 arbitrary project inference, combined compiler/project facts and remaining size/
 functional gates continue.
+
+Runtime measurement checkpoint 035: three fixed nonmutating Core targets now
+execute deterministic typed workloads in a one-thread Julia helper. Warmup is
+separate from repeated actual @timed batches, and Profile.Allocs uses a separate
+sampling pass. Output hashes/checksums agree across all passes. Bounded retained
+allocation samples expose only authored Core frames with source hashes; timing
+and allocation aggregates are independently recomputed by the parent. Sampled
+bytes can differ from timed bytes, even at rate one. Driver overhead, remaining
+compilation, scheduler noise and helper background activity remain visible limits.
+
+The agent diagnostics tool, CLI, owned RPC and both editor clients share this
+implementation. Fixed fixture selection accepts no user code or project loading.
+Read, Dynamic and Process approvals, current source inventory, cancellation,
+timeout and live revocation use the existing trusted-host execution boundary.
+Configured restricted sandboxes refuse this execution. Runtime cards retain a
+previous IR view and show timings, sampled types, first Core frames and explicit
+measurement scope. They make no CPU, RSS, heap-retention or optimization claim.
+
+Validation: 391 distinct affected Julia assertions pass, including 83 new
+profiling assertions, actual helper execution, source/payload forgery refusal,
+empty sampled output with nonzero timing allocations, permission revocation,
+timeout, real MockProvider agent use and CLI use. Two distinct Node/Core tests
+pass across their recorded runs. The first combined Node run retained a failing
+test expectation for configuration-driven operation retirement; the corrected
+profiling test passes. Both actual GUI clients and shared/full Workbench checks
+pass. Evidence is in docs/validation/compiler-profile-checkpoint-035.json.
+
+Seven primary source reviews inform original timing/measurement scope and
+visible usage design; no upstream code is copied or translated. The strict
+repository audit still finds one application checkout, 50 dependencies and no
+unknown repositories. About 17.5 GiB is free, with one Core cache pair and no
+project copies, worktrees or new sysimages. Core increased by 397 authored lines.
+Project/compiler/runtime fact fusion and remaining product and size gates
+continue; arbitrary project profiling and broader performance evidence are pending.

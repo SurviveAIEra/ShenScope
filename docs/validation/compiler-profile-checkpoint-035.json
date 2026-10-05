@@ -1,0 +1,367 @@
+{
+  "checkpoint": 35,
+  "recorded_at": "2026-10-05T06:53:50.853059+00:00",
+  "scope": "Fixed-Core runtime timing and separate Profile.Allocs sampling, shared trusted diagnostic lifecycle, owned tool/CLI/RPC and both editors",
+  "source_checksums": {
+    "editors/shared/panel.css": "3339c78dc85c8c9aa7e82a0b7998058788dfa4d9b0e46b4ce177cf2ce3b946da",
+    "editors/shared/src/panel.ts": "00948eae15676af0775e6d2fff6e9b68c3876af462684e33f42c98a29626ab6c",
+    "editors/test/profile.test.mjs": "f755d005e8a50914dc9f7c8e5a667dccf3b38be37263edf47a233ae7b572ed63",
+    "ide/test/native_smoke.mjs": "3c385e969072c09fb0eee2a1936cc1db0dd79697b94318083715a355984819f5",
+    "src/CLI/Diagnostics.jl": "5a0ad76bf538e0bae2d6797698bfe0f711082e38d5ec17598edd28c1224e98c4",
+    "src/CLI/Main.jl": "085e0ce42857c93c5c81e11af27b29c2bcaa76d92593d72b3035b0bacc9e00e9",
+    "src/Compiler/ProfileCapture.jl": "7d2484797f2616fca4276777eed8b4a7c6a5e05f3abb9b505661d2be9b37a285",
+    "src/Compiler/ProfileFixtures.jl": "149c33520910bd5a25fd22655aecfa671df0ca3388952182a72cb51fea620041",
+    "src/Compiler/ProfileFrames.jl": "d1cc8fff798f7ca422b38e64dba51c4cd943143264cb4f292d168b66d0db51f4",
+    "src/Compiler/ProfileReports.jl": "36cc5e3a0ee1542b8bbb15948e3361ecdc7ef4cf6bb3b52f725622c38848feb0",
+    "src/Compiler/ProfileTypes.jl": "75ff19af5c872b70f5b1b22a6b951970cebbc33ff11140c1a23cde215096005e",
+    "src/Compiler/ProfileValidation.jl": "1a01debb1993353ae391303ed392120d222e772d76e17920b021cf829ac2ce14",
+    "src/Extensions/CompilerDiagnostics.jl": "3ee8c94a758beca31440367d73d0c7a2b46d89823f1cb7599b8a669d53b6ab9e",
+    "src/Protocol/Diagnostics.jl": "ab24a3fb38777ec5579a02416ca9ae3cd3e2e9ee29f0140108ac0d370bd69e15",
+    "src/Protocol/Server.jl": "3f81af33296afa571815978c82b41327a49fd0226cabcf37cf4acadad10659e0",
+    "src/ShenScope.jl": "112ab561633441ca2c5b9c94fb7d93ba8393cccf741e682484a19352bc6e3951",
+    "src/Tools/CompilerArchive.jl": "2944f98cefcb0572f9d41df9819dad5441e4df713cb0d3215213262e8302a06c",
+    "src/Tools/Diagnostics.jl": "f37c6dbb95ac8bb41e2f202799d87469c78aa2cbd18a339d7dbe488cd6dbf6ce",
+    "test/compiler_profile.jl": "495480ce16eded9aacd74dab291e2bf081e7c84a33588ff67b1acbc24ebe5955",
+    "test/integration/compiler_profile_worker.jl": "d53be9b64fb650a0a422e912d1787333457ef27d7d054c86f8ceb5eec84148e3",
+    "test/runtests.jl": "56fc4a7f6d542502e113dad2c9541f770f8ee339f3e10889e13923a0c62f8aeb",
+    "test/unit/compiler_profile.jl": "1e889498f7a183ad38872e63041a6a34edc2223e097ec958acdb4830ea60f032"
+  },
+  "core_assertions": {
+    "affected_distinct_passed": 391,
+    "new_passed": 83,
+    "profile_suite": {
+      "total": 109,
+      "sets": {
+        "Runtime profile limits and fixture contracts refuse unbounded or irrelevant input": 17,
+        "Actual timed workloads and allocation samples have independently checked summaries": 44,
+        "Real runtime profile helper shares permissions, source checks and termination": 15,
+        "Agent and CLI execute fixed profile workloads through the same Core action": 7,
+        "Compiler graph workers honor approvals, revocation and restricted execution": 11,
+        "Compiler polling closes actual helpers after live denial and cancellation": 15
+      }
+    },
+    "compiler_regression": {
+      "total": 308,
+      "sets": {
+        "Actual inferred IR preserves branch definitions, loop flow and compiler scope": 16,
+        "Trusted compiler frames pin source and reject forged graph projections": 18,
+        "Compiler graph workers honor approvals, revocation and restricted execution": 11,
+        "Compiler polling closes actual helpers after live denial and cancellation": 15,
+        "Owned compiler jobs protect conversations, cancel pending approval and retire": 13,
+        "Actual compiler reports archive atomically, preserve ownership and use catalog CAS": 34,
+        "Recorded compiler source inventory survives Core changes and refuses rehashed malformed evidence": 17,
+        "Two real Julia processes cannot both commit the same compiler catalog revision": 6,
+        "Compiler archive cancellation leaves reviewable orphans and retains referenced evidence": 13,
+        "CLI archives actual inference in an existing conversation and restores it in a fresh invocation": 14,
+        "Parser transport bounds blocked pipes, failed framing and command approval": 41,
+        "Owned result limits preserve deep structured data and fail closed without expanding other managers": 7,
+        "Nested operation approval ownership survives cancellation and scoped callbacks": 5,
+        "Owned operations isolate cancellation, scopes, retention and notification failures": 18,
+        "Actual Julia source coordinates are retained independently of display defaults": 17,
+        "Compiler preview bounds Unicode text and refuses stale, external and symlink source": 14,
+        "Owned compiler source RPC and archived file verification preserve boundaries": 13,
+        "Published compiler catalogs survive notification failures and interrupted owned completion": 10,
+        "Read denial after publication hides result bodies and commit receipts on both RPC paths": 7,
+        "Owned archive reads retain valid evidence exceeding the former two MiB result cap": 7,
+        "A real agent tool call compiles, archives and reads its own durable compiler evidence": 12
+      }
+    },
+    "repeated_worker_assertions_excluded": 26,
+    "actual_profile_and_compiler_helpers": true,
+    "actual_mock_provider_agent": true,
+    "live_model_tested": false,
+    "commands": [
+      "julia --startup-file=no --threads=4 --project=. test/compiler_profile.jl",
+      "julia --startup-file=no --threads=4 --project=. test/compiler.jl"
+    ]
+  },
+  "editor_transport": {
+    "distinct_tests_passed": 2,
+    "real_julia_core": true,
+    "initial_combined_run_exit_code": 1,
+    "profile_corrected_rerun_exit_code": 0,
+    "existing_compiler_test_passed_in_initial_run": true,
+    "checks": [
+      "actual one-thread allocations",
+      "phase and coverage metadata",
+      "scoped approvals and cancellation",
+      "foreign conversation refusal",
+      "configuration replacement retires old operations",
+      "existing compiler archives/source regression"
+    ]
+  },
+  "gui": {
+    "native": {
+      "exit_code": 0,
+      "extensions_disabled": true
+    },
+    "vsix": {
+      "exit_code": 0,
+      "independent_webview": true
+    },
+    "screenshots": [
+      "native-compiler-overview.png",
+      "native-compiler-ir.png",
+      "native-compiler-archive.png",
+      "native-compiler-comparison.png",
+      "native-compiler-source.png",
+      "native-compiler-profile.png",
+      "vsix-compiler-overview.png",
+      "vsix-compiler-ir.png",
+      "vsix-compiler-archive.png",
+      "vsix-compiler-comparison.png",
+      "vsix-compiler-source.png",
+      "vsix-compiler-profile.png"
+    ],
+    "runtime_card_screenshots_visually_inspected": true,
+    "checks": [
+      "fixed method measurement",
+      "actual sampled types",
+      "separate-pass scope",
+      "retained previous IR",
+      "current/historical source previews",
+      "archive/compare/cleanup and approval cancellation"
+    ]
+  },
+  "static_checks": {
+    "shared_typescript": true,
+    "shared_build": true,
+    "complete_workbench_client_typecheck": true,
+    "git_diff_check": true,
+    "remote_ci_observed": false
+  },
+  "vsix": {
+    "entries": 282,
+    "exact_core_helper_extension_metadata_files": 273,
+    "exact_client_assets": 3,
+    "bytes": 588184,
+    "sha256": "89cfc9ced3f02186e89a3f2f716359ba4f4113b9af646b2333445197232f74a8",
+    "payload_matches_authored_sources": true,
+    "installed_package_tested": false
+  },
+  "cloc": {
+    "tool": "cloc",
+    "version": "2.11",
+    "core": {
+      "nFiles": 244,
+      "blank": 1288,
+      "comment": 222,
+      "code": 24042
+    },
+    "cli_tui": {
+      "nFiles": 20,
+      "blank": 19,
+      "comment": 7,
+      "code": 1148
+    },
+    "optional_julia_extensions": {
+      "nFiles": 1,
+      "blank": 4,
+      "comment": 2,
+      "code": 57
+    },
+    "minimum_core_target": 250000,
+    "remaining_lines": 225958,
+    "line_target_percent": 9.6168,
+    "excludes": [
+      "CLI/TUI",
+      "tests",
+      "documentation",
+      "frontend",
+      "helper scripts",
+      "generated code",
+      "third-party code"
+    ],
+    "meaning": "Line count measures source size; it does not establish feature completeness or agent quality."
+  },
+  "storage": {
+    "after": {
+      "total_gib": 31.451,
+      "free_gib": 17.492,
+      "large_build_allowed": true,
+      "safe_scratch_paths": [
+        "/workspace/ShenScope/.local/tmp",
+        "/workspace/ShenScope/.local/build-scratch"
+      ]
+    },
+    "full_project_copies": 0,
+    "new_worktrees": 0,
+    "new_sysimages": 0,
+    "core_cache_pairs": 1
+  },
+  "repository_audit": {
+    "application_repositories": [
+      "/workspace/ShenScope"
+    ],
+    "dependency_repositories": [
+      "/workspace/julia-depot/clones/05181044-ff0b-4ac5-8273-598c1e38db00",
+      "/workspace/julia-depot/clones/0f8b85d8-7281-11e9-16c2-39a750bddbf1",
+      "/workspace/julia-depot/clones/21216c6a-2e73-6563-6e65-726566657250",
+      "/workspace/julia-depot/clones/3bb67fe8-82b1-5028-8e26-92a6c54297fa",
+      "/workspace/julia-depot/clones/458c3c95-2e84-50aa-8efc-19380b2a3a95",
+      "/workspace/julia-depot/clones/460bff9d-24e4-43bc-9d9f-a8973cb893f4",
+      "/workspace/julia-depot/clones/4d8831e6-92b7-49fb-bdf8-b643e874388c",
+      "/workspace/julia-depot/clones/5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4",
+      "/workspace/julia-depot/clones/69024149-9ee7-55f6-a4c4-859efe599b68",
+      "/workspace/julia-depot/clones/692b3bcd-3c85-4b1f-b108-f13ce0eb3210",
+      "/workspace/julia-depot/clones/69de0a69-1ddd-5017-9359-2bf0b02dc9f0",
+      "/workspace/julia-depot/clones/6c6a2e73-6563-6170-7368-637461726353",
+      "/workspace/julia-depot/clones/70703baa-626e-46a2-a12c-08ffd08c73b4",
+      "/workspace/julia-depot/clones/739be429-bea8-5141-9913-cc70e7f3736d",
+      "/workspace/julia-depot/clones/777ac1f9-54b0-4bf8-805c-2214025038e7",
+      "/workspace/julia-depot/clones/856f2bd8-1eba-4b0a-8007-ebc267875bd4",
+      "/workspace/julia-depot/clones/944b1d66-785c-5afd-91f1-9de20f533193",
+      "/workspace/julia-depot/clones/94ce4f54-9a6c-5748-9c1c-f9c7231a4531",
+      "/workspace/julia-depot/clones/aea7be01-6a6a-4083-8856-8a6e6704d82a",
+      "/workspace/julia-depot/clones/c27321d9-0574-5035-807b-f59d2c89b15c",
+      "/workspace/julia-depot/clones/cd3eb016-35fb-5094-929b-558a96fad6f3",
+      "/workspace/julia-depot/clones/d1d4a3ce-64b1-5f1a-9ba4-7e7e69966f35",
+      "/workspace/julia-depot/clones/ddb6d928-2868-570f-bddf-ab3f9cf99eb6",
+      "/workspace/julia-depot/clones/e6f89c97-d47a-5376-807f-9c37f3926c36",
+      "/workspace/julia-depot/clones/f0e56b4a-5159-44fe-b623-3e5288b988bb",
+      "/workspace/julia-depot/registries/General",
+      "/workspace/references/AgentREPL.jl",
+      "/workspace/references/Aries-cli",
+      "/workspace/references/CodeGraphContext",
+      "/workspace/references/JuliaMCP.jl",
+      "/workspace/references/Kaimon.jl",
+      "/workspace/references/OpenHands",
+      "/workspace/references/PackageCompiler.jl",
+      "/workspace/references/PromptingTools.jl",
+      "/workspace/references/ZCode",
+      "/workspace/references/aider",
+      "/workspace/references/cline",
+      "/workspace/references/cloc",
+      "/workspace/references/codex",
+      "/workspace/references/deepseek-harness",
+      "/workspace/references/goose",
+      "/workspace/references/hermes-agent",
+      "/workspace/references/kimi-code",
+      "/workspace/references/opencode",
+      "/workspace/references/pi-mono",
+      "/workspace/references/qwen-code",
+      "/workspace/references/serena",
+      "/workspace/references/software-agent-sdk",
+      "/workspace/references/vscode",
+      "/workspace/references/vscodium"
+    ],
+    "unknown_repositories": [],
+    "empty_sandbox_markers": [],
+    "strict_walk_complete": true
+  },
+  "research": {
+    "primary_sources": [
+      {
+        "name": "codex",
+        "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+        "path": "codex-rs/exec-server/src/rpc_timing.rs",
+        "sha256": "e4801c49b8b763395d20724db1238c94fd0cb6beff7222cf4671257d1b072192",
+        "line_ranges": [
+          [
+            1,
+            45
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "opencode",
+        "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+        "path": "packages/core/src/session/message-updater.ts",
+        "sha256": "9b9be0e5b38eed69b8cd75fb6856e324b09e399378517df700f97bc637511886",
+        "line_ranges": [
+          [
+            187,
+            211
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "deepseek-harness",
+        "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+        "path": "packages/client/ui-chat/src/client/contract/turn-metrics.ts",
+        "sha256": "73d4f7efa088db97c091daa921f4489e43ce52ef6e8e199f09a5733a90b2705b",
+        "line_ranges": [
+          [
+            1,
+            43
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "pi-mono",
+        "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+        "path": "packages/coding-agent/src/core/usage-totals.ts",
+        "sha256": "8b18dd04d65e90af9b331cd5aa23d7891aab8a296f38a6026ce17a098d674ee9",
+        "line_ranges": [
+          [
+            1,
+            33
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "kimi-code",
+        "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+        "path": "packages/agent-core-v2/src/agent/usage/usageEvents.ts",
+        "sha256": "08619b0fcaa6081e3db1a70db17c0126577d94d6f456edb4e0a0d8ad1be34321",
+        "line_ranges": [
+          [
+            71,
+            79
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "ZCode",
+        "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+        "path": "packages/ui/src/resource-manager/resourceUsageView.ts",
+        "sha256": "c02acd03d07d6ee86d5cecdd448ecfcb3b46ab15720dedaf82582663b5839a05",
+        "line_ranges": [
+          [
+            1,
+            54
+          ]
+        ],
+        "code_reuse": false
+      },
+      {
+        "name": "qwen-code",
+        "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+        "path": "packages/core/src/telemetry/metrics.ts",
+        "sha256": "ef816522a5a6b8e41e43a9e8d4bd1e59ebbaf2c99042211b007b281abcdb8139",
+        "line_ranges": [
+          [
+            264,
+            282
+          ]
+        ],
+        "code_reuse": false
+      }
+    ],
+    "status": "Further partial source reviews; broader synthesis continues",
+    "upstream_copy_or_translation": false,
+    "handoff_sections": [
+      "7.26 Profile/Profile.Allocs",
+      "18.1–18.4 replaceable and combined fact backends"
+    ]
+  },
+  "failures_retained": [
+    "The initial combined Node run expected a retained result after config/set; configuration replacement retires operations. The corrected profiling test passes."
+  ],
+  "limitations": [
+    "Three deterministic trusted Core fixtures only; no user code or project loading.",
+    "Warmup is separate; driver, tuple, scheduler and remaining JIT work can affect timed batches.",
+    "Allocation sampling is a separate pass; its bytes can differ from timing-pass bytes even at rate one.",
+    "Only the retained sampled prefix contributes attribution; helper background activity may be included.",
+    "No CPU hotspot, RSS, retained heap, memory leak, statistical benchmark or performance improvement claim.",
+    "Host subprocesses have no OS isolation; configured restricted sandboxes refuse execution.",
+    "No live-model, installed distribution, Windows or clean-machine restore claim.",
+    "The 250,000 authored Core-line gate remains unfinished; development continues."
+  ],
+  "raw_evidence_directory": "docs/validation/compiler-profile-035"
+}

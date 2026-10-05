@@ -81,6 +81,8 @@ export class ShenScopePanel {
     private diagnosticsCleanup: any;
     private diagnosticsSource: any;
     private diagnosticsRevealSource = false;
+    private diagnosticsAction = '';
+    private diagnosticsProfile: any;
     private diagnosticsTarget = 'cliptext_string';
     private diagnosticsTargets: any[] | undefined;
     private diagnosticsMethod = 0;
@@ -416,6 +418,7 @@ export class ShenScopePanel {
         this.diagnosticsCompareBefore = ''; this.diagnosticsCompareAfter = '';
         this.diagnosticsComparison = undefined; this.diagnosticsCleanup = undefined;
         this.diagnosticsSource = undefined; this.diagnosticsRevealSource = false;
+        this.diagnosticsAction = ''; this.diagnosticsProfile = undefined;
     }
 
     private async previewCompilerSource(statement_id = 0): Promise<void> {
@@ -434,8 +437,10 @@ export class ShenScopePanel {
         for (const control of Array.from(this.content.querySelectorAll<HTMLButtonElement>('button'))) { control.disabled = true; }
         try {
             const session_id = await this.ensureSession('Julia compiler');
+            this.diagnosticsAction = action;
+            if (action === 'profile') { this.diagnosticsProfile = undefined; }
             const started = await this.bridge.request('diagnostics/start', { session_id, action, ...args });
-            if (!this.completedDiagnosticsJobs.has(started.job_id)) { this.diagnosticsJob = started.job_id; this.setStatus(action === 'compile' ? 'Inferring trusted Core method…' : 'Working with recorded compiler evidence…'); }
+            if (!this.completedDiagnosticsJobs.has(started.job_id)) { this.diagnosticsJob = started.job_id; this.setStatus(action === 'profile' ? 'Measuring fixed Core fixture…' : action === 'compile' ? 'Inferring trusted Core method…' : 'Working with recorded compiler evidence…'); }
         } finally { this.diagnosticsStarting = false; this.updateActions(); }
         if (this.tab === 'Runtime') { await this.renderTab(); }
     }
@@ -465,9 +470,15 @@ export class ShenScopePanel {
         }
         const run = this.button('Infer method', () => this.startDiagnostics(), 'primary-button'); run.disabled = this.contextBusy() || !target.options.length;
         controls.append(run); section.append(controls);
+        if (this.capabilities.compiler_runtime_profile) {
+            const measure = this.button('Measure method', () => this.startDiagnosticsAction('profile', { target: this.diagnosticsTarget, timeout: 120 }), 'secondary-button');
+            const updateMeasure = () => { measure.disabled = this.contextBusy() || !target.options.length || !['digest_string', 'cliptext_string', 'canonical_dictionary'].includes(target.value); };
+            updateMeasure(); target.addEventListener('change', updateMeasure); controls.append(measure);
+            section.append(el('p', 'Measurement executes a supported trusted Core method with fixed test input. Warmup, timing and allocation sampling are separate passes.', 'view-description'));
+        }
         if (this.diagnosticsJob || this.diagnosticsStarting) {
             const pending = el('div', '', 'compiler-pending'); pending.append(el('span', 'Compiler operation running or waiting for approval…'));
-            if (this.diagnosticsJob) { pending.append(this.button('Cancel inference', () => this.bridge.request('diagnostics/cancel_job', { session_id, job_id: this.diagnosticsJob }), 'secondary-button')); }
+            if (this.diagnosticsJob) { pending.append(this.button(this.diagnosticsAction === 'profile' ? 'Cancel measurement' : 'Cancel inference', () => this.bridge.request('diagnostics/cancel_job', { session_id, job_id: this.diagnosticsJob }), 'secondary-button')); }
             section.append(pending);
         }
         if (this.capabilities.compiler_report_archives) { await this.compilerArchiveView(section, session_id, revision); }
@@ -476,7 +487,34 @@ export class ShenScopePanel {
             section.append(el('p', 'Recorded report · source currentness is unchecked. The archive validates its stored inventory and graph projections; its producer is unauthenticated.', 'compiler-recorded-note'));
         }
         if (this.diagnosticsResult?.report) { this.compilerReportView(section, this.diagnosticsResult.report); }
+        if (this.diagnosticsProfile?.report) { this.compilerProfileView(section, this.diagnosticsProfile.report); }
         this.content.append(section);
+    }
+
+    private compilerProfileView(section: HTMLElement, report: any): void {
+        const view = el('section', '', 'compiler-profile'); view.setAttribute('aria-label', 'Core runtime measurement');
+        view.append(el('h3', `Runtime measurement · ${report.target}`),
+            el('p', `${report.fixture.name} fixture · ${report.limits.iterations} calls per batch · ${report.limits.repetitions} timing batches`, 'view-description'));
+        const timing = report.timing_summary; const allocations = report.allocation_summary; const metrics = el('div', '', 'compiler-metrics');
+        for (const [label, value] of [['Median batch', `${(timing.median_seconds * 1000).toFixed(3)} ms`],
+            ['Allocated / batch', `${(timing.median_allocated_bytes / 1024).toFixed(2)} KiB`],
+            ['Warmup excluded', `${report.warmup.seconds.toFixed(3)} s`], ['Samples kept', `${allocations.retained_samples}/${allocations.observed_samples}`]]) {
+            const metric = el('div', '', 'compiler-metric'); metric.append(el('small', label), el('strong', value)); metrics.append(metric);
+        }
+        view.append(metrics, el('p', `Allocation sampling uses a separate pass at rate ${allocations.sample_rate}. ${allocations.samples_truncated ? 'Only a bounded sample prefix is retained.' : 'All observed samples are retained.'}`, 'view-description'));
+        const types = el('div', '', 'compiler-profile-types');
+        for (const row of allocations.types.slice(0, 12)) { const entry = el('div', '', 'compiler-profile-row'); entry.append(el('code', row.type),
+            el('span', `${row.samples} samples · ${row.sampled_bytes} B`)); types.append(entry); }
+        if (allocations.types.length > 12) { types.append(el('small', `${allocations.types.length - 12} additional types remain in Core evidence.`)); }
+        if (!allocations.types.length) { types.append(el('small', 'No allocations were retained in this sample. This does not establish zero allocations.')); }
+        view.append(el('h4', 'Retained allocation types'), types);
+        const frames = el('details', '', 'compiler-profile-frames'); frames.append(el('summary', 'First Core allocation frames'));
+        for (const frame of allocations.top_frames.slice(0, 12)) { const row = el('div', '', 'compiler-profile-row'); row.append(el('code', `${frame.function} · ${frame.file}:${frame.line}`),
+            el('span', `${frame.sampled_bytes} B · ${frame.role}`)); frames.append(row); } view.append(frames);
+        const qualifiers = el('details', '', 'compiler-profile-notes'); qualifiers.append(el('summary', 'Measurement scope'));
+        for (const note of report.measurement_notes) { qualifiers.append(el('p', note, 'view-description')); }
+        qualifiers.append(el('small', `Julia ${report.runtime.julia_version} · ${report.runtime.machine} · source ${report.source.fingerprint.slice(0, 12)}`)); view.append(qualifiers);
+        section.append(view);
     }
 
     private async compilerArchiveView(section: HTMLElement, session_id: string, revision: number): Promise<void> {
@@ -1919,15 +1957,16 @@ export class ShenScopePanel {
                     this.diagnosticsRecorded = payload.action === 'archive_get'; this.diagnosticsMethod = 0; this.diagnosticsBlock = 0; this.diagnosticsPage = 0;
                     this.diagnosticsSource = undefined;
                 } else if (payload.action === 'targets') { this.diagnosticsTargets = payload.result.items; }
+                else if (payload.action === 'profile') { this.diagnosticsProfile = payload.result; }
                 else if (payload.action === 'compiler_source' || payload.action === 'archive_source') { this.diagnosticsSource = payload.result; this.diagnosticsRevealSource = true; }
                 else if (payload.action === 'archive_list') { this.diagnosticsArchive = payload.result; this.diagnosticsArchiveManual = true; }
                 else if (payload.action === 'archive_compare') { this.diagnosticsComparison = payload.result; }
                 else if (payload.action === 'archive_gc') { this.diagnosticsCleanup = payload.result; if (!payload.result.dry_run) { this.diagnosticsArchiveManual = false; this.diagnosticsArchiveOffset = 0; } }
                 else { this.diagnosticsArchiveOffset = 0; this.diagnosticsArchiveManual = false; this.diagnosticsCleanup = undefined; }
-                this.setStatus(payload.action === 'compile' ? 'Compiler inference complete' : 'Compiler archive operation complete');
+                this.setStatus(payload.action === 'profile' ? 'Compiler measurement complete' : payload.action === 'compile' ? 'Compiler inference complete' : 'Compiler archive operation complete');
             }
             else if (owned) {
-                this.setStatus(payload.action === 'compile' ? 'Compiler inference stopped' : 'Compiler archive operation stopped');
+                this.setStatus(payload.action === 'profile' ? 'Compiler measurement stopped' : payload.action === 'compile' ? 'Compiler inference stopped' : 'Compiler archive operation stopped');
                 const committed = (payload.committed_effects ?? []).length > 0;
                 if (committed) { this.diagnosticsArchiveManual = false; this.diagnosticsArchiveOffset = 0; this.diagnosticsCleanup = undefined; }
                 this.notice.textContent = `${payload.error ?? 'Compiler operation stopped'}${committed ? ' Catalog publication was recorded. Refresh reports to inspect committed changes.' : ''}`; this.notice.hidden = false;

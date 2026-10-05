@@ -640,3 +640,25 @@ six target signatures. Source data is still compiler evidence, not runtime
 execution. External basenames cannot identify a file, so comparison ignores them.
 Historical checks remain unsigned and validate the selected installed file only.
 The upstream capability review and broader synthesis continue.
+
+### Runtime measurement observations (checkpoint 035)
+
+These further partial readings inform collection phases and presentation. They
+do not imply that upstream agents provide the same Julia profiling facility.
+
+| Source and inspected lines | Observation | Applied design |
+|---|---|---|
+| Codex `codex-rs/exec-server/src/rpc_timing.rs` 1–45 | Reader completion and caller receipt are different timing points | Helper/warmup/batch/collection phases have explicit scopes; no aggregate is presented as exclusive target cost |
+| OpenCode `packages/core/src/session/message-updater.ts` 187–211 | Step start and completion update an identified assistant projection | Owned measurement results retain conversation identity and configuration changes retire old jobs |
+| DeepSeek harness `packages/client/ui-chat/src/client/contract/turn-metrics.ts` 1–43 | TTFT, decode time and absent observations have distinct fields | Separate timing and allocation passes; empty sampled results remain different from measured allocation bytes |
+| Pi `packages/coding-agent/src/core/usage-totals.ts` 1–33 | Aggregate component counters retain their individual meanings | Timing and retained allocation summaries are derived without mixing sampling attribution and total timing-pass bytes |
+| Kimi `packages/agent-core-v2/src/agent/usage/usageEvents.ts` 71–79 | A terminal turn record can have optional duration | Real owned completion/cancellation and measured timing records are independent facts |
+| ZCode `packages/ui/src/resource-manager/resourceUsageView.ts` 1–54 | Grouped resource metrics preserve an unsampled marker and deterministic ordering | Sample coverage/truncation remain visible beside byte-ranked type/frame groups |
+| Qwen Code `packages/core/src/telemetry/metrics.ts` 264–282 | Histograms declare units and collection categories | Seconds/bytes/rate have strict field validation; UI converts units explicitly |
+
+The actual Julia 1.11 APIs (`Base.@timed`, `Profile.Allocs.start/stop/fetch/clear`)
+provide the measurements. Typed fixed fixtures use parametric specialization.
+Default rate one still does not equate sampled allocation bytes with separate
+timing-pass bytes. Bound prefixes, first-Core-frame attribution and collection
+noise are documented. No source is copied or translated; whole-project, CPU/heap,
+cross-platform and comparative performance validation remain unfinished.

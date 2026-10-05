@@ -1,0 +1,93 @@
+[
+  {
+    "name": "codex",
+    "commit": "b741e480e203f037ca726bc2a76d99a8e8668e66",
+    "path": "codex-rs/exec-server/src/rpc_timing.rs",
+    "sha256": "e4801c49b8b763395d20724db1238c94fd0cb6beff7222cf4671257d1b072192",
+    "line_ranges": [
+      [
+        1,
+        45
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "opencode",
+    "commit": "907b3bc518fa48e90e8ec24dd327d13eee71c36c",
+    "path": "packages/core/src/session/message-updater.ts",
+    "sha256": "9b9be0e5b38eed69b8cd75fb6856e324b09e399378517df700f97bc637511886",
+    "line_ranges": [
+      [
+        187,
+        211
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "deepseek-harness",
+    "commit": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+    "path": "packages/client/ui-chat/src/client/contract/turn-metrics.ts",
+    "sha256": "73d4f7efa088db97c091daa921f4489e43ce52ef6e8e199f09a5733a90b2705b",
+    "line_ranges": [
+      [
+        1,
+        43
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "pi-mono",
+    "commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+    "path": "packages/coding-agent/src/core/usage-totals.ts",
+    "sha256": "8b18dd04d65e90af9b331cd5aa23d7891aab8a296f38a6026ce17a098d674ee9",
+    "line_ranges": [
+      [
+        1,
+        33
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "kimi-code",
+    "commit": "21406fb4c805cc8c715e6d1f16ad3fb5f25f4fe3",
+    "path": "packages/agent-core-v2/src/agent/usage/usageEvents.ts",
+    "sha256": "08619b0fcaa6081e3db1a70db17c0126577d94d6f456edb4e0a0d8ad1be34321",
+    "line_ranges": [
+      [
+        71,
+        79
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "ZCode",
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "path": "packages/ui/src/resource-manager/resourceUsageView.ts",
+    "sha256": "c02acd03d07d6ee86d5cecdd448ecfcb3b46ab15720dedaf82582663b5839a05",
+    "line_ranges": [
+      [
+        1,
+        54
+      ]
+    ],
+    "code_reuse": false
+  },
+  {
+    "name": "qwen-code",
+    "commit": "576689d07342dd2ba80d60ec00df23ea53251945",
+    "path": "packages/core/src/telemetry/metrics.ts",
+    "sha256": "ef816522a5a6b8e41e43a9e8d4bd1e59ebbaf2c99042211b007b281abcdb8139",
+    "line_ranges": [
+      [
+        264,
+        282
+      ]
+    ],
+    "code_reuse": false
+  }
+]

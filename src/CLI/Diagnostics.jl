@@ -19,7 +19,7 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
     action=="archive_save" && throw(ShenScopeError(:input,"CLI inference can be archived with compile TARGET --mode graph --save"))
     action=="compiler_source" && throw(ShenScopeError(:input,"CLI previews use archive_source REPORT_ID --session ID"))
     args=Dict{String,Any}("action"=>save ? "compile_archive" : action)
-    if action in ("compile","compile_archive")
+    if action in ("compile","compile_archive","profile")
         length(positional)==3 || throw(ShenScopeError(:input,"Compiler target required"));args["target"]=positional[3]
         save && (args["mode"]="graph")
     elseif action in ("archive_get","archive_label","archive_delete","archive_source")
@@ -34,12 +34,18 @@ function cli_diagnostics_command(positional,flags,config,state_dir)
     haskey(flags,"--timeout") && (args["timeout"]=parse(Float64,flags["--timeout"]))
     for (flag,key) in (("--max-ir-bytes","max_ir_bytes"),("--max-statements","max_statements"),
             ("--limit","limit"),("--offset","offset"),("--expected-revision","expected_revision"),
-            ("--method-index","method_index"),("--statement-id","statement_id"),("--context-lines","context_lines"))
+            ("--method-index","method_index"),("--statement-id","statement_id"),("--context-lines","context_lines"),
+            ("--iterations","iterations"),("--repetitions","repetitions"),("--max-samples","max_samples"),("--max-frames","max_frames"))
         haskey(flags,flag) || continue
         value=tryparse(Int,flags[flag]);value===nothing && throw(ShenScopeError(:input,flag*" must be an integer"))
         args[key]=value
     end
     haskey(flags,"--title") && (args["title"]=flags["--title"])
+    haskey(flags,"--fixture") && (args["fixture"]=flags["--fixture"])
+    if haskey(flags,"--sample-rate")
+        rate=tryparse(Float64,flags["--sample-rate"]);rate===nothing && throw(ShenScopeError(:input,"--sample-rate must be a number"))
+        args["sample_rate"]=rate
+    end
     haskey(flags,"--expected-index-sha256") && (args["expected_index_sha256"]=flags["--expected-index-sha256"])
     get(flags,"--apply-cleanup",false) && (args["dry_run"]=false)
     tool=DiagnosticsTool();validate_schema(args,tool_schema(tool));diagnostics_arguments(args)

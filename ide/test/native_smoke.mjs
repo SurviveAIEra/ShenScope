@@ -324,6 +324,18 @@ try {
         await sourcePreview.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-source.png`) });
         await panel.getByRole('button', { name: 'Close source preview', exact: true }).click();
         await waitCount(panel.locator('.compiler-source-preview'), 0);
+        await panel.getByRole('button', { name: 'Measure method', exact: true }).click();
+        await approve(panel, 'runtime.diagnostics · dynamic', 'Allow once');
+        await approve(panel, 'project.backend · process', 'Allow once');
+        await panel.locator('.status').filter({ hasText: 'Compiler measurement complete' }).waitFor({ timeout: 120_000 });
+        const measurement = panel.locator('.compiler-profile'); await measurement.waitFor();
+        assert.match(await measurement.textContent(), /Runtime measurement · cliptext_string/);
+        assert.match(await measurement.textContent(), /unicode fixture · 8 calls per batch · 3 timing batches/);
+        assert.match(await measurement.textContent(), /Allocation sampling uses a separate pass/);
+        assert.ok(await measurement.locator('.compiler-profile-types .compiler-profile-row').count() > 0);
+        await measurement.locator('.compiler-profile-notes > summary').click();
+        assert.match(await measurement.textContent(), /need not equal timing-pass allocation bytes/);
+        await measurement.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-profile.png`) });
         await panel.locator('.panel-content').evaluate(element => { element.scrollTop = 0; });
         await panel.screenshot({ path: join(project, `.local/${vsix ? 'vsix' : 'native'}-compiler-overview.png`) });
         await panel.getByRole('button', { name: 'Next statements', exact: true }).click();
@@ -399,7 +411,7 @@ try {
         await waitEnabled(panel.getByRole('button', { name: 'Infer method', exact: true }));
         await panel.locator('.status').filter({ hasText: 'Compiler inference stopped' }).waitFor();
         assert.equal(requests.length, 0);
-        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench without extensions'}, real Julia inferred IR, current and recorded hash-verified source previews, approvals, pagination, filters, effect qualifiers, two report archives, rename, bounded comparison, recorded-source disclosure, explicit orphan cleanup and pending-approval cancellation`);
+        console.log(`PASS: ${vsix ? 'VSIX webview' : 'native Workbench without extensions'}, real Julia inferred IR, fixed-fixture runtime measurement and allocation samples, current and recorded hash-verified source previews, approvals, pagination, filters, effect qualifiers, two report archives, rename, bounded comparison, recorded-source disclosure, explicit orphan cleanup and pending-approval cancellation`);
     }
     if(terminalOnly){
         await panel.getByRole('combobox',{name:'More views'}).selectOption('Terminal');

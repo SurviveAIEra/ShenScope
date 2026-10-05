@@ -2,6 +2,8 @@
 
 Conversation-owned persistence and recorded-observation comparison are described
 in [compiler_archives.md](compiler_archives.md).
+Actual fixed-fixture timing and allocation evidence is described separately in
+[runtime_profiling.md](runtime_profiling.md).
 
 Core obtains real, unoptimized `Base.code_typed(...; debuginfo=:source)` output for six fixed installed
 Core function/signature pairs. It does not evaluate supplied source, load an

@@ -1,0 +1,2 @@
+Installed minimal native overlay; no checkout duplication.
+Updated authored panel, channel and CSS modules; no full client rebuild.

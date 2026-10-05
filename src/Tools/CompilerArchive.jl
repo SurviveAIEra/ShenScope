@@ -6,6 +6,8 @@ function diagnostics_arguments(args::AbstractDict)
     allowed=if action in ("compile","compile_archive")
         fields=["target","mode","timeout","max_ir_bytes","max_statements"]
         action=="compile_archive" ? vcat(fields,["title","expected_revision"]) : fields
+    elseif action=="profile"
+        ["target","fixture","timeout","iterations","repetitions","max_samples","max_frames","sample_rate"]
     elseif action=="archive_save"
         ["job_id","expected_revision","title"]
     elseif action=="archive_list"
@@ -30,7 +32,7 @@ function diagnostics_arguments(args::AbstractDict)
     end
     all(key->key=="action" || key in allowed,keys(args)) ||
         throw(ShenScopeError(:diagnostics,"Unexpected parameter for diagnostics action "*action))
-    required=action=="compile" ? ["target"] : action=="compile_archive" ? ["target","expected_revision"] :
+    required=action in ("compile","profile") ? ["target"] : action=="compile_archive" ? ["target","expected_revision"] :
         action=="archive_save" ? ["job_id","expected_revision"] :
         action in ("archive_get","archive_source") ? ["report_id"] : action=="compiler_source" ? ["job_id"] :
         action=="archive_label" ? ["report_id","title","expected_revision"] :
