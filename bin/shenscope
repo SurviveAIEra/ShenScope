@@ -1,10 +1,38 @@
 #!/usr/bin/env bash
 set -euo pipefail
-SHENSCOPE_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-SHENSCOPE_JULIA="${SHENSCOPE_JULIA:-/workspace/toolchains/julia-1.11.7/bin/julia}"
-if [[ ! -x "$SHENSCOPE_JULIA" ]]; then
-    SHENSCOPE_JULIA="$(command -v julia)"
+# Resolve installed links without requiring GNU readlink -f (macOS has no -f).
+SHENSCOPE_LAUNCHER="${BASH_SOURCE[0]}"
+SHENSCOPE_LINK_COUNT=0
+while [[ -L "$SHENSCOPE_LAUNCHER" ]]; do
+    SHENSCOPE_LINK_COUNT=$((SHENSCOPE_LINK_COUNT + 1))
+    if (( SHENSCOPE_LINK_COUNT > 40 )); then
+        printf 'shenscope: launcher has too many symbolic links\n' >&2
+        exit 1
+    fi
+    SHENSCOPE_LINK_DIR="$(cd -P -- "$(dirname -- "$SHENSCOPE_LAUNCHER")" && pwd)"
+    SHENSCOPE_LAUNCHER="$(readlink "$SHENSCOPE_LAUNCHER")"
+    [[ "$SHENSCOPE_LAUNCHER" == /* ]] || SHENSCOPE_LAUNCHER="$SHENSCOPE_LINK_DIR/$SHENSCOPE_LAUNCHER"
+done
+SHENSCOPE_ROOT="$(cd -P -- "$(dirname -- "$SHENSCOPE_LAUNCHER")/.." && pwd)"
+
+if [[ -n "${SHENSCOPE_JULIA:-}" ]]; then
+    # An explicit choice must not silently switch to another Julia installation.
+    if ! SHENSCOPE_JULIA="$(command -v -- "$SHENSCOPE_JULIA")" || [[ ! -x "$SHENSCOPE_JULIA" || -d "$SHENSCOPE_JULIA" ]]; then
+        printf 'shenscope: SHENSCOPE_JULIA must name an executable Julia; check its path\n' >&2
+        exit 1
+    fi
+elif SHENSCOPE_JULIA="$(command -v julia)"; then
+    :
+elif [[ -x /workspace/toolchains/julia-1.11.7/bin/julia ]]; then
+    SHENSCOPE_JULIA=/workspace/toolchains/julia-1.11.7/bin/julia
+else
+    printf 'shenscope: Julia was not found; install Julia 1.11+ or set SHENSCOPE_JULIA\n' >&2
+    exit 1
 fi
-export JULIA_DEPOT_PATH="${JULIA_DEPOT_PATH:-/workspace/julia-depot}"
+# Only the managed cloud toolchain uses the shared cloud depot by default.
+# Ordinary installations keep Julia's standard depot unless the user sets one.
+if [[ ! ${JULIA_DEPOT_PATH+x} && "$SHENSCOPE_JULIA" == /workspace/toolchains/julia-1.11.7/bin/julia && -d /workspace/julia-depot ]]; then
+    export JULIA_DEPOT_PATH=/workspace/julia-depot
+fi
 exec "$SHENSCOPE_JULIA" --startup-file=no --threads="${SHENSCOPE_THREADS:-4}" \
     --project="$SHENSCOPE_ROOT" -e 'using ShenScope; exit(ShenScope.main())' -- "$@"

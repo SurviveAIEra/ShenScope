@@ -50,10 +50,10 @@ provide asynchronous approvals and cancellation. A configured restricted
 sandbox refuses compiler helpers. Details: [compiler_ir.md](compiler_ir.md).
 
 ```sh
-bin/shenscope diagnostics contracts
-bin/shenscope diagnostics ambiguities
-bin/shenscope diagnostics targets
-bin/shenscope diagnostics compile digest_string --allow-dynamic --allow-process
+shenscope diagnostics contracts
+shenscope diagnostics ambiguities
+shenscope diagnostics targets
+shenscope diagnostics compile digest_string --allow-dynamic --allow-process
 ```
 
 Human users can grant actions interactively; noninteractive compilation requires

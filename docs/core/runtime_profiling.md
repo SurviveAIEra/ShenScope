@@ -6,7 +6,7 @@ runtime trace. Three supported targets are `digest_string`, `cliptext_string` an
 `canonical_dictionary`. Other targets, arbitrary source and user input refuse.
 
 ```sh
-bin/shenscope diagnostics profile cliptext_string \
+shenscope diagnostics profile cliptext_string \
   --allow-dynamic --allow-process --timeout 120 \
   --iterations 8 --repetitions 3 --max-samples 128 --max-frames 4
 ```

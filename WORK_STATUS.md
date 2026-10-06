@@ -7,7 +7,7 @@ These are early implementations,
 not a mature agent or a complete synthesis of the upstream projects. Reproduce
 with `python scripts/core_size.py`; source-size ratios are not feature completion.
 
-Latest verified checkpoint: 044. General project workflows now include bounded
+Latest Core/editor functional checkpoint: 044. General project workflows now include bounded
 SARIF import with explicit source/report hashes, current-source report comparison,
 applied-edit compiler/lint verification, selected LSP/navigation source rechecks
 and retained project output withholding after Read revocation. Both VSIX and
@@ -40,13 +40,14 @@ OpenCode, ZCode and DeepSeek Harness Chinese READMEs, plus Codex/Qwen English
 READMEs. They explain resident project data, interchangeable backends,
 programmable isolated analysis and Julia extension/runtime facilities, and state
 the missing complete IDE installer explicitly. Phase/line targets remain absent.
-Each README has 48 checked relative links/anchors, six Bash blocks checked for
+Each README has 49 checked relative links/anchors, six Bash blocks checked for
 syntax and one parsed TOML example. The two configurations match; CLI help and
 doctor parse the documented configuration successfully on Julia 1.11.7 without
 contacting a model. The small VSIX was repackaged to synchronize license,
 attribution and extension metadata;
-all 387 payloads match current files. No full IDE rebuild or functional source
-changes were required. Evidence: `docs/validation/readme-review.json`.
+all 387 payloads match current files. That documentation/licensing checkpoint
+required no full IDE rebuild or Core changes. Evidence:
+`docs/validation/readme-review.json`.
 Original authorship names SurviveAIEra. The initial LICENSE/NOTICE attribution
 was corrected by an explicitly requested root amend and replay of 46 descendants.
 All 47 replayed trees differed only in LICENSE/NOTICE; that root amendment
@@ -71,6 +72,21 @@ therefore remains blocked by the read-only publication audit; preserve private
 history and prepare a checked public snapshot when publication is requested.
 No GitHub visibility change, new public repository or IDE rebuild was performed.
 See `docs/licensing/license_decision.md` and `CONTRIBUTING.md`.
+
+CLI installation now creates one user-bin symlink instead of copying files.
+`shenscope` is installed on this cloud's existing PATH. The launcher follows
+absolute and relative links to Core, keeps the caller's working directory,
+honors explicit Julia choices and preserves normal Julia depot defaults outside
+the managed toolchain. Setup installs the command; an unrelated existing command
+is never overwritten. Four focused installation/launcher tests pass on Linux,
+including actual Core version/help/doctor and an offline edit in another project
+with spaces in its paths. The installed-command TUI is verified separately in a
+real pseudo terminal. Both READMEs now tell the founder's Talent Park/Shenzhen
+origin story, explain the Julia design choice and invite readers to visit the
+city. User-facing Core/protocol examples use `shenscope`. Evidence:
+`docs/validation/cli-installation-review.json`. No Core code, IDE rebuild,
+additional project checkout or directory copy is involved.
+
 Prepared: 22 shallow upstream research repositories, Julia 1.11.7 from the
 verified official OCI layer, one main checkout. Reference notes are recorded
 before application implementation. No copied project directories or worktrees.

@@ -56,12 +56,12 @@ to Act; each child owns new hashes/revision one with explicit parent ancestry.
 Use the same controls in CLI, TUI, standalone VSIX and native Workbench:
 
 ```sh
-bin/shenscope chat "Inspect the project and prepare steps" --agent-mode plan
-bin/shenscope sessions mode SESSION_ID
-bin/shenscope sessions mode SESSION_ID act --expected-revision 1
-bin/shenscope plan get --session SESSION_ID
-bin/shenscope plan history --session SESSION_ID --limit 8
-bin/shenscope plan replace plan.json --session SESSION_ID --expected-revision 0 --allow-persistence
+shenscope chat "Inspect the project and prepare steps" --agent-mode plan
+shenscope sessions mode SESSION_ID
+shenscope sessions mode SESSION_ID act --expected-revision 1
+shenscope plan get --session SESSION_ID
+shenscope plan history --session SESSION_ID --limit 8
+shenscope plan replace plan.json --session SESSION_ID --expected-revision 0 --allow-persistence
 ```
 
 Replace input has exactly `title` and `steps`; every step supplies `id`, `text`,

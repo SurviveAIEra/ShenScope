@@ -1,6 +1,7 @@
 # Core/editor protocol 1.0
 
-Run `bin/shenscope serve --stdio --root <workspace> --state-dir <state>`.
+Install the command using the [CLI installation guide](cli-installation.md),
+then run `shenscope serve --stdio --root <workspace> --state-dir <state>`.
 Use `--config <TOML>` for a nondefault configuration path and `--script <JSON>`
 only for explicit offline fixtures. Standard output carries JSON-RPC 2.0 only.
 Frames use `Content-Length: <UTF-8-byte-length>\r\n\r\n<body>`, capped at 8 MiB.

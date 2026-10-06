@@ -46,9 +46,9 @@ JULIA_DEPOT_PATH=/workspace/julia-depot \
   scripts/build_sysimage.jl .local/sysimage-030
 
 # These inspect or plan; they do not install or execute the image.
-bin/shenscope \
+shenscope \
   runtime-image verify .local/sysimage-030/shenscope-core.receipt.json
-bin/shenscope \
+shenscope \
   runtime-image plan .local/sysimage-030/shenscope-core.receipt.json
 ```
 

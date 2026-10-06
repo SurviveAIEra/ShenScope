@@ -1,0 +1,94 @@
+{
+  "validated_at_utc": "2026-10-06 02:00:55 UTC",
+  "platform": "Linux x86_64; Julia 1.11.7; Bash",
+  "scope": "Installed CLI/launcher behavior, real offline Core and TUI, and bilingual documentation. No live model, macOS, Windows, packaged IDE or performance claim.",
+  "installation": {
+    "target": "/home/agent/.local/bin/shenscope",
+    "source": "/workspace/ShenScope/bin/shenscope",
+    "method": "one symbolic link; no directory copies",
+    "existing_path": true,
+    "reinstallation": "preserves the existing correct link",
+    "conflicts": "preserves unrelated files and dangling links"
+  },
+  "checks": [
+    {
+      "command": "python test/integration/cli_installation.py",
+      "exit_code": 0,
+      "tests": 4,
+      "output": "test_existing_commands_are_not_overwritten (__main__.CLIInstallation.test_existing_commands_are_not_overwritten) ... ok\ntest_installed_command_runs_real_core_in_another_project (__main__.CLIInstallation.test_installed_command_runs_real_core_in_another_project) ... ok\ntest_launcher_respects_julia_choice_environment_and_arguments (__main__.CLIInstallation.test_launcher_respects_julia_choice_environment_and_arguments) ... ok\ntest_reinstallation_preserves_the_link (__main__.CLIInstallation.test_reinstallation_preserves_the_link) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 57.803s\n\nOK\n"
+    },
+    {
+      "command": "python test/integration/tui_pty.py --launcher shenscope",
+      "exit_code": 0,
+      "output": "PASS: real TUI task, separate edit/session-save approvals, Unicode edit, clean exit",
+      "fixture_correction": "First attempt completed the approved edit but waited at the separate persistence approval. The fixture now explicitly requests and answers both edit and session-save approvals."
+    },
+    {
+      "command": "shenscope doctor --root /workspace/ShenScope --config /workspace/ShenScope/.local/readme-smoke.toml --state-dir /workspace/ShenScope/.local/state",
+      "working_directory": "/tmp",
+      "exit_code": 0,
+      "result": {
+        "config_path": "/workspace/ShenScope/.local/readme-smoke.toml",
+        "julia": "1.11.7",
+        "key_configured": false,
+        "key_variable": "SHENSCOPE_MODEL_KEY",
+        "landlock": {
+          "abi": null,
+          "backend_implemented": false,
+          "enforced": false,
+          "errno": 38,
+          "state": "unavailable_in_current_process"
+        },
+        "model": "gpt-4.1",
+        "protocol": "openai_chat",
+        "provider": "my-service",
+        "sandbox": {
+          "backend": "host",
+          "description": "Commands run with host access after process permission.",
+          "os_isolation": false,
+          "state": "host"
+        },
+        "seccomp_library_available": true,
+        "state_dir": "/workspace/ShenScope/.local/state",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "command": "bash -n bin/shenscope scripts/install_cli.sh scripts/setup.sh",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "documentation": {
+    "readme_relative_links_each": 49,
+    "readme_bash_blocks_each": 6,
+    "readme_toml_examples_each": 1,
+    "bilingual_configuration_matches": true,
+    "founder_origin": "Nanshan Talent Park, Shenzhen; code relationship architecture and prior use and affection for Julia",
+    "intermediate_line_targets_in_readmes": false
+  },
+  "unchanged": {
+    "core_source": true,
+    "editor_source": true,
+    "vsix_sha256": "675fc55d3a52c54f7ff200b094106ce9ffe25c9a1d1e229acf76e1c6953822b4"
+  },
+  "disk": {
+    "free_gib": 17.35,
+    "minimum_before_large_build_gib": 8,
+    "large_builds_run": false
+  },
+  "source_sha256": {
+    "bin/shenscope": "202302d588e7cdc200982b08cbbb82f5c49107c85f9df7ecdb7e95389884bcac",
+    "scripts/install_cli.sh": "03a4a640b8e8b129dc90e4c9186a2b63be8f404a3a03a6feaaa45875100dbfe3",
+    "scripts/setup.sh": "6eda7a5d2a122e8992079e15f33559918b5b7560c7752599dccc2003ad063355",
+    "test/integration/cli_installation.py": "6207052045529b23460867818fb03163f516f0dcd31d15714a183b60c75e3a0b",
+    "test/integration/tui_pty.py": "52a20882f265b32f91ece0591ce412f590b4749e54f11ed49e34a35354bd5e7e",
+    "README.md": "99751190cd6fc28d9172d16a7346c953828e488de64e0fdf356177af674e976d",
+    "README.en.md": "a46dd48fa87d1228b01639ad907778a0d2685d92b81bb6ad0e94063bb1af1970",
+    "docs/cli-installation.md": "2b5de9cc899d7112e5a32ad89204e111e59ad58f8da05efb59d652efe93e1dba",
+    "docs/environment-start.md": "697a1224c194d4940cf2ffa699b7baae58a98997a6e6cc07ebede4e3d5541100"
+  }
+}

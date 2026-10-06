@@ -19,11 +19,25 @@ ShenScope focuses on changes to existing codebases: **Who calls this interface? 
 
 *Born in Shenzhen. Built with Julia.*
 
+## An idea from a walk in Shenzhen
+
+ShenScope began with an idea that came to its creator, SurviveAIEra, during a walk through Talent Park in Nanshan, Shenzhen. The city's towers stood against a landscape of mountains and sea. Taking in that view gave a thought about coding tools room to take shape.
+
+When using existing agents, the creator often saw them return to `grep` and similar text searches: find a piece of code, search for another, then open more files. Search is useful, but a matching line still leaves questions about calls, module dependencies and the consequences of a change. A developer who knows a codebase carries those relationships in mind. An assistant should be able to build on that knowledge as it moves between tasks.
+
+That became ShenScope's starting point: **give the agent a lasting view of the relationships inside a project, with tools to analyze them.** Keep code indexes locally and update them as files change. Use local programs to follow calls, trace dependencies and select relevant tests. Give the model the resulting analysis and source so it can investigate and propose changes. Project-specific rules can become small analysis programs, validated and reused. This is the reason for the resident project state, interchangeable backends and programmable analyzers.
+
+Julia brought the other half of the idea. The creator had used it before and loved its combination of expressive code and high performance. It offered one runtime for project data, graph computation and custom analysis, with ordinary functions, multiple dispatch, dynamic loading and JIT compilation. Familiarity and affection for Julia met the wish to redesign how an agent works with code. ShenScope is built in Julia and serves codebases written in many languages.
+
+The name carries its origin: **Shen** comes from Shenzhen and also suggests looking deeply into code; **Scope** means understanding a project's structure and the reach of a change.
+
+There is much to love about Shenzhen: engineering teams at work among the towers, mountains and sea close to the city, and parks where there is room to slow down and think. It is a place with both the energy to build an idea and the scenery that can spark one. We invite you to get to know Shenzhen. If you visit, take a walk through Talent Park and along Shenzhen Bay. That is where this project's story began.
+
 ## Quick start
 
 ShenScope currently runs from source. Install **Julia 1.11 or a newer compatible version** first. These commands use Bash on Linux/macOS.
 
-### 1. Prepare Core
+### 1. Prepare Core and install the command
 
 ```bash
 git clone https://github.com/SurviveAIEra/ShenScope.git
@@ -31,8 +45,14 @@ cd ShenScope
 export SHENSCOPE_JULIA="$(command -v julia)"
 export JULIA_DEPOT_PATH="${JULIA_DEPOT_PATH:-$HOME/.julia}"
 julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
-bin/shenscope --help
+bash scripts/install_cli.sh
+export PATH="$HOME/.local/bin:$PATH"
+shenscope --help
 ```
+
+The installer creates a `shenscope` link in `~/.local/bin` pointing to this checkout; it does not copy the project. The `export` makes it available in the current terminal. Add that line to `~/.bashrc` for Bash or `~/.zshrc` for Zsh to make the command available in future terminals.
+
+Install once, then run `shenscope` from any directory. Keep this checkout and update it with `git pull`. The `bin/shenscope` spelling runs a file directly from the repository; once installed on `PATH`, the shorter command works. See the [command installation guide](docs/cli-installation.md) for a custom location, Julia selection and troubleshooting.
 
 ### 2. Configure a model
 
@@ -67,11 +87,11 @@ OpenAI Responses, Anthropic, Gemini and Ollama are also supported. Other service
 
 ### 3. Open your project
 
-Run these commands from the ShenScope checkout, replacing the project and configuration paths:
+After installing the command, run these from any directory, replacing the project and configuration paths:
 
 ```bash
-bin/shenscope doctor --root /path/to/project --config /path/to/shenscope.toml
-bin/shenscope tui --root /path/to/project --config /path/to/shenscope.toml
+shenscope doctor --root /path/to/project --config /path/to/shenscope.toml
+shenscope tui --root /path/to/project --config /path/to/shenscope.toml
 ```
 
 Try a first prompt in the TUI:
@@ -83,7 +103,7 @@ Explain this repository's layout and find its main entry points and tests.
 For a command-line task, Plan mode investigates and proposes work:
 
 ```bash
-bin/shenscope chat "Find callers of this interface and explain what changing it might affect" \
+shenscope chat "Find callers of this interface and explain what changing it might affect" \
   --root /path/to/project --config /path/to/shenscope.toml --agent-mode plan
 ```
 

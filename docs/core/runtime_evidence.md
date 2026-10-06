@@ -27,7 +27,7 @@ CLI `inspect` and the agent diagnostics tool explicitly execute two fixed helper
 first and therefore also need Dynamic/Process:
 
 ```bash
-bin/shenscope diagnostics inspect cliptext_string --allow-dynamic --allow-process \
+shenscope diagnostics inspect cliptext_string --allow-dynamic --allow-process \
   --iterations 8 --repetitions 3 --max-samples 128 --max-frames 4 \
   --observation-kind allocation --limit 12 --query cliptext
 ```

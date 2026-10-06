@@ -11,7 +11,7 @@ arbitrary project, or execute the target function. This extends the existing
 lowered/typed text diagnostics with a bounded structured report.
 
 ```sh
-bin/shenscope diagnostics compile cliptext_string --mode graph \
+shenscope diagnostics compile cliptext_string --mode graph \
   --allow-dynamic --allow-process --timeout 120
 ```
 
@@ -124,7 +124,7 @@ and wall-clock budget checks remain active. The view uses text nodes, shows
 line numbers and highlights the selected line; it does not write any source.
 
 ```sh
-bin/shenscope diagnostics archive_source REPORT_SHA256 --session ID \
+shenscope diagnostics archive_source REPORT_SHA256 --session ID \
   --method-index 1 --statement-id 1 --context-lines 4
 ```
 

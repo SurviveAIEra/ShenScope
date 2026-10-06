@@ -76,8 +76,8 @@ directory is excluded from project source enumeration.
 ## Use and validation
 
 ```sh
-bin/shenscope project compact --backend typescript --root . --state-dir .local/state --allow-persistence
-bin/shenscope project compact --backend go_ast --root . --state-dir .local/state --minimum-savings 65536 --allow-persistence
+shenscope project compact --backend typescript --root . --state-dir .local/state --allow-persistence
+shenscope project compact --backend go_ast --root . --state-dir .local/state --minimum-savings 65536 --allow-persistence
 JULIA_DEPOT_PATH=/workspace/julia-depot julia --startup-file=no --threads=4 --project=. test/project_storage.jl
 ```
 

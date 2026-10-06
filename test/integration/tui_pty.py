@@ -7,19 +7,27 @@ import select
 import subprocess
 import tempfile
 import time
-import sys
+import argparse
 
 root_project = Path(__file__).resolve().parents[2]
-plans = '--plans' in sys.argv
-testing = '--testing' in sys.argv
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--plans', action='store_true')
+parser.add_argument('--testing', action='store_true')
+parser.add_argument('--launcher', default=str(root_project / 'bin/shenscope'))
+options = parser.parse_args()
+plans = options.plans
+testing = options.testing
 with tempfile.TemporaryDirectory(prefix='shenscope-tui-') as directory:
     root = Path(directory)
+    if not plans and not testing:
+        # Keep both distinct approval steps explicit and independent of user config.
+        (root / 'config.toml').write_text('[permissions]\nread="allow"\nedit="ask"\npersistence="ask"\n')
     script = root / 'script.json'
     if testing:
         (root / 'pyproject.toml').write_text("[project]\nname='calc'\nversion='0.1.0'\n")
         (root / 'test_calc.py').write_text('import unittest\nclass Addition(unittest.TestCase):\n    def test_add(self): self.assertEqual(2+3,5)\n')
-        candidate_argv = [str(root_project / 'bin/shenscope'), 'tests', 'discover', '--root', str(root), '--config', str(root / 'config.toml')]
-        candidate = json.loads(subprocess.check_output(candidate_argv, cwd=root_project, env=dict(os.environ, JULIA_DEPOT_PATH=os.environ.get('JULIA_DEPOT_PATH','/workspace/julia-depot'))))['candidates'][0]['id']
+        candidate_argv = [options.launcher, 'tests', 'discover', '--root', str(root), '--config', str(root / 'config.toml')]
+        candidate = json.loads(subprocess.check_output(candidate_argv, cwd=root, env=dict(os.environ, JULIA_DEPOT_PATH=os.environ.get('JULIA_DEPOT_PATH','/workspace/julia-depot'))))['candidates'][0]['id']
     script.write_text(json.dumps([
         {'calls': [{'name': 'write', 'arguments': {'path': 'approved.txt', 'content': '中文'}}]},
         {'text': 'TUI completed'},
@@ -37,12 +45,12 @@ with tempfile.TemporaryDirectory(prefix='shenscope-tui-') as directory:
         ]))
     master, slave = pty.openpty()
     environment = dict(os.environ, JULIA_DEPOT_PATH=os.environ.get('JULIA_DEPOT_PATH','/workspace/julia-depot'), TERM='xterm')
-    arguments = [str(root_project / 'bin/shenscope'), 'tui', '--root', str(root),
+    arguments = [options.launcher, 'tui', '--root', str(root),
         '--state-dir', str(root / 'state'), '--config', str(root / 'config.toml'), '--script', str(script)]
     if plans:
         arguments += ['--agent-mode', 'plan']
     process = subprocess.Popen(arguments,
-        stdin=slave, stdout=slave, stderr=slave, env=environment, cwd=root_project, close_fds=True)
+        stdin=slave, stdout=slave, stderr=slave, env=environment, cwd=root, close_fds=True)
     os.close(slave)
     received = bytearray()
     def wait_for(fragment, timeout=120):
@@ -96,12 +104,15 @@ with tempfile.TemporaryDirectory(prefix='shenscope-tui-') as directory:
             wait_for(b'Approve edit')
             assert not (root / 'approved.txt').exists()
             os.write(master, b'a')
+            if not plans:
+                wait_for(b'Approve persistence')
+                os.write(master, b's')
             wait_for(b'Act change finished' if plans else b'Complete')
             assert (root / 'approved.txt').read_text() == '中文'
             os.write(master, b'\x04')
             assert process.wait(timeout=10) == 0
             assert b'\x1b[?1049h' in received
-            print('PASS: real TUI Plan/Act control, responsive persistence approval, saved plan, blocked mutation, approved Unicode Act edit and clean exit' if plans else 'PASS: real TUI task, scoped approval, Unicode edit, clean exit')
+            print('PASS: real TUI Plan/Act control, responsive persistence approval, saved plan, blocked mutation, approved Unicode Act edit and clean exit' if plans else 'PASS: real TUI task, separate edit/session-save approvals, Unicode edit, clean exit')
     finally:
         if process.poll() is None:
             process.terminate()

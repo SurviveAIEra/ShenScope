@@ -85,10 +85,10 @@ workspace facts remains separate from conversation messages.
 ```sh
 bash scripts/setup.sh --semantic
 python scripts/setup_semantic.py --verify
-bin/shenscope project build --backend typescript --root . --state-dir .local/state --allow-process --allow-persistence
-bin/shenscope project definitions src/main.ts 8 12 --backend typescript --root . --state-dir .local/state
-bin/shenscope project references --symbol SYMBOL_ID --backend typescript --root . --state-dir .local/state --exclude-declarations --limit 30
-bin/shenscope project diagnostics --backend typescript --root . --state-dir .local/state
+shenscope project build --backend typescript --root . --state-dir .local/state --allow-process --allow-persistence
+shenscope project definitions src/main.ts 8 12 --backend typescript --root . --state-dir .local/state
+shenscope project references --symbol SYMBOL_ID --backend typescript --root . --state-dir .local/state --exclude-declarations --limit 30
+shenscope project diagnostics --backend typescript --root . --state-dir .local/state
 ```
 
 The single editor dependency installation supplies the pinned compiler. Alternate

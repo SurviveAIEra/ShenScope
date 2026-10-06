@@ -95,13 +95,13 @@ transport retain the no-retry service policy described above.
 Both editor clients expose a Models view with explicit refresh, unknown metadata,
 inspection, request JSON measurement, cache clear and cancel controls.
 
-Examples, using `bin/shenscope` with the installed Julia runtime:
+Examples, using `shenscope` with the installed Julia runtime:
 
 ```sh
-bin/shenscope models status --root .
-bin/shenscope models refresh --root . --allow-network --limit 20
-bin/shenscope models count request.json --root . --count-mode estimate
-bin/shenscope models count request.json --root . --count-mode provider --allow-network
+shenscope models status --root .
+shenscope models refresh --root . --allow-network --limit 20
+shenscope models count request.json --root . --count-mode estimate
+shenscope models count request.json --root . --count-mode provider --allow-network
 ```
 
 Routing, circuit breakers, persistent provider catalogs, exact tokenizers,

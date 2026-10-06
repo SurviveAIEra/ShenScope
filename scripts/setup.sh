@@ -16,6 +16,7 @@ cd "$SHENSCOPE_ROOT"
 "$SHENSCOPE_JULIA" --startup-file=no --project=. \
     -e 'using Pkg; Pkg.instantiate(; update_registry=false); Pkg.precompile()'
 "$SHENSCOPE_JULIA" --startup-file=no --project=. -e 'using ShenScope; exit(ShenScope.main(["--version"]))'
+bash "$SHENSCOPE_ROOT/scripts/install_cli.sh"
 if [[ " $* " == *" --backends "* ]]; then
     python "$SHENSCOPE_ROOT/scripts/setup_backends.py"
 fi

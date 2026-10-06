@@ -83,9 +83,9 @@ reverting saved content to the committed state. Both client bridges import a
 shared public RPC allowlist.
 
 ```sh
-bin/shenscope project watch --backend go_ast --root . --state-dir .local/state --allow-process --allow-persistence
-bin/shenscope project watch --backend typescript --automatic --json --poll-seconds 1 --quiet-seconds 0.25 --allow-process --allow-persistence
-bin/shenscope project watch --backend typescript --automatic --duration 60 --no-native-hints --allow-process --allow-persistence
+shenscope project watch --backend go_ast --root . --state-dir .local/state --allow-process --allow-persistence
+shenscope project watch --backend typescript --automatic --json --poll-seconds 1 --quiet-seconds 0.25 --allow-process --allow-persistence
+shenscope project watch --backend typescript --automatic --duration 60 --no-native-hints --allow-process --allow-persistence
 JULIA_DEPOT_PATH=/workspace/julia-depot julia --startup-file=no --threads=4 --project=. test/project_watch_integration.jl
 ```
 

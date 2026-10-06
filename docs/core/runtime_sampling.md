@@ -7,7 +7,7 @@ symbols, commands and user inputs refuse. This facility inspects helper activity
 it does not measure exclusive target CPU time or CPU utilization.
 
 ```sh
-bin/shenscope diagnostics sample cliptext_string \
+shenscope diagnostics sample cliptext_string \
   --allow-dynamic --allow-process --timeout 120 \
   --duration 0.1 --sample-delay 0.001 --iterations 8 \
   --max-samples 128 --max-frames 4 --profile-buffer-words 20000

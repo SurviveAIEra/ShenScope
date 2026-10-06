@@ -70,9 +70,9 @@ The model and user retain decisions about which changes/tests are appropriate.
 
 ```sh
 bash scripts/setup.sh --backends --editors
-bin/shenscope project build --backend go_ast --root . --state-dir .local/state --allow-process --allow-persistence
-bin/shenscope project search Greet --backend go_ast --root . --state-dir .local/state
-bin/shenscope project test_selection src/example.go --backend go_ast --root . --state-dir .local/state
+shenscope project build --backend go_ast --root . --state-dir .local/state --allow-process --allow-persistence
+shenscope project search Greet --backend go_ast --root . --state-dir .local/state
+shenscope project test_selection src/example.go --backend go_ast --root . --state-dir .local/state
 ```
 
 `scripts/setup_backends.py` uses one shared SDK checkout, Python environment,

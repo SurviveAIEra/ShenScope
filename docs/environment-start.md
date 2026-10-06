@@ -5,9 +5,19 @@ Project: `/workspace/ShenScope`, branch `main`. Use this checkout only.
 ```sh
 cd /workspace/ShenScope
 bash scripts/setup.sh
-bin/shenscope --version
-bin/shenscope doctor --state-dir .local/state
+export PATH="$HOME/.local/bin:$PATH"
+shenscope --version
+shenscope doctor --state-dir .local/state
 ```
+
+Setup installs a single `~/.local/bin/shenscope` link to this checkout. It copies
+no source directories and refuses to replace an unrelated existing command.
+The directory is already on PATH in this cloud; the export above also supports
+other shells. Once dependencies are prepared, install/repair just the command
+with `bash scripts/install_cli.sh`, without repeating backend or editor setup.
+See [command installation](cli-installation.md) for persistent shell settings,
+custom locations and Julia selection. The installed launcher works from any
+directory; pass `--root` to select the target project.
 
 `scripts/setup.sh --editors` also installs/checks/builds the editor assets with
 the shared npm cache. Add `--backends` to prepare pinned CodeGraphContext,

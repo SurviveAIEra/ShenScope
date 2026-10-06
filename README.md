@@ -19,11 +19,25 @@ ShenScope 是由 [SurviveAIEra](https://github.com/SurviveAIEra) 发起的 AI �
 
 *Born in Shenzhen. Built with Julia.*
 
+## 从深圳人才公园的一次散步说起
+
+ShenScope 的灵感，来自作者 SurviveAIEra 在深圳南山人才公园的一次散步。眼前是山海连城的景色，高楼大厦与山海相映。看着这样的深圳，一个关于编程工具的念头渐渐清晰起来。
+
+在使用现有 Agent 工具时，作者常常看到它们反复调用 `grep` 等文本搜索工具：找到一段代码，再搜索另一处，接着继续翻文件。搜索很有用，但找到文字之后，还要弄清函数如何调用、模块如何依赖、修改会传到哪里。熟悉项目的人，脑中通常已经有这些关系；助手每次接手任务，也应该能用上对项目的这种认识。
+
+于是有了 ShenScope 的出发点：**让 Agent 持续掌握项目内部的关系，并能围绕这些关系做分析。** 代码索引留在本地，文件变化后更新；查调用、追依赖、筛测试这些计算由本地程序完成。模型拿到相关代码和分析结果，再判断问题、提出修改。遇到项目特有的规则，还可以写一段专用分析程序，验证后反复使用。这也是常驻项目数据、可切换代码后端和可编程分析器这套架构的由来。
+
+语言的选择则来自另一份喜欢。作者以前用过 Julia，很喜欢这门兼顾表达力与高性能的语言。用 Julia 实现 Agent，可以把项目数据、图计算和自定义分析放在同一个运行时里；分析方法写成普通函数，也能使用多重分派、动态加载和 JIT。对 Agent 工作方式的思考，与对 Julia 的熟悉和喜爱碰在一起，最终变成了这个项目。它用 Julia 构建，服务的则是各种语言的代码库。
+
+名字也留下了这份来处：**Shen** 取自深圳，也有深入代码的意思；**Scope** 指向看清项目结构与改动范围。
+
+深圳让人着迷的地方，就在于这些景象能同时存在：高楼之间有忙碌的研发团队，城市身边有山、有海，也有可以慢慢走一走的公园。这里有把想法做成东西的热情，也有让人停下来、冒出新想法的风景。欢迎大家来了解深圳；有机会也来南山人才公园走走，沿着深圳湾看看这座城。ShenScope 的故事，就从这里开始。
+
 ## 快速开始
 
 目前从源码运行。先安装 **Julia 1.11 或更新的兼容版本**；下面的命令使用 Bash，适用于 Linux/macOS。
 
-### 1. 准备 Core
+### 1. 准备 Core 并安装命令
 
 ```bash
 git clone https://github.com/SurviveAIEra/ShenScope.git
@@ -31,8 +45,14 @@ cd ShenScope
 export SHENSCOPE_JULIA="$(command -v julia)"
 export JULIA_DEPOT_PATH="${JULIA_DEPOT_PATH:-$HOME/.julia}"
 julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
-bin/shenscope --help
+bash scripts/install_cli.sh
+export PATH="$HOME/.local/bin:$PATH"
+shenscope --help
 ```
+
+安装脚本在 `~/.local/bin` 创建一个指向本仓库的 `shenscope` 链接，不会复制项目。上面的 `export` 让当前终端立即生效；将它加入 Bash 的 `~/.bashrc` 或 Zsh 的 `~/.zshrc`，以后打开终端就能直接使用 `shenscope`。
+
+安装只需做一次。之后可以从任意目录启动，请保留这份仓库，更新代码时在这里执行 `git pull`。`bin/shenscope` 是直接运行仓库文件的写法，安装到 `PATH` 后就不必加 `bin/`。指定安装位置、选择 Julia 和排查“找不到命令”的方法见[命令安装说明](docs/cli-installation.md)。
 
 ### 2. 配置模型
 
@@ -67,11 +87,11 @@ export SHENSCOPE_MODEL_KEY
 
 ### 3. 打开自己的项目
 
-在 ShenScope 仓库目录执行，将路径换成你的项目与配置文件：
+安装命令后，在任意目录执行，将路径换成你的项目与配置文件：
 
 ```bash
-bin/shenscope doctor --root /path/to/project --config /path/to/shenscope.toml
-bin/shenscope tui --root /path/to/project --config /path/to/shenscope.toml
+shenscope doctor --root /path/to/project --config /path/to/shenscope.toml
+shenscope tui --root /path/to/project --config /path/to/shenscope.toml
 ```
 
 进入 TUI 后，可以先试试：
@@ -83,7 +103,7 @@ bin/shenscope tui --root /path/to/project --config /path/to/shenscope.toml
 也可以直接发起命令行任务。下面使用 Plan 模式，先调查并提出方案：
 
 ```bash
-bin/shenscope chat "查找这个接口的使用位置，说明修改它可能影响哪些代码" \
+shenscope chat "查找这个接口的使用位置，说明修改它可能影响哪些代码" \
   --root /path/to/project --config /path/to/shenscope.toml --agent-mode plan
 ```
 
