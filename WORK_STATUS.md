@@ -26,7 +26,7 @@ the complete native client typecheck pass; final timeout/notice edits change
 strings and an existing visibility property, with final GUI verification.
 Evidence: `docs/validation/project-diagnostics-checkpoint-044.json` and its raw logs.
 
-Current VSIX: 782,981 bytes, 389 archive entries, 387 authored payloads verified
+Current VSIX: 783,134 bytes, 389 archive entries, 387 authored payloads verified
 against current source/assets. GUI validation uses the development extension;
 installed-package runtime validation is separate. The package includes authored
 Core but does not bundle Julia. Complete IDE installers, bundled runtime,
@@ -34,13 +34,27 @@ upgrade/uninstall and cross-platform runtime validation remain unfinished.
 Live-model programming quality, whole-project semantic coverage and general
 host-tool OS isolation also remain separate product gates.
 
-Both READMEs were rewritten from the original requirements and now use plain
-product descriptions focused on resident project data, interchangeable graph
-backends, programmable isolated Julia analysis and Julia extension/runtime
-facilities. They state the missing complete IDE installer explicitly. Each has
-35 verified local links and one parsed TOML example; no phase/line target appears.
+Both READMEs now lead with repository-maintenance examples and a usable quick
+start. Chinese prose was written independently after reading Kimi Code,
+OpenCode, ZCode and DeepSeek Harness Chinese READMEs, plus Codex/Qwen English
+READMEs. They explain resident project data, interchangeable backends,
+programmable isolated analysis and Julia extension/runtime facilities, and state
+the missing complete IDE installer explicitly. Phase/line targets remain absent.
+Each README has 46 checked relative links/anchors, six Bash blocks checked for
+syntax and one parsed TOML example. The two configurations match; CLI help and
+doctor parse the documented configuration successfully on Julia 1.11.7 without
+contacting a model. The small VSIX was repackaged only to update attribution;
+all 387 payloads match current files. No full IDE rebuild or functional source
+changes were required. Evidence: `docs/validation/readme-review.json`.
+Original authorship names SurviveAIEra. The initial LICENSE/NOTICE attribution
+was corrected by an explicitly requested root amend and replay of 46 descendants.
+All 47 replayed trees differ only in LICENSE/NOTICE; standard Apache license
+terms, other files, messages and author timestamps were preserved. The mapping
+is recorded in `docs/validation/license-history-rewrite.json`; historical test
+records were not rewritten. A verified Git-only recovery bundle is retained
+under ignored `.local/`, with no checkout copies.
 All existing Git author/committer identities use the requested noreply identity.
-Only one Code-OSS build tree and one VSIX package are retained; about 17.36 GiB
+Only one Code-OSS build tree and one VSIX package are retained; about 17.35 GiB
 remains free. Notes below describe their historical checkpoints and may state
 limitations that later checkpoints resolved.
 

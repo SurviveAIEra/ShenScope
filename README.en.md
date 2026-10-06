@@ -1,203 +1,40 @@
 # ShenScope
 
-**A general coding agent built in Julia, with project relationships, programmable analysis and code editing in one runtime.**
+**Understand the code. See the scope of a change.**
 
-[简体中文](README.md) · English
+[简体中文](README.md) · English · [Documentation](#documentation) · [Authorship and license](#authorship-and-license)
 
-ShenScope works with Python, JavaScript/TypeScript, Go, C/C++ and other codebases.
-Use it to investigate failures, understand dependencies, assess changes, write code and run tests.
-Julia implements the Agent Core; your project can use any language.
+ShenScope is an open-source AI coding assistant initiated by [SurviveAIEra](https://github.com/SurviveAIEra), with an independently implemented Julia Core. It helps you explore a repository, investigate bugs, edit code and run tests through a CLI, terminal UI, VS Code extension or standalone development IDE.
 
-The main design is simple: **keep project data resident, compute relationships and filters locally,
-and use models for understanding, generation and engineering judgment.** Symbols, call relationships,
-source versions and analysis results are available within the same Julia runtime.
-For project-specific questions, you can add an analyzer, validate it and save it for reuse.
+It works with projects in Python, JavaScript/TypeScript, Go, C/C++ and other languages. Julia implements the agent; you do not need to write your project in Julia or learn Julia for everyday use.
+
+ShenScope focuses on changes to existing codebases: **Who calls this interface? What might a change affect? Which files and tests should you inspect first? How do you check rules specific to your project?** It keeps code relationships locally, uses Julia functions to traverse and filter them, and gives the model relevant source and analysis results.
+
+- **Reuse project data.** Symbols, dependencies and call relationships stay in the running Core, with caching, persistence and incremental updates for saved files.
+- **Write project-specific analysis.** Add ordinary Julia analyzers, or ask a model to propose one and validate it before use.
+- **Choose the code intelligence backend.** Go AST, Tree-sitter, CodeGraphContext and the TypeScript compiler supply a common data interface. Analyzers stay independent of database-specific schemas.
+- **Bring your own models and tools.** Use supported model protocols, MCP, Skills and Hooks, or connect internal services through independent Julia extension packages.
 
 *Born in Shenzhen. Built with Julia.*
 
-## Keep project knowledge in memory
+## Quick start
 
-After indexing, `ProjectState` retains file facts, symbols, relationships and forward/reverse
-adjacency indexes. Queries reuse that data. Saved-file watching and incremental updates maintain
-the affected facts and relationships. Persistent caches can be loaded when returning to a project.
+ShenScope currently runs from source. Install **Julia 1.11 or a newer compatible version** first. These commands use Bash on Linux/macOS.
 
-For example, before changing a public interface, follow reverse call relationships to find
-affected code, select candidate tests, and inspect Git cochange history for related files.
-The model receives candidates with sources and explanations. Ordinary Julia functions perform
-graph traversal, filtering and ranking locally, with explicit limits on traversal and output.
+### 1. Prepare Core
 
-Source hashes, backend versions and index revisions identify the code an analysis describes.
-Incremental updates have checks against full rebuilds. Backend extraction and update costs
-are recorded separately.
-
-See [project data](docs/core/project_data.md), [impact and migration](docs/core/migration.md)
-and [Git history](docs/core/git_history.md).
-
-## Change the graph backend, keep the analyzer
-
-Backends supply facts, analyzers compute, and models make decisions. Each has its own interface.
-
-```mermaid
-flowchart LR
-    A[Project source] --> B[Parsers, compilers and graph backends]
-    B --> C[Resident ProjectState]
-    C --> D[Local Julia analyzers]
-    D --> E[Candidates, sources and explanations]
-    E --> F[Model judgment and code generation]
-    F --> G[Editing and verification tools]
-    G --> A
-```
-
-CodeGraphContext is integrated through its actual SDK and Ladybug graph storage. Its private
-structures stay inside the adapter. Analyzers use ShenScope's symbol, relationship and location
-model, allowing the same impact and test-candidate analyses to use Go AST, Tree-sitter or
-CodeGraph data.
-
-| Data source | Current use |
-|---|---|
-| Go AST | Go's native parser extracts declarations, imports and candidate calls |
-| Tree-sitter | Multilingual syntax, declarations and relationships |
-| CodeGraphContext | Code graph facts converted into Core's common model |
-| TypeScript compiler | JS/TS types, definitions, references, calls, implementations and diagnostics |
-| JuliaSyntax | Julia syntax and additional Julia-project support |
-| External LSP | Explicitly configured servers provide navigation, completions, signatures and call hierarchy according to their capabilities |
-
-Saved facts from several backends can also be queried together. Each source retains its identity
-and observations. Matching locations on identical source establish correspondence; disagreements
-remain visible. Syntax candidates, compiler semantics and runtime evidence retain their own meanings.
-
-See [combined evidence](docs/core/combined_evidence.md), [TypeScript semantics](docs/core/semantic.md)
-and [language services](docs/core/language_services.md). Go AST candidate calls currently lack
-Go type-checker confirmation. External LSP synchronizes disk source; unsaved editor-buffer
-synchronization remains unfinished.
-
-## Write analysis methods for your project
-
-Built-in analyzers cover impact, candidate tests, Git cochange, architecture, migration order
-and risk candidates. For your own layering rules or dependency constraints, write an ordinary
-Julia analysis function, or ask a model to propose one and run it through the same validation process.
-
-Temporary analyzers implement `analyze(data, request)::Dict` and `selftest()::Bool`.
-Core sends selected project facts to a separate process, checks external fixtures and the
-symbol/relationship references in its results, then returns candidates, scores, explanations
-and evidence. Project-specific questions such as cross-layer calls or dependencies affected by
-a public-interface change can use a separate analyzer without adding its algorithm to Agent Core.
-
-An analyzer belongs to the current conversation by default. Useful methods can be archived by
-content hash and selected as a project- or user-scoped active version after validation. Promotion
-and rollback rerun external fixtures and check version conditions. Analysis methods and model
-judgment can therefore be improved separately.
-
-Julia supplies ordinary functions, dynamic loading and JIT compilation in the same environment.
-`invokelatest` handles calls to newly defined methods; archives and active pointers manage versions.
-Generated code executes in a separate process. Linux x86_64 has verified seccomp restrictions
-against file opens, network access and child-process creation, with time and output limits.
-Isolation on other platforms remains unfinished.
-
-See [isolated analyzers and their lifecycle](docs/core/isolated_analyzers.md).
-
-## Extend Core with Julia types and methods
-
-Provider, Tool, ProjectDataBackend and Analyzer interfaces use Julia multiple dispatch.
-An extension package defines its types and implements the required methods; Core checks and
-activates its contributions. Installed independent Julia packages can be loaded after name,
-UUID, version and source-hash checks. Julia `weakdeps` and package extensions enable optional capabilities.
-
-The running Core can inspect actual method signatures, missing interfaces and dispatch ambiguities.
-Custom model services, internal code indexes and specialized tools get runtime evidence of
-whether their interfaces are complete or their methods conflict. Failed activation quarantines
-an extension. Deactivation stops new calls before waiting for existing calls to finish.
-
-| Julia mechanism | Use in ShenScope |
-|---|---|
-| Multiple dispatch and type parameters | Different data and execution implementations for providers, tools, backends and analyzers |
-| Method reflection and ambiguity checks | Inspect extension contracts, missing methods and conflicts |
-| `Module` and `invokelatest` | Organize loaded code and call new methods at explicit boundaries |
-| `weakdeps` and package extensions | Load optional capabilities; an actual SparseArrays evidence-matrix extension is available |
-| `Task`, `Channel` and `ScopedValue` | Coordinate model streams, tools and background work with shared permissions, budgets and cancellation |
-| FFI, processes and IO | Use native parsers, external language tools and existing ecosystems |
-
-Trusted extensions run within the Core process and have a different trust scope from isolated
-analyzers. Deactivation manages calls and resources; it does not unload Julia methods.
-See [Julia extensions](docs/core/julia_extension_lifecycle.md) and
-[runtime interface inspection](docs/core/julia_diagnostics.md).
-
-## Core can inspect its own computation
-
-ShenScope can inspect actual compiled results for supported Core functions, including inferred
-types, IR, allocations and sampled stacks. When developing an analyzer or optimizing graph
-computation, you can examine both the result and where the computation spends resources.
-Compiler locations, allocation samples and periodic samples can be associated with
-source-hashed Julia declarations while retaining their separate provenance.
-
-These diagnostics currently target fixed Core functions. Python, Go, C++ and other user projects
-use their corresponding parsers, language services, tests and check commands. Core self-inspection
-and project-language support are separate capabilities.
-
-See [compiler IR](docs/core/compiler_ir.md), [allocation and timing](docs/core/runtime_profiling.md),
-[periodic sampling](docs/core/runtime_sampling.md) and [source/runtime evidence](docs/core/runtime_evidence.md).
-Precompilation and PackageCompiler runtime images have an experimental workflow. Standalone
-application distribution remains unfinished; see [runtime images](docs/core/runtime_images.md).
-
-## Coding workflows
-
-These analysis capabilities work alongside the agent's everyday tools.
-
-| Capability | Current implementation |
-|---|---|
-| Model services | OpenAI Chat / Responses, Anthropic, Gemini and Ollama; streaming, native reasoning, budgets, routing and retries before delivery |
-| Planning and context | Plan/Act, editable task plans, trimming/summaries and retained original tool outputs |
-| File changes | Search/read/hash checks; multi-file proposals, diffs, explicit application, conflict checks and failure rollback |
-| Tests and checks | Argument-vector commands for any language; discovery, execution, cancellation, output receipts, SARIF import and source-associated diagnostics |
-| Longer work | Conversations/branches, versioned memory, persistent task dependencies, leases and result receipts |
-| External capabilities | MCP stdio / Streamable HTTP, project/user Skills and lifecycle Hooks |
-| Permissions | Separate Allow / Ask / Deny policies for read, edit, process, network, MCP, dynamic code and persistence |
-
-Edit proposals record observed source versions and recheck them before application. Selected
-test receipts can be associated with a proposal. Saved history restores as a new proposal for
-review; existing execution results can be queried. Language-server formatting, rename and
-code actions can also become reviewable edit proposals.
-
-See [edit workflows](docs/core/workspace_edits.md), [project testing](docs/core/project_testing.md),
-[check diagnostics](docs/core/project_validation.md), [models](docs/core/models.md),
-[context](docs/core/context.md), [memory](docs/core/memory.md), [tasks](docs/core/tasks.md),
-[MCP](docs/core/mcp.md), [Skills](docs/core/skills.md) and [Hooks](docs/core/hooks.md).
-
-## Four interfaces
-
-| Interface | Use and status |
-|---|---|
-| CLI | Start tasks, query project data and run analyses in a terminal |
-| TUI | Interactive terminal conversations, tool progress and approvals |
-| VS Code extension | Standalone VSIX for an existing VS Code installation; Julia and dependencies currently require separate installation |
-| ShenScope IDE | Standalone development IDE based on Code-OSS; its integrated ShenScope sidebar can start Core with extensions disabled |
-
-All four interfaces use the same Julia Core contracts. Core owns the agent, models, configuration,
-conversations, permissions and analysis. Editors handle interaction and display. The native IDE
-and VSIX share a panel and have Terminal, Testing and Problems integration. Some newer features are
-available through Core tools/RPC without a dedicated graphical page.
-
-**A complete, directly installable ShenScope IDE package has not been released yet.**
-The native IDE can run through the source-build workflow. Installers, bundled Julia, upgrades
-and uninstall support remain unfinished. The VSIX is a separate extension package.
-See the [extension guide](editors/vscode/README.md) and [IDE build guide](ide/README.md).
-
-## Getting started
-
-### CLI / TUI
-
-Install Julia 1.11. These examples use a Linux/Unix shell:
-
-```sh
+```bash
 git clone https://github.com/SurviveAIEra/ShenScope.git
 cd ShenScope
 export SHENSCOPE_JULIA="$(command -v julia)"
+export JULIA_DEPOT_PATH="${JULIA_DEPOT_PATH:-$HOME/.julia}"
 julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
 bin/shenscope --help
-bin/shenscope doctor --root /path/to/project --state-dir .local/state
 ```
 
-Configure your model service in a TOML file, for example:
+### 2. Configure a model
+
+Save the following as your own `shenscope.toml`. This example uses OpenAI Chat; change the endpoint and model to match your service.
 
 ```toml
 [provider]
@@ -217,20 +54,55 @@ dynamic = "ask"
 persistence = "ask"
 ```
 
-Use your service's address and model name. Supply keys through the environment or editor secure
-storage; configuration stores only the variable name.
+Put the API key in the `SHENSCOPE_MODEL_KEY` environment variable. The configuration stores only its name. In Bash, this prompt keeps the key off the screen and out of the command's shell history:
 
-```sh
-bin/shenscope chat "Investigate the failure and propose a repair" \
-  --root /path/to/project --config /path/to/shenscope.toml --agent-mode plan
+```bash
+read -r -s -p 'Model API key: ' SHENSCOPE_MODEL_KEY
+export SHENSCOPE_MODEL_KEY
+```
+
+OpenAI Responses, Anthropic, Gemini and Ollama are also supported. Other services can use the protocol they implement. See [model services](docs/core/models.md) for configuration details.
+
+### 3. Open your project
+
+Run these commands from the ShenScope checkout, replacing the project and configuration paths:
+
+```bash
+bin/shenscope doctor --root /path/to/project --config /path/to/shenscope.toml
 bin/shenscope tui --root /path/to/project --config /path/to/shenscope.toml
 ```
 
-### VS Code extension
+Try a first prompt in the TUI:
 
-Building the VSIX from source requires Node.js and npm:
+```text
+Explain this repository's layout and find its main entry points and tests.
+```
 
-```sh
+For a command-line task, Plan mode investigates and proposes work:
+
+```bash
+bin/shenscope chat "Find callers of this interface and explain what changing it might affect" \
+  --root /path/to/project --config /path/to/shenscope.toml --agent-mode plan
+```
+
+Graph analysis requires its backend dependencies and an index; see [project data and indexing](docs/core/project_data.md). Ordinary file search, edits and test commands can run without a code graph.
+
+## Terminal, VS Code and standalone IDE
+
+| Interface | How to use it |
+|---|---|
+| CLI | Start tasks in a terminal or integrate them into scripts |
+| TUI | Keep an interactive conversation, follow tool execution and approve actions |
+| VS Code extension | Install a standalone VSIX into your existing VS Code and open the ShenScope sidebar |
+| ShenScope IDE | Build a standalone development editor from Code-OSS; its native sidebar works with extensions disabled |
+
+All four interfaces use Julia Core for models, configuration, conversations, permissions and analysis. The two editor clients share panels and integrate with native Terminal, Testing and Problems views. You can run tests from the test view and publish project diagnostics to Problems.
+
+### Build the VS Code extension
+
+After preparing Core, install Node.js, npm and Python 3, then run from the repository root:
+
+```bash
 npm --prefix editors ci --ignore-scripts --no-audit --no-fund
 npm --prefix editors run check
 npm --prefix editors run build
@@ -238,55 +110,128 @@ python scripts/package_vsix.py
 code --install-extension dist/shenscope-0.1.0.vsix
 ```
 
-Open the ShenScope sidebar in a trusted local workspace. Set `shenscope.juliaPath` to the Julia
-executable; `shenscope.corePath` can select an existing Core checkout. When using the packaged
-Core, first install dependencies for its `core/Project.toml`; see the
-[extension guide](editors/vscode/README.md).
+Open the ShenScope sidebar in a trusted local workspace. Set `shenscope.juliaPath` to your Julia executable and `shenscope.corePath` to the absolute path of your prepared ShenScope checkout. Model keys can also use VS Code secure storage.
+
+The VSIX includes Core source without a bundled Julia runtime. To use its packaged Core, install that Core's Julia dependencies separately; see the [extension guide](editors/vscode/README.md).
+
+### Standalone IDE
+
+**There is no complete downloadable ShenScope IDE installer yet.** A working source development build and native sidebar integration are available. Installers, bundled Julia, upgrades and uninstall support remain unfinished. Follow the [IDE build guide](ide/README.md) to run it from source.
+
+## Inside Julia Core
+
+### Keep project relationships available
+
+Suppose you are changing a public interface. ShenScope can follow indexed callers, list potentially affected locations, filter related tests and examine which files have historically changed together. The model can then inspect relevant code and propose a change. Local functions handle graph traversal and filtering.
+
+A resident `ProjectState` holds files, symbols, relationships and forward/reverse indexes for repeated queries. Indexes can be persisted and updated incrementally after saved-file changes. Results record the source versions they describe, making stale analysis identifiable.
+
+This keeps repeated queries and deterministic computation local, while the model handles requirements, code generation and engineering decisions. See [project data](docs/core/project_data.md), [saved-file monitoring](docs/core/project_watch.md) and [Git history analysis](docs/core/git_history.md).
+
+### Separate data sources from analysis
+
+Backends extract code information. Core represents symbols, relations and source locations through shared interfaces. Analyzers perform the computation.
+
+| Data source | Current coverage |
+|---|---|
+| Go AST | Declarations, imports and candidate calls through Go's official parser; call candidates lack Go type-checker confirmation |
+| Tree-sitter | Multilanguage syntax with partial declaration and relationship extraction |
+| CodeGraphContext | Actual SDK and Ladybug graph storage, adapted to Core's data model |
+| TypeScript compiler | JS/TS types, definitions, references, calls, implementations and diagnostics |
+| JuliaSyntax | Additional syntax analysis for Julia projects |
+| External LSP | Navigation, completion, signatures and call hierarchy according to the configured server's capabilities |
+
+The same impact and test-selection analyzers can operate on different backends. An internal code graph can implement an adapter and reuse existing analysis methods.
+
+Saved observations from multiple backends can also be queried together while retaining their origins. Syntax candidates, compiler-confirmed references and runtime samples have different meanings. External LSP currently synchronizes disk files; unsaved editor-buffer synchronization is unfinished. See [combined queries](docs/core/combined_evidence.md), [TypeScript semantics](docs/core/semantic.md) and [language services](docs/core/language_services.md) for exact coverage.
+
+### Add analysis for your project's rules
+
+Rules such as “business logic must not call storage directly” or “check these modules before changing this interface” vary between projects. Built-in analysis covers change impact, test candidates, Git cochanges, architecture dependencies, migration ordering and risk candidates. More specific rules can be ordinary Julia functions.
+
+A model can also propose a temporary analyzer. Core passes selected project data to a separate process, runs external test fixtures and checks referenced symbols and relations. A validated analyzer can serve the current task; reusable methods can be archived, selected for project or user scope, updated and rolled back.
+
+Julia functions, dynamic loading and JIT compilation provide one language for authoring and running these methods. Generated analysis code executes separately. Linux x86_64 has verified seccomp restrictions against file opens, network access and child-process creation, with time and output limits. Isolation on other platforms remains unfinished. See [custom analyzers](docs/core/isolated_analyzers.md) for contracts and lifecycle.
+
+### Connect internal tools through independent packages
+
+Providers, tools, data backends and analyzers use Julia types and multiple dispatch. An extension can live in its own Julia package, implement methods for its types, and be checked and activated by Core. Julia package extensions provide optional loading.
+
+Core checks missing methods, signatures and dispatch ambiguities. Failed activation retains a failure state; deactivation stops new calls and waits for existing calls to finish. These facilities support internal model services, indexes and specialized tools, and make extension conflicts easier to inspect.
+
+Extensions are trusted code running in Core. Custom analyzers use the separate isolation flow above. See [Julia extensions](docs/core/julia_extension_lifecycle.md) for interfaces and resource management.
+
+### Coordinate background work in the same runtime
+
+Julia `Task`, `Channel` and bounded worker pools coordinate model streams, tools, indexing and background tasks. `ScopedValue` carries the current execution context; Core manages permissions, budgets and cancellation. Background tasks record dependencies, claims and results, while clients can inspect progress or cancel work. See [task scheduling](docs/core/tasks.md) for implementation and limits.
+
+### Inspect Core's own computation
+
+Developers can inspect compiler IR, inferred types, allocations and sampled call stacks for supported Core functions. Julia's reflection and compiler interfaces make these checks accessible through ordinary tools when investigating slow or allocation-heavy analysis.
+
+These checks concern Julia Core itself. Python, Go, C++ and other user projects use their corresponding parsers, language services, tests and check commands. See [runtime inspection](docs/core/julia_diagnostics.md), [compiler IR](docs/core/compiler_ir.md) and [profiling](docs/core/runtime_profiling.md).
+
+## Coding features
+
+- **Models:** five protocols, streaming, native reasoning information, discovery, budgets, routing and failure handling.
+- **Investigation and planning:** file search, source reads, Plan/Act, editable task plans, context trimming and summaries.
+- **Editing:** multifile proposals, diff previews, source checks before application, conflict handling and failure rollback. LSP rename, formatting and code actions can become reviewable proposals.
+- **Verification:** project-defined tests, compiler and check commands, test execution/cancellation, saved results, SARIF import and source-version-associated diagnostics.
+- **Continuity:** saved conversations and branches, versioned memory, persistent task dependencies and execution records.
+- **External capabilities:** MCP stdio / Streamable HTTP, project/user Skills and lifecycle Hooks.
+- **Permissions:** independent Allow / Ask / Deny for reads, edits, processes, network, MCP, dynamic code and persistence.
+
+ShenScope remains in development. Live-model task quality, large-codebase performance and cross-platform distribution need further validation. Some Core features are available through tools or RPC without a dedicated graphical control.
 
 ## Open-source references
 
-ShenScope studies behavior, architecture, protocols and failure handling across the following
-projects, with Agent Core independently implemented in Julia. Research records identify inspected
-source and revisions. Licenses and actual dependencies are documented separately.
+ShenScope studies agent designs and user workflows, then implements its own Core in Julia. Its primary references are:
 
-| Primary reference | Design areas studied |
+| Project | Main areas studied |
 |---|---|
-| [Codex](https://github.com/openai/codex) | Request/execution boundaries, approvals, cancellation, app-server and terminal interaction |
-| [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) | Events/durable state, scheduling, exclusive barriers, tasks and message lifecycles |
-| [OpenCode](https://github.com/anomalyco/opencode) | Model adapters, compaction, conversations, MCP/LSP and client/server responsibilities |
-| [Pi](https://github.com/badlogic/pi-mono) | Original messages/model context, steering, branches, Skills and extension interfaces |
-| [Kimi Code](https://github.com/MoonshotAI/kimi-code) | Native reasoning, request guards, trust/cancellation, plugins and TUI |
-| [ZCode](https://github.com/zai-org/ZCode) | Turn state, steering/queues, compaction state and CLI/desktop workflows |
-| [Qwen Code](https://github.com/QwenLM/qwen-code) | Providers, Plan/Act, MCP/Hooks/Skills/LSP and CLI/IDE/SDK |
+| [Codex](https://github.com/openai/codex) | Tool execution and approval, cancellation, request boundaries, app-server and terminal interaction |
+| [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) | Plugin architecture, events, durable state, scheduling, exclusive execution and task lifecycle |
+| [OpenCode](https://github.com/anomalyco/opencode) | Provider adaptation, conversations, context compaction, MCP/LSP and client/server separation |
+| [Pi](https://github.com/badlogic/pi-mono) | Raw messages versus model context, task steering, branches, Skills and extension interfaces |
+| [Kimi Code](https://github.com/MoonshotAI/kimi-code) | Native reasoning, request protection, trust, cancellation, plugins and terminal interaction |
+| [ZCode](https://github.com/zai-org/ZCode) | Turns, steering and queues, context compaction, CLI and desktop workflows |
+| [Qwen Code](https://github.com/QwenLM/qwen-code) | Multiple providers, Plan/Act, MCP/Hooks/Skills/LSP and CLI/IDE/SDK interface organization |
 
-Additional research by purpose:
+Specialized references include:
 
-- **Project understanding and editing:** [Aider](https://github.com/Aider-AI/aider), [Serena](https://github.com/oraios/serena) and [CodeGraphContext](https://github.com/CodeGraphContext/CodeGraphContext): repository maps, semantic navigation, edit feedback and graph facts. CodeGraphContext is also an actual backend.
-- **Execution and desktop workflows:** [Cline](https://github.com/cline/cline), [OpenHands](https://github.com/All-Hands-AI/OpenHands), [Software Agent SDK](https://github.com/OpenHands/software-agent-sdk), [Hermes Agent](https://github.com/NousResearch/hermes-agent) and [Goose](https://github.com/block/goose): approvals, execution environments, longer tasks and tool lifecycles.
-- **Resident computation and Julia:** [Aries CLI](https://github.com/aayoawoyemi/Aries-cli), [AgentREPL.jl](https://github.com/samtalki/AgentREPL.jl), [JuliaMCP.jl](https://github.com/julia-vscode/JuliaMCP.jl), [Kaimon.jl](https://github.com/kahliburke/Kaimon.jl) and [PromptingTools.jl](https://github.com/svilupp/PromptingTools.jl): resident processes, runtime observation, model interfaces and dynamic capabilities.
-- **Editors and distribution:** [Code-OSS](https://github.com/microsoft/vscode), [VSCodium](https://github.com/VSCodium/vscodium) and [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl): Workbench integration, Open VSX, branding/distribution and Julia runtime images.
+- **Code understanding:** [Aider](https://github.com/Aider-AI/aider) for repository maps and edit feedback, [Serena](https://github.com/oraios/serena) for semantic navigation, and [CodeGraphContext](https://github.com/CodeGraphContext/CodeGraphContext) for code graphs. CodeGraphContext is also an implemented backend.
+- **Execution and durable work:** [Cline](https://github.com/cline/cline), [OpenHands](https://github.com/All-Hands-AI/OpenHands), [Software Agent SDK](https://github.com/OpenHands/software-agent-sdk), [Hermes Agent](https://github.com/NousResearch/hermes-agent) and [Goose](https://github.com/block/goose).
+- **Resident computation and Julia tools:** [Aries CLI](https://github.com/aayoawoyemi/Aries-cli), [AgentREPL.jl](https://github.com/samtalki/AgentREPL.jl), [JuliaMCP.jl](https://github.com/julia-vscode/JuliaMCP.jl), [Kaimon.jl](https://github.com/kahliburke/Kaimon.jl) and [PromptingTools.jl](https://github.com/svilupp/PromptingTools.jl).
+- **Editors and distribution:** [Code-OSS](https://github.com/microsoft/vscode), [VSCodium](https://github.com/VSCodium/vscodium) and [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl). The standalone IDE builds on Code-OSS, with its code and license retained separately.
 
-See the [capability matrix](docs/architecture/capability_matrix.md),
-[source research](docs/architecture/reference_synthesis.md) and
-[reference revisions](docs/architecture/reference_lockfile.json).
+These projects have different scopes. The list identifies design references; consult the [capability matrix](docs/architecture/capability_matrix.md), [source research](docs/architecture/reference_synthesis.md) and [pinned revisions](docs/architecture/reference_lockfile.json) for specific review and implementation coverage.
 
-## Development and validation
+## Documentation
 
-Core source lives in `src/`, CLI/TUI in `src/CLI/`, and optional Julia extensions in `ext/`.
-`editors/` contains the shared panel and VSIX; `ide/` contains native editor integration.
-See [module guides](docs/core/) and [validation records](docs/validation/).
+| Topic | Starting points |
+|---|---|
+| Models and failure handling | [Services](docs/core/models.md) · [Routing](docs/core/model_routing.md) · [Retry policy](docs/core/model_policy.md) |
+| Project intelligence | [Data](docs/core/project_data.md) · [Combined queries](docs/core/combined_evidence.md) · [Impact and migration](docs/core/migration.md) |
+| Edits, tests and diagnostics | [Workspace edits](docs/core/workspace_edits.md) · [Testing](docs/core/project_testing.md) · [Validation](docs/core/project_validation.md) |
+| Custom computation | [Isolated analyzers](docs/core/isolated_analyzers.md) · [Julia extensions](docs/core/julia_extension_lifecycle.md) |
+| External capabilities | [MCP](docs/core/mcp.md) · [Skills](docs/core/skills.md) · [Hooks](docs/core/hooks.md) |
+| Continuing work | [Context](docs/core/context.md) · [Memory](docs/core/memory.md) · [Tasks](docs/core/tasks.md) |
+| Editors and builds | [VS Code extension](editors/vscode/README.md) · [Standalone IDE](ide/README.md) |
 
-```sh
+## Development
+
+Core lives in `src/`, CLI/TUI in `src/CLI/` and optional Julia extensions in `ext/`. `editors/` contains shared panels and the VS Code extension; `ide/` contains standalone editor integration.
+
+```bash
 julia --startup-file=no --threads=4 --project=. test/runtests.jl
 npm --prefix editors run check
 npm --prefix editors test
 ```
 
-Server, parser, compiler and GUI checks require their corresponding dependencies; module guides
-describe installation. The project is still in development. Live-model task quality, large-codebase
-performance and complete cross-platform distribution remain to be verified.
+Backend, language-server and GUI checks require the dependencies described in their module guides. Existing verification records are in [docs/validation](docs/validation/). Report issues or suggestions through [GitHub Issues](https://github.com/SurviveAIEra/ShenScope/issues).
 
-## License
+## Authorship and license
 
-Authored ShenScope source uses [Apache-2.0](LICENSE). Dependencies retain their own licenses;
-see [third-party notices](THIRD_PARTY_NOTICES.md).
+ShenScope was initiated by **SurviveAIEra**. Its specific designs and implementations for resident project data, interchangeable backends, programmable analysis and Julia extensions are recorded in this repository's documentation and commit history.
+
+Original source uses [Apache-2.0](LICENSE), with project attribution in [NOTICE](NOTICE). Copies, modifications and distributions must comply with the license and retain applicable copyright and attribution notices. Dependencies keep their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). The [authorship and license guide](docs/project_authorship.md) explains attribution, design provenance and permission to reuse.

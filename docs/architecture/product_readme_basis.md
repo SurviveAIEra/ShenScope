@@ -40,3 +40,29 @@ No historical timing comparison, projected token saving or unmeasured advantage
 over another agent is used as a current product claim. Requirements for future
 backends, Revise, whole-project inference and cross-platform distribution are
 not presented as shipped capabilities.
+
+## README organization and language
+
+The following READMEs were read from the existing pinned research checkouts.
+Their organization informed the rewrite; no upstream prose, branding or
+capability claims were reused as ShenScope content.
+
+| Project | README read | Useful writing choices |
+|---|---|---|
+| Kimi Code | `README.zh-CN.md` | Explain everyday tasks in Chinese; give a first prompt; keep detailed configuration in linked guides |
+| OpenCode | `README.zh.md` | Make installation and interface choices easy to find; use small comparison tables |
+| ZCode | `README.md` | Describe source-build commands concretely and distinguish desktop, CLI and development entry points |
+| DeepSeek Harness | `README.zh.md` | State the architectural idea briefly, then give runnable commands and deeper documentation |
+| Codex | `README.md` | Keep the opening and quick start direct; link editor and build documentation |
+| Qwen Code | `README.md` | Explain why a user would choose the project, then show interface choices and the first task |
+
+Chinese copy was written around repository maintenance examples rather than
+translated from English. Both versions share supported functionality, command
+examples, authorship and distribution status. Detailed analyzer contracts and
+receipt schemas remain in the module guides. Source-size targets and development
+checkpoint bookkeeping remain outside both READMEs.
+
+Authorship names SurviveAIEra without claiming an unverified global first.
+Apache-2.0 permits reuse subject to its conditions; project attribution and
+concrete design provenance are distinct from ownership of an abstract idea.
+See [the authorship guide](../project_authorship.md).

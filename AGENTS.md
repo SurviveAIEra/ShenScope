@@ -6,6 +6,12 @@ do not create worktrees or copy the project directory. Normal feature pushes mus
 be fast-forward. The user explicitly authorized rewriting existing Git author and
 committer identities to SurviveAIEra's GitHub noreply identity; that one history
 replacement requires an exact remote SHA lease and preserved Git recovery bundle.
+The user also explicitly authorized amending the initial project's LICENSE/NOTICE
+attribution and replaying its descendants. That replacement likewise requires an
+exact remote SHA lease, a verified Git-only recovery bundle, and checks that
+every replayed tree differs only in those two files. Normal later pushes remain
+fast-forward. Historical validation records retain their recorded identities;
+`docs/validation/license-history-rewrite.json` maps the rewritten commits.
 
 Read `docs/requirements/reconstruction.md` and `WORK_STATUS.md` on resumption.
 The user's current phase target is 32,000 authored Julia Core code lines.

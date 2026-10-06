@@ -1,0 +1,47 @@
+{
+  "files": [
+    {
+      "file": "README.md",
+      "local_links_and_anchors_checked": 46,
+      "bash_blocks_syntax_checked": 6,
+      "toml_blocks_parsed": 1,
+      "sha256": "35d44e621d64599f48eae79f60e432fd87e88f60daa276fadf7988084d5b1008"
+    },
+    {
+      "file": "README.en.md",
+      "local_links_and_anchors_checked": 46,
+      "bash_blocks_syntax_checked": 6,
+      "toml_blocks_parsed": 1,
+      "sha256": "86a3088a9bfd82e79dde8332fc1d19a3196a7bb834be781ad2aeeff80b9dd389"
+    },
+    {
+      "file": "docs/project_authorship.md",
+      "local_links_and_anchors_checked": 6,
+      "bash_blocks_syntax_checked": 0,
+      "toml_blocks_parsed": 0,
+      "sha256": "aa9a66dffd73b0c70cd835ddff73e6906530ed8da07cfec1f8256025921d91d9"
+    }
+  ],
+  "bilingual_configuration_matches": true,
+  "scope": "Documentation syntax, relative links and examples; no claim of live-model verification",
+  "cli_smoke": {
+    "julia": "1.11.7",
+    "help_exit": 0,
+    "doctor_exit": 0,
+    "configuration": "TOML extracted from README",
+    "live_model_contacted": false,
+    "key_configured": false
+  },
+  "package": {
+    "path": "dist/shenscope-0.1.0.vsix",
+    "bytes": 783134,
+    "entries": 389,
+    "payloads_compared_to_current_files": 387,
+    "license_and_notice_match_current_source": true,
+    "sha256": "9b9769e8a80fa86f37e5e9d0b46ebcd53891b65cf02b12f809e356dc2d9a7825",
+    "verification": "Payload comparison only; existing GUI validation unchanged"
+  },
+  "functional_source_changed": false,
+  "full_ide_rebuilt": false,
+  "history_audit": "license-history-rewrite.json"
+}
