@@ -63,6 +63,8 @@ receipt schemas remain in the module guides. Source-size targets and development
 checkpoint bookkeeping remain outside both READMEs.
 
 Authorship names SurviveAIEra without claiming an unverified global first.
-Apache-2.0 permits reuse subject to its conditions; project attribution and
-concrete design provenance are distinct from ownership of an abstract idea.
+The original source now uses the restricted contribution-only license; it is
+not marketed as standard open source. Attribution and concrete design provenance
+remain distinct from ownership of an abstract idea. Third-party and prior lawful
+license rights are retained, including platform viewing/forking permissions.
 See [the authorship guide](../project_authorship.md).

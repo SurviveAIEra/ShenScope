@@ -4,7 +4,9 @@
 
 [简体中文](README.md) · English · [Documentation](#documentation) · [Authorship and license](#authorship-and-license)
 
-ShenScope is an open-source AI coding assistant initiated by [SurviveAIEra](https://github.com/SurviveAIEra), with an independently implemented Julia Core. It helps you explore a repository, investigate bugs, edit code and run tests through a CLI, terminal UI, VS Code extension or standalone development IDE.
+ShenScope is an AI coding assistant initiated by [SurviveAIEra](https://github.com/SurviveAIEra), with an independently implemented Julia Core. It helps you explore a repository, investigate bugs, edit code and run tests through a CLI, terminal UI, VS Code extension or standalone development IDE.
+
+The project plans to make its source public under a [restricted contribution-only license](LICENSE). It is not standard open source. Permission is limited to preparing, testing and submitting improvements to ShenScope; use on unrelated projects or independent distribution requires separate authorization.
 
 It works with projects in Python, JavaScript/TypeScript, Go, C/C++ and other languages. Julia implements the agent; you do not need to write your project in Julia or learn Julia for everyday use.
 
@@ -234,4 +236,6 @@ Backend, language-server and GUI checks require the dependencies described in th
 
 ShenScope was initiated by **SurviveAIEra**. Its specific designs and implementations for resident project data, interchangeable backends, programmable analysis and Julia extensions are recorded in this repository's documentation and commit history.
 
-Original source uses [Apache-2.0](LICENSE), with project attribution in [NOTICE](NOTICE). Copies, modifications and distributions must comply with the license and retain applicable copyright and attribution notices. Dependencies keep their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). The [authorship and license guide](docs/project_authorship.md) explains attribution, design provenance and permission to reuse.
+Original source uses [ShenScope Contribution-Only License 1.0](LICENSE), with attribution in [NOTICE](NOTICE). It permits copying, modification, building and testing for Project contributions. It does not authorize unrelated personal or business use, commercial deployment, independent releases or derivative products. Rights under law, platform terms and prior lawful grants remain intact.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution instructions and explicit contribution terms. Dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). The [authorship and license guide](docs/project_authorship.md) explains the scope and future public-repository preparation.

@@ -26,7 +26,7 @@ the complete native client typecheck pass; final timeout/notice edits change
 strings and an existing visibility property, with final GUI verification.
 Evidence: `docs/validation/project-diagnostics-checkpoint-044.json` and its raw logs.
 
-Current VSIX: 783,134 bytes, 389 archive entries, 387 authored payloads verified
+Current VSIX: 780,609 bytes, 389 archive entries, 387 authored payloads verified
 against current source/assets. GUI validation uses the development extension;
 installed-package runtime validation is separate. The package includes authored
 Core but does not bundle Julia. Complete IDE installers, bundled runtime,
@@ -40,16 +40,17 @@ OpenCode, ZCode and DeepSeek Harness Chinese READMEs, plus Codex/Qwen English
 READMEs. They explain resident project data, interchangeable backends,
 programmable isolated analysis and Julia extension/runtime facilities, and state
 the missing complete IDE installer explicitly. Phase/line targets remain absent.
-Each README has 46 checked relative links/anchors, six Bash blocks checked for
+Each README has 48 checked relative links/anchors, six Bash blocks checked for
 syntax and one parsed TOML example. The two configurations match; CLI help and
 doctor parse the documented configuration successfully on Julia 1.11.7 without
-contacting a model. The small VSIX was repackaged only to update attribution;
+contacting a model. The small VSIX was repackaged to synchronize license,
+attribution and extension metadata;
 all 387 payloads match current files. No full IDE rebuild or functional source
 changes were required. Evidence: `docs/validation/readme-review.json`.
 Original authorship names SurviveAIEra. The initial LICENSE/NOTICE attribution
 was corrected by an explicitly requested root amend and replay of 46 descendants.
-All 47 replayed trees differ only in LICENSE/NOTICE; standard Apache license
-terms, other files, messages and author timestamps were preserved. The mapping
+All 47 replayed trees differed only in LICENSE/NOTICE; that root amendment
+preserved the then-current Apache terms, other files, messages and author timestamps. The mapping
 is recorded in `docs/validation/license-history-rewrite.json`; historical test
 records were not rewritten. A verified Git-only recovery bundle is retained
 under ignored `.local/`, with no checkout copies.
@@ -59,6 +60,17 @@ remains free. Notes below describe their historical checkpoints and may state
 limitations that later checkpoints resolved.
 
 Read `docs/requirements/reconstruction.md` for the reconciled requirements.
+Licensing: the repository remains private and has not been publicly released;
+it is intended to make source public later. Current original source uses
+ShenScope Contribution-Only License 1.0, with explicit contribution assent and
+Maintainer integration/relicensing rights. READMEs describe restricted source,
+not standard open source. Prior lawful grants and third-party/platform rights
+remain intact. The VSIX manifest, license and notice match the chosen terms.
+Private historical commits still use Apache-2.0. Full-history public release
+therefore remains blocked by the read-only publication audit; preserve private
+history and prepare a checked public snapshot when publication is requested.
+No GitHub visibility change, new public repository or IDE rebuild was performed.
+See `docs/licensing/license_decision.md` and `CONTRIBUTING.md`.
 Prepared: 22 shallow upstream research repositories, Julia 1.11.7 from the
 verified official OCI layer, one main checkout. Reference notes are recorded
 before application implementation. No copied project directories or worktrees.

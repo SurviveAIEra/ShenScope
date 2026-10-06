@@ -2,24 +2,38 @@
   "files": [
     {
       "file": "README.md",
-      "local_links_and_anchors_checked": 46,
+      "local_links_and_anchors_checked": 48,
       "bash_blocks_syntax_checked": 6,
       "toml_blocks_parsed": 1,
-      "sha256": "35d44e621d64599f48eae79f60e432fd87e88f60daa276fadf7988084d5b1008"
+      "sha256": "7bebde5593ed75a8a29bdca7a521e9cccd5ea8c7b2aab93c66a26c58e4e15602"
     },
     {
       "file": "README.en.md",
-      "local_links_and_anchors_checked": 46,
+      "local_links_and_anchors_checked": 48,
       "bash_blocks_syntax_checked": 6,
       "toml_blocks_parsed": 1,
-      "sha256": "86a3088a9bfd82e79dde8332fc1d19a3196a7bb834be781ad2aeeff80b9dd389"
+      "sha256": "86759296e2f99a2540425f96ca9da7652096e1aeb74912aeca535cb4d8b9a3d5"
     },
     {
       "file": "docs/project_authorship.md",
-      "local_links_and_anchors_checked": 6,
+      "local_links_and_anchors_checked": 8,
       "bash_blocks_syntax_checked": 0,
       "toml_blocks_parsed": 0,
-      "sha256": "aa9a66dffd73b0c70cd835ddff73e6906530ed8da07cfec1f8256025921d91d9"
+      "sha256": "e8dd68e77c7fca30467143a9ce60e55ea94c9c96aa1b0890e39bb056049786ed"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "local_links_and_anchors_checked": 3,
+      "bash_blocks_syntax_checked": 0,
+      "toml_blocks_parsed": 0,
+      "sha256": "2e6d9fc34e5438983f86f728247cd7f850ed12e72e1b32bd348c62c80bb29f66"
+    },
+    {
+      "file": "docs/licensing/license_decision.md",
+      "local_links_and_anchors_checked": 2,
+      "bash_blocks_syntax_checked": 1,
+      "toml_blocks_parsed": 0,
+      "sha256": "2a74b1ec57c921db9529a5342123a7cc5ea5e7eb58c1d0a0efb211e5c41be471"
     }
   ],
   "bilingual_configuration_matches": true,
@@ -34,14 +48,16 @@
   },
   "package": {
     "path": "dist/shenscope-0.1.0.vsix",
-    "bytes": 783134,
+    "bytes": 780609,
     "entries": 389,
     "payloads_compared_to_current_files": 387,
     "license_and_notice_match_current_source": true,
-    "sha256": "9b9769e8a80fa86f37e5e9d0b46ebcd53891b65cf02b12f809e356dc2d9a7825",
+    "sha256": "675fc55d3a52c54f7ff200b094106ce9ffe25c9a1d1e229acf76e1c6953822b4",
     "verification": "Payload comparison only; existing GUI validation unchanged"
   },
-  "functional_source_changed": false,
+  "agent_functional_source_changed": false,
+  "current_original_license": "ShenScope Contribution-Only License 1.0",
+  "extension_manifest_license": "SEE LICENSE IN LICENSE",
   "full_ide_rebuilt": false,
   "history_audit": "license-history-rewrite.json"
 }

@@ -4,7 +4,9 @@
 
 简体中文 · [English](README.en.md) · [使用文档](#文档) · [作者与许可](#作者与许可)
 
-ShenScope 是由 [SurviveAIEra](https://github.com/SurviveAIEra) 发起的开源 AI 编程助手，核心用 Julia 编写。它可以帮你读懂项目、排查问题、修改代码和运行测试，提供命令行、终端交互界面、VS Code 扩展和独立 IDE 开发版。
+ShenScope 是由 [SurviveAIEra](https://github.com/SurviveAIEra) 发起的 AI 编程助手，核心用 Julia 编写。它可以帮你读懂项目、排查问题、修改代码和运行测试，提供命令行、终端交互界面、VS Code 扩展和独立 IDE 开发版。
+
+项目计划公开源码，采用[仅限项目贡献的受限许可](LICENSE)，不属于标准开源。默认允许为 ShenScope 准备、测试和提交改进；在其他项目中使用或独立发行，需要另行授权。
 
 它面向各种语言的项目，包括 Python、JavaScript/TypeScript、Go、C/C++ 等。你不用把项目改成 Julia，也不用为了日常使用学习 Julia。
 
@@ -236,4 +238,6 @@ npm --prefix editors test
 
 ShenScope 由 **SurviveAIEra** 发起。常驻项目数据、可替换后端、可编程分析及 Julia 扩展机制的具体设计与实现，记录在本仓库的文档和提交历史中。
 
-原创源码采用 [Apache-2.0](LICENSE)，项目署名见 [NOTICE](NOTICE)。复制、修改或分发代码时，需要遵守许可证，保留适用的版权与署名声明。第三方组件保留各自许可证，见[第三方说明](THIRD_PARTY_NOTICES.md)。作者署名、设计来源与许可的区别，见[作者与许可说明](docs/project_authorship.md)。
+原创源码采用 [ShenScope Contribution-Only License 1.0](LICENSE)，项目署名见 [NOTICE](NOTICE)。它允许为本项目贡献所需的复制、修改、构建和测试，不授权无关的个人或业务使用、商用、独立发行及衍生产品。法律、平台及既有合法授权的权利仍然保留。
+
+贡献方式与明确的贡献授权见 [CONTRIBUTING.md](CONTRIBUTING.md)。第三方组件保留各自许可证，见[第三方说明](THIRD_PARTY_NOTICES.md)。许可范围和未来公开仓库的安排，见[作者与许可说明](docs/project_authorship.md)。

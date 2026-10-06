@@ -1,6 +1,6 @@
 # 逐提交实现记录
 
-已核对的范围：前 47 个提交及本次第 48 个提交；历史链接使用当前 Git 历史的 SHA。
+已核对的范围：前 48 个提交及本次第 49 个提交；历史链接使用当前 Git 历史的 SHA。
 本表说明每次提交的实际修改；局部测试通过不代表整个产品已经完成。详细验证及平台限制见 `WORK_STATUS.md` 和 `docs/validation/`。当前阶段的 Core 目标为 32,000 行，完整产品仍有独立验收事项。
 
 | 顺序 | 提交 | 本次实现 |
@@ -53,7 +53,8 @@
 | 45 | [8382cc2](https://github.com/SurviveAIEra/ShenScope/commit/8382cc292cf5546c0766c2ab3896ca59f024d14a) · feat(problems): collect source-verified project diagnostics | 把项目错误关联到确切源码版本；代码变化后撤回旧标记，提供筛选、比较与源码查看，并检查会话和读取权限。 |
 | 46 | [eeae68e](https://github.com/SurviveAIEra/ShenScope/commit/eeae68e07ac4c2c500e4caeda4a028e5cee95ecb) · feat(workspace): add reviewed edits and project language services | 可以连接语言服务器查代码、准备重命名和格式化修改；多文件改动先看差异再应用，检查源码是否已变，并把实际测试、编译结果和改动关联起来。中英文 README 说明项目设计及各入口的实际状态。 |
 | 47 | [6de40fe](https://github.com/SurviveAIEra/ShenScope/commit/6de40fed75742a2df627e5dabeff57a239016d91) · feat(diagnostics): verify project checks and publish native Problems | 能导入指定源码版本的 SARIF 检查报告，比较前后报告，把编译检查与已应用的改动关联；两种编辑器都能在 Problems 里查看错误、打开文件，修改文件或撤销读取权限后清除旧标记。 |
-| 48 | 本次提交 · docs: explain ShenScope workflows and project authorship | 参考开源项目的 README 写法重写中英文介绍，用实际例子说明 Julia 核心的设计；补充作者、署名和许可证说明，并更新历史提交链接。功能代码没有变化。 |
+| 48 | [a3c021e](https://github.com/SurviveAIEra/ShenScope/commit/a3c021edcd01f59ab583e92d3a794c11bd1a700b) · docs: explain ShenScope workflows and project authorship | 参考开源项目的 README 写法重写中英文介绍，用实际例子说明 Julia 核心的设计；补充作者、署名和许可证说明，并更新历史提交链接。功能代码没有变化。 |
+| 49 | 本次提交 · license: restrict original source to project contributions | 原创部分改为仅贡献许可，补充明确的 PR 授权，更新双语 README、插件许可与署名；保留私有历史，新增公开前的旧许可检查。没有更改仓库可见性或 Agent 功能。 |
 
 ## 大白话说明
 

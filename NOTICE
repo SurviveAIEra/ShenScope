@@ -3,6 +3,7 @@ Copyright 2026 SurviveAIEra and ShenScope contributors
 
 Project initiated by SurviveAIEra.
 Canonical repository: https://github.com/SurviveAIEra/ShenScope
+Original source license: ShenScope Contribution-Only License 1.0
 
 ShenScope's original Agent Core is independently implemented in Julia.
 Research references are listed in docs/architecture/reference_lockfile.json.

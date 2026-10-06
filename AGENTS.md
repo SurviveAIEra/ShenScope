@@ -12,6 +12,14 @@ exact remote SHA lease, a verified Git-only recovery bundle, and checks that
 every replayed tree differs only in those two files. Normal later pushes remain
 fast-forward. Historical validation records retain their recorded identities;
 `docs/validation/license-history-rewrite.json` maps the rewritten commits.
+The original current source now uses the ShenScope Contribution-Only License.
+The repository remains private and is intended to become public later. Do not
+change GitHub visibility, invite new external recipients to legacy history, or
+treat historical Apache-labeled commits as ready
+for restricted public release. `scripts/audit_publication_license.py` is read
+only; a legacy-history finding is an expected publication blocker, not a source
+test failure. Preserve private development history and follow the publication
+plan in `docs/licensing/license_decision.md` when public release is requested.
 
 Read `docs/requirements/reconstruction.md` and `WORK_STATUS.md` on resumption.
 The user's current phase target is 32,000 authored Julia Core code lines.
