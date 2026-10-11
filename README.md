@@ -1,10 +1,12 @@
 # ShenScope
 
+后续产品开发在 [DSH-JuliaScope](https://github.com/SurviveAIEra/DSH-JuliaScope) 中进行：复用 DSH 的 agent、模型、工具和会话能力，接入本项目的常驻 Julia 仓库分析与可编程分析器。本仓库保留 Julia Core、终端入口和设计记录。VSIX 侧栏与 Code-OSS IDE 已退出开发范围。
+
 **深入代码，看清改动。**
 
 简体中文 · [English](README.en.md) · [使用文档](#文档) · [作者与许可](#作者与许可)
 
-ShenScope 是由 [SurviveAIEra](https://github.com/SurviveAIEra) 发起的 AI 编程助手，核心用 Julia 编写。它可以帮你读懂项目、排查问题、修改代码和运行测试，提供命令行、终端交互界面、VS Code 扩展和独立 IDE 开发版。
+ShenScope 是由 [SurviveAIEra](https://github.com/SurviveAIEra) 发起的 AI 编程助手，核心用 Julia 编写。它可以帮你读懂项目、排查问题、修改代码和运行测试，通过命令行和终端交互界面使用。
 
 项目计划公开源码，采用[仅限项目贡献的受限许可](LICENSE)，不属于标准开源。默认允许为 ShenScope 准备、测试和提交改进；在其他项目中使用或独立发行，需要另行授权。
 
@@ -109,36 +111,16 @@ shenscope chat "查找这个接口的使用位置，说明修改它可能影响�
 
 项目图分析需要安装相应后端并建立索引，见[项目数据与索引](docs/core/project_data.md)。普通文件搜索、代码修改和测试命令不要求先建立代码图。
 
-## 在 VS Code 和独立 IDE 中使用
+## 在终端中使用
 
 | 入口 | 适合怎么用 |
 |---|---|
-| CLI | 在终端发起任务，或放进自己的脚本中 |
-| TUI | 在终端里连续对话，查看工具执行并处理授权 |
-| VS Code 扩展 | 安装独立 VSIX，在现有 VS Code 中使用 ShenScope 侧栏 |
-| ShenScope IDE | 从源码启动基于 Code-OSS 的独立编辑器开发版；侧栏直接集成在编辑器中，禁用扩展后仍可使用 |
+| CLI | 发起单次任务，或放进自己的脚本中 |
+| TUI | 连续对话，查看工具执行并处理授权 |
 
-四个入口共用 Julia Core。模型配置、会话、权限和项目分析由 Core 管理。VS Code 扩展与独立 IDE 共用面板，并接入编辑器的 Terminal、Testing 和 Problems：测试可以从测试视图运行，项目诊断可以显示在问题列表中。
+两个入口共用 Julia Core，使用同一套模型配置、会话、权限和项目分析。日常使用从上面的 `shenscope tui` 开始；需要脚本调用时使用 CLI。
 
-### 构建 VS Code 扩展
-
-完成上面的 Core 准备后，安装 Node.js、npm 和 Python 3，在仓库根目录执行：
-
-```bash
-npm --prefix editors ci --ignore-scripts --no-audit --no-fund
-npm --prefix editors run check
-npm --prefix editors run build
-python scripts/package_vsix.py
-code --install-extension dist/shenscope-0.1.0.vsix
-```
-
-在可信本地工作区打开 ShenScope 侧栏。用 `shenscope.juliaPath` 设置 Julia 可执行文件，`shenscope.corePath` 指向已准备好的 ShenScope 仓库绝对路径。模型密钥也可以保存在 VS Code 安全存储中。
-
-VSIX 附带 Core 源码，不附带 Julia。要使用包内的 Core，需要另行安装其 Julia 依赖，见[扩展说明](editors/vscode/README.md)。
-
-### 独立 IDE
-
-**目前没有可直接下载安装的完整 ShenScope IDE 安装包。** 已有可运行的源码开发版和原生侧栏集成；安装程序、内置 Julia、升级与卸载流程还未完成。源码构建步骤见 [IDE 说明](ide/README.md)。
+项目聚焦终端工作流与仓库分析。VS Code 侧栏和独立 Code-OSS IDE 已退出产品范围。JS/TS 语义分析和外部语言服务继续用于仓库分析，后端配置见[项目数据](docs/core/project_data.md)和[语言服务](docs/core/language_services.md)。
 
 ## Julia 核心的设计
 
@@ -205,7 +187,7 @@ Core 会检查缺失方法、方法签名和分派歧义；启用失败会保留
 - **外部工具：** MCP stdio / Streamable HTTP、项目与用户 Skills、生命周期 Hooks。
 - **权限管理：** 读取、修改、进程、网络、MCP、动态代码和持久化分别设置允许、询问或拒绝。
 
-项目仍在开发中。真实模型的任务表现、大型代码库性能和跨平台发行还需要进一步验证；部分 Core 功能目前通过工具或 RPC 使用，尚无单独的图形页面。
+项目仍在开发中。真实模型的任务表现、大型代码库性能和跨平台发行还需要进一步验证。
 
 ## 开源参考
 
@@ -226,7 +208,7 @@ ShenScope 研究不同 Agent 的设计与使用体验，再用 Julia 独立实�
 - **代码理解：** [Aider](https://github.com/Aider-AI/aider) 的仓库地图与修改反馈、[Serena](https://github.com/oraios/serena) 的语义导航、[CodeGraphContext](https://github.com/CodeGraphContext/CodeGraphContext) 的代码图。CodeGraphContext 也是当前实际使用的数据后端。
 - **执行与长期任务：** [Cline](https://github.com/cline/cline)、[OpenHands](https://github.com/All-Hands-AI/OpenHands)、[Software Agent SDK](https://github.com/OpenHands/software-agent-sdk)、[Hermes Agent](https://github.com/NousResearch/hermes-agent)、[Goose](https://github.com/block/goose)。
 - **常驻计算与 Julia 工具：** [Aries CLI](https://github.com/aayoawoyemi/Aries-cli)、[AgentREPL.jl](https://github.com/samtalki/AgentREPL.jl)、[JuliaMCP.jl](https://github.com/julia-vscode/JuliaMCP.jl)、[Kaimon.jl](https://github.com/kahliburke/Kaimon.jl)、[PromptingTools.jl](https://github.com/svilupp/PromptingTools.jl)。
-- **编辑器与发行：** [Code-OSS](https://github.com/microsoft/vscode)、[VSCodium](https://github.com/VSCodium/vscodium)、[PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl)。独立 IDE 基于 Code-OSS；其代码与许可证单独保留。
+- **运行时与早期编辑器研究：** [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl) 用于 Julia 运行时实验；[Code-OSS](https://github.com/microsoft/vscode) 和 [VSCodium](https://github.com/VSCodium/vscodium) 属于早期编辑器研究，相关开发已停止。
 
 这些项目各有侧重。参考列表说明设计来源，具体研究和实现范围见[能力对照](docs/architecture/capability_matrix.md)、[源码研究记录](docs/architecture/reference_synthesis.md)和[参考版本](docs/architecture/reference_lockfile.json)。
 
@@ -240,19 +222,17 @@ ShenScope 研究不同 Agent 的设计与使用体验，再用 Julia 独立实�
 | 自定义分析与扩展 | [隔离分析器](docs/core/isolated_analyzers.md) · [Julia 扩展](docs/core/julia_extension_lifecycle.md) |
 | 接入外部能力 | [MCP](docs/core/mcp.md) · [Skills](docs/core/skills.md) · [Hooks](docs/core/hooks.md) |
 | 连续任务与记忆 | [上下文](docs/core/context.md) · [记忆](docs/core/memory.md) · [任务](docs/core/tasks.md) |
-| 编辑器与构建 | [VS Code 扩展](editors/vscode/README.md) · [独立 IDE](ide/README.md) |
+| 命令安装与开发环境 | [安装命令](docs/cli-installation.md) · [开发环境](docs/environment-start.md) |
 
 ## 参与开发
 
-Core 源码在 `src/`，CLI/TUI 在 `src/CLI/`，可选 Julia 扩展在 `ext/`；`editors/` 包含共享面板和 VS Code 扩展，`ide/` 包含独立编辑器集成。
+Core 源码在 `src/`，CLI/TUI 在 `src/CLI/`，可选 Julia 扩展在 `ext/`。TypeScript 语义分析暂时复用 `editors/` 下的锁定依赖；该目录中的侧栏与 `ide/` 中的编辑器集成作为历史实现保留。
 
 ```bash
 julia --startup-file=no --threads=4 --project=. test/runtests.jl
-npm --prefix editors run check
-npm --prefix editors test
 ```
 
-后端、语言服务器和 GUI 检查需要对应依赖，按模块文档准备。已有检查记录保存在 [docs/validation](docs/validation/)。问题与建议可以提交到 [GitHub Issues](https://github.com/SurviveAIEra/ShenScope/issues)。
+后端与语言服务器检查需要对应依赖，按模块文档准备。已有检查记录保存在 [docs/validation](docs/validation/)。问题与建议可以提交到 [GitHub Issues](https://github.com/SurviveAIEra/ShenScope/issues)。
 
 ## 作者与许可
 

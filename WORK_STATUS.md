@@ -1,5 +1,22 @@
 # Work status
 
+Current product direction (2026-10-11): development continues in
+SurviveAIEra/DSH-JuliaScope using the user-selected DSH foundation. The fork
+contains resident Julia Project Data, five analysis backends, built-in and
+isolated programmable analyzers, logged repository context and native edit
+impact previews. VSIX and Code-OSS IDE work is retired. Historical checkpoint
+records below retain their original scope and validation limits.
+
+
+Current product scope (2026-10-11): CLI/TUI and Julia repository analysis.
+The user canceled the VSIX sidebar and native Code-OSS IDE. Routine setup and CI
+now exclude editor builds/tests; Code-OSS/VSCodium reference cloning is opt-in.
+Historical client source and validation remain as references. TypeScript semantic
+helpers and language-server support remain active Core dependencies. OpenCode is
+the first candidate for mature-agent integration; that migration is not yet
+implemented. Earlier editor/installer requirements below are historical and no
+longer delivery gates. Both READMEs and the development contract reflect this scope.
+
 Current 32,000-line phase: COMPLETED for source size and affected functional checks.
 Latest verified cloc 2.11 count: 32,015 authored Julia Core code lines across 349 files;
 CLI/TUI add 1,360 lines and optional Julia extensions add 57, counted separately.

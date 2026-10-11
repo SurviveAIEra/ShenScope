@@ -1,5 +1,10 @@
 # ShenScope native IDE
 
+**Retired from the product scope on 2026-10-11.** The Code-OSS IDE and its
+installers are no longer delivery targets. The source and instructions below
+record the previous development workflow. Active use is through the
+[CLI/TUI](../README.en.md#quick-start).
+
 **There is no complete downloadable IDE installer yet.** This is a standalone
 development IDE based on Code-OSS. It can run from the source-build workflow below.
 Installers, bundled Julia, upgrades and uninstall support remain unfinished.

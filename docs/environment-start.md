@@ -1,6 +1,10 @@
 # Cloud development environment
 
-Project: `/workspace/ShenScope`, branch `main`. Use this checkout only.
+Product checkout: `/workspace/DSH-JuliaScope`, branch `master`. Read its
+`AGENTS.md`, `docs/user/juliascope.md` and `evaluation/REPORT.md`. The original
+Core checkout `/workspace/ShenScope` on `main` remains available for Core
+reference and its existing terminal tooling. Reuse both checkouts and shared
+toolchains; do not clone a second DSH research checkout.
 
 ```sh
 cd /workspace/ShenScope
@@ -19,15 +23,16 @@ See [command installation](cli-installation.md) for persistent shell settings,
 custom locations and Julia selection. The installed launcher works from any
 directory; pass `--root` to select the target project.
 
-`scripts/setup.sh --editors` also installs/checks/builds the editor assets with
-the shared npm cache. Add `--backends` to prepare pinned CodeGraphContext,
+`scripts/setup.sh --semantic` prepares the shared lockfile-pinned TypeScript
+compiler without building the retired editor clients. Add `--backends` to prepare pinned CodeGraphContext,
 Tree-sitter grammars and the Go AST compiler/helper in shared locations.
 See `docs/core/project_data.md` for alternate paths and validation commands.
 `scripts/clone_references.py` prepares the one pinned
 checkout per research dependency; it refuses to replace changed references.
-The single Code-OSS checkout is a designated build dependency and contains the
-small native overlay. Research/depot/registry checkouts are not application
-repository membership. See `ide/README.md` for native validation preparation.
+Code-OSS and VSCodium cloning is skipped by default. Existing editor source and
+checkouts are historical references after cancellation of the VSIX and native
+IDE; do not run editor builds, GUI validation or packaging in normal development.
+Research/depot/registry checkouts are not application repository membership.
 
 Julia 1.11.7 uses the verified official Docker OCI layer when the S3 download
 host is unavailable. The installer keeps only extracted Julia, removes the
@@ -43,11 +48,11 @@ editor secure storage. `doctor` reports presence, never the value.
 
 Tests: `julia --startup-file=no --threads=4 --project=. test/runtests.jl`,
 targeted by changed subsystem during development. Real terminal:
-`python test/integration/tui_pty.py`. Editor transport: `cd editors && npm test`.
-Native GUI: `node ide/test/native_smoke.mjs` after the documented desktop setup.
+`python test/integration/tui_pty.py --launcher shenscope`. Repository analysis:
+`python scripts/setup_semantic.py --verify` and the affected Julia backend tests.
 No model-quality or Windows validation follows from these local fixtures.
 
 `WORK_STATUS.md` and validation records are the durable progress source.
 Use concise commits describing the actual change, push tested checkpoints,
 verify the remote SHA, and leave source/build caches out of Git. Clean only
-known reproducible archives/scratch outputs; reuse compiled desktop artifacts.
+known reproducible archives/scratch outputs. Retired GUI outputs need not be rebuilt.

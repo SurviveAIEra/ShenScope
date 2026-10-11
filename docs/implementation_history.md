@@ -55,7 +55,8 @@
 | 47 | [6de40fe](https://github.com/SurviveAIEra/ShenScope/commit/6de40fed75742a2df627e5dabeff57a239016d91) · feat(diagnostics): verify project checks and publish native Problems | 能导入指定源码版本的 SARIF 检查报告，比较前后报告，把编译检查与已应用的改动关联；两种编辑器都能在 Problems 里查看错误、打开文件，修改文件或撤销读取权限后清除旧标记。 |
 | 48 | [a3c021e](https://github.com/SurviveAIEra/ShenScope/commit/a3c021edcd01f59ab583e92d3a794c11bd1a700b) · docs: explain ShenScope workflows and project authorship | 参考开源项目的 README 写法重写中英文介绍，用实际例子说明 Julia 核心的设计；补充作者、署名和许可证说明，并更新历史提交链接。功能代码没有变化。 |
 | 49 | [e52f72d](https://github.com/SurviveAIEra/ShenScope/commit/e52f72d72e3659a1014c4dde28c0e4cdbc1bec2a) · license: restrict original source to project contributions | 原创部分改为仅贡献许可，补充明确的 PR 授权，更新双语 README、插件许可与署名；保留私有历史，新增公开前的旧许可检查。没有更改仓库可见性或 Agent 功能。 |
-| 50 | 本次提交 · feat(cli): install shenscope on PATH | 安装一次即可在任意目录直接输入 shenscope；仅创建链接，保留已有同名文件，启动器支持带空格的路径和指定 Julia。实测 CLI 与 TUI，并在中英文 README 讲述深圳人才公园的诞生灵感。 |
+| 50 | [0103daf](https://github.com/SurviveAIEra/ShenScope/commit/0103dafd0429b66c27fcc2030b9c397f8f2e0ec9) · feat(cli): install shenscope on PATH | 安装一次即可在任意目录直接输入 shenscope；仅创建链接，保留已有同名文件，启动器支持带空格的路径和指定 Julia。实测 CLI 与 TUI，并在中英文 README 讲述深圳人才公园的诞生灵感。 |
+| 51 | 本次提交 · chore: retire editor delivery and document DSH integration | 停止 VSIX 侧栏和原生 IDE 的常规构建、打包与交付；说明 DSH-JuliaScope 为当前产品入口，原仓库保留 Julia 核心、CLI/TUI 及历史源码；复用已有 DSH checkout，保留语义分析依赖。 |
 
 ## 大白话说明
 

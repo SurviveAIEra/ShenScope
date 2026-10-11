@@ -1,5 +1,9 @@
 # ShenScope for VS Code
 
+**Retired from the product scope on 2026-10-11.** The VSIX sidebar is no longer
+developed or packaged. The source and instructions below are retained as
+historical references. Active use is through the [CLI/TUI](../../README.en.md#quick-start).
+
 Original ShenScope code uses the ShenScope Contribution-Only License.
 Use is limited to preparing, testing and submitting Project contributions,
 unless separately authorized. The packaged LICENSE and core/NOTICE contain

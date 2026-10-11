@@ -1,10 +1,12 @@
 # ShenScope
 
+Product development continues in [DSH-JuliaScope](https://github.com/SurviveAIEra/DSH-JuliaScope): DSH supplies the agent, model, tool and Session infrastructure, with this project’s resident Julia repository analysis and programmable analyzers integrated. This repository retains Julia Core, terminal entry points and design records. VSIX and Code-OSS IDE work is retired.
+
 **Understand the code. See the scope of a change.**
 
 [简体中文](README.md) · English · [Documentation](#documentation) · [Authorship and license](#authorship-and-license)
 
-ShenScope is an AI coding assistant initiated by [SurviveAIEra](https://github.com/SurviveAIEra), with an independently implemented Julia Core. It helps you explore a repository, investigate bugs, edit code and run tests through a CLI, terminal UI, VS Code extension or standalone development IDE.
+ShenScope is an AI coding assistant initiated by [SurviveAIEra](https://github.com/SurviveAIEra), with an independently implemented Julia Core. It helps you explore a repository, investigate bugs, edit code and run tests through a CLI or terminal UI.
 
 The project plans to make its source public under a [restricted contribution-only license](LICENSE). It is not standard open source. Permission is limited to preparing, testing and submitting improvements to ShenScope; use on unrelated projects or independent distribution requires separate authorization.
 
@@ -109,36 +111,16 @@ shenscope chat "Find callers of this interface and explain what changing it migh
 
 Graph analysis requires its backend dependencies and an index; see [project data and indexing](docs/core/project_data.md). Ordinary file search, edits and test commands can run without a code graph.
 
-## Terminal, VS Code and standalone IDE
+## Working in the terminal
 
 | Interface | How to use it |
 |---|---|
-| CLI | Start tasks in a terminal or integrate them into scripts |
-| TUI | Keep an interactive conversation, follow tool execution and approve actions |
-| VS Code extension | Install a standalone VSIX into your existing VS Code and open the ShenScope sidebar |
-| ShenScope IDE | Build a standalone development editor from Code-OSS; its native sidebar works with extensions disabled |
+| CLI | Start a single task or integrate it into a script |
+| TUI | Keep a conversation, follow tool execution and approve actions |
 
-All four interfaces use Julia Core for models, configuration, conversations, permissions and analysis. The two editor clients share panels and integrate with native Terminal, Testing and Problems views. You can run tests from the test view and publish project diagnostics to Problems.
+Both interfaces use Julia Core for models, configuration, conversations, permissions and analysis. Start with `shenscope tui` for interactive work and use the CLI for scripted tasks.
 
-### Build the VS Code extension
-
-After preparing Core, install Node.js, npm and Python 3, then run from the repository root:
-
-```bash
-npm --prefix editors ci --ignore-scripts --no-audit --no-fund
-npm --prefix editors run check
-npm --prefix editors run build
-python scripts/package_vsix.py
-code --install-extension dist/shenscope-0.1.0.vsix
-```
-
-Open the ShenScope sidebar in a trusted local workspace. Set `shenscope.juliaPath` to your Julia executable and `shenscope.corePath` to the absolute path of your prepared ShenScope checkout. Model keys can also use VS Code secure storage.
-
-The VSIX includes Core source without a bundled Julia runtime. To use its packaged Core, install that Core's Julia dependencies separately; see the [extension guide](editors/vscode/README.md).
-
-### Standalone IDE
-
-**There is no complete downloadable ShenScope IDE installer yet.** A working source development build and native sidebar integration are available. Installers, bundled Julia, upgrades and uninstall support remain unfinished. Follow the [IDE build guide](ide/README.md) to run it from source.
+The project focuses on terminal workflows and repository analysis. The VS Code sidebar and standalone Code-OSS IDE have been retired. JS/TS semantic analysis and external language services remain available for repository analysis; see [project data](docs/core/project_data.md) and [language services](docs/core/language_services.md) for backend setup.
 
 ## Inside Julia Core
 
@@ -203,7 +185,7 @@ These checks concern Julia Core itself. Python, Go, C++ and other user projects 
 - **External capabilities:** MCP stdio / Streamable HTTP, project/user Skills and lifecycle Hooks.
 - **Permissions:** independent Allow / Ask / Deny for reads, edits, processes, network, MCP, dynamic code and persistence.
 
-ShenScope remains in development. Live-model task quality, large-codebase performance and cross-platform distribution need further validation. Some Core features are available through tools or RPC without a dedicated graphical control.
+ShenScope remains in development. Live-model task quality, large-codebase performance and cross-platform distribution need further validation. Core features are available through tools or RPC.
 
 ## Open-source references
 
@@ -224,7 +206,7 @@ Specialized references include:
 - **Code understanding:** [Aider](https://github.com/Aider-AI/aider) for repository maps and edit feedback, [Serena](https://github.com/oraios/serena) for semantic navigation, and [CodeGraphContext](https://github.com/CodeGraphContext/CodeGraphContext) for code graphs. CodeGraphContext is also an implemented backend.
 - **Execution and durable work:** [Cline](https://github.com/cline/cline), [OpenHands](https://github.com/All-Hands-AI/OpenHands), [Software Agent SDK](https://github.com/OpenHands/software-agent-sdk), [Hermes Agent](https://github.com/NousResearch/hermes-agent) and [Goose](https://github.com/block/goose).
 - **Resident computation and Julia tools:** [Aries CLI](https://github.com/aayoawoyemi/Aries-cli), [AgentREPL.jl](https://github.com/samtalki/AgentREPL.jl), [JuliaMCP.jl](https://github.com/julia-vscode/JuliaMCP.jl), [Kaimon.jl](https://github.com/kahliburke/Kaimon.jl) and [PromptingTools.jl](https://github.com/svilupp/PromptingTools.jl).
-- **Editors and distribution:** [Code-OSS](https://github.com/microsoft/vscode), [VSCodium](https://github.com/VSCodium/vscodium) and [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl). The standalone IDE builds on Code-OSS, with its code and license retained separately.
+- **Runtime and earlier editor research:** [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl) supports Julia runtime experiments. [Code-OSS](https://github.com/microsoft/vscode) and [VSCodium](https://github.com/VSCodium/vscodium) were studied for the now-retired editor clients.
 
 These projects have different scopes. The list identifies design references; consult the [capability matrix](docs/architecture/capability_matrix.md), [source research](docs/architecture/reference_synthesis.md) and [pinned revisions](docs/architecture/reference_lockfile.json) for specific review and implementation coverage.
 
@@ -238,19 +220,17 @@ These projects have different scopes. The list identifies design references; con
 | Custom computation | [Isolated analyzers](docs/core/isolated_analyzers.md) · [Julia extensions](docs/core/julia_extension_lifecycle.md) |
 | External capabilities | [MCP](docs/core/mcp.md) · [Skills](docs/core/skills.md) · [Hooks](docs/core/hooks.md) |
 | Continuing work | [Context](docs/core/context.md) · [Memory](docs/core/memory.md) · [Tasks](docs/core/tasks.md) |
-| Editors and builds | [VS Code extension](editors/vscode/README.md) · [Standalone IDE](ide/README.md) |
+| Command installation and development | [Install the command](docs/cli-installation.md) · [Development environment](docs/environment-start.md) |
 
 ## Development
 
-Core lives in `src/`, CLI/TUI in `src/CLI/` and optional Julia extensions in `ext/`. `editors/` contains shared panels and the VS Code extension; `ide/` contains standalone editor integration.
+Core lives in `src/`, CLI/TUI in `src/CLI/` and optional Julia extensions in `ext/`. TypeScript semantic analysis still uses pinned dependencies under `editors/`. The sidebar source there and the integration under `ide/` are retained as historical implementations.
 
 ```bash
 julia --startup-file=no --threads=4 --project=. test/runtests.jl
-npm --prefix editors run check
-npm --prefix editors test
 ```
 
-Backend, language-server and GUI checks require the dependencies described in their module guides. Existing verification records are in [docs/validation](docs/validation/). Report issues or suggestions through [GitHub Issues](https://github.com/SurviveAIEra/ShenScope/issues).
+Backend and language-server checks require the dependencies described in their module guides. Existing verification records are in [docs/validation](docs/validation/). Report issues or suggestions through [GitHub Issues](https://github.com/SurviveAIEra/ShenScope/issues).
 
 ## Authorship and license
 

@@ -2,6 +2,19 @@
 
 ## Authority and precedence
 
+Current scope, 2026-10-11: the user canceled the VSIX sidebar and native
+Code-OSS IDE. This repository retains its CLI/TUI and general-purpose Julia repository
+analysis; the active DSH fork uses its existing CLI/SDK and does not add a TUI.
+This supersedes all older documents requiring both editor clients.
+Retained editor source and verification records are historical references;
+TypeScript semantic helpers and external language servers remain active analysis
+dependencies. The user selected DSH and created SurviveAIEra/DSH-JuliaScope. Active product
+work now reuses DSH’s agent/model/tool/Session infrastructure and integrates
+the resident Julia Project Data and analyzer plane in that fork. This supersedes
+the older requirement that the entire product host be implemented in Julia.
+The fork records actual local integration checks and a current ChatGPT task;
+independent live-provider quality/cost comparisons remain pending credentials.
+
 The current user request is authoritative: rebuild from zero in Julia; study and
 clone upstream agents at the outset; conserve storage; commit and push regularly.
 The latest user instruction reduces the current phase to at least 32,000 authored
@@ -17,8 +30,9 @@ Core diagnostics cannot substitute for cross-language project capabilities.
 
 Latest historical user corrections supersede older documents:
 
-- Native Workbench sidebar AND standalone VSIX, sharing the Julia Core
-  (`Julia项目.txt` lines 9273, 9372).
+- Historical requirement: native Workbench sidebar AND standalone VSIX, sharing
+  Julia Core (`Julia项目.txt` lines 9273, 9372). Superseded by the 2026-10-11
+  cancellation above.
 - Julia independently implements Core, not assembled upstream agent code
   (lines 10237–10243).
 - Incremental runnable checkpoints (line 10265).
@@ -77,14 +91,13 @@ The lost tests, artifacts and raw PoC files cannot be recovered from description
     and ambiguity/contracts diagnostics; trusted hot-load via invokelatest.
 14. CLI/TUI: normal daily agent usage, profiles/config paths/completion,
     status/tool/diff/permission/usage/background execution displays.
-15. IDE: versioned JSON-RPC stdio; native Workbench AND VSIX; chat/history,
-    settings/providers/permissions/MCP/skills/hooks/intelligence/analyzers/
-    usage/budgets/security/runtime; native Diff/Terminal/Git/Testing/Problems;
-    secure secrets; Core as sole config/session source; parity audit.
-16. Distribution: pinned Code-OSS and minimal reviewable patches, own branding,
-    Open VSX, Linux builds and Windows-first installer/portable/upgrade/
-    uninstall preparation, bundled runtimes, checksums/licenses; precompile
-    and measured PackageCompiler experiment; no frequent repackaging.
+15. Integration: versioned analysis interfaces and bounded requests for CLI/TUI
+    or a future upstream host; clear project/state ownership, cancellation,
+    permissions and credentials. VSIX, Workbench integration and editor parity
+    are retired requirements.
+16. Distribution: usable CLI installation and reproducible Julia analysis runtime,
+    dependency preparation, checksums/licenses and measured startup work.
+    Code-OSS builds, IDE installers, Open VSX and VSIX packages are out of scope.
 17. Quality: meaningful unit/integration/multilingual repair E2E and graph
     oracle, CI, formatter/ambiguity/secrets/license/build gates, documented
     commands; layered A–G raw benchmark evidence, failure results retained.

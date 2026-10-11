@@ -1,3 +1,5 @@
+Product work continues in `/workspace/DSH-JuliaScope` (the user-selected DSH fork). Preserve this Core checkout; use the fork for agent-host integration.
+
 # ShenScope development contract
 
 The current request authorizes rebuilding the application and pushing reviewed,
@@ -30,16 +32,23 @@ code, third-party code and Code-OSS. Never pad or duplicate code to reach it.
 Complete this phase only after its size target and relevant functional checks
 pass; report remaining product gates honestly.
 
-Julia owns agent, model, tool, security, session, project data and analysis logic.
+Current implementation: Julia owns agent, model, tool, security, session, project
+data and analysis logic. Mature-agent integration is under evaluation; do not
+claim an upstream migration has already happened.
 ShenScope is a general agent for projects in any language. Julia implements Core;
 it does not constrain target projects. Keep tools, workflows and IDE entry points
 language independent; report exact language coverage of specialized analysis.
-Both native Code-OSS Workbench and a standalone VSIX are required clients.
+Current product scope is CLI/TUI and Julia repository analysis. The user canceled
+the VSIX sidebar and native Code-OSS IDE on 2026-10-11. These override older
+attachment requirements: do not develop, package or routinely test those clients.
+Retained editor source/docs/tests are historical references. Keep TypeScript
+semantic helpers and external language services needed by repository analysis;
+their present location under editors/ does not make them canceled UI features.
 Reference checkouts under `/workspace/references` are research dependencies,
 read only, not source material to copy or translate into Core.
-The single pinned Code-OSS checkout is the designated desktop build tree:
-`scripts/apply_codeoss_overlay.py` may install the small authored overlay there.
-Do not make another copy of that checkout. Keep all overlay source in this repo.
+Existing Code-OSS/VSCodium checkouts are retired build/research dependencies.
+Do not create or refresh editor checkouts, overlays or desktop builds as part of
+normal setup. Preserve the single-checkout/no-directory-copy storage rule.
 Research covers every named project across capabilities; maintain the capability
 matrix and source evidence. Commit messages describe the current change only.
 
