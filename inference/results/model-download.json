@@ -1,0 +1,12 @@
+{
+  "status": "BLOCKED_DOWNLOAD",
+  "exit_code": 2,
+  "observed_at": "2026-10-24T01:08:39.355135+00:00",
+  "command": [
+    "/workspace/toolchains/inference-python/bin/python",
+    "inference/models/prepare.py"
+  ],
+  "stdout": "",
+  "stderr": "{\"status\": \"BLOCKED_DOWNLOAD\", \"http_status\": 503}\n",
+  "api_credentials_required": false
+}

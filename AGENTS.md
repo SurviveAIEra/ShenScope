@@ -5,6 +5,10 @@ DSH integration and historical measurements. Do not resume the old line-count
 targets, editor work or agent integration. Start with measured CPU operators;
 GPU acceleration and whole-model benefits require separate hardware and evidence.
 Read `inference/README.md` and `inference/REPORT.md` for the current workflow.
+For real CPU model evaluation read `inference/models/README.md` and use
+`inference/scripts/setup-model.sh`; the smaller setup script removes model extras.
+The fixed public SmolLM2 checkpoint is currently blocked at us.aws.cdn.hf.co.
+Random-weight integration tests are not pretrained-model performance evidence.
 
 # ShenScope development contract
 

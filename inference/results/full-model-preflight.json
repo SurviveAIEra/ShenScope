@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "status": "BLOCKED_MODEL_DOWNLOAD",
+  "started_at": "2026-10-24T01:15:32.004051+00:00",
+  "source_sha256": {
+    "bridge.py": "0dd30c936eaab35173cc355e4ef44be88754ff88b10767584a93e86753347bf7",
+    "model-requirements.lock": "3ec21a63dd817ce51197d49b4e186dda3eb6ec0635972cd9d0273d067cd24181",
+    "models/__init__.py": "229c7bad32e1c3fcc7ec08d876424111aa4ea68a87de183448d330ccb81b20e4",
+    "models/adapter.py": "eee52a98cd162a3200da6eb252250911ac04cd0b2839ac0b3b6d492be53b716a",
+    "models/model-spec.json": "9dead1086bc54ecca55a5aba9a0d1032d036545e95f8203587d5ca0620a15072",
+    "models/prepare.py": "d0e8a0c20c990127eb823d2aeb70e3dc49aaa77e609e9496def4cd7a872b44b6",
+    "models/run.py": "d54793cbba56b2e4ab0366eb07116bee82d5e83902c2d34486e096e3bc3c76fe",
+    "models/worker.py": "1ee216d99c91122b1809efcd24392c85546fbba7d358886993f8b71da87c3821",
+    "src/ShenInferenceKernels.jl": "d05c193becde1007ee307b54fd8e7d9d2ad1fc1dbd597bb1ada6b5558d20eea4",
+    "src/c_api.jl": "38f216b835b7dde75326b3b4b4ce38b3e1c1f6f78587eb9b682b978b7f61ff8c"
+  },
+  "trials": [],
+  "comparisons": [],
+  "profiles": [],
+  "summary": null,
+  "plan": {
+    "model": "HuggingFaceTB/SmolLM2-135M",
+    "dtype": "float32",
+    "threads": [
+      1,
+      4
+    ],
+    "model_revision": "93efa2f097d58c2a74874c7e644dbc9b0cee75a2",
+    "conditions": [
+      "original",
+      "torch_native",
+      "julia"
+    ],
+    "rounds": 3,
+    "input_lengths": [
+      24,
+      96,
+      256
+    ],
+    "generated_tokens": 32,
+    "logit_rtol": 0.0001,
+    "logit_atol": 0.0001,
+    "continue_gate": "All sampled outputs agree; >=10% geometric-mean decode throughput gain and <=10% peak RSS increase versus fastest existing baseline. These are project investment criteria, not industry standards."
+  },
+  "hardware": {
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "available_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "limits": [
+    "One small pretrained base model on one CPU VM; no general quality or hardware claim.",
+    "Model-only generation timings exclude tokenization and text rendering; EOS is ignored for equal fixed work.",
+    "Prefill and final logits are checked; broad accuracy/perplexity and long-context workloads are unmeasured.",
+    "No GPU, quantized model, llama.cpp comparison or production serving claim."
+  ],
+  "blocker": "Official public model cache is absent. Run models/prepare.py to acquire a verified checkpoint. No real-model inference or performance measurement was executed.",
+  "finished_at": "2026-10-24T01:15:32.010140+00:00",
+  "temporary_case_data_removed": true
+}

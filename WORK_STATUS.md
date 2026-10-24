@@ -11,6 +11,11 @@ pass. Final PyTorch 2.14.1 comparisons reverse runtime order, with 192 numerical
 output checks. Full results, older-version trials, a retained initial tolerance
 failure and limits are in `inference/REPORT.md` and `inference/results/`.
 The inference CI workflow is added; remote CI is not yet verified.
+Real CPU model evaluation now has a fixed SmolLM2-135M revision, original/native/
+Julia conditions, 1/4-thread plans, cached greedy generation, output comparison,
+memory/startup accounting and separate profiler processes. Official metadata and
+small files were fetched; weight CDN us.aws.cdn.hf.co remains tunnel-403 blocked.
+There are no real-model performance results. See `inference/models/README.md`.
 
 Current product direction (2026-10-11): development continues in
 SurviveAIEra/DSH-JuliaScope using the user-selected DSH foundation. The fork

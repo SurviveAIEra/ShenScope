@@ -1,4 +1,4 @@
-name: Inference operator correctness
+name: Inference correctness
 on:
   push:
     paths: ['inference/**', '.github/workflows/inference.yml']
@@ -18,12 +18,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install --index-url https://download.pytorch.org/whl/cpu --require-hashes --only-binary=:all: -r inference/requirements.lock
+      - run: python -m pip install --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/cpu --require-hashes --only-binary=:all: -r inference/model-requirements.lock
       - run: julia --startup-file=no --project=inference inference/test/runtests.jl
       - run: python inference/test/benchmark_checks.py
       - run: python inference/test/bridge_checks.py
         env:
           JULIA_NUM_THREADS: '1'
+      - run: python inference/test/model_checks.py
+        env:
+          JULIA_NUM_THREADS: '1'
+          HF_HUB_OFFLINE: '1'
+          TRANSFORMERS_OFFLINE: '1'
+      - run: python inference/test/model_cache_checks.py
       - run: python inference/benchmarks/run.py --julia julia --smoke --output inference/results/ci-smoke.json
       - uses: actions/upload-artifact@v4
         if: always()

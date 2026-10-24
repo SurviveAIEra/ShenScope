@@ -61,7 +61,8 @@ kernel.add_rmsnorm_into(x, residual, weight, y, summed)
 调用期间不能从别处修改或调整缓冲区大小。它会分配少量 Python 对象和 Julia 数组头；
 Julia 内部算子零临时分配，不代表跨语言调用零分配。
 初始化与编译成本单独记录，逐次参数检查和 `ctypes` 开销计入计时。
-这是接入成本实验，还没有接入模型加载、注意力、解码循环或推理服务。
+算子报告仍是局部测量。新增的[整模型对照流程](models/README.md)复用 Transformers
+的注意力、KV 缓存和解码，当前等待权重下载，尚无整模型性能结果。
 
 ## 安装与运行
 

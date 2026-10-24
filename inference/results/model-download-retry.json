@@ -1,0 +1,12 @@
+{
+  "status": "BLOCKED_DOWNLOAD",
+  "exit_code": 2,
+  "observed_at": "2026-10-24T01:09:52.067692+00:00",
+  "command": [
+    "/workspace/toolchains/inference-python/bin/python",
+    "inference/models/prepare.py"
+  ],
+  "stdout": "",
+  "stderr": "{\"status\": \"BLOCKED_DOWNLOAD\", \"reason\": \"Tunnel connection failed: 403 Forbidden\"}\n",
+  "api_credentials_required": false
+}

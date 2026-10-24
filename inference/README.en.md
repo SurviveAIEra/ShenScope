@@ -68,7 +68,9 @@ mutation or resizing. The adapter allocates small Python objects and Julia Array
 headers; zero scratch allocation inside the Julia kernel does not mean zero
 allocation across the bridge. Initialization and compilation are reported
 separately; per-call validation and ctypes overhead are included in timings.
-This tests integration costs, without model loading, attention, decoding or serving.
+The operator report measures integration costs. A new [full-model workflow](models/README.en.md)
+reuses Transformers attention, KV caches and decoding; checkpoint download is
+blocked and full-model performance remains unmeasured.
 
 ## Run
 

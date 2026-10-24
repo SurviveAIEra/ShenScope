@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "scope": "Real CPU model evaluation preparation; pretrained benchmark externally blocked",
+  "status": "BLOCKED_EXTERNAL_MODEL_DOWNLOAD",
+  "model": "HuggingFaceTB/SmolLM2-135M",
+  "revision": "93efa2f097d58c2a74874c7e644dbc9b0cee75a2",
+  "real_model_trials": 0,
+  "performance_conclusion": null,
+  "checks": [
+    {
+      "command": "bash inference/scripts/setup-model.sh",
+      "status": "PASS",
+      "random_model_integration_cases": 7,
+      "artifact_integrity_cases": 3
+    },
+    {
+      "command": "inference/models/prepare.py",
+      "status": "BLOCKED_DOWNLOAD",
+      "reason": "Weight redirect to us.aws.cdn.hf.co rejected by proxy tunnel 403; metadata/config small artifacts fetched"
+    },
+    {
+      "command": "inference/models/run.py --output inference/results/full-model-preflight.json",
+      "status": "BLOCKED_MODEL_DOWNLOAD",
+      "exit_code": 2,
+      "trials": 0
+    },
+    {
+      "command": "Python syntax, JSON, README links and Bash snippets",
+      "status": "PASS",
+      "relative_links": 22,
+      "bash_blocks": 6
+    }
+  ],
+  "dependencies": {
+    "torch": "2.14.1+cpu",
+    "transformers": "5.20.2",
+    "safetensors": "0.8.0",
+    "lock": "inference/model-requirements.lock"
+  },
+  "network_draft": {
+    "status": "SAVED_NOT_APPLIED_OR_PUBLISHED",
+    "required_weight_cdn": "us.aws.cdn.hf.co",
+    "domains": [
+      "huggingface.co",
+      "cas-bridge.xethub.hf.co",
+      "cdn-lfs.huggingface.co",
+      "cdn-lfs-us-1.huggingface.co",
+      "us.aws.cdn.hf.co"
+    ]
+  },
+  "storage": {
+    "free_gib": 27.24786376953125,
+    "one_model_cache": true,
+    "weight_downloaded": false
+  },
+  "limits": [
+    "Random initialization tests validate integration only; no pretrained performance or broad model-quality claim.",
+    "No real-model speed, first-token latency, memory comparison or investment gate conclusion is available.",
+    "llama.cpp, quantization and GPU are not evaluated.",
+    "Remote CI is not verified."
+  ]
+}
