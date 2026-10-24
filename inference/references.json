@@ -1,0 +1,52 @@
+{
+  "sources": [
+    {
+      "project": "pytorch/pytorch",
+      "version": "v2.8.0",
+      "path": "aten/src/ATen/native/layer_norm.cpp",
+      "url": "https://raw.githubusercontent.com/pytorch/pytorch/v2.8.0/aten/src/ATen/native/layer_norm.cpp",
+      "sha256": "913fdcdb2a60e1a869d9f37f29af9b46601e6345ffe73cdc2e4b9e169213ae8d",
+      "bytes": 12094
+    },
+    {
+      "project": "pytorch/pytorch",
+      "version": "v2.8.0",
+      "path": "torch/nn/functional.py",
+      "url": "https://raw.githubusercontent.com/pytorch/pytorch/v2.8.0/torch/nn/functional.py",
+      "sha256": "2b6eb4aff305990cff9e32c6ff40ff82c1fec4b5ceba1f43540146a8eb64e952",
+      "bytes": 243853
+    },
+    {
+      "project": "JuliaLang/julia",
+      "version": "v1.11.7",
+      "path": "doc/src/manual/embedding.md",
+      "url": "https://raw.githubusercontent.com/JuliaLang/julia/v1.11.7/doc/src/manual/embedding.md",
+      "sha256": "4eae1aad789e87334e54074fda49536eda9ade1573076c0be3cdfd0a29e4fcb9",
+      "bytes": 25829
+    },
+    {
+      "project": "pytorch/pytorch",
+      "version": "v2.14.1",
+      "path": "aten/src/ATen/native/layer_norm.cpp",
+      "url": "https://raw.githubusercontent.com/pytorch/pytorch/v2.14.1/aten/src/ATen/native/layer_norm.cpp",
+      "sha256": "30658907d8863565c331de5e58f26c023d898d502f8a2ed119763684112f0c90",
+      "bytes": 14233
+    },
+    {
+      "project": "pytorch/pytorch",
+      "version": "v2.14.1",
+      "path": "torch/nn/functional.py",
+      "url": "https://raw.githubusercontent.com/pytorch/pytorch/v2.14.1/torch/nn/functional.py",
+      "sha256": "95ff403085bb179477a01df63acfddf59dfac0fb58829e99a9c8b5c2fe98899b",
+      "bytes": 278980
+    }
+  ],
+  "review": [
+    "RMSNorm reduces the last normalized dimensions, uses explicit epsilon, and multiplies by weights after normalization.",
+    "PyTorch 2.8.0 uses Float32 opmath for Float32 inputs; half and bfloat16 are upcast, outside this prototype.",
+    "CPU rms_norm is composed from tensor arithmetic in this version; Inductor compilation is included as a stronger baseline.",
+    "The fused residual operation is a standard composition, independently implemented with two Julia passes; no upstream implementation is copied.",
+    "The embedded runtime initializes once; callback pointers are obtained at runtime, Julia exceptions stay inside the ABI, host buffer lifetimes remain with the synchronous caller, and calls stay on the initializing thread.",
+    "The CPU index reported stable torch 2.14.1+cpu. In this version rms_norm_symint dispatches to _fused_rms_norm, so 2.8 performance cannot establish a current-framework advantage. Current pinned requirements and additional trials use 2.14.1; old receipts and a small separate 2.8 hash lock are retained."
+  ]
+}

@@ -1,0 +1,33 @@
+name: Inference operator correctness
+on:
+  push:
+    paths: ['inference/**', '.github/workflows/inference.yml']
+  pull_request:
+    paths: ['inference/**', '.github/workflows/inference.yml']
+permissions:
+  contents: read
+jobs:
+  cpu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.11.7'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --index-url https://download.pytorch.org/whl/cpu --require-hashes --only-binary=:all: -r inference/requirements.lock
+      - run: julia --startup-file=no --project=inference inference/test/runtests.jl
+      - run: python inference/test/benchmark_checks.py
+      - run: python inference/test/bridge_checks.py
+        env:
+          JULIA_NUM_THREADS: '1'
+      - run: python inference/benchmarks/run.py --julia julia --smoke --output inference/results/ci-smoke.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: inference-cpu-smoke
+          path: inference/results/ci-smoke.json
+      - run: git diff --check

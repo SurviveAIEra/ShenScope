@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "scope": "CPU Float32 residual-add/RMSNorm and real PyTorch-to-Julia adapter; initial inference prototype",
+  "git_base": "02f5086c3b8421fa00e658173eed72a85ebab3f0",
+  "containing_commit": "See the containing Git commit; no self-referential commit hash is stored.",
+  "checks": [
+    {
+      "command": "bash inference/scripts/setup.sh",
+      "status": "PASS",
+      "julia_assertions": 146,
+      "julia_testsets": 6,
+      "receipt_test_cases": 8,
+      "bridge_test_cases": 7,
+      "repeatable_setup": true
+    },
+    {
+      "command": "python inference/benchmarks/run.py --output inference/results/cpu-current-forward.json",
+      "status": "PASS",
+      "numerical_checks": 96
+    },
+    {
+      "command": "python inference/benchmarks/run.py --first torch --output inference/results/cpu-current-reverse.json",
+      "status": "PASS",
+      "numerical_checks": 96
+    },
+    {
+      "command": "python3 inference/scripts/summarize.py inference/results/cpu-current-forward.json inference/results/cpu-current-reverse.json",
+      "status": "PASS"
+    },
+    {
+      "command": "Python AST, JSON parsing, relative links and bash syntax",
+      "status": "PASS",
+      "relative_links": 14,
+      "bash_blocks": 6
+    },
+    {
+      "command": "git diff --check",
+      "status": "PASS"
+    }
+  ],
+  "source_sha256": {
+    "Project.toml": "6ec2541860d8b80ea21e1f838571b49894ee5207304f8aa67b53a4051c23c3f7",
+    "benchmarks/julia_worker.jl": "c9861d2bdf9a9fd331d18325d42e92795cf5bfe3ad30d8ec67e03d95338ed0f3",
+    "benchmarks/run.py": "200bfee3cfead533dd6006b0959143ef152eaac3ebf1d8ed56d87cdefa2e28b8",
+    "benchmarks/torch_worker.py": "9551a1a259e8d25bae742f941081d19ef6da5c30e793791e6013d82be815644f",
+    "bridge.py": "0dd30c936eaab35173cc355e4ef44be88754ff88b10767584a93e86753347bf7",
+    "scripts/setup.sh": "ae62f0884f5af40ca62328f71d84ca4deaa02dfcb242fc426bc2b7dc0eebcb91",
+    "scripts/summarize.py": "9e6a675c79619d2d2fead494a34758043815874b1d04681400ae5aa9ebf7545c",
+    "src/ShenInferenceKernels.jl": "d05c193becde1007ee307b54fd8e7d9d2ad1fc1dbd597bb1ada6b5558d20eea4",
+    "src/c_api.jl": "38f216b835b7dde75326b3b4b4ce38b3e1c1f6f78587eb9b682b978b7f61ff8c",
+    "test/benchmark_checks.py": "afc3f259591ef524445db640f94bab1a4d7d016851b78fd9eb50c0bb80373ab4",
+    "test/bridge_checks.py": "e00dc2df5289c7c09103ebecf305a2dc4993cbc95107de61a8b390633dde24e8",
+    "test/runtests.jl": "374204e2662a4dbcea0fdaffeb1545f06af2ee62b1814cb0c927d52126971e1f"
+  },
+  "current_measurement_sources_match": true,
+  "torch_version": "2.14.1+cpu",
+  "julia_version": "1.11.7",
+  "python_version": "3.12.14",
+  "hardware_scope": "one pinned CPU core, one thread, AMD EPYC 9V74 VM",
+  "numerical_validation": {
+    "reference": "independent NumPy Float64",
+    "norm_tolerance": {
+      "rtol": 1e-05,
+      "atol": 1e-06
+    },
+    "projection_tolerance": {
+      "rtol": 1.3e-06,
+      "atol": 1e-05
+    },
+    "retained_failed_trial": "results/cpu-first.json",
+    "independent_float32_control": "results/float32-projection-roundoff.json"
+  },
+  "storage": {
+    "free_gib": 27.35562515258789,
+    "minimum_free_gib": 8,
+    "no_repository_copies": true,
+    "temporary_case_directories_removed": true,
+    "downloaded_julia_layer_archive_removed": true
+  },
+  "limitations": [
+    "No full-model weights, attention, decoding, serving, tokens/sec or model-quality verification.",
+    "GPU, FP16/BF16, quantization and autograd are not implemented.",
+    "Measurements use warmed data and include runtime-specific host dispatch.",
+    "Two trials on one VM do not establish statistical significance or cross-machine speedups.",
+    "Original agent suites were not rerun for the independent inference package.",
+    "Remote GitHub CI has not been verified."
+  ],
+  "ci": {
+    "workflow": ".github/workflows/inference.yml",
+    "status": "NOT_VERIFIED_REMOTELY"
+  },
+  "licensing": "Original source retains the root contribution-only license; third-party dependencies keep their own terms."
+}

@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "started_at": "2026-10-24T00:05:10.019176+00:00",
+  "status": "FAIL",
+  "purpose": "CPU Float32 add + RMSNorm prototype; no full model or GPU benchmark",
+  "smoke": false,
+  "source_sha256": {
+    "Project.toml": "6ec2541860d8b80ea21e1f838571b49894ee5207304f8aa67b53a4051c23c3f7",
+    "benchmarks/julia_worker.jl": "c9861d2bdf9a9fd331d18325d42e92795cf5bfe3ad30d8ec67e03d95338ed0f3",
+    "benchmarks/run.py": "b34c016db9217f952471bd26b57a138f228aa28e5955a34f888848e089e38484",
+    "benchmarks/torch_worker.py": "6f60f46ffb0817706e607c703cf709749a756c26672a8903717ad4df7f02be8c",
+    "requirements.lock": "d097695f9efc38d3dc63f45213bb11f032f081d3dd32c6bd4af4d686c49764c3",
+    "src/ShenInferenceKernels.jl": "5252a5b3255a206e9458c6c45ddb1351565a73736d553f9a429f6e932292bb8e"
+  },
+  "hardware": {
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "affinity_before": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "pinned_cpu": 0,
+    "cpu_quota": "400000 100000",
+    "memory_limit": "34359738368",
+    "gpu_device_nodes": []
+  },
+  "configuration": {
+    "dtype": "float32",
+    "epsilon": 9.999999974752427e-07,
+    "threads": 1,
+    "samples": 21,
+    "target_sample_ns": 2000000,
+    "seed": 81731,
+    "rtol": 1e-05,
+    "atol": 1e-06,
+    "projected": 256
+  },
+  "runtimes": {},
+  "validation": [],
+  "limitations": [
+    "Operator and norm-plus-projection only; no attention, model weights, decoding or tokens/sec.",
+    "Host call overhead is included and differs between Julia and Python/PyTorch.",
+    "Warm samples reuse input data and output buffers; not cold-cache streaming.",
+    "Runtime processes are sequential, with randomized method order within each sample round.",
+    "First invocation can reuse process/compiler caches; it is not a clean-machine compile measurement.",
+    "Different BLAS implementations can affect cross-runtime projection timings.",
+    "No GPU, FP16/BF16, quantization, gradients, serving integration or full-model acceleration verified."
+  ],
+  "cases": [
+    {
+      "id": "h1024-t1",
+      "hidden": 1024,
+      "tokens": 1,
+      "projected": 256
+    },
+    {
+      "id": "h4096-t1",
+      "hidden": 4096,
+      "tokens": 1,
+      "projected": 256
+    },
+    {
+      "id": "h4096-t8",
+      "hidden": 4096,
+      "tokens": 8,
+      "projected": 256
+    },
+    {
+      "id": "h4096-t64",
+      "hidden": 4096,
+      "tokens": 64,
+      "projected": 256
+    },
+    {
+      "id": "h8192-t1",
+      "hidden": 8192,
+      "tokens": 1,
+      "projected": 256
+    },
+    {
+      "id": "h8192-t32",
+      "hidden": 8192,
+      "tokens": 32,
+      "projected": 256
+    }
+  ],
+  "input_sha256": {
+    "h1024-t1/x.f32": "5cea31de55bcc92fbb14e113516807f9148330f2a854467754f518c3b5a78dd3",
+    "h1024-t1/residual.f32": "7c37b1d05545b3a1a64dce032c272072b88431b1397ad7403f8448815498936b",
+    "h1024-t1/weight.f32": "3111122fc2c4a97de7bd76ea26f39f47d763465390b1d916113328e487d8c19a",
+    "h1024-t1/projection.f32": "a0fb26c42a6132e1c2b18a21bdec5035f187586b73776a66bbb70866f096b611",
+    "h4096-t1/x.f32": "354e54d6645765dcdb31fb8009c57704a0ebd12d5ca1576e64fd2d96bc78dff9",
+    "h4096-t1/residual.f32": "01a57ea0d9e88631b91daee5ad1dcbf189c87566f83cc539f52bb18025dc8758",
+    "h4096-t1/weight.f32": "88a64915e1b0aa371efff10d40485eec86cec6d0377139cf0aa4cdf4f8ada074",
+    "h4096-t1/projection.f32": "4ed77260c92e8721412516a09af2653bd7ba64cfa810f51e77b0af5038e218a9",
+    "h4096-t8/x.f32": "60a5980d3a9dc464fdc81785443c1a63af20f727a80f1619671f33fd57aa7572",
+    "h4096-t8/residual.f32": "0f499b7e1b4cd8a505aacb8e8f8ae959bb31297687b75e1c563ddc8a3ca405ef",
+    "h4096-t8/weight.f32": "c93ed8d1beaeb33d09a623a0fa49aab6a16f7b39d8f98cbdf716981b81f220c0",
+    "h4096-t8/projection.f32": "bc92ea9bb3dad18c92d8befdece6eeac15a978d41b3c12fde466372cc41c5fd2",
+    "h4096-t64/x.f32": "3979d62cee1fd83220bb26e7254b8c3be320fbdde5916ce3a4249b516587b79d",
+    "h4096-t64/residual.f32": "7bd29f7eed459f64fa188b478af54c5caa30f961e8087e1207c0eab7f3d052f0",
+    "h4096-t64/weight.f32": "309a875411e5d70a219d6cefee4f1bfb98bff323095a3e17447a0253ece2206b",
+    "h4096-t64/projection.f32": "ba3feacd5176c023924d40d5ea001980932824e63011d9faa40bf3609e468e9b",
+    "h8192-t1/x.f32": "565fa55531b92e84a94278bef708c7f86e7d1cacff5705e36125049a2fa6cd8b",
+    "h8192-t1/residual.f32": "b9ef5a6cbaac3ea1aa5adf9be5907d3136f21ecef8b665233b07763b00738b7c",
+    "h8192-t1/weight.f32": "ce345a0dcda6508f7918a778b50a8aa371c24ba5b64357f1af2c03df799838f8",
+    "h8192-t1/projection.f32": "7364aa5ea18d1f96dc1ba99df0d5c32d6c1469ec516dfd8acb4c4745f8f7b747",
+    "h8192-t32/x.f32": "88edd738637a3a1914974ab38d19e323efd498400b1b58c402dfb217a11e6bd8",
+    "h8192-t32/residual.f32": "f13436197ce099dab413f0dd05c7af32572abd475ffeeb932aae7ff2da796e58",
+    "h8192-t32/weight.f32": "51060a69ebcb50e98e75025f8ea5475426eb501f4657fa3b3a751d5bc00d5c13",
+    "h8192-t32/projection.f32": "7f148f5b9cea5060e7bcedee01755bb873c5514d850b8ab00d1b8fd73d184cd3"
+  },
+  "runtime_order": [
+    "julia",
+    "torch"
+  ],
+  "error": "AssertionError: \nNot equal to tolerance rtol=1e-05, atol=1e-06\n\nMismatched elements: 1 / 16384 (0.0061%)\nMax absolute difference among violations: 1.04097178e-06\nMax relative difference among violations: 0.00029774\n ACTUAL: array([[ 0.835834, -1.738571,  0.072007, ...,  0.095506,  0.538846,\n        -0.170666],\n       [-0.167264,  0.644352, -0.661432, ..., -0.483223, -0.075323,...\n DESIRED: array([[ 0.835834, -1.738571,  0.072007, ...,  0.095507,  0.538846,\n        -0.170666],\n       [-0.167263,  0.644352, -0.661432, ..., -0.483223, -0.075323,...",
+  "finished_at": "2026-10-24T00:05:20.186060+00:00",
+  "scratch_removed": true
+}

@@ -1,5 +1,12 @@
 # Reconstruction requirements and provenance
 
+Current direction (2026-10-24): the user stopped Julia agent development and
+authorized inference-acceleration experiments under `inference/`. The agent
+requirements below are retained as history, not current implementation targets.
+Preserve existing agent work; measure numerical correctness and runtime costs
+before expanding the new inference prototype. CPU operator measurements alone
+do not establish GPU or whole-model acceleration.
+
 ## Authority and precedence
 
 Current scope, 2026-10-11: the user canceled the VSIX sidebar and native

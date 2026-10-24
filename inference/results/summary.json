@@ -1,0 +1,261 @@
+{
+  "schema": 1,
+  "source_receipts": [
+    "results/cpu-current-forward.json",
+    "results/cpu-current-reverse.json"
+  ],
+  "statistic": "Arithmetic mean of two process medians; each process median has 21 samples.",
+  "best_baseline": "Fastest aggregate method among PyTorch eager, compiled allocating, and compiled preallocated.",
+  "scope": "CPU Float32 operation and norm+projection fragment; no full-model or GPU claim.",
+  "torch_version": "2.14.1+cpu",
+  "startup_seconds": [
+    0.338706714,
+    0.326693549
+  ],
+  "maximum_absolute_errors": {
+    "norm": 7.612854480143483e-07,
+    "norm_projection": 9.296333347119656e-06
+  },
+  "rows": [
+    {
+      "hidden": 1024,
+      "tokens": 1,
+      "stage": "norm",
+      "method_times_us": {
+        "julia_broadcast_allocating": 0.8277885389411933,
+        "julia_fused_preallocated": 0.14818170000000003,
+        "julia_fused_allocating": 0.7480982452153715,
+        "julia_unfused_preallocated": 0.15656235,
+        "torch_eager_allocating": 11.055178818283167,
+        "torch_compiled_allocating": 18.366006984760524,
+        "torch_compiled_preallocated": 18.434212748146376,
+        "torch_julia_bridge_preallocated": 9.81035713772799
+      },
+      "best_torch_method": "torch_eager_allocating",
+      "best_torch_us": 11.055178818283167,
+      "python_julia_us": 9.81035713772799,
+      "time_reduction_percent": 11.260077299667717,
+      "julia_fusion_speed_ratio": 1.056556578848805
+    },
+    {
+      "hidden": 1024,
+      "tokens": 1,
+      "stage": "norm_projection",
+      "method_times_us": {
+        "julia_broadcast_allocating": 13.708946874999999,
+        "julia_fused_preallocated": 10.688980851715687,
+        "julia_fused_allocating": 13.408852653631286,
+        "julia_unfused_preallocated": 10.619163830715532,
+        "torch_eager_allocating": 45.350886886669564,
+        "torch_compiled_allocating": 58.24661683006536,
+        "torch_compiled_preallocated": 60.981794372294374,
+        "torch_julia_bridge_preallocated": 42.25168944353519
+      },
+      "best_torch_method": "torch_eager_allocating",
+      "best_torch_us": 45.350886886669564,
+      "python_julia_us": 42.25168944353519,
+      "time_reduction_percent": 6.8338188200799,
+      "julia_fusion_speed_ratio": 0.9934683182645099
+    },
+    {
+      "hidden": 4096,
+      "tokens": 1,
+      "stage": "norm",
+      "method_times_us": {
+        "julia_broadcast_allocating": 3.167809948979592,
+        "julia_fused_preallocated": 0.9670283789979706,
+        "julia_fused_allocating": 2.9220739718614714,
+        "julia_unfused_preallocated": 0.9754637771430621,
+        "torch_eager_allocating": 12.235149338782563,
+        "torch_compiled_allocating": 18.97100753806724,
+        "torch_compiled_preallocated": 18.931931726190477,
+        "torch_julia_bridge_preallocated": 10.416903431297904
+      },
+      "best_torch_method": "torch_eager_allocating",
+      "best_torch_us": 12.235149338782563,
+      "python_julia_us": 10.416903431297904,
+      "time_reduction_percent": 14.860839513590935,
+      "julia_fusion_speed_ratio": 1.0087230099222446
+    },
+    {
+      "hidden": 4096,
+      "tokens": 1,
+      "stage": "norm_projection",
+      "method_times_us": {
+        "julia_broadcast_allocating": 387.0692,
+        "julia_fused_preallocated": 380.74008333333336,
+        "julia_fused_allocating": 385.7994166666667,
+        "julia_unfused_preallocated": 376.9287833333334,
+        "torch_eager_allocating": 120.2102794117647,
+        "torch_compiled_allocating": 135.85208928571427,
+        "torch_compiled_preallocated": 139.14009285714286,
+        "torch_julia_bridge_preallocated": 118.75795588235295
+      },
+      "best_torch_method": "torch_eager_allocating",
+      "best_torch_us": 120.2102794117647,
+      "python_julia_us": 118.75795588235295,
+      "time_reduction_percent": 1.2081525278191987,
+      "julia_fusion_speed_ratio": 0.9899897589803719
+    },
+    {
+      "hidden": 4096,
+      "tokens": 8,
+      "stage": "norm",
+      "method_times_us": {
+        "julia_broadcast_allocating": 17.28544808000988,
+        "julia_fused_preallocated": 7.381429015062598,
+        "julia_fused_allocating": 15.361025252525252,
+        "julia_unfused_preallocated": 7.55551160191181,
+        "torch_eager_allocating": 28.448913170731707,
+        "torch_compiled_allocating": 34.29595520622042,
+        "torch_compiled_preallocated": 30.21860277777778,
+        "torch_julia_bridge_preallocated": 17.584475409836067
+      },
+      "best_torch_method": "torch_eager_allocating",
+      "best_torch_us": 28.448913170731707,
+      "python_julia_us": 17.584475409836067,
+      "time_reduction_percent": 38.18928932607869,
+      "julia_fusion_speed_ratio": 1.023583859777555
+    },
+    {
+      "hidden": 4096,
+      "tokens": 8,
+      "stage": "norm_projection",
+      "method_times_us": {
+        "julia_broadcast_allocating": 553.227125,
+        "julia_fused_preallocated": 509.86425,
+        "julia_fused_allocating": 549.211125,
+        "julia_unfused_preallocated": 523.80475,
+        "torch_eager_allocating": 356.2986,
+        "torch_compiled_allocating": 361.6437,
+        "torch_compiled_preallocated": 361.74300000000005,
+        "torch_julia_bridge_preallocated": 337.42735000000005
+      },
+      "best_torch_method": "torch_eager_allocating",
+      "best_torch_us": 356.2986,
+      "python_julia_us": 337.42735000000005,
+      "time_reduction_percent": 5.296470432384515,
+      "julia_fusion_speed_ratio": 1.0273415914137929
+    },
+    {
+      "hidden": 4096,
+      "tokens": 64,
+      "stage": "norm",
+      "method_times_us": {
+        "julia_broadcast_allocating": 143.09933333333333,
+        "julia_fused_preallocated": 67.06659705882353,
+        "julia_fused_allocating": 135.50478289473685,
+        "julia_unfused_preallocated": 70.55608333333333,
+        "torch_eager_allocating": 156.34333076923076,
+        "torch_compiled_allocating": 137.72914761904764,
+        "torch_compiled_preallocated": 149.60166483516483,
+        "torch_julia_bridge_preallocated": 84.17523615384616
+      },
+      "best_torch_method": "torch_compiled_allocating",
+      "best_torch_us": 137.72914761904764,
+      "python_julia_us": 84.17523615384616,
+      "time_reduction_percent": 38.883498802540394,
+      "julia_fusion_speed_ratio": 1.0520301674386312
+    },
+    {
+      "hidden": 4096,
+      "tokens": 64,
+      "stage": "norm_projection",
+      "method_times_us": {
+        "julia_broadcast_allocating": 1940.275,
+        "julia_fused_preallocated": 1720.161,
+        "julia_fused_allocating": 1858.02625,
+        "julia_unfused_preallocated": 1744.6755,
+        "torch_eager_allocating": 1743.987,
+        "torch_compiled_allocating": 1708.7939999999999,
+        "torch_compiled_preallocated": 1743.8670000000002,
+        "torch_julia_bridge_preallocated": 1644.6625
+      },
+      "best_torch_method": "torch_compiled_allocating",
+      "best_torch_us": 1708.7939999999999,
+      "python_julia_us": 1644.6625,
+      "time_reduction_percent": 3.753026988624724,
+      "julia_fusion_speed_ratio": 1.014251282292762
+    },
+    {
+      "hidden": 8192,
+      "tokens": 1,
+      "stage": "norm",
+      "method_times_us": {
+        "julia_broadcast_allocating": 5.564664663461539,
+        "julia_fused_preallocated": 1.8580191341026313,
+        "julia_fused_allocating": 5.195162289086527,
+        "julia_unfused_preallocated": 2.1427590840541617,
+        "torch_eager_allocating": 14.13801986754967,
+        "torch_compiled_allocating": 21.374044642857143,
+        "torch_compiled_preallocated": 19.731744390539724,
+        "torch_julia_bridge_preallocated": 11.162985317032243
+      },
+      "best_torch_method": "torch_eager_allocating",
+      "best_torch_us": 14.13801986754967,
+      "python_julia_us": 11.162985317032243,
+      "time_reduction_percent": 21.042795090038616,
+      "julia_fusion_speed_ratio": 1.1532492021881418
+    },
+    {
+      "hidden": 8192,
+      "tokens": 1,
+      "stage": "norm_projection",
+      "method_times_us": {
+        "julia_broadcast_allocating": 807.2611666666667,
+        "julia_fused_preallocated": 799.48325,
+        "julia_fused_allocating": 797.1489999999999,
+        "julia_unfused_preallocated": 798.9133333333333,
+        "torch_eager_allocating": 232.31370833333335,
+        "torch_compiled_allocating": 250.7983095238095,
+        "torch_compiled_preallocated": 251.22844642857143,
+        "torch_julia_bridge_preallocated": 225.50279861111113
+      },
+      "best_torch_method": "torch_eager_allocating",
+      "best_torch_us": 232.31370833333335,
+      "python_julia_us": 225.50279861111113,
+      "time_reduction_percent": 2.9317726323965543,
+      "julia_fusion_speed_ratio": 0.9992871437060542
+    },
+    {
+      "hidden": 8192,
+      "tokens": 32,
+      "stage": "norm",
+      "method_times_us": {
+        "julia_broadcast_allocating": 184.00381249999998,
+        "julia_fused_preallocated": 72.08041417050691,
+        "julia_fused_allocating": 163.05422727272727,
+        "julia_unfused_preallocated": 83.53381157894736,
+        "torch_eager_allocating": 157.71808653846153,
+        "torch_compiled_allocating": 131.2308923076923,
+        "torch_compiled_preallocated": 134.79823095238095,
+        "torch_julia_bridge_preallocated": 85.01828
+      },
+      "best_torch_method": "torch_compiled_allocating",
+      "best_torch_us": 131.2308923076923,
+      "python_julia_us": 85.01828,
+      "time_reduction_percent": 35.21473602369423,
+      "julia_fusion_speed_ratio": 1.1588974971945545
+    },
+    {
+      "hidden": 8192,
+      "tokens": 32,
+      "stage": "norm_projection",
+      "method_times_us": {
+        "julia_broadcast_allocating": 2693.3630000000003,
+        "julia_fused_preallocated": 2502.0095,
+        "julia_fused_allocating": 2704.545,
+        "julia_unfused_preallocated": 2501.4485000000004,
+        "torch_eager_allocating": 2260.4955,
+        "torch_compiled_allocating": 2277.1005,
+        "torch_compiled_preallocated": 2204.9715,
+        "torch_julia_bridge_preallocated": 2099.9584999999997
+      },
+      "best_torch_method": "torch_compiled_preallocated",
+      "best_torch_us": 2204.9715,
+      "python_julia_us": 2099.9584999999997,
+      "time_reduction_percent": 4.762555887910586,
+      "julia_fusion_speed_ratio": 0.999775780227853
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # ShenScope
 
-后续产品开发在 [DSH-JuliaScope](https://github.com/SurviveAIEra/DSH-JuliaScope) 中进行：复用 DSH 的 agent、模型、工具和会话能力，接入本项目的常驻 Julia 仓库分析与可编程分析器。本仓库保留 Julia Core、终端入口和设计记录。VSIX 侧栏与 Code-OSS IDE 已退出开发范围。
+当前开发转向 [Julia 推理算子实验](inference/README.md)，先验证 CPU 上残差相加与 RMSNorm 融合的正确性和性能。Julia agent 开发已停止；以下保留原项目说明，[DSH 集成](https://github.com/SurviveAIEra/DSH-JuliaScope)与历史实验也继续保留。VSIX 侧栏与 Code-OSS IDE 已退出开发范围。
 
 **深入代码，看清改动。**
 

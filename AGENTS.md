@@ -1,4 +1,10 @@
-Product work continues in `/workspace/DSH-JuliaScope` (the user-selected DSH fork). Preserve this Core checkout; use the fork for agent-host integration.
+Current direction (2026-10-24): the user stopped Julia agent development and
+authorized an inference-acceleration prototype. Active work is the independent
+Julia package under `inference/` in this checkout. Preserve existing agent source,
+DSH integration and historical measurements. Do not resume the old line-count
+targets, editor work or agent integration. Start with measured CPU operators;
+GPU acceleration and whole-model benefits require separate hardware and evidence.
+Read `inference/README.md` and `inference/REPORT.md` for the current workflow.
 
 # ShenScope development contract
 
@@ -24,13 +30,12 @@ test failure. Preserve private development history and follow the publication
 plan in `docs/licensing/license_decision.md` when public release is requested.
 
 Read `docs/requirements/reconstruction.md` and `WORK_STATUS.md` on resumption.
-The user's current phase target is 32,000 authored Julia Core code lines.
-Prioritize missing everyday project capabilities. The earlier 250,000/500,000
-figures are historical long-term planning, not this phase's stopping gate.
-Count using cloc, excluding tests, documentation, generated
-code, third-party code and Code-OSS. Never pad or duplicate code to reach it.
-Complete this phase only after its size target and relevant functional checks
-pass; report remaining product gates honestly.
+Earlier agent line-count targets are historical and do not apply to inference
+work. Do not pad or duplicate code. Validate numerical correctness against an
+independent higher-precision oracle, compare with preallocated Julia and compiled
+PyTorch baselines, and retain losses as well as wins. Separate first invocation,
+warm operator timings and larger computation fragments. Do not claim full-model
+or GPU acceleration from CPU operator results.
 
 Current implementation: Julia owns agent, model, tool, security, session, project
 data and analysis logic. Mature-agent integration is under evaluation; do not

@@ -1,5 +1,17 @@
 # Work status
 
+Current direction (2026-10-24): Julia agent development has stopped at the user's
+request. Active work is the independent `inference/` package: a CPU Float32 fused
+residual-add/RMSNorm prototype with numerical tests and Julia/PyTorch comparisons.
+There is no GPU in the current environment. GPU and full-model performance remain
+unmeasured. Earlier agent scope, line targets and checkpoints below are historical.
+The initial CPU checkpoint implements the operator and a real zero-data-copy
+PyTorch-to-Julia C ABI. 146 Julia assertions, 8 receipt checks and 7 bridge tests
+pass. Final PyTorch 2.14.1 comparisons reverse runtime order, with 192 numerical
+output checks. Full results, older-version trials, a retained initial tolerance
+failure and limits are in `inference/REPORT.md` and `inference/results/`.
+The inference CI workflow is added; remote CI is not yet verified.
+
 Current product direction (2026-10-11): development continues in
 SurviveAIEra/DSH-JuliaScope using the user-selected DSH foundation. The fork
 contains resident Julia Project Data, five analysis backends, built-in and

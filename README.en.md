@@ -1,6 +1,6 @@
 # ShenScope
 
-Product development continues in [DSH-JuliaScope](https://github.com/SurviveAIEra/DSH-JuliaScope): DSH supplies the agent, model, tool and Session infrastructure, with this project’s resident Julia repository analysis and programmable analyzers integrated. This repository retains Julia Core, terminal entry points and design records. VSIX and Code-OSS IDE work is retired.
+Active development has moved to [Julia inference kernel experiments](inference/README.en.md), starting with CPU residual-add/RMSNorm fusion and measured numerical correctness and performance. Julia agent development has stopped. The original description below, the [DSH integration](https://github.com/SurviveAIEra/DSH-JuliaScope) and historical experiments are retained. VSIX and Code-OSS IDE work is retired.
 
 **Understand the code. See the scope of a change.**
 

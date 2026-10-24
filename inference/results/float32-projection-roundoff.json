@@ -1,0 +1,47 @@
+{
+  "description": "Ordinary NumPy Float32 projection of rounded Float64 normalization, compared to unrounded Float64 reference; no Julia kernel is involved.",
+  "torch_version": "2.8.0+cpu",
+  "numpy_version": "2.2.6",
+  "torch_default_float32_tolerances": {
+    "rtol": 1.3e-06,
+    "atol": 1e-05
+  },
+  "records": [
+    {
+      "hidden": 1024,
+      "tokens": 1,
+      "max_absolute_error": 7.988945474046716e-07,
+      "violations_of_initial_tolerance": 0
+    },
+    {
+      "hidden": 4096,
+      "tokens": 1,
+      "max_absolute_error": 1.8602729530137196e-06,
+      "violations_of_initial_tolerance": 0
+    },
+    {
+      "hidden": 4096,
+      "tokens": 8,
+      "max_absolute_error": 1.7306077744194681e-06,
+      "violations_of_initial_tolerance": 0
+    },
+    {
+      "hidden": 4096,
+      "tokens": 64,
+      "max_absolute_error": 1.7363353876920229e-06,
+      "violations_of_initial_tolerance": 2
+    },
+    {
+      "hidden": 8192,
+      "tokens": 1,
+      "max_absolute_error": 3.319194521234081e-06,
+      "violations_of_initial_tolerance": 0
+    },
+    {
+      "hidden": 8192,
+      "tokens": 32,
+      "max_absolute_error": 2.0215223988095943e-06,
+      "violations_of_initial_tolerance": 1
+    }
+  ]
+}
